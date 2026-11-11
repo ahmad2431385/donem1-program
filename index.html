@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dönem 1 Programım</title>
+<meta name="theme-color" content="#0b6b55">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Programım">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow column, phone-first. Who/updates/now on top, the day or week below, tools and sources at the bottom. */
+:root{
+  --bg:#f3f5f4; --surface:#ffffff; --ink:#14221d; --muted:#5d6b66; --line:#dde3e0;
+  --accent:#0b6b55; --accent-soft:#e1f1eb; --on-accent:#ffffff;
+  --amfi:#2457a6; --amfi-soft:#e6eefa;
+  --uyg:#0b7a4b; --uyg-soft:#e2f4ea;
+  --pdo:#9a5b00; --pdo-soft:#fbefdc;
+  --sec:#6b3fa0; --sec-soft:#f0e8fa;
+  --exam:#b42318; --exam-soft:#fde8e6;
+  --free:#7a8682; --free-soft:#eef1f0;
+  --warn-bg:#fff6e0; --warn-ink:#6b4a00; --warn-line:#f0d58c;
+  --chg-bg:#eef4ff; --chg-ink:#1d3f7a; --chg-line:#c3d5f5;
+  --shadow:0 10px 40px rgba(10,30,25,.18);
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1513; --surface:#17201d; --ink:#e6eeea; --muted:#9aa9a3; --line:#28332f;
+    --accent:#4cc9a4; --accent-soft:#163329; --on-accent:#06231a;
+    --amfi:#8db4ff; --amfi-soft:#1a2540; --uyg:#5fd69a; --uyg-soft:#14301f;
+    --pdo:#f0b45a; --pdo-soft:#33260f; --sec:#c4a3f2; --sec-soft:#2a1f3b;
+    --exam:#ff8a7f; --exam-soft:#3a1714; --free:#8a9893; --free-soft:#1d2724;
+    --warn-bg:#2e2610; --warn-ink:#f3d58a; --warn-line:#5a4a1c;
+    --chg-bg:#17223a; --chg-ink:#b9cff7; --chg-line:#2c3f66; --shadow:0 10px 40px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1513; --surface:#17201d; --ink:#e6eeea; --muted:#9aa9a3; --line:#28332f;
+  --accent:#4cc9a4; --accent-soft:#163329; --on-accent:#06231a;
+  --amfi:#8db4ff; --amfi-soft:#1a2540; --uyg:#5fd69a; --uyg-soft:#14301f;
+  --pdo:#f0b45a; --pdo-soft:#33260f; --sec:#c4a3f2; --sec-soft:#2a1f3b;
+  --exam:#ff8a7f; --exam-soft:#3a1714; --free:#8a9893; --free-soft:#1d2724;
+  --warn-bg:#2e2610; --warn-ink:#f3d58a; --warn-line:#5a4a1c;
+  --chg-bg:#17223a; --chg-ink:#b9cff7; --chg-line:#2c3f66; --shadow:0 10px 40px rgba(0,0,0,.5);
+  color-scheme: dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px 56px;display:flex;flex-direction:column;gap:14px}
+.wrap.wide{max-width:1120px}
+h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:26px;line-height:1.15}
+h2{font-size:18px;line-height:1.25}
+h3{font-size:15px}
+p{margin:0}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+button,input,select{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:8px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.stack{display:flex;flex-direction:column;gap:10px}
+[hidden]{display:none !important}
+
+/* top */
+.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand small{display:block;font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
+.chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
+.chip.ghost{background:transparent;border:1px solid var(--line);color:var(--muted);font-weight:500}
+.linkbtn{background:none;border:none;color:var(--accent);font-weight:600;padding:4px 2px;text-decoration:underline;text-underline-offset:3px}
+
+/* notices */
+.warn{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line);border-radius:12px;padding:10px 14px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start}
+.warn svg{flex:none;margin-top:2px}
+.sync{display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 12px}
+.sync .dot{width:8px;height:8px;border-radius:50%;background:var(--uyg);flex:none}
+.sync b{color:var(--ink);font-weight:600}
+.changes{background:var(--chg-bg);color:var(--chg-ink);border:1px solid var(--chg-line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.changes h2{font-size:15px;color:inherit}
+.chg{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;font-size:13.5px;align-items:baseline}
+.chg .k{font-family:var(--mono);font-size:12px;white-space:nowrap;opacity:.85}
+.chg del{opacity:.7}
+.chg .pill{display:inline-block;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.03em;padding:0 6px;border-radius:5px;background:var(--surface);margin-right:4px}
+
+/* login */
+.login{display:flex;flex-direction:column;gap:12px;padding:22px 18px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.login input{flex:1 1 200px;min-width:0;font-family:var(--mono);font-size:20px;letter-spacing:.06em;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg)}
+.login input:focus{border-color:var(--accent);outline:none}
+.primary{background:var(--accent);color:var(--on-accent);border:none;border-radius:10px;padding:11px 18px;font-weight:600}
+.secondary{background:var(--surface);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 14px;font-weight:600}
+.secondary:hover{border-color:var(--accent)}
+.err{color:var(--exam);font-size:14px;min-height:1.2em}
+
+/* now/next */
+.now{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.now .card{display:flex;flex-direction:column;gap:2px;min-width:0;text-align:left}
+.now button.card{cursor:pointer}
+.now .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.now .ttl{font-weight:600;overflow-wrap:anywhere}
+.now .meta{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.now .big{font-family:var(--mono);font-size:13px;color:var(--accent)}
+@media (max-width:440px){.now{grid-template-columns:1fr}}
+
+/* controls */
+.seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.seg button{border:none;background:none;padding:6px 14px;border-radius:7px;font-weight:600;color:var(--muted)}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.ctl{display:flex;flex-direction:column;gap:10px}
+.ctlrow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.daynav{display:flex;align-items:center;gap:8px}
+.daynav h2{flex:1;text-align:center}
+.navbtn{width:40px;height:40px;border-radius:10px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;flex:none}
+.pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.pick input{font-family:var(--mono);font-size:14px;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.todaybtn{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 14px;font-size:13px;font-weight:600}
+.todaybtn:disabled{opacity:.45;cursor:default}
+.week{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.wd{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;color:var(--muted)}
+.wd b{font-family:var(--mono);font-size:16px;color:var(--ink);font-weight:500}
+.wd .dots{display:flex;gap:3px;height:6px}
+.wd .dots i{width:6px;height:6px;border-radius:50%;background:var(--uyg)}
+.wd .dots i.e{background:var(--exam)}
+.wd .dots i.c{background:var(--chg-ink)}
+.wd[aria-current="date"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.wd.today b{color:var(--accent)}
+.legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+
+/* event cards */
+.list{display:flex;flex-direction:column;gap:8px}
+.ev{position:relative;display:grid;grid-template-columns:62px 1fr 28px;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c, var(--line));border-radius:12px;padding:10px 12px;color:inherit}
+button.ev{cursor:pointer}
+button.ev:hover{border-color:var(--c);border-left-color:var(--c)}
+.ev .t{font-family:var(--mono);font-size:13px;line-height:1.35;color:var(--muted);font-variant-numeric:tabular-nums}
+.ev .t b{display:block;color:var(--ink);font-weight:500;font-size:14px}
+.ev .body{min-width:0;display:flex;flex-direction:column;gap:3px}
+.ev .title{font-weight:600;overflow-wrap:anywhere}
+.ev .sub{font-size:13px;color:var(--muted);overflow-wrap:anywhere}
+.ev .where{font-size:13px;display:flex;gap:5px;align-items:flex-start;overflow-wrap:anywhere}
+.ev .where svg{flex:none;margin-top:3px}
+.tags{display:flex;gap:6px;flex-wrap:wrap}
+.tag{align-self:flex-start;font-size:11.5px;font-weight:600;letter-spacing:.03em;text-transform:uppercase;padding:1px 8px;border-radius:6px;background:var(--cs);color:var(--c)}
+.tag.chgtag{background:var(--chg-bg);color:var(--chg-ink)}
+.amfi{--c:var(--amfi);--cs:var(--amfi-soft)}
+.uyg{--c:var(--uyg);--cs:var(--uyg-soft)}
+.pdo{--c:var(--pdo);--cs:var(--pdo-soft)}
+.sec{--c:var(--sec);--cs:var(--sec-soft)}
+.exam{--c:var(--exam);--cs:var(--exam-soft)}
+.hol{--c:var(--pdo);--cs:var(--pdo-soft)}
+.free,.lunch{--c:var(--free);--cs:var(--free-soft)}
+.ev.free,.ev.lunch{background:transparent;border-style:dashed;border-left-style:solid}
+.ev.lunch{padding:6px 12px}
+.ev.free,.ev.lunch{grid-template-columns:62px 1fr}
+.more{align-self:center;justify-self:end;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:var(--cs,var(--accent-soft));color:var(--c,var(--accent))}
+button.ev:hover .more,button.wi:hover .more{background:var(--c);color:var(--surface)}
+.wi{position:relative;padding-right:30px !important}
+.wi .more{position:absolute;top:6px;right:6px;width:20px;height:20px}
+.wi .more svg{width:10px;height:10px}
+.hint{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+.hint .more{flex:none;width:22px;height:22px;--cs:var(--accent-soft);--c:var(--accent)}
+.hint .more svg{width:11px;height:11px}
+.ev.free .title,.ev.lunch .title{font-weight:500;color:var(--muted)}
+.ev.live{box-shadow:0 0 0 2px var(--accent)}
+.note{font-size:12.5px;background:var(--warn-bg);color:var(--warn-ink);border-radius:6px;padding:3px 8px;align-self:flex-start}
+.empty{text-align:center;padding:26px 16px;color:var(--muted)}
+
+/* week view */
+.wgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.wcol{display:flex;flex-direction:column;gap:6px;min-width:0}
+.wcol h3{display:flex;justify-content:space-between;align-items:baseline;padding:4px 2px;border-bottom:2px solid var(--line)}
+.wcol h3.today{border-color:var(--accent);color:var(--accent)}
+.wcol h3 span{font-family:var(--mono);font-size:12px;color:var(--muted);font-weight:500}
+.wi{display:flex;flex-direction:column;gap:1px;text-align:left;background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--c);border-radius:8px;padding:6px 8px;font-size:12.5px;color:inherit;min-width:0}
+.wi:hover{border-color:var(--c)}
+.wi .tm{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.wi .nm{font-weight:600;line-height:1.3;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.wi .pl{color:var(--muted);font-size:11.5px;overflow-wrap:anywhere}
+.wi.free{background:transparent;border-style:dashed}
+.wnone{font-size:12.5px;color:var(--muted);padding:6px 2px}
+@media (max-width:860px){.wgrid{grid-template-columns:1fr}.wcol h3{position:sticky;top:0;background:var(--bg);z-index:1}}
+
+/* sheet (event detail) */
+.scrim{position:fixed;inset:0;background:rgba(5,15,12,.45);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:0}
+.sheet{background:var(--surface);width:100%;max-width:560px;max-height:88%;overflow:auto;border-radius:18px 18px 0 0;padding:18px 18px 22px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:12px}
+@media (min-width:700px){.scrim{align-items:center;padding:20px}.sheet{border-radius:18px}}
+.sheet .hd{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.x{flex:none;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);display:grid;place-items:center}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;margin:0}
+.facts dt{color:var(--muted)}
+.facts dd{margin:0;overflow-wrap:anywhere}
+.desc{background:var(--bg);border-radius:10px;padding:10px 12px;font-size:14px}
+.desc b{display:block;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:2px}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap}
+.btnrow a,.btnrow button{text-decoration:none;font-size:14px}
+
+/* tools */
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (max-width:560px){.tools{grid-template-columns:1fr}}
+.tools .card{display:flex;flex-direction:column;gap:8px}
+#secBody{display:flex;flex-direction:column;gap:6px}
+.tools select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.steps{margin:0;padding-left:20px;font-size:13.5px;display:flex;flex-direction:column;gap:3px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:30;max-width:90%;box-shadow:var(--shadow)}
+
+details.card summary{cursor:pointer;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:10px}
+details.card summary::-webkit-details-marker{display:none}
+details.card summary::after{content:"+";color:var(--muted);font-family:var(--mono)}
+details.card[open] summary::after{content:"–"}
+.amfilist{margin:10px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.amfilist li{display:grid;grid-template-columns:96px 1fr;gap:8px}
+.amfilist .t{font-family:var(--mono);color:var(--muted);font-size:12.5px}
+.amfilist li.mine{background:var(--accent-soft);border-radius:8px;padding:4px 6px;margin:0 -6px}
+.exams{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.exams div{display:flex;justify-content:space-between;gap:10px;font-size:14px}
+.exams .d{font-family:var(--mono);color:var(--exam);white-space:nowrap;font-size:13px}
+.links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.links a{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);background:var(--bg)}
+.links a span{font-size:12px;color:var(--muted)}
+.links a:hover{border-color:var(--accent)}
+@media (max-width:440px){.links{grid-template-columns:1fr}}
+.foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
+.loading{padding:40px 0;text-align:center;color:var(--muted)}
+@media (prefers-reduced-motion:no-preference){.ev,.wi{transition:border-color .15s, box-shadow .2s}}
+</style>
+</head>
+<body>
+<div class="wrap" id="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <small>İstanbul Tıp · Dönem 1 Türkçe</small>
+      <h1>Programım</h1>
+    </div>
+    <div class="chips" id="who" hidden></div>
+  </header>
+
+  <div class="sync" id="sync" hidden></div>
+
+  <div class="warn" role="note">
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
+    <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları günde üç kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
+  </div>
+
+  <div class="loading" id="loading">Program yükleniyor…</div>
+
+  <!-- login -->
+  <section class="card login" id="loginView" hidden>
+    <h2>Öğrenci numaranı gir</h2>
+    <p class="muted small">Grubunu, uygulama alt grubunu ve PDÖ grubunu listeden bulup sana özel programı gösterir. Numaran yalnızca bu cihazda hatırlanır.</p>
+    <form id="loginForm" class="row" novalidate>
+      <label for="noInput" hidden>Öğrenci numarası</label>
+      <input id="noInput" inputmode="numeric" autocomplete="off" placeholder="0101260000" maxlength="12" aria-describedby="loginErr">
+      <button class="primary" type="submit">Programımı göster</button>
+    </form>
+    <div class="err" id="loginErr" role="alert"></div>
+  </section>
+
+  <!-- main -->
+  <main id="mainView" class="stack" hidden style="gap:14px">
+    <section class="changes" id="chgBox" hidden aria-live="polite"></section>
+
+    <section class="now" id="nowBox"></section>
+
+    <section class="card ctl">
+      <div class="ctlrow">
+        <div class="seg" role="group" aria-label="Görünüm">
+          <button type="button" id="vDay" aria-pressed="true">Gün</button>
+          <button type="button" id="vWeek" aria-pressed="false">Hafta</button>
+        </div>
+        <div class="pick">
+          <label for="datePick" class="small muted">Tarihe git</label>
+          <input type="date" id="datePick" min="2026-09-28" max="2027-07-31">
+          <button class="todaybtn" id="todayBtn" type="button">Bugün</button>
+        </div>
+      </div>
+      <div class="daynav">
+        <button class="navbtn" id="prev" aria-label="Önceki"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <h2 id="dayTitle"></h2>
+        <button class="navbtn" id="next" aria-label="Sonraki"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="week" id="week"></div>
+      <div class="legend">
+        <span><i style="background:var(--amfi)"></i>Amfi dersi</span>
+        <span><i style="background:var(--uyg)"></i>Senin uygulaman</span>
+        <span><i style="background:var(--pdo)"></i>PDÖ</span>
+        <span><i style="background:var(--sec)"></i>Seçmeli / online</span>
+        <span><i style="background:var(--exam)"></i>Sınav</span>
+      </div>
+      <p class="hint"><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Dersin açıklamasını, hocasını ve yerini görmek için kartın sağındaki <b>+</b> işaretine (ya da karta) dokun.</span></p>
+    </section>
+
+    <section class="list" id="dayList" aria-live="polite"></section>
+    <section class="wgrid" id="weekGrid" hidden></section>
+
+    <details class="card" id="amfiBox" hidden>
+      <summary><span>Bu gün haftalık amfi programında (Dönem 1)</span></summary>
+      <p class="muted small" style="margin-top:8px">Amfi programı haftalık yayınlanır ve en günceli odur. Ders programıyla çelişen bir şey görürsen amfi programını esas al.</p>
+      <ul class="amfilist" id="amfiList"></ul>
+    </details>
+
+    <section class="tools">
+      <div class="card" id="secCard">
+        <h2>Seçmeli derslerim</h2>
+        <div id="secBody"><p class="muted small">Seçmeli ders amfi listesi henüz eklenmedi. Eklenince burada dersini seçip amfisini programında görebileceksin.</p></div>
+      </div>
+      <div class="card" id="homeCard">
+        <h2>Ana ekrana ekle</h2>
+        <p class="muted small">Sayfayı telefonunda uygulama gibi açmak için:</p>
+        <ol class="steps" style="margin-top:6px">
+          <li><b>iPhone:</b> Linki Safari'de aç, alttaki Paylaş düğmesine dokun, "Ana Ekrana Ekle"yi seç.</li>
+          <li><b>Android:</b> Linki Chrome'da aç, sağ üstteki ⋮ menüsünden "Ana ekrana ekle"yi seç.</li>
+        </ol>
+        <p class="muted small">Numaran cihazda hatırlandığı için her açışta doğrudan kendi programın gelir.</p>
+      </div>
+      <section class="card" id="examBox" hidden>
+        <h2>Yaklaşan sınavlar</h2>
+        <div class="exams" id="examList"></div>
+      </section>
+    </section>
+
+    <label class="small muted" style="display:flex;gap:8px;align-items:center;padding:0 4px"><input type="checkbox" id="foreignChk"> Yabancı uyruklu öğrenciler için olan online dersleri de göster</label>
+  </main>
+
+  <section class="card">
+    <h2>Asıl programlar</h2>
+    <p class="muted small" style="margin-top:4px">Şüphede kaldığında buradan kontrol et.</p>
+    <div class="links">
+      <a href="https://docs.google.com/spreadsheets/d/1FcXgJIn7L9oFJKFCGLrSeefXHocrToAe/edit" target="_blank" rel="noopener">Ders programı<span>Dönem 1 Türkçe Tıp</span></a>
+      <a href="https://docs.google.com/spreadsheets/d/1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw/edit" target="_blank" rel="noopener">Amfi programı<span>Haftalık, en güncel</span></a>
+      <a href="https://docs.google.com/spreadsheets/d/1fdYXS38zxnWCoWYsFDca3bPHa0PXzKJV/edit" target="_blank" rel="noopener">Uygulama tablosu<span>Gruplara göre uygulamalar</span></a>
+      <a href="https://docs.google.com/spreadsheets/d/1oT06DD-PRquePt2iPr-DhSwjMWX5hb_l/edit" target="_blank" rel="noopener">Öğrenci listesi<span>Grup ve alt gruplar</span></a>
+      <a href="https://docs.google.com/spreadsheets/d/1FFSi_kUB42tAAKlote4ztI8zvTHWKebtPPCNe99_i8I/edit" target="_blank" rel="noopener">Seçmeli ders amfi listesi<span>Seçmeli derslerin yerleri</span></a>
+      <a href="https://sks.istanbul.edu.tr/tr/yemek-listesi" target="_blank" rel="noopener">Yemek listesi<span>İÜ SKS yemekhane menüsü</span></a>
+    </div>
+  </section>
+
+  <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
+</div>
+
+<div class="scrim" id="scrim" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" id="sheet"></div>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(async function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const store = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+let D, DESC = {};
+try{
+  const [a,b] = await Promise.all([fetch("data.json",{cache:"no-store"}), fetch("desc.json",{cache:"no-store"}).catch(()=>null)]);
+  D = await a.json();
+  if (b && b.ok) DESC = await b.json();
+}catch(e){
+  $("loading").textContent = "Program yüklenemedi. Sayfayı yenile; sorun sürerse asıl programlara bak.";
+  return;
+}
+$("loading").hidden = true;
+
+const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const DAYS = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const SHORT = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const pin = '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path fill="currentColor" d="M6 0a4.2 4.2 0 0 0-4.2 4.2C1.8 7.4 6 12 6 12s4.2-4.6 4.2-7.8A4.2 4.2 0 0 0 6 0Zm0 5.9a1.7 1.7 0 1 1 0-3.4 1.7 1.7 0 0 1 0 3.4Z"/></svg>';
+
+/* ---------- time (always Istanbul) ---------- */
+function istNow(){
+  const p = new Intl.DateTimeFormat("en-CA",{timeZone:"Europe/Istanbul",year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit",hourCycle:"h23"}).formatToParts(new Date());
+  const g = t => p.find(x=>x.type===t).value;
+  return { date:`${g("year")}-${g("month")}-${g("day")}`, min: (+g("hour"))*60 + (+g("minute")) };
+}
+const toMin = s => s ? (+s.slice(0,2))*60 + (+s.slice(3,5)) : null;
+function addDays(iso, n){ const d = new Date(iso+"T12:00:00Z"); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); }
+const wday = iso => new Date(iso+"T12:00:00Z").getUTCDay();
+const mondayOf = iso => addDays(iso, -((wday(iso)+6)%7));
+function fmtDate(iso, withDay=true){ const d = new Date(iso+"T12:00:00Z"); return `${d.getUTCDate()} ${MONTHS[d.getUTCMonth()]}${withDay? " "+DAYS[d.getUTCDay()]:""}`; }
+function fmtStamp(s){ if(!s) return "–"; const [d,t] = s.split(" "); const n = istNow().date; return (d===n? "bugün" : d===addDays(n,-1)? "dün" : fmtDate(d,false)) + " " + t; }
+const overlap = (a1,a2,b1,b2) => a1!=null && b1!=null && Math.max(a1,b1) < Math.min(a2??a1+1, b2??b1+1);
+function inWords(m){ if(m<60) return `${m} dk`; const h=Math.floor(m/60), r=m%60; return r? `${h} sa ${r} dk` : `${h} sa`; }
+
+/* ---------- groups ---------- */
+const PDO_PAIR = {A:"AB",B:"AB",C:"CD",D:"CD",E:"EF",F:"EF",G:"GH",H:"GH"};
+function matches(cell, me){
+  const c = String(cell).toLocaleUpperCase("tr").replace(/\s+/g,"");
+  if (c === "*" || /TÜM/.test(c) || /^TELAF/.test(c)) return true;
+  if (/^[A-H]$/.test(c)) return c === me.g;
+  if (/^[A-H][12]$/.test(c)) return c === me.a;
+  if (/^[A-H]{2,}$/.test(c)) return c.includes(me.g);
+  return false;
+}
+
+/* ---------- build a student's day ---------- */
+const byDate = arr => { const m = {}; for (const x of arr) (m[x.d] ||= []).push(x); return m; };
+const EV = byDate(D.events), UY = byDate(D.uyg), AM = byDate(D.amfi), CH = byDate(D.changes||[]);
+const TERM_START = "2026-09-28", TERM_END = "2027-06-11";
+
+function kindOf(t){
+  const u = t.toLocaleUpperCase("tr");
+  if (u.startsWith("ÖĞLE ARASI")) return "lunch";
+  if (u.startsWith("SERBEST ÇALIŞMA")) return "free";
+  if (/SEÇMELİ/.test(u)) return "sec";
+  if (/SINAV/.test(u)) return "exam";
+  if (/TATİL|BAYRAM/.test(u)) return "hol";
+  if (/PDÖ/.test(u)) return "pdo";
+  if (u.startsWith("UYGULAMA")) return "slot";
+  return "amfi";
+}
+function roomFor(date, s, e){
+  const r = (AM[date]||[]).find(a => !a.g && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
+  return r ? r.r : null;
+}
+function niceYer(y){
+  if (!y) return "";
+  const u = y.toLocaleUpperCase("tr");
+  if (u.includes("SEÇMELİ DERS AMFİ")) return "Seçmeli ders amfi listesine bak";
+  if (u.includes("UYGULAMA PROGRAMINA")) return "Uygulama tablosuna bak";
+  if (u.includes("AMFİ PROGRAMINA")) return "Amfi programına bak";
+  if (u === "ONLİNE") return "Online";
+  return y;
+}
+function similar(a,b){
+  const n = s => s.toLocaleLowerCase("tr").replace(/[^a-zçğıöşü]/g,"");
+  const A = n(a), B = n(b);
+  return ["şimdi","öğrenme","beslenme","iletişim","dikiş","nabız"].some(k => A.includes(k) && B.includes(k));
+}
+const SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
+function secFor(slot){ const i = store.get("sec_"+slot.replace(":","")); return (D.secmeli||[]).find(x => x.id === i) || null; }
+function mySecIds(){ return SLOTS.map(secFor).filter(Boolean).map(x => x.id); }
+
+const dayCache = new Map();
+function buildDay(date){
+  if (dayCache.has(date)) return dayCache.get(date);
+  const out = [];
+  const lectures = EV[date] || [];
+  const PG = me.p && D.pdoGroups[me.p];
+  const prac = (UY[date] || []).filter(u => !(PG && /PDÖ/i.test(u.n)) && matches(u.g, me));
+  if (PG) for (const ss of PG.ses) if (ss.d === date)
+    prac.push({d:date, s:ss.s, e:ss.e, n:"PDÖ", hoca:PG.tutor, g:me.p, y:PG.room, dl:"Yaşamın Moleküler Temelleri Dilimi", pdoSub:true});
+  const anySec = mySecIds().length > 0;
+  for (const ev of lectures){
+    const k = kindOf(ev.t);
+    if (k === "slot"){
+      out.push({kind:"free", slot:true, s:ev.s, e:ev.e, title:"Uygulama saati – grubunun uygulaması yok", sub:"Tabloya göre bu saatte sana ait bir uygulama görünmüyor."});
+      continue;
+    }
+    const item = {kind:k, s:ev.s, e:ev.e, title:ev.t, raw:ev.t, hoca:ev.h, ad:ev.ad, dilim:ev.dl, src:"Ders programı"};
+    if (k === "amfi" || k === "exam" || k === "pdo"){
+      const r = roomFor(date, ev.s, ev.e);
+      item.where = r ? r : niceYer(ev.y);
+      item.whereSrc = r ? "Haftalık amfi programı" : null;
+    } else if (k === "sec" && SLOTS.includes(ev.s) && anySec){
+      const c = secFor(ev.s);
+      if (!c){ out.push({kind:"free", s:ev.s, e:ev.e, title:"Seçmeli saati – bu saatte seçmeli dersin yok", sub:""}); continue; }
+      const note = (c.ex||{})[date];
+      item.title = c.ad; item.where = c.yer; item.hoca = c.hoca; item.dilim = "Seçmeli ders"; item.secId = c.id; item.bilgi = c.bilgi;
+      item.src = "Seçmeli ders amfi programı";
+      if (note){ item.note = note; item.changed = true; if (/yapılmayacak/i.test(note)) item.cancelled = true; }
+    } else item.where = niceYer(ev.y);
+    out.push(item);
+  }
+  for (const u of prac){
+    const isPdo = /PDÖ/i.test(u.n);
+    const note = /TELAF/i.test(u.g) ? "Telafi" : (/TÜM|\*/i.test(u.g) ? "Tüm gruplar" : null);
+    out.push({kind: isPdo? "pdo":"uyg", s:u.s, e:u.e,
+      title: isPdo ? (u.pdoSub ? `PDÖ oturumu · ${u.g} grubu` : `PDÖ oturumu (grup ${u.g})`) : u.n + " uygulaması",
+      raw:u.n, hoca:u.hoca, dilim:u.dl, where: isPdo && !u.pdoSub ? "PDÖ salonu – amfi programına bak" : u.y,
+      note, grp:u.g, src: u.pdoSub ? "PDÖ grup listesi" : "Uygulama tablosu"});
+  }
+  for (const a of (AM[date]||[])){
+    if (!(a.g && a.g === me.g)) continue;
+    const m = a.t.match(/(\d{1,2})[.:](\d{2})\s*-\s*(\d{1,2})[.:](\d{2})/);
+    const s = m ? `${m[1].padStart(2,"0")}:${m[2]}` : a.s, e = m ? `${m[3].padStart(2,"0")}:${m[4]}` : a.e;
+    const U = a.t.toLocaleUpperCase("tr");
+    const name = /ŞİMDİ/.test(U) ? "Şimdi ve Burada uygulaması" : /ÖĞRENME/.test(U) ? "Öğrenme uygulaması" : /BESLENME/.test(U) ? "Beslenme uygulaması" : a.t;
+    const dup = out.find(o => (o.kind==="uyg"||o.kind==="pdo") && overlap(toMin(o.s),toMin(o.e),toMin(s),toMin(e)) && similar(o.title, name));
+    if (dup){ dup.where = a.r; dup.whereSrc = "Haftalık amfi programı"; continue; }
+    out.push({kind:"uyg", s, e, title:name, raw:name, where:a.r, whereSrc:"Haftalık amfi programı", src:"Haftalık amfi programı", note:"Uygulama tablosunda yok, amfi programında var"});
+  }
+  if (date >= TERM_START && date <= TERM_END){
+    const wd = (wday(date)+6)%7;
+    if (!lectures.some(e => kindOf(e.t)==="hol") && lectures.length)
+      for (const w of D.weekly.filter(w => w.wd === wd && (foreign || !/YABANCI UYRUKLU/.test(w.t))))
+        out.push({kind:"sec", online:true, s:w.s, e:w.e, title:w.t, raw:w.t, hoca:w.h, where:"Online", dilim:"Uzaktan eğitim", src:"Ders programı (her hafta)"});
+  }
+  out.sort((a,b) => (toMin(a.s)??0)-(toMin(b.s)??0) || (toMin(a.e)??0)-(toMin(b.e)??0));
+  const busy = out.filter(o => o.kind==="uyg" || o.kind==="pdo");
+  const kept = out.filter(o => !(o.slot && busy.some(b => overlap(toMin(o.s),toMin(o.e),toMin(b.s),toMin(b.e)))));
+  const merged = [];
+  for (const x of kept){
+    const p = merged[merged.length-1];
+    if (p && p.kind===x.kind && p.title===x.title && toMin(x.s)-toMin(p.e) <= 15 && toMin(x.s) >= toMin(p.s)){ p.e = x.e; continue; }
+    merged.push({...x, date});
+  }
+  // mark items touched by a recent change
+  const ch = myChanges().filter(c => c.d === date);
+  for (const it of merged) if (ch.some(c => overlap(toMin(it.s),toMin(it.e),toMin(c.s),toMin(c.e)))) it.changed = true;
+  dayCache.set(date, merged);
+  return merged;
+}
+const real = x => x.kind!=="lunch" && x.kind!=="free";
+
+/* ---------- changes ---------- */
+let _myCh = null;
+function myChanges(){
+  if (_myCh) return _myCh;
+  const today = istNow().date;
+  const mine = mySecIds();
+  _myCh = (D.changes||[]).filter(c => c.d >= today && c.g.some(g => g.startsWith("sec:") ? mine.includes(g.slice(4)) : (matches(g, me) || (me.p && g===me.p))));
+  return _myCh;
+}
+function renderChanges(){
+  const box = $("chgBox");
+  const now = istNow().date, recent = addDays(now, -3);
+  const list = myChanges().filter(c => c.at.slice(0,10) >= recent);
+  box.hidden = !list.length;
+  if (!list.length) return;
+  const label = {add:"Eklendi", del:"Kaldırıldı", mod:"Değişti"};
+  const src = {ders:"Ders programı", uyg:"Uygulama tablosu", amfi:"Amfi programı", sec:"Seçmeli ders programı"};
+  const top = list.slice(0,4);
+  box.innerHTML = `<h2>Programında son değişiklikler</h2>` + top.map(c => `
+    <div class="chg"><span class="k">${fmtDate(c.d,false)} ${esc(c.s||"")}</span>
+    <span><span class="pill">${label[c.type]}</span>${chgText(c)} <span class="small" style="opacity:.75">· ${src[c.src]||""}, ${fmtStamp(c.at)} fark edildi</span></span></div>`).join("")
+    + (list.length > 4 ? `<span class="small">+${list.length-4} değişiklik daha; ilgili günlerde "Değişti" etiketiyle işaretli.</span>` : "");
+}
+
+function prettyT(t){ return String(t||"").replace(/^D[ÖO]NEM\s*1\s*-?\s*(TÜRKÇE\s*(\+\s*İNGİLİZCE)?)?\s*-?\s*/i,"").replace(/\s*-\s*/g," – ").trim(); }
+function chgText(c){
+  const o = c.old, n = c.new;
+  if (typeof o === "string" || typeof n === "string") return c.type==="mod" ? `<del>${esc(o)}</del> → <b>${esc(n)}</b>` : esc(n||o);
+  if (c.type==="add") return `<b>${esc(prettyT(n.t))}</b>${n.y? " · "+esc(n.y):""}`;
+  if (c.type==="del") return `<del>${esc(prettyT(o.t))}</del>`;
+  const parts = [];
+  if (o.t !== n.t) parts.push(`<del>${esc(prettyT(o.t))}</del> → <b>${esc(prettyT(n.t))}</b>`);
+  else parts.push(esc(prettyT(n.t)));
+  if (o.y !== n.y) parts.push(`yer: <del>${esc(o.y||"–")}</del> → <b>${esc(n.y||"–")}</b>`);
+  if (o.e !== n.e) parts.push(`bitiş: <del>${esc(o.e)}</del> → <b>${esc(n.e)}</b>`);
+  return parts.join(" · ");
+}
+
+/* ---------- render: who / sync / now ---------- */
+let me = null, view = istNow().date, mode = store.get("mode")==="week" ? "week" : "day", foreign = store.get("yabanci")==="1";
+
+function renderWho(){
+  const w = $("who"); w.hidden = false;
+  w.innerHTML = `<span class="chip">Grup ${esc(me.g)}</span>${me.a? `<span class="chip">Uygulama ${esc(me.a)}</span>`:""}<span class="chip">PDÖ ${esc(me.p || PDO_PAIR[me.g] || "–")}</span><span class="chip ghost">${esc(me.no)}</span><button class="linkbtn" id="logout" type="button">Değiştir</button>`
+   + (me.partial ? `<span class="chip ghost">Uygulama listesinde yoksun; uygulamalar ${esc(me.g)} grubuna göre</span>` : "");
+  $("logout").onclick = () => { store.del("ogrNo"); me = null; show(); };
+}
+function renderSync(){
+  const s = $("sync"); s.hidden = false;
+  s.innerHTML = `<span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> her gün ${(D.schedule||[]).join(", ")}</span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
+}
+function renderNow(){
+  const now = istNow();
+  const today = buildDay(now.date).filter(real);
+  const cur = today.find(x => toMin(x.s)<=now.min && now.min<toMin(x.e));
+  let next = today.find(x => toMin(x.s) > now.min), nextDay = now.date;
+  for (let i=1; i<=21 && !next; i++){
+    const d = addDays(now.date,i);
+    const it = buildDay(d).filter(x => real(x) && x.kind!=="hol");
+    if (it.length){ next = it[0]; nextDay = d; }
+  }
+  NOWITEMS = [cur, next];
+  const card = (i, lbl, x, extra) => x
+    ? `<button class="card" type="button" data-now="${i}"><span class="lbl">${lbl}</span><span class="ttl">${esc(x.title)}</span><span class="meta">${esc(x.s)}–${esc(x.e)}${x.where? " · "+esc(x.where):""}</span>${extra||""}</button>`
+    : `<div class="card"><span class="lbl">${lbl}</span><span class="meta">${extra}</span></div>`;
+  const nextExtra = next ? (nextDay===now.date ? `<span class="big">${inWords(toMin(next.s)-now.min)} sonra</span>` : `<span class="big">${nextDay===addDays(now.date,1)?"Yarın":fmtDate(nextDay)}</span>`) : "Yakında kayıtlı ders yok.";
+  $("nowBox").innerHTML = card(0,"Şu an", cur, cur? `<span class="big">${inWords(toMin(cur.e)-now.min)} kaldı</span>` : "Şu an derste değilsin.") + card(1,"Sıradaki", next, nextExtra);
+  $("nowBox").querySelectorAll("[data-now]").forEach(b => b.onclick = () => openSheet(NOWITEMS[+b.dataset.now]));
+}
+let NOWITEMS = [];
+
+/* ---------- render: day & week ---------- */
+const TAG = x => ({amfi:"Amfi", uyg:"Uygulama", pdo:"PDÖ", sec: x.online? "Online":"Seçmeli", exam:"Sınav", hol:"Tatil", free:"", lunch:""}[x.kind]);
+let CURRENT = [];
+function evHTML(x, i, live){
+  if (x.kind==="free") return `<div class="ev free"><div class="t"><b>${esc(x.s||"")}</b>${esc(x.e||"")}</div><div class="body"><div class="title">${esc(x.title)}</div>${x.sub? `<div class="sub">${esc(x.sub)}</div>`:""}</div></div>`;
+  if (x.kind==="lunch") return `<div class="ev lunch"><div class="t">${esc(x.s)}</div><div class="body"><div class="title">Öğle arası</div></div></div>`;
+  const tag = TAG(x);
+  const sub = [x.hoca, x.ad].filter(Boolean).join(" · ");
+  return `<button type="button" class="ev ${x.kind}${live?" live":""}" data-i="${i}" aria-label="${esc(x.title)} – ayrıntıları aç">
+    <div class="t"><b>${esc(x.s||"")}</b>${esc(x.e||"")}</div>
+    <div class="body">
+      ${tag||x.changed||x.cancelled? `<div class="tags">${tag? `<span class="tag">${tag}${live? " · şu an":""}</span>`:""}${x.cancelled? `<span class="tag exam">Bu hafta yok</span>` : x.changed? `<span class="tag chgtag">Değişti</span>`:""}</div>`:""}
+      <div class="title">${esc(x.title)}</div>
+      ${x.kind==="free" ? (x.sub? `<div class="sub">${esc(x.sub)}</div>`:"") : (sub? `<div class="sub">${esc(sub)}</div>`:"")}
+      ${x.where? `<div class="where">${pin}<span>${esc(x.where)}</span></div>`:""}
+      ${x.note? `<span class="note">${esc(x.note)}</span>`:""}
+    </div><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button>`;
+}
+function renderMain(){
+  $("vDay").setAttribute("aria-pressed", mode==="day");
+  $("vWeek").setAttribute("aria-pressed", mode==="week");
+  $("wrap").classList.toggle("wide", mode==="week");
+  $("dayList").hidden = mode!=="day";
+  $("weekGrid").hidden = mode!=="week";
+  $("week").hidden = mode!=="day";
+  $("datePick").value = view;
+  const now = istNow();
+  if (mode==="day") renderDay(now); else renderWeekGrid(now);
+}
+function renderDay(now){
+  const items = buildDay(view);
+  CURRENT = items;
+  $("dayTitle").textContent = (view===now.date? "Bugün · " : view===addDays(now.date,1)? "Yarın · " : "") + fmtDate(view);
+  $("todayBtn").disabled = view === now.date;
+  const list = $("dayList");
+  if (!items.length){
+    const wd = wday(view);
+    list.innerHTML = `<div class="card empty">${wd===0||wd===6 ? "Hafta sonu, programda ders yok." : "Bu gün için programda kayıt yok."}</div>`;
+  } else {
+    list.innerHTML = items.map((x,i) => evHTML(x, i, view===now.date && real(x) && toMin(x.s)<=now.min && now.min<toMin(x.e))).join("")
+      + (items.some(real) ? "" : `<div class="card empty">Bu gün sana ait ders veya uygulama görünmüyor.</div>`);
+    list.querySelectorAll("[data-i]").forEach(b => b.onclick = () => openSheet(CURRENT[+b.dataset.i]));
+  }
+  const am = AM[view] || [], box = $("amfiBox");
+  box.hidden = !am.length;
+  if (am.length){
+    const rows = [];
+    for (const a of am){ const p = rows[rows.length-1]; if (p && p.t===a.t && p.r===a.r){ p.e = a.e; continue; } rows.push({...a}); }
+    $("amfiList").innerHTML = rows.map(a => `<li class="${a.g===me.g?"mine":""}"><span class="t">${esc(a.s)}–${esc(a.e)}</span><span><b>${esc(a.r)}</b><br>${esc(a.t)}</span></li>`).join("");
+    if (am.some(a => a.g===me.g)) box.open = true;
+  }
+  renderStrip(now);
+}
+function renderStrip(now){
+  const mon = mondayOf(view);
+  let html = "";
+  for (let i=0;i<5;i++){
+    const d = addDays(mon,i), items = buildDay(d);
+    const nU = items.filter(x => x.kind==="uyg"||x.kind==="pdo").length, nE = items.some(x => x.kind==="exam"), nC = items.some(x => x.changed);
+    const dots = "<i></i>".repeat(Math.min(nU,3)) + (nE? '<i class="e"></i>':"") + (nC? '<i class="c"></i>':"");
+    html += `<button class="wd${d===now.date?" today":""}" ${d===view?'aria-current="date"':""} data-d="${d}" aria-label="${fmtDate(d)}${nU? ", "+nU+" uygulama":""}${nC?", değişiklik var":""}">${SHORT[(i+1)%7]}<b>${new Date(d+"T12:00:00Z").getUTCDate()}</b><span class="dots">${dots}</span></button>`;
+  }
+  $("week").innerHTML = html;
+  $("week").querySelectorAll(".wd").forEach(b => b.onclick = () => { view = b.dataset.d; renderMain(); });
+}
+function renderWeekGrid(now){
+  const mon = mondayOf(view), fri = addDays(mon,4);
+  $("dayTitle").textContent = `${fmtDate(mon,false)} – ${fmtDate(fri,false)}`;
+  $("todayBtn").disabled = mondayOf(now.date) === mon;
+  CURRENT = [];
+  let html = "";
+  for (let i=0;i<5;i++){
+    const d = addDays(mon,i);
+    const items = buildDay(d).filter(x => x.kind!=="lunch");
+    const body = items.length ? items.map(x => {
+      if (x.kind==="free") return `<div class="wi free"><span class="tm">${esc(x.s)}–${esc(x.e)}</span><span class="nm" style="font-weight:500;color:var(--muted)">${x.slot? "Uygulaman yok":"Serbest çalışma"}</span></div>`;
+      const idx = CURRENT.push(x)-1;
+      return `<button type="button" class="wi ${x.kind}" data-i="${idx}" aria-label="${esc(x.title)} – ayrıntıları aç"><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="tm">${esc(x.s)}–${esc(x.e)}${x.changed? " · değişti":""}</span><span class="nm">${esc(x.kind==="free"? (x.slot? "Uygulaman yok":"Serbest çalışma") : x.title)}</span>${x.where && x.kind!=="free"? `<span class="pl">${esc(x.where)}</span>`:""}</button>`;
+    }).join("") : `<div class="wnone">Kayıt yok</div>`;
+    html += `<div class="wcol"><h3 class="${d===now.date?"today":""}">${DAYS[(i+1)%7]}<span>${fmtDate(d,false)}</span></h3>${body}</div>`;
+  }
+  $("weekGrid").innerHTML = html;
+  $("weekGrid").querySelectorAll("[data-i]").forEach(b => b.onclick = () => openSheet(CURRENT[+b.dataset.i]));
+  $("amfiBox").hidden = true;
+}
+
+/* ---------- detail sheet ---------- */
+function stripNo(t){ return t.replace(/^\s*\d+\s*-\s*/,""); }
+function descFor(x){
+  if (x.secId) return "Seçtiğin seçmeli ders. Yer değişiklikleri ve iptaller seçmeli ders amfi programında duyurulur" + (x.bilgi? `; ön koşul: ${x.bilgi.toLocaleLowerCase("tr")}.` : ".");
+  if (DESC[x.raw]) return DESC[x.raw];
+  const auto = {
+    uyg: "Grubunla birlikte yapacağın uygulama dersi. Yerini ve saatini önceden kontrol et; önlük ve gerekli malzemelerini yanında getir.",
+    pdo: "Probleme dayalı öğrenme oturumu: küçük grupta bir vaka üzerinden öğrenme hedeflerini belirleyip tartışırsınız. Oturumdan önce vakayı ve hedefleri gözden geçir.",
+    exam: "Sınav. Saatini, yerini ve yanında getirmen gerekenleri resmi duyurulardan teyit et.",
+    sec: "Seçmeli veya uzaktan eğitim dersi. Hangi derse kayıtlıysan onun yerine ve bağlantısına bak.",
+    free: "Programda serbest çalışma zamanı.",
+    hol: "Resmi tatil veya ara.",
+  };
+  return auto[x.kind] || null;
+}
+function gcalLink(x){
+  const z = (d, t) => { const [h,m] = t.split(":").map(Number); const u = new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7)-1, +d.slice(8,10), h-3, m)); return u.toISOString().replace(/[-:]/g,"").slice(0,15)+"Z"; };
+  if (!x.s || !x.e) return null;
+  const q = new URLSearchParams({action:"TEMPLATE", text:x.title, dates:`${z(x.date,x.s)}/${z(x.date,x.e)}`, details:[x.hoca, x.dilim].filter(Boolean).join("\n"), location:x.where||""});
+  return "https://calendar.google.com/calendar/render?"+q.toString();
+}
+let lastFocus = null;
+function openSheet(x){
+  if (!x) return;
+  lastFocus = document.activeElement;
+  const desc = descFor(x);
+  const g = gcalLink(x);
+  const facts = [
+    ["Tarih", fmtDate(x.date)],
+    ["Saat", `${x.s||""}–${x.e||""}`],
+    x.where && ["Yer", x.where + (x.whereSrc? ` (${x.whereSrc})`:"")],
+    x.hoca && ["Öğretim üyesi", x.hoca],
+    x.ad && ["Anabilim dalı", x.ad],
+    x.dilim && ["Dilim", x.dilim],
+    x.grp && ["Grup", x.grp],
+    x.src && ["Kaynak", x.src],
+  ].filter(Boolean);
+  $("sheet").innerHTML = `
+    <div class="hd"><div class="stack" style="gap:6px">${TAG(x)? `<span class="tag ${x.kind}">${TAG(x)}</span>`:""}<h2 id="shTitle">${esc(x.kind==="amfi"? stripNo(x.title) : x.title)}</h2></div>
+      <button class="x" id="shClose" type="button" aria-label="Kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+    ${desc? `<div class="desc"><b>Bu ders ne hakkında</b>${esc(desc)}</div>`:""}
+    ${x.changed? `<div class="note">Bu saatte programında yakın zamanda değişiklik yapıldı. Asıl programdan teyit et.</div>`:""}
+    ${x.note? `<div class="note">${esc(x.note)}</div>`:""}
+    <dl class="facts">${facts.map(([k,v]) => `<dt>${k}</dt><dd>${esc(v)}</dd>`).join("")}</dl>
+    <div class="btnrow">
+      ${g? `<a class="secondary" href="${g}" target="_blank" rel="noopener">Google Takvim'e ekle</a>`:""}
+    </div>`;
+  $("scrim").hidden = false;
+  $("shClose").onclick = closeSheet;
+  $("shClose").focus();
+}
+function closeSheet(){ $("scrim").hidden = true; if (lastFocus) lastFocus.focus(); }
+$("scrim").addEventListener("click", e => { if (e.target === $("scrim")) closeSheet(); });
+document.addEventListener("keydown", e => {
+  if (!$("scrim").hidden && e.key === "Escape") { closeSheet(); return; }
+  if (!me || !$("scrim").hidden || e.target.tagName==="INPUT" || e.target.tagName==="SELECT") return;
+  if (e.key==="ArrowLeft") $("prev").click();
+  if (e.key==="ArrowRight") $("next").click();
+});
+
+/* ---------- calendar export ---------- */
+function icsEsc(s){ return String(s||"").replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
+function fold(line){ const out=[]; let s=line; while (s.length > 74){ out.push(s.slice(0,74)); s = " "+s.slice(74); } out.push(s); return out.join("\r\n"); }
+function buildIcs(items){
+  const z = (d,t) => { const [h,m] = t.split(":").map(Number); return new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7)-1, +d.slice(8,10), h-3, m)).toISOString().replace(/[-:]/g,"").slice(0,15)+"Z"; };
+  const stamp = new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
+  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Donem1 Programim//TR","CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Dönem 1 Programım","X-WR-TIMEZONE:Europe/Istanbul"];
+  for (const x of items){
+    if (!x.s || !x.e) continue;
+    const uid = (x.date + x.s + x.title).replace(/[^\wçğıöşüÇĞİÖŞÜ]/g,"").slice(0,60) + "@donem1";
+    L.push("BEGIN:VEVENT", "UID:"+uid, "DTSTAMP:"+stamp, "DTSTART:"+z(x.date,x.s), "DTEND:"+z(x.date,x.e),
+      fold("SUMMARY:"+icsEsc((TAG(x)? TAG(x)+": ":"")+(x.kind==="amfi"? stripNo(x.title):x.title))),
+      fold("LOCATION:"+icsEsc(x.where||"")),
+      fold("DESCRIPTION:"+icsEsc([x.hoca, x.dilim, "Kaynak: "+(x.src||""), "Değişiklikler için asıl programı kontrol et."].filter(Boolean).join("\n"))),
+      "BEGIN:VALARM","TRIGGER:-PT15M","ACTION:DISPLAY","DESCRIPTION:Ders 15 dk sonra","END:VALARM","END:VEVENT");
+  }
+  L.push("END:VCALENDAR");
+  return L.join("\r\n");
+}
+let downloads = null;
+async function saveIcs(items, filename){
+  const text = buildIcs(items);
+  if (downloads){
+    try{ await downloads.save({filename, data: new Blob([text],{type:"text/calendar"})}); toast("Takvim dosyası hazırlandı. Açınca takvimine eklenir."); return; }
+    catch(e){ if (e && /cancel|declin|abort/i.test((e.code||"")+(e.message||""))) return; }
+  }
+  try{ await navigator.clipboard.writeText(text); toast("İndirme bu görünümde desteklenmiyor; takvim içeriği panoya kopyalandı."); }
+  catch(e){ toast("İndirme şu an yapılamadı. Tek tek eklemek için derse dokunup Google Takvim'i kullan."); }
+}
+function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(()=> t.hidden = true, 4200); }
+
+/* ---------- electives ---------- */
+function renderSec(){
+  const list = (D.secmeli||[]).filter(x => x.d1);
+  if (!list.length) return;
+  $("secBody").innerHTML = `<p class="muted small">1. sınıflar 2 seçmeli ders seçer. Kayıtlı olduğun dersleri saatine göre seç; çarşamba seçmeli saatlerinde programında dersin adı, amfisi ve iptal/yer değişikliği notları görünür.</p>`
+    + SLOTS.map(slot => {
+      const opts = list.filter(x => x.s === slot).sort((a,b) => a.ad.localeCompare(b.ad,"tr")), cur = secFor(slot);
+      const end = opts[0] ? opts[0].e : "";
+      return `<label class="small" for="sec_${slot.replace(":","")}" style="font-weight:600">${slot}–${end}</label>
+        <select id="sec_${slot.replace(":","")}" data-slot="${slot}"><option value="">Bu saatte seçmeli dersim yok</option>${opts.map(x => `<option value="${esc(x.id)}" ${cur&&cur.id===x.id?"selected":""}>${esc(x.ad)}</option>`).join("")}</select>
+        ${cur? `<p class="small muted" style="margin-top:-2px">${esc(cur.yer)} · ${esc(cur.hoca)}${cur.bilgi? " · "+esc(cur.bilgi):""}</p>`:""}`;
+    }).join("");
+  $("secBody").querySelectorAll("select").forEach(sel => sel.onchange = e => {
+    const k = "sec_"+sel.dataset.slot.replace(":","");
+    if (e.target.value) store.set(k, e.target.value); else store.del(k);
+    dayCache.clear(); _myCh = null; renderSec(); renderChanges(); renderNow(); renderMain();
+  });
+}
+
+/* ---------- exams ---------- */
+function renderExams(){
+  const now = istNow().date, seen = new Set(), ex = [];
+  for (const e of D.events){
+    if (e.d < now) continue;
+    const u = e.t.toLocaleUpperCase("tr");
+    if (!/SINAV/.test(u) || /^SERBEST/.test(u)) continue;
+    const k = e.d+e.t.replace(/SINAV(LARI|I)?/,"SINAV"); if (seen.has(k)) continue; seen.add(k);
+    ex.push(e);
+  }
+  ex.sort((a,b)=> a.d.localeCompare(b.d));
+  const top = ex.slice(0,4);
+  $("examBox").hidden = !top.length;
+  $("examList").innerHTML = top.map(e => {
+    const days = Math.round((new Date(e.d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
+    return `<div><span>${esc(e.t)}</span><span class="d">${fmtDate(e.d,false)} · ${days===0?"bugün":days+" gün"}</span></div>`;
+  }).join("");
+}
+
+/* ---------- app ---------- */
+function show(){
+  dayCache.clear(); _myCh = null;
+  if (!me){
+    $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true;
+    setTimeout(()=> $("noInput").focus(), 50);
+    return;
+  }
+  $("loginView").hidden = true; $("mainView").hidden = false;
+  renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec();
+}
+// Student numbers are not in the data file; only salted PBKDF2 hashes are. Derive the same hash here.
+async function hashNo(no){
+  const enc = new TextEncoder();
+  const salt = new Uint8Array(D.kdf.salt.match(/../g).map(h => parseInt(h,16)));
+  const key = await crypto.subtle.importKey("raw", enc.encode(no), "PBKDF2", false, ["deriveBits"]);
+  const bits = await crypto.subtle.deriveBits({name:"PBKDF2", hash:"SHA-256", salt, iterations:D.kdf.iter}, key, 256);
+  return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2,"0")).join("").slice(0,24);
+}
+async function login(no){
+  no = String(no||"").replace(/\D/g,"");
+  if (no.length < 8) return false;
+  let rec;
+  if (D.sk) rec = D.sk[await hashNo(no)];
+  else if (D.students) { const s = D.students[no], p = D.pdo[no]; rec = s ? [s[0], s[1], p||null] : p ? [p[0], null, p, 1] : null; }
+  if (!rec) return false;
+  me = {no, g:rec[0], a:rec[1], p:rec[2]||null, partial: !!rec[3]};
+  store.set("ogrNo", no);
+  return true;
+}
+renderSync();
+$("loginForm").addEventListener("submit", async ev => {
+  ev.preventDefault();
+  const v = $("noInput").value;
+  if (!v.replace(/\D/g,"")){ $("loginErr").textContent = "Öğrenci numaranı yaz."; return; }
+  $("loginErr").textContent = "Kontrol ediliyor…";
+  if (!(await login(v))){ $("loginErr").textContent = "Bu numara Dönem 1 Türkçe listelerinde bulunamadı. Rakamları kontrol et (ör. 0101260001)."; return; }
+  $("loginErr").textContent = ""; view = istNow().date; show();
+});
+$("foreignChk").checked = foreign;
+$("foreignChk").onchange = e => { foreign = e.target.checked; store.set("yabanci", foreign? "1":"0"); dayCache.clear(); renderNow(); renderMain(); };
+$("vDay").onclick = () => { mode = "day"; store.set("mode","day"); renderMain(); };
+$("vWeek").onclick = () => { mode = "week"; store.set("mode","week"); renderMain(); };
+$("datePick").addEventListener("change", e => { if (/^\d{4}-\d{2}-\d{2}$/.test(e.target.value)){ view = e.target.value; renderMain(); } });
+$("prev").onclick = () => { view = addDays(view, mode==="week" ? -7 : -1); renderMain(); };
+$("next").onclick = () => { view = addDays(view, mode==="week" ? 7 : 1); renderMain(); };
+$("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
+setInterval(() => { if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
+
+const saved = store.get("ogrNo");
+if (saved) await login(saved);
+show();
+
+// optional platform capability: file downloads (calendar export)
+
+})();
+</script>
+</body>
+</html>
