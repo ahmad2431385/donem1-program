@@ -4,7 +4,6 @@ on:
   schedule:
     # GitHub saatleri UTC'dir (İstanbul = UTC+3). Zamanlanmış işler birkaç dakika
     # gecikebildiği için hedef saatlerden biraz önce başlatılır.
-    - cron: "15 0 * * *"   # ~03:35 İstanbul
     - cron: "10 4 * * *"   # ~07:30 İstanbul
     - cron: "40 8 * * *"   # ~12:00 İstanbul
     - cron: "40 11 * * *"  # ~15:00 İstanbul
