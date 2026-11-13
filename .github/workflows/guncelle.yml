@@ -1,0 +1,52 @@
+name: Program verisini güncelle
+
+on:
+  schedule:
+    # GitHub saatleri UTC'dir (İstanbul = UTC+3). Zamanlanmış işler birkaç dakika
+    # gecikebildiği için hedef saatlerden biraz önce başlatılır.
+    - cron: "10 4 * * *"   # ~07:30 İstanbul
+    - cron: "40 8 * * *"   # ~12:00 İstanbul
+    - cron: "40 11 * * *"  # ~15:00 İstanbul
+  workflow_dispatch: {}    # Actions sekmesinden elle çalıştırma düğmesi
+
+permissions:
+  contents: write
+
+concurrency:
+  group: program-verisi
+  cancel-in-progress: false
+
+jobs:
+  guncelle:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Bağımlılıklar
+        run: pip install openpyxl==3.1.5
+
+      - name: Kaynakları Drive'dan indir
+        run: tools/fetch.sh data
+
+      - name: Derle ve kontrol et
+        run: tools/update.sh data data.json out/data.json
+
+      - name: Yayınla (Netlify bu push ile yayınlar)
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for i in 1 2 3; do
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            cp out/data.json data.json
+            git add data.json
+            git commit -q -m "Program verisi güncellendi (otomatik kontrol)" || { echo "Değişiklik yok"; exit 0; }
+            git push -q origin HEAD:main && exit 0
+            echo "push reddedildi, yeniden deneniyor ($i)"; sleep 5
+          done
+          exit 1
