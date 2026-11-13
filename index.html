@@ -369,11 +369,6 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
       </details>
     </section>
 
-    <section class="card examw" id="examBox" hidden aria-labelledby="examH">
-      <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
-      <div class="exams" id="examList"></div>
-    </section>
-
     <label class="small muted" style="display:flex;gap:8px;align-items:center;padding:0 4px"><input type="checkbox" id="foreignChk"> Yabancı uyruklu öğrenciler için olan online dersleri de göster</label>
   </main>
 
@@ -391,6 +386,11 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
     </div>
     </div>
   </details>
+
+  <section class="card examw" id="examBox" hidden aria-labelledby="examH">
+    <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
+    <div class="exams" id="examList"></div>
+  </section>
 
   <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
 </div>
@@ -866,7 +866,7 @@ function renderExams(){
 function show(){
   dayCache.clear(); _myCh = null;
   if (!me){
-    $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true;
+    $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true; $("examBox").hidden = true;
     setTimeout(()=> $("noInput").focus(), 50);
     return;
   }
