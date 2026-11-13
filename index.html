@@ -207,9 +207,9 @@ button.ev:hover .more,button.wi:hover .more{background:var(--c);color:var(--surf
 .btnrow a,.btnrow button{text-decoration:none;font-size:14px}
 
 /* tools */
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
 @media (max-width:560px){.tools{grid-template-columns:1fr}}
-.tools .card{display:flex;flex-direction:column;gap:8px}
+.tools .card:not(.fold){display:flex;flex-direction:column;gap:8px}
 #secBody{display:flex;flex-direction:column;gap:6px}
 .tools select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .steps{margin:0;padding-left:20px;font-size:13.5px;display:flex;flex-direction:column;gap:3px}
@@ -226,6 +226,37 @@ details.card[open] summary::after{content:"–"}
 .exams{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .exams div{display:flex;justify-content:space-between;gap:10px;font-size:14px}
 .exams .d{font-family:var(--mono);color:var(--exam);white-space:nowrap;font-size:13px}
+
+/* foldable sections: closed by default, summary looks like a tappable row */
+details.fold{padding:0;overflow:hidden}
+details.fold > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:13px 14px 13px 16px;-webkit-tap-highlight-color:transparent}
+details.fold > summary::-webkit-details-marker{display:none}
+details.fold > summary::after,details.fold[open] > summary::after{content:none !important}
+details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, transparent)}
+.fold .ft{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.fold .ft h2{font-size:16px;color:inherit}
+.fold .ft .hint{font-size:12.5px;color:var(--muted);font-weight:500;overflow-wrap:anywhere}
+.changes.fold .ft .hint{color:inherit;opacity:.75}
+.fold .badge{flex:none;font-size:12px;font-weight:700;border-radius:999px;padding:2px 9px;background:var(--surface);border:1px solid var(--chg-line);white-space:nowrap}
+.fold .chev{flex:none;width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--bg);transition:transform .2s ease}
+.fold[open] .chev{transform:rotate(180deg)}
+.fold .fbody{padding:0 16px 14px;display:flex;flex-direction:column;gap:8px}
+.changes.fold{display:block;padding:0}
+.changes.fold .chev{border-color:var(--chg-line);background:var(--surface)}
+@media (prefers-reduced-motion: reduce){.fold .chev{transition:none}}
+
+/* exam widget */
+.examw{border-color:color-mix(in srgb, var(--exam) 35%, var(--line));display:flex;flex-direction:column;gap:10px}
+.examw h2{font-size:15px;color:var(--exam);display:flex;align-items:center;gap:6px}
+.examw .next{display:flex;align-items:center;gap:14px;background:var(--exam-soft);border-radius:12px;padding:12px 14px}
+.examw .cd{flex:none;text-align:center;min-width:64px}
+.examw .cd b{display:block;font-family:var(--display);font-size:34px;line-height:1;color:var(--exam)}
+.examw .cd b.sm{font-size:22px}
+.examw .cd span{font-size:11.5px;font-weight:600;color:var(--exam);text-transform:uppercase;letter-spacing:.04em}
+.examw .nt{min-width:0;display:flex;flex-direction:column;gap:2px}
+.examw .nt b{overflow-wrap:anywhere}
+.examw .nt span{font-size:13px;color:var(--muted)}
+.examw .exams{margin-top:0}
 .links{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
 .links a{display:flex;flex-direction:column;gap:1px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--ink);background:var(--bg)}
 .links a span{font-size:12px;color:var(--muted)}
@@ -270,9 +301,18 @@ details.card[open] summary::after{content:"–"}
 
   <!-- main -->
   <main id="mainView" class="stack" hidden style="gap:14px">
-    <section class="changes" id="chgBox" hidden aria-live="polite"></section>
+    <details class="changes fold" id="chgBox" hidden>
+      <summary><span class="ft"><h2>Programında son değişiklikler</h2><span class="hint">Görmek için dokun</span></span><span class="badge" id="chgCount"></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody" id="chgBody" aria-live="polite"></div>
+    </details>
 
     <section class="now" id="nowBox"></section>
+
+    <section class="card examw" id="examBox" hidden aria-labelledby="examH">
+      <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
+      <div id="examNext"></div>
+      <div class="exams" id="examList"></div>
+    </section>
 
     <section class="card ctl">
       <div class="ctlrow">
@@ -312,23 +352,21 @@ details.card[open] summary::after{content:"–"}
     </details>
 
     <section class="tools">
-      <div class="card" id="secCard">
-        <h2>Seçmeli derslerim</h2>
-        <div id="secBody"><p class="muted small">Seçmeli ders amfi listesi henüz eklenmedi. Eklenince burada dersini seçip amfisini programında görebileceksin.</p></div>
-      </div>
-      <div class="card" id="homeCard">
-        <h2>Ana ekrana ekle</h2>
+      <details class="card fold" id="secCard">
+        <summary><span class="ft"><h2>Seçmeli derslerim</h2><span class="hint" id="secHint">Dersini seçmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody" id="secBody"><p class="muted small">Seçmeli ders amfi listesi henüz eklenmedi. Eklenince burada dersini seçip amfisini programında görebileceksin.</p></div>
+      </details>
+      <details class="card fold" id="homeCard">
+        <summary><span class="ft"><h2>Ana ekrana ekle</h2><span class="hint">Telefonda uygulama gibi açmak için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody">
         <p class="muted small">Sayfayı telefonunda uygulama gibi açmak için:</p>
         <ol class="steps" style="margin-top:6px">
           <li><b>iPhone:</b> Linki Safari'de aç, alttaki Paylaş düğmesine dokun, "Ana Ekrana Ekle"yi seç.</li>
           <li><b>Android:</b> Linki Chrome'da aç, sağ üstteki ⋮ menüsünden "Ana ekrana ekle"yi seç.</li>
         </ol>
         <p class="muted small">Numaran cihazda hatırlandığı için her açışta doğrudan kendi programın gelir.</p>
-      </div>
-      <section class="card" id="examBox" hidden>
-        <h2>Yaklaşan sınavlar</h2>
-        <div class="exams" id="examList"></div>
-      </section>
+        </div>
+      </details>
     </section>
 
     <label class="small muted" style="display:flex;gap:8px;align-items:center;padding:0 4px"><input type="checkbox" id="foreignChk"> Yabancı uyruklu öğrenciler için olan online dersleri de göster</label>
@@ -535,7 +573,8 @@ function renderChanges(){
   const label = {add:"Eklendi", del:"Kaldırıldı", mod:"Değişti"};
   const src = {ders:"Ders programı", uyg:"Uygulama tablosu", amfi:"Amfi programı", sec:"Seçmeli ders programı"};
   const top = list.slice(0,4);
-  box.innerHTML = `<h2>Programında son değişiklikler</h2>` + top.map(c => `
+  $("chgCount").textContent = list.length + " yeni";
+  $("chgBody").innerHTML = top.map(c => `
     <div class="chg"><span class="k">${fmtDate(c.d,false)} ${esc(c.s||"")}</span>
     <span><span class="pill">${label[c.type]}</span>${chgText(c)} <span class="small" style="opacity:.75">· ${src[c.src]||""}, ${fmtStamp(c.at)} fark edildi</span></span></div>`).join("")
     + (list.length > 4 ? `<span class="small">+${list.length-4} değişiklik daha; ilgili günlerde "Değişti" etiketiyle işaretli.</span>` : "");
@@ -769,6 +808,8 @@ function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false
 function renderSec(){
   const list = (D.secmeli||[]).filter(x => x.d1);
   if (!list.length) return;
+  const chosen = SLOTS.map(secFor).filter(Boolean);
+  $("secHint").textContent = chosen.length ? chosen.map(x => x.ad).join(", ") + " · değiştirmek için dokun" : "Henüz seçmedin · dersini seçmek için dokun";
   $("secBody").innerHTML = `<p class="muted small">1. sınıflar 2 seçmeli ders seçer. Kayıtlı olduğun dersleri saatine göre seç; çarşamba seçmeli saatlerinde programında dersin adı, amfisi ve iptal/yer değişikliği notları görünür.</p>`
     + SLOTS.map(slot => {
       const opts = list.filter(x => x.s === slot).sort((a,b) => a.ad.localeCompare(b.ad,"tr")), cur = secFor(slot);
@@ -797,8 +838,13 @@ function renderExams(){
   ex.sort((a,b)=> a.d.localeCompare(b.d));
   const top = ex.slice(0,4);
   $("examBox").hidden = !top.length;
-  $("examList").innerHTML = top.map(e => {
-    const days = Math.round((new Date(e.d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
+  if (!top.length) return;
+  const daysTo = d => Math.round((new Date(d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
+  const n = top[0], nd = daysTo(n.d);
+  $("examNext").innerHTML = `<div class="next"><div class="cd">${nd===0? `<b class="sm">Bugün</b>` : `<b>${nd}</b><span>gün kaldı</span>`}</div>
+    <div class="nt"><b>${esc(n.t)}</b><span>${fmtDate(n.d)}${n.s? " · "+esc(n.s):""}</span></div></div>`;
+  $("examList").innerHTML = top.slice(1).map(e => {
+    const days = daysTo(e.d);
     return `<div><span>${esc(e.t)}</span><span class="d">${fmtDate(e.d,false)} · ${days===0?"bugün":days+" gün"}</span></div>`;
   }).join("");
 }

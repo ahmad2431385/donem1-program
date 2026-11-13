@@ -443,7 +443,7 @@ def main():
     pub.update({"kdf": kdf, "sk": sk})
     data = pub
     data.update({"hash": content_hash, "built": built, "lastCheck": now.strftime("%Y-%m-%d %H:%M"),
-                 "schedule": ["08:00", "12:00", "18:00"], "changes": changes})
+                 "schedule": ["07:30", "12:00", "15:00"], "changes": changes})
     json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print(json.dumps({"changed": bool(prev) and prev.get("hash") != content_hash, "new_changes": len(new_ch),
                       "students": len(st), "events": len(ev), "uyg": len(uy), "amfi": len(am), "amfiWeek": week,
