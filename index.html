@@ -223,9 +223,13 @@ details.card[open] summary::after{content:"–"}
 .amfilist li{display:grid;grid-template-columns:96px 1fr;gap:8px}
 .amfilist .t{font-family:var(--mono);color:var(--muted);font-size:12.5px}
 .amfilist li.mine{background:var(--accent-soft);border-radius:8px;padding:4px 6px;margin:0 -6px}
-.exams{display:flex;flex-direction:column;gap:6px;margin-top:8px}
-.exams div{display:flex;justify-content:space-between;gap:10px;font-size:14px}
-.exams .d{font-family:var(--mono);color:var(--exam);white-space:nowrap;font-size:13px}
+.exams{display:flex;flex-direction:column;gap:0;margin-top:8px}
+.exams .ex{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;font-size:14px;padding:9px 0;border-top:1px solid var(--line)}
+.exams .ex:first-child{border-top:none;padding-top:2px}
+.exams .ei{min-width:0;display:flex;flex-direction:column;gap:1px}
+.exams .ei b{font-weight:600;overflow-wrap:anywhere}
+.exams .ei span{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.exams .d{font-family:var(--mono);color:var(--exam);white-space:nowrap;font-size:13px;font-weight:600}
 
 /* foldable sections: closed by default, summary looks like a tappable row */
 details.fold{padding:0;overflow:hidden}
@@ -308,11 +312,6 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
     <section class="now" id="nowBox"></section>
 
-    <section class="card examw" id="examBox" hidden aria-labelledby="examH">
-      <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
-      <div id="examNext"></div>
-      <div class="exams" id="examList"></div>
-    </section>
 
     <section class="card ctl">
       <div class="ctlrow">
@@ -367,6 +366,12 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
         <p class="muted small">Numaran cihazda hatırlandığı için her açışta doğrudan kendi programın gelir.</p>
         </div>
       </details>
+    </section>
+
+    <section class="card examw" id="examBox" hidden aria-labelledby="examH">
+      <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
+      <div id="examNext"></div>
+      <div class="exams" id="examList"></div>
     </section>
 
     <label class="small muted" style="display:flex;gap:8px;align-items:center;padding:0 4px"><input type="checkbox" id="foreignChk"> Yabancı uyruklu öğrenciler için olan online dersleri de göster</label>
@@ -566,8 +571,9 @@ function myChanges(){
 }
 function renderChanges(){
   const box = $("chgBox");
-  const now = istNow().date, recent = addDays(now, -3);
-  const list = myChanges().filter(c => c.at.slice(0,10) >= recent);
+  const n = istNow(), nowMin = Date.parse(n.date+"T00:00:00Z")/6e4 + n.min;
+  const atMin = at => Date.parse(at.slice(0,10)+"T"+(at.slice(11,16)||"00:00")+":00Z")/6e4;
+  const list = myChanges().filter(c => nowMin - atMin(c.at) <= 48*60);
   box.hidden = !list.length;
   if (!list.length) return;
   const label = {add:"Eklendi", del:"Kaldırıldı", mod:"Değişti"};
@@ -827,25 +833,29 @@ function renderSec(){
 
 /* ---------- exams ---------- */
 function renderExams(){
-  const now = istNow().date, seen = new Set(), ex = [];
+  const now = istNow().date, seen = new Map(), ex = [];
   for (const e of D.events){
     if (e.d < now) continue;
     const u = e.t.toLocaleUpperCase("tr");
     if (!/SINAV/.test(u) || /^SERBEST/.test(u)) continue;
-    const k = e.d+e.t.replace(/SINAV(LARI|I)?/,"SINAV"); if (seen.has(k)) continue; seen.add(k);
-    ex.push(e);
+    const k = e.d+e.t.replace(/SINAV(LARI|I)?/,"SINAV");
+    const same = seen.get(k);
+    if (same){ if (e.s && e.s < same.s) same.s = e.s; if (e.e && e.e > same.e) same.e = e.e; if (!same.y && e.y) same.y = e.y; continue; }
+    const c = {...e}; seen.set(k, c); ex.push(c);
   }
-  ex.sort((a,b)=> a.d.localeCompare(b.d));
+  ex.sort((a,b)=> a.d.localeCompare(b.d) || String(a.s).localeCompare(String(b.s)));
   const top = ex.slice(0,4);
+  const when = e => e.s ? `${esc(e.s)}${e.e? "–"+esc(e.e):""}` : "Saat henüz duyurulmadı";
+  const where = e => esc(roomFor(e.d, e.s, e.e) || niceYer(e.y) || "Yer henüz duyurulmadı");
   $("examBox").hidden = !top.length;
   if (!top.length) return;
   const daysTo = d => Math.round((new Date(d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
   const n = top[0], nd = daysTo(n.d);
   $("examNext").innerHTML = `<div class="next"><div class="cd">${nd===0? `<b class="sm">Bugün</b>` : `<b>${nd}</b><span>gün kaldı</span>`}</div>
-    <div class="nt"><b>${esc(n.t)}</b><span>${fmtDate(n.d)}${n.s? " · "+esc(n.s):""}</span></div></div>`;
+    <div class="nt"><b>${esc(n.t)}</b><span>${fmtDate(n.d)} · ${when(n)}</span><span>${where(n)}</span></div></div>`;
   $("examList").innerHTML = top.slice(1).map(e => {
     const days = daysTo(e.d);
-    return `<div><span>${esc(e.t)}</span><span class="d">${fmtDate(e.d,false)} · ${days===0?"bugün":days+" gün"}</span></div>`;
+    return `<div class="ex"><div class="ei"><b>${esc(e.t)}</b><span>${fmtDate(e.d)} · ${when(e)}</span><span>${where(e)}</span></div><span class="d">${days===0?"bugün":days+" gün"}</span></div>`;
   }).join("");
 }
 
