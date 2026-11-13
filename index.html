@@ -130,10 +130,15 @@ button{cursor:pointer}
 .week{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .wd{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 0 7px;display:flex;flex-direction:column;align-items:center;gap:1px;font-size:12px;color:var(--muted)}
 .wd b{font-family:var(--mono);font-size:16px;color:var(--ink);font-weight:500}
-.wd .dots{display:flex;gap:3px;height:6px}
-.wd .dots i{width:6px;height:6px;border-radius:50%;background:var(--uyg)}
-.wd .dots i.e{background:var(--exam)}
-.wd .dots i.c{background:var(--chg-ink)}
+.wd .dots{display:flex;gap:3px;height:7px;flex-wrap:wrap;justify-content:center;max-width:100%;padding:0 2px}
+.wd .dots i{width:7px;height:7px;border-radius:50%}
+.wd .dots i.amfi{background:var(--amfi)}
+.wd .dots i.uyg{background:var(--uyg)}
+.wd .dots i.pdo{background:var(--pdo)}
+.wd .dots i.sec{background:var(--sec)}
+.wd .dots i.exam{background:var(--exam)}
+.wd .dots i.c{background:transparent;box-shadow:inset 0 0 0 1.5px var(--chg-ink)}
+.legend i.ring{background:transparent !important;box-shadow:inset 0 0 0 1.5px var(--chg-ink);border-radius:50%}
 .wd[aria-current="date"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
 .wd.today b{color:var(--accent)}
 .legend{display:flex;gap:10px;flex-wrap:wrap;font-size:12px;color:var(--muted)}
@@ -338,6 +343,7 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
         <span><i style="background:var(--pdo)"></i>PDÖ</span>
         <span><i style="background:var(--sec)"></i>Seçmeli / online</span>
         <span><i style="background:var(--exam)"></i>Sınav</span>
+        <span><i class="ring"></i>Değişiklik var</span>
       </div>
       <p class="hint"><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span>Dersin açıklamasını, hocasını ve yerini görmek için kartın sağındaki <b>+</b> işaretine (ya da karta) dokun.</span></p>
     </section>
@@ -698,9 +704,12 @@ function renderStrip(now){
   let html = "";
   for (let i=0;i<5;i++){
     const d = addDays(mon,i), items = buildDay(d);
-    const nU = items.filter(x => x.kind==="uyg"||x.kind==="pdo").length, nE = items.some(x => x.kind==="exam"), nC = items.some(x => x.changed);
-    const dots = "<i></i>".repeat(Math.min(nU,3)) + (nE? '<i class="e"></i>':"") + (nC? '<i class="c"></i>':"");
-    html += `<button class="wd${d===now.date?" today":""}" ${d===view?'aria-current="date"':""} data-d="${d}" aria-label="${fmtDate(d)}${nU? ", "+nU+" uygulama":""}${nC?", değişiklik var":""}">${SHORT[(i+1)%7]}<b>${new Date(d+"T12:00:00Z").getUTCDate()}</b><span class="dots">${dots}</span></button>`;
+    const has = k => items.some(x => x.kind===k);
+    const kinds = [["amfi","amfi dersi"],["uyg","uygulama"],["pdo","PDÖ"],["sec","seçmeli/online"],["exam","sınav"]].filter(([k]) => has(k));
+    const nC = items.some(x => x.changed);
+    const dots = kinds.map(([k]) => `<i class="${k}"></i>`).join("") + (nC? '<i class="c"></i>':"");
+    const lbl = kinds.map(([,t]) => t).concat(nC? ["değişiklik var"]:[]).join(", ");
+    html += `<button class="wd${d===now.date?" today":""}" ${d===view?'aria-current="date"':""} data-d="${d}" aria-label="${fmtDate(d)}${lbl? ": "+lbl:""}">${SHORT[(i+1)%7]}<b>${new Date(d+"T12:00:00Z").getUTCDate()}</b><span class="dots">${dots}</span></button>`;
   }
   $("week").innerHTML = html;
   $("week").querySelectorAll(".wd").forEach(b => b.onclick = () => { view = b.dataset.d; renderMain(); });
