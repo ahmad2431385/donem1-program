@@ -347,10 +347,12 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
     <label class="small muted" style="display:flex;gap:8px;align-items:center;padding:0 4px"><input type="checkbox" id="foreignChk"> Yabancı uyruklu öğrenciler için olan online dersleri de göster</label>
 
-    <details class="card" id="amfiBox" hidden>
-      <summary><span>Bu gün haftalık amfi programında (Dönem 1)</span></summary>
-      <p class="muted small" style="margin-top:8px">Amfi programı haftalık yayınlanır ve en günceli odur. Ders programıyla çelişen bir şey görürsen amfi programını esas al.</p>
-      <ul class="amfilist" id="amfiList"></ul>
+    <details class="card fold" id="amfiBox" hidden>
+      <summary><span class="ft"><h2>Bu gün haftalık amfi programında</h2><span class="hint" id="amfiHint">Görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+      <p class="muted small">Amfi programı haftalık yayınlanır ve en günceli odur. Ders programıyla çelişen bir şey görürsen amfi programını esas al.</p>
+      <ul class="amfilist" id="amfiList" style="margin-top:0"></ul>
+      </div>
     </details>
 
     <section class="tools">
@@ -685,7 +687,9 @@ function renderDay(now){
     const rows = [];
     for (const a of am){ const p = rows[rows.length-1]; if (p && p.t===a.t && p.r===a.r){ p.e = a.e; continue; } rows.push({...a}); }
     $("amfiList").innerHTML = rows.map(a => `<li class="${a.g===me.g?"mine":""}"><span class="t">${esc(a.s)}–${esc(a.e)}</span><span><b>${esc(a.r)}</b><br>${esc(a.t)}</span></li>`).join("");
-    if (am.some(a => a.g===me.g)) box.open = true;
+    if (box.dataset.day !== view){ box.open = false; box.dataset.day = view; }
+    const mineN = rows.filter(a => a.g===me.g).length;
+    $("amfiHint").textContent = `Dönem 1 · ${rows.length} kayıt${mineN? ` · ${mineN} tanesi senin grubun`:""} · görmek için dokun`;
   }
   renderStrip(now);
 }
