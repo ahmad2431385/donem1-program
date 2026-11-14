@@ -861,7 +861,7 @@ function renderExams(){
   const where = e => {
     const r = roomFor(e.d, e.s, e.e); if (r) return esc(r);
     const y = niceYer(e.y);
-    return esc(!y || y === "Amfi programına bak" ? "Sınav yeri daha amfi programına işlenmemiş" : y);
+    return esc(!y || y === "Amfi programına bak" ? "Sınav yeri amfi programına daha işlenmemiş" : y);
   };
   $("examBox").hidden = !top.length;
   if (!top.length) return;
