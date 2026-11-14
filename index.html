@@ -369,56 +369,97 @@ body:not([data-route="sayac"]) #timerView{display:none}
 
 /* ---------- focus timer ---------- */
 #timerView{display:flex;flex-direction:column;gap:14px}
-.tm-card{--ph:var(--accent);--ph-soft:var(--accent-soft);--ph-ink:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 16px 18px;background:linear-gradient(180deg,var(--ph-soft),var(--surface) 65%)}
-.tm-card[data-phase="short"]{--ph:var(--amfi);--ph-soft:var(--amfi-soft)}
-.tm-card[data-phase="long"]{--ph:var(--sec);--ph-soft:var(--sec-soft)}
+.tm-card{--ph:var(--accent);--ph-soft:var(--accent-soft);--glow:#3fd8ae;--ph-ink:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 14px 18px;background:linear-gradient(180deg,var(--ph-soft),var(--surface) 70%);overflow:hidden}
+.tm-card[data-phase="short"]{--ph:var(--amfi);--ph-soft:var(--amfi-soft);--glow:#7fb0ff}
+.tm-card[data-phase="long"]{--ph:var(--sec);--ph-soft:var(--sec-soft);--glow:#c8a2ff}
+.tm-card[data-phase="count"]{--ph:var(--pdo);--ph-soft:var(--pdo-soft);--glow:#ffbe5c}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tm-card{--ph-ink:#0b1512}}
 :root[data-theme="dark"] .tm-card{--ph-ink:#0b1512}
-.tm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
-.tm-chip{font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px;background:var(--surface);color:var(--ph);border:1px solid color-mix(in srgb,var(--ph) 40%,transparent)}
+.tm-barrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;width:100%}
+.tm-seg{display:inline-flex;background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
+.tm-seg button{border:none;background:none;padding:7px 13px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.tm-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
+.tm-seg.sm button{padding:7px 10px}
+.tm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;min-height:28px}
+.tm-chip{font-weight:700;font-size:13px;padding:4px 13px;border-radius:999px;background:var(--surface);color:var(--ph);border:1px solid color-mix(in srgb,var(--ph) 40%,transparent)}
 .tm-dots{display:flex;gap:6px}
 .tm-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid transparent}
 .tm-dots i.on{background:var(--ph)}
 .tm-dots i.cur{background:transparent;border-color:var(--ph)}
-.tm-ring{position:relative;width:min(76vw,264px);aspect-ratio:1}
-.tm-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-.tm-ring .trk{fill:none;stroke:var(--line);stroke-width:12}
-.tm-ring .prg{fill:none;stroke:var(--ph);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
-@media (prefers-reduced-motion: reduce){.tm-ring .prg{transition:none}}
-.tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 20%;text-align:center}
-.tm-time{font-family:var(--display);font-size:clamp(42px,15vw,60px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+/* ring dial */
+.tm-ring{position:relative;width:min(80vw,300px);aspect-ratio:1}
+.tm-ring svg{width:100%;height:100%;display:block;overflow:visible}
+.tm-ring .tk{stroke:var(--muted);stroke-width:1.6;stroke-linecap:round;opacity:.28;transition:opacity .2s,stroke .2s}
+.tm-ring .tk.L{stroke-width:2.4;opacity:.45}
+.tm-ring .tk.on{stroke:var(--ph);opacity:.95}
+.tm-ring .trk{fill:none;stroke:color-mix(in srgb,var(--ink) 9%,transparent);stroke-width:10}
+.tm-ring .prg{fill:none;stroke:url(#tmGrad);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .3s linear;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ph) 55%,transparent))}
+.tm-ring .knob{fill:var(--surface);stroke:var(--ph);stroke-width:3.5;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
+.tm-ring .disc{filter:drop-shadow(0 6px 16px rgba(10,30,25,.16))}
+.tm-card[data-run="1"] .tm-ring .disc-glow{animation:tmbreathe 3.6s ease-in-out infinite}
+@keyframes tmbreathe{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion: reduce){.tm-ring .prg{transition:none}.tm-card[data-run="1"] .tm-ring .disc-glow{animation:none}}
+.tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 19%;text-align:center}
+.tm-label{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ph)}
+.tm-time{font-family:var(--display);font-size:clamp(42px,14vw,60px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.tm-time.long{font-size:clamp(32px,10.5vw,44px)}
 .tm-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* digital (7-segment) display */
+.tm-lcd{width:100%;max-width:360px;border-radius:22px;padding:14px 16px 16px;background:linear-gradient(180deg,#0e1a17,#070f0d);border:1px solid #1e2d29;box-shadow:inset 0 2px 16px rgba(0,0,0,.65),0 10px 26px rgba(10,30,25,.2);display:flex;flex-direction:column;gap:12px;color:var(--glow)}
+.tm-lcd .lt{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase}
+.lcd-row{--dh:clamp(60px,20vw,90px);display:flex;justify-content:center;align-items:center;gap:calc(var(--dh)*.07);transform:skewX(-5deg);padding:4px 0}
+.lcd-row .dg{height:var(--dh);width:calc(var(--dh)*.6);flex:none}
+.lcd-row .cl{height:var(--dh);width:calc(var(--dh)*.2);flex:none}
+.dg polygon{fill:rgba(255,255,255,.055)}
+.dg polygon.on{fill:var(--glow);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--glow) 75%,transparent))}
+.cl circle{fill:rgba(255,255,255,.055)}
+.cl circle.on{fill:var(--glow);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--glow) 75%,transparent))}
+.tm-card[data-run="1"] .cl circle.on{animation:tmblink 1s steps(1) infinite}
+@keyframes tmblink{0%{opacity:1}50%{opacity:.18}}
+@media (prefers-reduced-motion: reduce){.tm-card[data-run="1"] .cl circle.on{animation:none}}
+.led{display:grid;grid-template-columns:repeat(40,1fr);gap:2px;height:8px}
+.led i{border-radius:1.5px;background:rgba(255,255,255,.07)}
+.led i.on{background:var(--glow);box-shadow:0 0 5px color-mix(in srgb,var(--glow) 70%,transparent)}
+.lcd-show{font:500 12.5px var(--mono);opacity:.85;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-card[data-view="ring"] .tm-lcd{display:none}
+.tm-card[data-view="lcd"] .tm-ring{display:none}
+/* controls */
 .tm-ctl{display:flex;align-items:center;gap:16px}
-.tm-main{min-width:156px;height:56px;border-radius:999px;border:none;background:var(--ph);color:var(--ph-ink);font-weight:700;font-size:17px;padding:0 28px;box-shadow:0 6px 18px color-mix(in srgb,var(--ph) 32%,transparent)}
-.tm-main,.tm-round,.tm-st .stp button,.tm-presets button,.tm-chips button,.menubtn,.drawer .di,.tm-pill{-webkit-tap-highlight-color:transparent}
+.tm-main{min-width:164px;height:58px;border-radius:999px;border:none;background:linear-gradient(180deg,color-mix(in srgb,var(--ph) 88%,white),var(--ph));color:var(--ph-ink);font-weight:700;font-size:17px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 20px color-mix(in srgb,var(--ph) 34%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
 .tm-main:active{transform:scale(.98)}
-.tm-round{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.tm-round{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .tm-round:hover{border-color:var(--ph)}
+.tm-round[hidden]{display:grid !important;visibility:hidden}
+.tm-main,.tm-round,.tm-seg button,.tm-st .stp button,.tm-presets button,.tm-chips button,.menubtn,.drawer .di,.tm-pill,.tm-per button,.tm-nav button{-webkit-tap-highlight-color:transparent}
+@media (max-width:370px){.tm-ctl{gap:10px}.tm-main{min-width:0;height:54px;padding:0 20px;font-size:16px}.tm-round{width:44px;height:44px}.tm-card{padding:14px 10px 16px}}
 .tm-hint{font-size:13.5px;color:var(--muted);text-align:center;min-height:1.4em;margin:0}
-.tm-exam{margin:0;text-align:center}
+/* cards */
 .tm-h{font-size:15.5px;margin:0 0 10px}
 .tm-in{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font-size:15px}
 .tm-in:focus{border-color:var(--accent);outline:none}
-.tm-lbl{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 0}
+.tm-lbl{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:14px 0 0}
 .tm-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .tm-chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tm-chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
 .tm-presets{display:flex;gap:6px;flex-wrap:wrap}
-.tm-presets button{flex:1 1 90px;padding:9px 10px;border-radius:11px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13.5px;display:flex;flex-direction:column;gap:1px;align-items:center}
+.tm-presets button{flex:1 1 84px;padding:9px 10px;border-radius:11px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13.5px;display:flex;flex-direction:column;gap:1px;align-items:center}
 .tm-presets button small{font-weight:500;color:var(--muted);font-size:11.5px}
 .tm-presets button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
 .tm-presets button[aria-pressed="true"] small{color:inherit;opacity:.85}
+.tm-presets.chipy button{flex:0 1 auto;padding:7px 14px;border-radius:999px}
 .tm-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;margin-top:14px}
+.tm-steps.three{grid-template-columns:repeat(3,1fr)}
 .tm-st{display:flex;flex-direction:column;gap:4px;min-width:0}
 .tm-st.wide{grid-column:1 / -1}
 .tm-st label{font-size:12.5px;color:var(--muted);font-weight:600}
 .tm-st .stp{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
-.tm-st .stp button{width:42px;height:44px;border:none;background:none;font-size:21px;color:var(--ink);flex:none}
+.tm-st .stp button{width:38px;height:44px;border:none;background:none;font-size:21px;color:var(--ink);flex:none}
 .tm-st .stp button:active{background:var(--accent-soft)}
 .tm-st .stp input{flex:1;min-width:0;width:100%;text-align:center;border:none;background:none;font:600 17px var(--mono);color:var(--ink);padding:0;-moz-appearance:textfield}
 .tm-st .stp input::-webkit-outer-spin-button,.tm-st .stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
 .tm-st .stp input:focus{outline:none}
 .tm-st .stp:focus-within{border-color:var(--accent)}
+.tm-steps.three .stp button{width:30px}
 .tm-note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
 .tm-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:14.5px}
 .tm-sw:first-of-type{border-top:none}
@@ -428,22 +469,40 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-sw input:checked{background:var(--accent)}
 .tm-sw input:checked::after{transform:translateX(20px)}
 .tm-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+/* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
-.tm-big b{font-family:var(--display);font-size:19px;white-space:nowrap}
+.tm-big b{font-family:var(--display);font-size:18.5px;white-space:nowrap}
 .tm-big span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .tm-goal{height:9px;border-radius:5px;background:var(--line);overflow:hidden;margin:12px 0 4px}
 .tm-goal i{display:block;height:100%;border-radius:5px;background:var(--accent);transition:width .3s}
 .tm-goal-t{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
-.tm-plot{position:relative;display:flex;align-items:flex-end;gap:8px;height:104px;margin-top:14px;padding-top:6px}
-.tm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0;height:100%}
+.tm-hr{border:none;border-top:1px solid var(--line);margin:16px 0 12px}
+.tm-per{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.tm-nav{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px}
+.tm-nav button{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);flex:none}
+.tm-nav button:disabled{opacity:.35;cursor:default}
+.tm-nav .pl{flex:1;text-align:center;display:flex;flex-direction:column;gap:1px;min-width:0}
+.tm-nav .pl b{font-family:var(--display);font-size:16.5px}
+.tm-nav .pl small{font-size:12px;color:var(--muted);font-weight:600}
+.tm-pstat{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.tm-pstat div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:9px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tm-pstat b{font-size:15.5px;white-space:nowrap}
+.tm-pstat span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.tm-plot{position:relative;display:flex;align-items:flex-end;gap:8px;height:116px;margin-top:14px;padding-top:6px}
+.tm-plot.month{gap:3px}
+.tm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0;height:100%;background:none;border:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .tm-col .v{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;min-height:12px}
-.tm-col .b{width:100%;max-width:36px;border-radius:6px 6px 3px 3px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);min-height:3px}
+.tm-col .b{width:100%;max-width:38px;border-radius:6px 6px 3px 3px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);min-height:3px}
+.tm-plot.month .tm-col .b{max-width:none;border-radius:3px 3px 2px 2px}
 .tm-col.today .b{background:var(--accent);border-color:var(--accent)}
+.tm-col.sel .b{outline:2px solid var(--pdo);outline-offset:1px}
 .tm-goalline{position:absolute;left:0;right:0;border-top:1.5px dashed color-mix(in srgb,var(--pdo) 70%,transparent);pointer-events:none}
 .tm-days{display:flex;gap:8px;margin-top:4px}
-.tm-days span{flex:1;text-align:center;font-size:11.5px;color:var(--muted);font-weight:600}
+.tm-days.month{gap:3px}
+.tm-days span{flex:1;text-align:center;font-size:11px;color:var(--muted);font-weight:600;min-width:0;overflow:visible;white-space:nowrap}
 .tm-days span.today{color:var(--accent)}
+.tm-sel{min-height:1.5em;margin:8px 0 0;font-size:13px;color:var(--muted);text-align:center}
 .tm-subs{display:flex;flex-direction:column;gap:9px;margin-top:8px}
 .tm-sub{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:13.5px}
 .tm-sub .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
@@ -610,19 +669,48 @@ body:not([data-route="sayac"]) #timerView{display:none}
   <!-- ============ Odak sayacı ============ -->
   <section id="timerView" aria-label="Odak sayacı">
 
-    <section class="card tm-card" id="tmCard" data-phase="focus">
-      <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
-      <div class="tm-ring">
-        <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="trk" cx="110" cy="110" r="98"/><circle class="prg" id="tmPrg" cx="110" cy="110" r="98"/></svg>
-        <div class="tm-center"><div class="tm-time" id="tmTime" role="timer" aria-live="off">25:00</div><div class="tm-show" id="tmShow"></div></div>
+    <section class="card tm-card" id="tmCard" data-phase="focus" data-view="ring" data-run="0">
+      <div class="tm-barrow">
+        <div class="tm-seg" id="tmMode" role="group" aria-label="Sayaç türü">
+          <button type="button" data-m="pomo" aria-pressed="true">Pomodoro</button>
+          <button type="button" data-m="count" aria-pressed="false">Geri sayım</button>
+        </div>
+        <div class="tm-seg sm" id="tmView" role="group" aria-label="Görünüm">
+          <button type="button" data-v="ring" aria-pressed="true" aria-label="Halka görünümü" title="Halka"><svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 2.8a7.2 7.2 0 0 1 6.2 3.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg></button>
+          <button type="button" data-v="lcd" aria-pressed="false" aria-label="Dijital görünüm" title="Dijital"><svg width="19" height="17" viewBox="0 0 24 20" aria-hidden="true"><path d="M4 3h6v2H4zM4 9h6v2H4zM4 15h6v2H4zM3 4h2v6H3zM9 4h2v6H9zM3 10h2v6H3zM9 10h2v6H9z" fill="currentColor" opacity=".9"/><path d="M14 3h6v2h-6zM14 9h6v2h-6zM14 15h6v2h-6zM19 4h2v6h-2zM19 10h2v6h-2z" fill="currentColor" opacity=".9"/></svg></button>
+        </div>
       </div>
+      <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
+
+      <div class="tm-ring">
+        <svg viewBox="0 0 260 260" aria-hidden="true">
+          <defs>
+            <linearGradient id="tmGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--ph) 55%,white)"/><stop offset="1" style="stop-color:var(--ph)"/></linearGradient>
+            <radialGradient id="tmDisc" cx="50%" cy="38%" r="75%"><stop offset="0" style="stop-color:var(--surface)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--ph-soft) 70%,var(--surface))"/></radialGradient>
+          </defs>
+          <g id="tmTicks"></g>
+          <circle class="disc" cx="130" cy="130" r="86" fill="url(#tmDisc)"/>
+          <circle class="disc-glow" cx="130" cy="130" r="86" fill="none" style="stroke:color-mix(in srgb,var(--ph) 30%,transparent)" stroke-width="2"/>
+          <circle class="trk" cx="130" cy="130" r="100"/>
+          <circle class="prg" id="tmPrg" cx="130" cy="130" r="100" transform="rotate(-90 130 130)"/>
+          <circle class="knob" id="tmKnob" cx="130" cy="30" r="8.5"/>
+        </svg>
+        <div class="tm-center"><div class="tm-label" id="tmLabel">Odak</div><div class="tm-time" id="tmTime" role="timer" aria-live="off">25:00</div><div class="tm-show" id="tmShow"></div></div>
+      </div>
+
+      <div class="tm-lcd" id="tmLcd">
+        <div class="lt"><span id="tmLcdPh">Odak</span><span id="tmLcdSub">1/4</span></div>
+        <div class="lcd-row" id="tmDigits" role="timer" aria-live="off"></div>
+        <div class="led" id="tmLed" aria-hidden="true"></div>
+        <div class="lcd-show" id="tmLcdShow"></div>
+      </div>
+
       <div class="tm-ctl">
-        <button class="tm-round" id="tmReset" type="button" aria-label="Bu bölümü sıfırla" title="Sıfırla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11a7 7 0 1 0 2.2-5.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3.5 3.5v4.2h4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-        <button class="tm-main" id="tmMain" type="button">Başlat</button>
+        <button class="tm-round" id="tmReset" type="button" aria-label="Sıfırla" title="Sıfırla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11a7 7 0 1 0 2.2-5.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3.5 3.5v4.2h4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="tm-main" id="tmMain" type="button"><svg id="tmMainIco" width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M6 3.5v15l13-7.5z" fill="currentColor"/></svg><span id="tmMainTxt">Başlat</span></button>
         <button class="tm-round" id="tmSkip" type="button" aria-label="Sonraki bölüme geç" title="Atla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 4.5 14 11l-9 6.5v-13Z" fill="currentColor"/><path d="M17.5 4.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       </div>
       <p class="tm-hint" id="tmHint" role="status"></p>
-      <p class="tm-exam small muted" id="tmExam" hidden></p>
     </section>
 
     <section class="card">
@@ -632,11 +720,18 @@ body:not([data-route="sayac"]) #timerView{display:none}
       <div class="tm-chips" id="tmChips"></div>
     </section>
 
-    <section class="card">
-      <h2 class="tm-h">Süreler</h2>
+    <section class="card" id="tmPomoCard">
+      <h2 class="tm-h">Pomodoro süreleri</h2>
       <div class="tm-presets" id="tmPresets"></div>
       <div class="tm-steps" id="tmSteps"></div>
       <p class="tm-note">Sürelerin hepsini kendin de yazabilirsin. Çalışan bölüm değişmez, yeni süre bir sonraki bölümden başlar.</p>
+    </section>
+
+    <section class="card" id="tmCdCard" hidden>
+      <h2 class="tm-h">Geri sayım süresi</h2>
+      <div class="tm-presets chipy" id="tmCdPresets"></div>
+      <div class="tm-steps three" id="tmCdSteps"></div>
+      <p class="tm-note">İstediğin süreyi saat, dakika ve saniye olarak yaz. Süre dolunca alarm çalar; en az 1 dakikalık sayımlar çalışma geçmişine eklenir.</p>
     </section>
 
     <section class="card">
@@ -644,18 +739,29 @@ body:not([data-route="sayac"]) #timerView{display:none}
       <div class="tm-big" id="tmBig"></div>
       <div class="tm-goal" aria-hidden="true"><i id="tmGoalBar" style="width:0"></i></div>
       <div class="tm-goal-t"><span id="tmGoalTxt"></span><span id="tmGoalPct"></span></div>
-      <p class="tm-lbl">Son 7 gün</p>
+      <div class="tm-steps" style="margin-top:12px"><div class="tm-st wide" id="tmGoalSt"></div></div>
+
+      <hr class="tm-hr">
+      <div class="tm-per">
+        <h2 class="tm-h" style="margin:0">Çalışma grafiği</h2>
+        <div class="tm-seg" id="tmPer" role="group" aria-label="Dönem">
+          <button type="button" data-per="week" aria-pressed="true">Hafta</button>
+          <button type="button" data-per="month" aria-pressed="false">Ay</button>
+        </div>
+      </div>
+      <div class="tm-nav">
+        <button type="button" id="tmPrev" aria-label="Önceki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <div class="pl"><b id="tmPerLbl"></b><small id="tmPerSub"></small></div>
+        <button type="button" id="tmNext" aria-label="Sonraki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="tm-pstat" id="tmPstat"></div>
       <div class="tm-plot" id="tmPlot"></div>
       <div class="tm-days" id="tmDays"></div>
-      <p class="tm-lbl">Konulara göre (son 7 gün)</p>
+      <p class="tm-sel" id="tmSel"></p>
+      <p class="tm-lbl" style="margin-top:6px">Konulara göre</p>
       <div class="tm-subs" id="tmSubs"></div>
-      <div class="tm-acts">
-        <button class="secondary" id="tmExport" type="button">Geçmişi dışa aktar</button>
-        <button class="secondary" id="tmImportBtn" type="button">İçe aktar</button>
-        <button class="secondary" id="tmClear" type="button">Geçmişi sil</button>
-        <input type="file" id="tmImport" accept="application/json,.json" hidden>
-      </div>
-      <p class="tm-note">Çalışma geçmişin yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Tarayıcı verisini silersen geçmiş de silinir; yedeklemek için "dışa aktar"ı kullan.</p>
+      <div class="tm-acts"><button class="secondary" id="tmClear" type="button">Geçmişi sil</button></div>
+      <p class="tm-note">Çalışma geçmişin yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Tarayıcı verisini silersen geçmiş de silinir.</p>
     </section>
 
     <details class="card fold" id="tmSet">
@@ -664,10 +770,10 @@ body:not([data-route="sayac"]) #timerView{display:none}
         <label class="tm-sw"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
         <label class="tm-sw"><span>Titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
         <label class="tm-sw"><span>Ekranı açık tut<small>Sayaç çalışırken ekran kararmasın, alarm kaçmasın</small></span><input type="checkbox" id="tmWake"></label>
-        <label class="tm-sw"><span>Sonraki bölüme otomatik geç<small>Odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
+        <label class="tm-sw"><span>Sonraki bölüme otomatik geç<small>Pomodoro'da odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
         <div class="tm-acts">
           <button class="secondary" id="tmTest" type="button">Alarmı dene</button>
-          <button class="secondary" id="tmRound" type="button">Döngüyü baştan başlat</button>
+          <button class="secondary" id="tmRound" type="button">Pomodoro döngüsünü baştan başlat</button>
         </div>
         <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak.</p>
       </div>
@@ -1518,17 +1624,6 @@ window.PROG = {
       return [...new Set(buildDay(istNow().date).filter(x => ["amfi","uyg","pdo","sec"].includes(x.kind))
         .map(x => String(x.title || "").replace(/^\d+\s*-\s*/, "").trim()).filter(Boolean))];
     } catch(e){ return []; }
-  },
-  exam(){
-    try {
-      const n = istNow().date; let best = null;
-      for (const e of D.events){
-        if (e.d < n) continue;
-        const u = e.t.toLocaleUpperCase("tr"); if (!/SINAV/.test(u) || /^SERBEST/.test(u)) continue;
-        if (!best || e.d < best.d) best = e;
-      }
-      return best ? {t: best.t, days: Math.round((new Date(best.d+"T12:00:00Z") - new Date(n+"T12:00:00Z"))/864e5)} : null;
-    } catch(e){ return null; }
   }
 };
 window.dispatchEvent(new Event("prog-ready"));
@@ -1553,23 +1648,33 @@ const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
 const pad = n => String(n).padStart(2,"0");
 const TZ = "Europe/Istanbul";
 const dayStr = ms => new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(ms));
-const addDays = (iso,n) => { const d = new Date(iso+"T12:00:00Z"); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
+const parseD = iso => new Date(iso+"T12:00:00Z");
+const addDays = (iso,n) => { const d = parseD(iso); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
 const DAYS = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
-const fmtMin = m => m < 60 ? `${m} dk` : `${Math.floor(m/60)} sa${m%60 ? " "+(m%60)+" dk" : ""}`;
-const fmtClock = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return `${pad(Math.floor(s/60))}:${pad(s%60)}`; };
+const DAYS_LONG = ["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const MONTHS = ["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+const MON_S = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+const fmtMin = m => { m = Math.round(m); return m < 60 ? `${m} dk` : `${Math.floor(m/60)} sa${m%60 ? " "+(m%60)+" dk" : ""}`; };
+const fmtClock = ms => {
+  const s = Math.max(0, Math.ceil(ms/1000)), h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60;
+  return h ? `${h}:${pad(m)}:${pad(x)}` : `${pad(m)}:${pad(x)}`;
+};
+const fmtSec = s => { const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return [h && h+" sa", m && m+" dk", x && x+" sn"].filter(Boolean).join(" ") || "0 sn"; };
 function toast(msg){ const t = $("toast"); if (!t) return; t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 4200); }
 
 /* ---------- state ---------- */
-const KS = "odak_ayar", KT = "odak_durum", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, sound:true, vibrate:true, wake:true, auto:false, goal:240};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], goal:[15,720]};
+const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", sound:true, vibrate:true, wake:true, auto:false, goal:240};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
-let S, T, H;
-const dur = p => (p === "focus" ? S.focus : p === "short" ? S.short : S.long) * 60000;
-const phaseName = p => p === "focus" ? "Odak" : p === "short" ? "Kısa mola" : "Uzun mola";
-function freshT(){ return {phase:"focus", status:"idle", left:S.focus*60000, full:S.focus*60000, endAt:0, done:0, subject:"", sid:0}; }
-function validT(t){
-  return t && ["focus","short","long"].includes(t.phase) && ["idle","running","paused"].includes(t.status)
+const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
+let S, T, K, H;
+const dur = p => p === "focus" ? S.focus*60000 : p === "short" ? S.short*60000 : p === "long" ? S.long*60000 : S.cd*1000;
+const phaseName = p => p === "focus" ? "Odak" : p === "short" ? "Kısa mola" : p === "long" ? "Uzun mola" : "Geri sayım";
+const freshT = () => ({phase:"focus", status:"idle", left:S.focus*60000, full:S.focus*60000, endAt:0, done:0, subject:"", sid:0});
+const freshK = () => ({phase:"count", status:"idle", left:S.cd*1000, full:S.cd*1000, endAt:0, done:0, subject:"", sid:0});
+function validX(t, phases){
+  return t && phases.includes(t.phase) && ["idle","running","paused"].includes(t.status)
     && [t.left,t.full,t.endAt,t.done].every(Number.isFinite) && t.full > 0 && typeof t.subject === "string";
 }
 function loadAll(){
@@ -1577,39 +1682,45 @@ function loadAll(){
   S = {...DEF};
   for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
   for (const k in LIM) S[k] = clamp(Math.round(S[k]) || DEF[k], LIM[k][0], LIM[k][1]);
-  const t = jget(KT); T = validT(t) ? t : freshT();
+  if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
+  if (!["ring","lcd"].includes(S.view)) S.view = "ring";
+  const t = jget(KT); T = validX(t, ["focus","short","long"]) ? t : freshT();
+  const k = jget(KK); K = validX(k, ["count"]) ? k : freshK();
   const h = jget(KH);
   H = Array.isArray(h) ? h.filter(x => x && typeof x.d === "string" && Number.isFinite(x.m) && x.m > 0) : [];
 }
 const saveS = () => LS.set(KS, JSON.stringify(S));
-const saveT = () => LS.set(KT, JSON.stringify(T));
+const saveX = x => LS.set(x === K ? KK : KT, JSON.stringify(x));
 function saveH(){
-  const cut = addDays(dayStr(Date.now()), -180);
-  H = H.filter(h => h.d >= cut).slice(-4000);
+  const cut = addDays(dayStr(Date.now()), -800);
+  H = H.filter(h => h.d >= cut).slice(-12000);
   LS.set(KH, JSON.stringify(H));
 }
 loadAll();
 
-/* ---------- engine ---------- */
-const remaining = () => T.status === "running" ? Math.max(0, T.endAt - Date.now()) : T.left;
-const elapsedMs = () => T.status === "idle" ? 0 : Math.max(0, T.full - remaining());
+/* ---------- engine (the same code drives Pomodoro and the free countdown) ---------- */
+const cur = () => S.mode === "count" ? K : T;
+const runner = () => T.status === "running" ? T : K.status === "running" ? K : null;
+const liveOne = () => runner() || (T.status === "paused" ? T : K.status === "paused" ? K : null);
+const remaining = x => x.status === "running" ? Math.max(0, x.endAt - Date.now()) : x.left;
+const elapsedMs = x => x.status === "idle" ? 0 : Math.max(0, x.full - remaining(x));
 let flashMsg = "", flashUntil = 0;
 const flash = m => { flashMsg = m; flashUntil = Date.now() + 12000; };
 
 function startOrResume(silent){
-  if (!silent) unlockAudio();
-  if (T.status === "idle"){ T.full = dur(T.phase); T.left = T.full; if (T.phase === "focus") T.sid = Date.now(); }
-  T.endAt = Date.now() + T.left; T.status = "running";
-  if (!silent) flashMsg = ""; saveT(); acquireWake(); render();
+  const x = cur(); if (!silent) unlockAudio();
+  if (x.status === "idle"){ x.full = dur(x.phase); x.left = x.full; if (x.phase !== "short" && x.phase !== "long") x.sid = Date.now(); }
+  x.endAt = Date.now() + x.left; x.status = "running";
+  if (!silent) flashMsg = ""; saveX(x); acquireWake(); render();
 }
-function pause(){ T.left = remaining(); T.endAt = 0; T.status = "paused"; saveT(); releaseWake(); render(); }
-function logFocus(min, complete){
-  const m = complete ? Math.max(1, Math.round(min)) : Math.floor(min);
+function pause(){ const x = cur(); x.left = remaining(x); x.endAt = 0; x.status = "paused"; saveX(x); releaseWake(); render(); }
+function logStudy(x, ms, complete){
+  const m = complete ? Math.round(ms/60000) : Math.floor(ms/60000);
   if (m < 1) return false;
-  if (!T.sid) T.sid = Date.now();
-  if (H.some(h => h.id === T.sid)) return false;
+  if (!x.sid) x.sid = Date.now();
+  if (H.some(h => h.id === x.sid)) return false;
   const t = Date.now();
-  H.push({id:T.sid, t, d:dayStr(t), m, s:(T.subject||"").trim()});
+  H.push({id:x.sid, t, d:dayStr(t), m, s:(T.subject||"").trim()});
   saveH(); return true;
 }
 function advance(){
@@ -1617,29 +1728,36 @@ function advance(){
   else T.phase = "focus";
   T.full = dur(T.phase); T.left = T.full; T.status = "idle"; T.endAt = 0;
 }
-function finish(){
+function finish(x){
+  if (x === K){
+    logStudy(K, K.full, true);
+    flash("⏰ Süre doldu!"); alarm(true);
+    K.status = "idle"; K.left = K.full = dur("count"); K.endAt = 0; saveX(K); releaseWake(); render(); return;
+  }
   const wasFocus = T.phase === "focus";
-  if (wasFocus){ logFocus(T.full/60000, true); T.done++; }
+  if (wasFocus){ logStudy(T, T.full, true); T.done++; }
   const toLong = wasFocus && T.done >= S.cycles;
   flash(wasFocus ? `🎉 Odak bitti! ${toLong ? S.long+" dk uzun" : S.short+" dk"} mola hakkını kazandın.` : "☕ Mola bitti. Sıradaki odak hazır.");
   alarm(wasFocus);
   advance(); releaseWake();
-  if (S.auto) startOrResume(true); else { saveT(); render(); }
+  if (S.auto && S.mode === "pomo") startOrResume(true); else { saveX(T); render(); }
 }
 function skipPhase(){
-  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000 && logFocus(el/60000, false)) T.done++; }
+  if (S.mode !== "pomo") return;
+  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(T); if (el >= 60000 && logStudy(T, el, false)) T.done++; }
   const was = T.status === "running";
   advance(); releaseWake();
-  if (was && S.auto) startOrResume(true); else { saveT(); render(); }
+  if (was && S.auto) startOrResume(true); else { saveX(T); render(); }
 }
 function resetPhase(){
-  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000) logFocus(el/60000, false); }
-  T.status = "idle"; T.full = dur(T.phase); T.left = T.full; T.endAt = 0; flashMsg = "";
-  releaseWake(); saveT(); render();
+  const x = cur();
+  if (x.status !== "idle" && (x === K || x.phase === "focus")){ const el = elapsedMs(x); if (el >= 60000) logStudy(x, el, false); }
+  x.status = "idle"; x.full = dur(x.phase); x.left = x.full; x.endAt = 0; flashMsg = "";
+  releaseWake(); saveX(x); render();
 }
 function restartRound(){
-  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000) logFocus(el/60000, false); }
-  T = freshT(); releaseWake(); saveT(); render(); toast("Döngü baştan başladı");
+  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(T); if (el >= 60000) logStudy(T, el, false); }
+  T = freshT(); releaseWake(); saveX(T); render(); toast("Döngü baştan başladı");
 }
 
 /* ---------- alarm: sound, vibration, title ---------- */
@@ -1667,68 +1785,112 @@ function flashTitle(msg){
   const stop = () => { clearInterval(titleTimer); titleTimer = null; document.title = titleBase; window.removeEventListener("focus", stop); document.removeEventListener("pointerdown", stop, true); };
   window.addEventListener("focus", stop); document.addEventListener("pointerdown", stop, true);
 }
-function alarm(wasFocus){
-  if (S.sound) chime(wasFocus);
-  if (S.vibrate && navigator.vibrate) { try { navigator.vibrate(wasFocus ? [250,120,250,120,450] : [300,150,300]); } catch(e){} }
-  if (document.hidden) flashTitle(wasFocus ? "🎉 Odak bitti!" : "☕ Mola bitti!");
+function alarm(done){
+  if (S.sound) chime(done);
+  if (S.vibrate && navigator.vibrate) { try { navigator.vibrate(done ? [250,120,250,120,450] : [300,150,300]); } catch(e){} }
+  if (document.hidden) flashTitle(done ? "🎉 Süre bitti!" : "☕ Mola bitti!");
 }
 
 /* ---------- screen wake lock (only while running on the timer page) ---------- */
 let wl = null;
 async function acquireWake(){
-  if (!S.wake || !("wakeLock" in navigator) || T.status !== "running" || document.hidden || document.body.dataset.route !== "sayac" || wl) return;
+  if (!S.wake || !("wakeLock" in navigator) || !runner() || document.hidden || document.body.dataset.route !== "sayac" || wl) return;
   try { wl = await navigator.wakeLock.request("screen"); wl.addEventListener("release", () => { wl = null; }); } catch(e){ wl = null; }
 }
 function releaseWake(){ if (wl){ try { wl.release(); } catch(e){} wl = null; } }
 
-/* ---------- rendering ---------- */
-const C = 2 * Math.PI * 98;
-let lastPaint = "";
-function paint(){
-  const rem = remaining(), full = T.full || dur(T.phase);
-  const frac = T.status === "idle" ? 1 : clamp(rem / full, 0, 1);
-  const clock = fmtClock(rem);
-  const key = clock + "|" + T.status + "|" + T.phase;
-  if (key !== lastPaint){
-    lastPaint = key;
-    $("tmTime").textContent = clock;
-    $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
-  } else {
-    $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
+/* ---------- 7-segment digits ---------- */
+const SEGS = (() => {
+  const s = 5, hz = (x0,x1,y) => `${x0},${y} ${x0+s},${y-s} ${x1-s},${y-s} ${x1},${y} ${x1-s},${y+s} ${x0+s},${y+s}`;
+  const vt = (x,y0,y1) => `${x},${y0} ${x+s},${y0+s} ${x+s},${y1-s} ${x},${y1} ${x-s},${y1-s} ${x-s},${y0+s}`;
+  return {a:hz(9,51,7), g:hz(9,51,50), d:hz(9,51,93), f:vt(5,10,47), b:vt(55,10,47), e:vt(5,53,90), c:vt(55,53,90)};
+})();
+const DMAP = {"0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc","5":"afgcd","6":"afgedc","7":"abc","8":"abcdefg","9":"abcdfg"};
+const digitSVG = ch => ch === ":"
+  ? `<svg class="cl" viewBox="0 0 20 100" aria-hidden="true"><circle cx="10" cy="34" r="5.5" class="on"/><circle cx="10" cy="66" r="5.5" class="on"/></svg>`
+  : `<svg class="dg" viewBox="0 0 60 100" aria-hidden="true">${Object.keys(SEGS).map(k => `<polygon points="${SEGS[k]}"${(DMAP[ch]||"").includes(k) ? ' class="on"' : ""}/>`).join("")}</svg>`;
+
+/* ---------- ring ticks ---------- */
+let ticks = [];
+(function buildTicks(){
+  let h = "";
+  for (let i = 0; i < 60; i++){
+    const a = i * 6 * Math.PI / 180, L = i % 5 === 0, r1 = L ? 110 : 113, r2 = 122, sn = Math.sin(a), cs = Math.cos(a);
+    h += `<line class="tk${L ? " L" : ""}" x1="${(130 + r1*sn).toFixed(2)}" y1="${(130 - r1*cs).toFixed(2)}" x2="${(130 + r2*sn).toFixed(2)}" y2="${(130 - r2*cs).toFixed(2)}"/>`;
   }
-  if (!titleTimer) document.title = T.status === "running" ? `${clock} · ${phaseName(T.phase)}` : titleBase;
-  const live = T.status !== "idle";
-  const pill = $("tmPill");
-  pill.hidden = !(live && document.body.dataset.route !== "sayac");
-  pill.dataset.paused = T.status === "paused" ? "1" : "0";
-  $("tmPillTime").textContent = clock; $("tmPillPhase").textContent = phaseName(T.phase) + (T.status === "paused" ? " · durdu" : "");
-  $("menuBtn").dataset.live = T.status === "running" ? "1" : "0";
-  $("drawerTimerHint").textContent = live ? `${clock} · ${phaseName(T.phase)}${T.status === "paused" ? " (durdu)" : ""}` : "Pomodoro ile çalış";
+  $("tmTicks").innerHTML = h; ticks = [...$("tmTicks").children];
+  $("tmLed").innerHTML = "<i></i>".repeat(40);
+})();
+const C = 2 * Math.PI * 100;
+let lastTicks = -1, lastLed = -1, lastClock = "";
+
+/* ---------- rendering ---------- */
+function paint(){
+  const x = cur(), rem = remaining(x), full = x.full || dur(x.phase);
+  const frac = x.status === "idle" ? 1 : clamp(rem / full, 0, 1);
+  const clock = fmtClock(rem), running = x.status === "running";
+  if (clock !== lastClock){
+    lastClock = clock;
+    const tm = $("tmTime"); tm.textContent = clock; tm.classList.toggle("long", clock.length > 5);
+    $("tmDigits").innerHTML = [...clock].map(digitSVG).join("");
+    $("tmDigits").setAttribute("aria-label", clock);
+  }
+  $("tmPrg").style.strokeDasharray = String(C);
+  $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
+  $("tmPrg").style.opacity = frac <= 0 ? "0" : "1";
+  const th = frac * 2 * Math.PI;
+  $("tmKnob").setAttribute("cx", (130 + 100 * Math.sin(th)).toFixed(2));
+  $("tmKnob").setAttribute("cy", (130 - 100 * Math.cos(th)).toFixed(2));
+  $("tmKnob").style.opacity = frac <= 0 ? "0" : "1";
+  const nt = Math.ceil(frac * 60 - 1e-9);
+  if (nt !== lastTicks){ lastTicks = nt; ticks.forEach((t,i) => t.classList.toggle("on", i < nt)); }
+  const nl = Math.ceil(frac * 40 - 1e-9);
+  if (nl !== lastLed){ lastLed = nl; [...$("tmLed").children].forEach((e,i) => e.classList.toggle("on", i < nl)); }
+  $("tmCard").dataset.run = running ? "1" : "0";
+  if (!titleTimer) document.title = running ? `${clock} · ${phaseName(x.phase)}` : titleBase;
+  const L = liveOne(), pill = $("tmPill");
+  pill.hidden = !(L && document.body.dataset.route !== "sayac");
+  if (L){
+    const lc = fmtClock(remaining(L));
+    pill.dataset.paused = L.status === "paused" ? "1" : "0";
+    $("tmPillTime").textContent = lc; $("tmPillPhase").textContent = phaseName(L.phase) + (L.status === "paused" ? " · durdu" : "");
+    $("drawerTimerHint").textContent = `${lc} · ${phaseName(L.phase)}${L.status === "paused" ? " (durdu)" : ""}`;
+  } else $("drawerTimerHint").textContent = "Pomodoro ve geri sayım";
+  $("menuBtn").dataset.live = runner() ? "1" : "0";
 }
 function render(){
-  $("tmCard").dataset.phase = T.phase;
-  $("tmChip").textContent = T.phase === "focus" ? `Odak ${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : phaseName(T.phase);
+  const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
+  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view;
+  for (const b of $("tmMode").children) b.setAttribute("aria-pressed", String(b.dataset.m === S.mode));
+  for (const b of $("tmView").children) b.setAttribute("aria-pressed", String(b.dataset.v === S.view));
+  const chip = isCount ? "Geri sayım" : x.phase === "focus" ? `Odak ${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : phaseName(x.phase);
+  $("tmChip").textContent = chip;
+  $("tmDots").hidden = isCount;
   const filled = T.phase === "long" ? S.cycles : T.done;
   $("tmDots").innerHTML = Array.from({length:S.cycles}, (_,i) => `<i class="${i < filled ? "on" : (T.phase === "focus" && i === T.done ? "cur" : "")}"></i>`).join("");
-  const isBreak = T.phase !== "focus";
-  $("tmMain").textContent = T.status === "running" ? "Duraklat" : T.status === "paused" ? "Devam et" : (isBreak ? "Molayı başlat" : "Başlat");
-  $("tmMain").setAttribute("aria-label", T.status === "running" ? "Duraklat" : T.status === "paused" ? "Devam et" : "Başlat");
-  $("tmShow").textContent = isBreak ? "Dinlen" : (T.subject || "Konu seçmedin");
+  $("tmLabel").textContent = phaseName(x.phase);
+  $("tmLcdPh").textContent = phaseName(x.phase);
+  $("tmLcdSub").textContent = isCount ? fmtSec(S.cd) : (x.phase === "focus" ? `${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : fmtMin(dur(x.phase)/60000));
+  const label = x.status === "running" ? "Duraklat" : x.status === "paused" ? "Devam et" : (isBreak ? "Molayı başlat" : "Başlat");
+  $("tmMainTxt").textContent = label; $("tmMain").setAttribute("aria-label", label);
+  $("tmMainIco").innerHTML = x.status === "running" ? '<rect x="5" y="3.5" width="4.4" height="15" rx="1.4" fill="currentColor"/><rect x="12.6" y="3.5" width="4.4" height="15" rx="1.4" fill="currentColor"/>' : '<path d="M6 3.5v15l13-7.5z" fill="currentColor"/>';
+  $("tmSkip").hidden = isCount;
+  const sh = isBreak ? "Dinlen" : (T.subject || "Konu seçmedin");
+  $("tmShow").textContent = sh; $("tmLcdShow").textContent = sh;
+  $("tmPomoCard").hidden = isCount; $("tmCdCard").hidden = !isCount;
   hint();
   const sub = $("tmSubject"); if (document.activeElement !== sub) sub.value = T.subject;
+  lastClock = ""; lastTicks = -1; lastLed = -1;
   renderChips(); renderSteps(); renderStats(); paint();
 }
 function hint(){
-  let h;
+  const x = cur(); let h;
   if (flashMsg && Date.now() < flashUntil) h = flashMsg;
-  else if (T.status === "running") h = T.phase === "focus" ? "Şu an sadece bu işe odaklan. Telefonu bırak 📵" : "Kalk, su iç, gözlerini dinlendir 💧";
-  else if (T.status === "paused") h = "Duraklatıldı. Hazır olunca devam et.";
-  else h = T.phase === "focus" ? `${S.focus} dk odaklan, sonra ${T.done + 1 >= S.cycles ? S.long + " dk uzun" : S.short + " dk"} mola.` : `${Math.round(dur(T.phase)/60000)} dk mola hazır.`;
+  else if (S.mode === "count") h = x.status === "running" ? "Sayım sürüyor. Süre dolunca alarm çalar." : x.status === "paused" ? "Duraklatıldı. Hazır olunca devam et." : `${fmtSec(S.cd)} geri sayım hazır.`;
+  else if (x.status === "running") h = x.phase === "focus" ? "Şu an sadece bu işe odaklan. Telefonu bırak 📵" : "Kalk, su iç, gözlerini dinlendir 💧";
+  else if (x.status === "paused") h = "Duraklatıldı. Hazır olunca devam et.";
+  else h = x.phase === "focus" ? `${S.focus} dk odaklan, sonra ${T.done + 1 >= S.cycles ? S.long + " dk uzun" : S.short + " dk"} mola.` : `${Math.round(dur(x.phase)/60000)} dk mola hazır.`;
   $("tmHint").textContent = h;
-  let ex = null; try { ex = window.PROG && window.PROG.exam(); } catch(e){}
-  const el = $("tmExam");
-  if (ex){ el.hidden = false; el.textContent = `🎯 Sıradaki sınav: ${ex.t.toLocaleLowerCase("tr").replace(/(^|\s)\S/g, m => m.toLocaleUpperCase("tr"))} · ${ex.days === 0 ? "bugün" : ex.days + " gün kaldı"}`; }
-  else el.hidden = true;
 }
 function renderChips(){
   let les = []; try { les = (window.PROG && window.PROG.lessons()) || []; } catch(e){}
@@ -1738,42 +1900,95 @@ function renderChips(){
   $("tmChips").innerHTML = list.map(s => `<button type="button" data-s="${esc(s)}" aria-pressed="${s === T.subject}">${esc(s)}</button>`).join("");
   $("tmChipsLbl").hidden = !list.length;
 }
-const STEPS = [["focus","Odak (dk)",1],["short","Kısa mola (dk)",1],["long","Uzun mola (dk)",1],["cycles","Uzun mola için odak sayısı",1],["goal","Günlük hedef (dk)",15]];
+
+/* steppers */
+const STEPS = [["focus","Odak (dk)",1],["short","Kısa mola (dk)",1],["long","Uzun mola (dk)",1],["cycles","Uzun mola için odak sayısı",1]];
+const stepHTML = (k,label,lim) => `<div class="tm-st"><label for="tmIn_${k}">${label}</label><div class="stp"><button type="button" data-k="${k}" data-d="-1" aria-label="${label} azalt">−</button><input id="tmIn_${k}" data-k="${k}" type="number" inputmode="numeric" min="${lim[0]}" max="${lim[1]}" step="1"><button type="button" data-k="${k}" data-d="1" aria-label="${label} artır">+</button></div></div>`;
 function renderSteps(){
   $("tmPresets").innerHTML = PRESETS.map(p => `<button type="button" data-p="${p.n}" aria-pressed="${S.focus===p.f && S.short===p.s && S.long===p.l}">${p.f} · ${p.s}<small>${p.n}</small></button>`).join("");
   const box = $("tmSteps");
-  if (!box.firstChild){
-    box.innerHTML = STEPS.map(([k,label],i) => `<div class="tm-st${k==="goal" ? " wide" : ""}"><label for="tmIn_${k}">${label}</label><div class="stp"><button type="button" data-k="${k}" data-d="-1" aria-label="${label} azalt">−</button><input id="tmIn_${k}" data-k="${k}" type="number" inputmode="numeric" min="${LIM[k][0]}" max="${LIM[k][1]}" step="1"><button type="button" data-k="${k}" data-d="1" aria-label="${label} artır">+</button></div></div>`).join("");
-  }
+  if (!box.firstChild) box.innerHTML = STEPS.map(([k,label]) => stepHTML(k,label,LIM[k])).join("");
   for (const [k] of STEPS){ const inp = $("tmIn_"+k); if (document.activeElement !== inp) inp.value = S[k]; }
+  if (!$("tmGoalSt").firstChild) $("tmGoalSt").innerHTML = stepHTML("goal","Günlük hedef (dk)",LIM.goal);
+  const gi = $("tmIn_goal"); if (document.activeElement !== gi) gi.value = S.goal;
+  // countdown: hours / minutes / seconds
+  $("tmCdPresets").innerHTML = CD_PRESETS.map(s => `<button type="button" data-cd="${s}" aria-pressed="${S.cd === s}">${s < 3600 ? s/60 + " dk" : (s/3600).toString().replace(".",",") + " sa"}</button>`).join("");
+  const cb = $("tmCdSteps");
+  if (!cb.firstChild){
+    cb.innerHTML = [["h","Saat",0,10],["m","Dakika",0,59],["s","Saniye",0,59]].map(([k,l,a,b]) => `<div class="tm-st"><label for="tmCd_${k}">${l}</label><div class="stp"><button type="button" data-u="${k}" data-d="-1" aria-label="${l} azalt">−</button><input id="tmCd_${k}" data-u="${k}" type="number" inputmode="numeric" min="${a}" max="${b}" step="1"><button type="button" data-u="${k}" data-d="1" aria-label="${l} artır">+</button></div></div>`).join("");
+  }
+  const parts = {h:Math.floor(S.cd/3600), m:Math.floor(S.cd%3600/60), s:S.cd%60};
+  for (const k in parts){ const i = $("tmCd_"+k); if (document.activeElement !== i) i.value = parts[k]; }
   $("tmSound").checked = S.sound; $("tmVib").checked = S.vibrate; $("tmWake").checked = S.wake; $("tmAuto").checked = S.auto;
+}
+
+/* ---------- study stats: today + weekly / monthly charts ---------- */
+let PER = "week", OFF = 0, SEL = null;
+const monday = iso => addDays(iso, -((parseD(iso).getUTCDay() + 6) % 7));
+const monthFirst = (iso, off) => { const d = parseD(iso); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + off, 1, 12)).toISOString().slice(0,10); };
+const monthLen = first => { const d = parseD(first); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate(); };
+function period(today){
+  if (PER === "week"){
+    const start = addDays(monday(today), 7 * OFF), days = Array.from({length:7}, (_,i) => addDays(start, i));
+    const a = parseD(days[0]), b = parseD(days[6]), y = a.getUTCFullYear(), curY = parseD(today).getUTCFullYear();
+    const lbl = a.getUTCMonth() === b.getUTCMonth() ? `${a.getUTCDate()}–${b.getUTCDate()} ${MONTHS[a.getUTCMonth()]}` : `${a.getUTCDate()} ${MON_S[a.getUTCMonth()]} – ${b.getUTCDate()} ${MON_S[b.getUTCMonth()]}`;
+    return {start, days, label: lbl, sub: OFF === 0 ? "Bu hafta" : OFF === -1 ? "Geçen hafta" : (y !== curY ? String(y) : `${-OFF} hafta önce`), first: monday};
+  }
+  const start = monthFirst(today, OFF), n = monthLen(start), days = Array.from({length:n}, (_,i) => addDays(start, i)), d = parseD(start);
+  return {start, days, label: `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`, sub: OFF === 0 ? "Bu ay" : OFF === -1 ? "Geçen ay" : `${-OFF} ay önce`, first: x => monthFirst(x, 0)};
 }
 function renderStats(){
   const today = dayStr(Date.now());
   const by = {}; for (const h of H) by[h.d] = (by[h.d] || 0) + h.m;
   const tm = by[today] || 0, tn = H.filter(h => h.d === today).length;
   let streak = 0, d = tm >= 10 ? today : addDays(today, -1);
-  while ((by[d] || 0) >= 10 && streak < 1000){ streak++; d = addDays(d, -1); }
+  while ((by[d] || 0) >= 10 && streak < 2000){ streak++; d = addDays(d, -1); }
   $("tmBig").innerHTML = `<div><b>${esc(fmtMin(tm))}</b><span>Bugün</span></div><div><b>${tn}</b><span>Odak</span></div><div><b>${streak}${streak ? " 🔥" : ""}</b><span>Gün seri</span></div>`;
   const pct = clamp(Math.round(tm / S.goal * 100), 0, 100);
   $("tmGoalBar").style.width = pct + "%";
   $("tmGoalTxt").textContent = tm >= S.goal ? "🎯 Günlük hedefe ulaştın!" : `Hedef: ${fmtMin(S.goal)} · kalan ${fmtMin(S.goal - tm)}`;
   $("tmGoalPct").textContent = "%" + pct;
-  const days = Array.from({length:7}, (_,i) => addDays(today, i - 6));
-  const vals = days.map(x => by[x] || 0), max = Math.max(S.goal, ...vals, 30), H0 = 74;
-  $("tmPlot").innerHTML = days.map((x,i) => `<div class="tm-col${x === today ? " today" : ""}" title="${x}: ${fmtMin(vals[i])}"><span class="v">${vals[i] ? (vals[i] >= 60 ? (vals[i]/60).toFixed(1).replace(".0","").replace(".",",") + " sa" : vals[i] + " dk") : ""}</span><div class="b" style="height:${Math.max(3, Math.round(vals[i] / max * H0))}px"></div></div>`).join("")
-    + `<div class="tm-goalline" style="bottom:${Math.round(S.goal / max * H0) + 3}px" title="Günlük hedef"></div>`;
-  $("tmDays").innerHTML = days.map(x => `<span class="${x === today ? "today" : ""}">${DAYS[new Date(x+"T12:00:00Z").getUTCDay()]}</span>`).join("");
-  const sub = {}; const from = days[0];
-  for (const h of H) if (h.d >= from){ const k = h.s || "Konu belirtilmedi"; sub[k] = (sub[k] || 0) + h.m; }
-  const rows = Object.entries(sub).sort((a,b) => b[1] - a[1]).slice(0, 6), top = rows.length ? rows[0][1] : 1;
-  $("tmSubs").innerHTML = rows.length ? rows.map(([n,m]) => `<div class="tm-sub"><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="bar"><i style="width:${Math.round(m/top*100)}%"></i></span></div>`).join("") : `<p class="tm-empty">Henüz çalışma kaydın yok. İlk odağını bitirince burada görünür.</p>`;
+
+  // period
+  const P = period(today), earliest = H.length ? H.reduce((m,h) => h.d < m ? h.d : m, H[0].d) : null;
+  for (const b of $("tmPer").children) b.setAttribute("aria-pressed", String(b.dataset.per === PER));
+  $("tmPerLbl").textContent = P.label; $("tmPerSub").textContent = P.sub;
+  $("tmNext").disabled = OFF >= 0;
+  $("tmPrev").disabled = !earliest || P.start <= P.first(earliest);
+  const vals = P.days.map(x => by[x] || 0), total = vals.reduce((a,b) => a + b, 0);
+  const elapsed = Math.max(1, P.days.filter(x => x <= today).length), bi = vals.indexOf(Math.max(...vals));
+  const sessions = H.filter(h => h.d >= P.days[0] && h.d <= P.days[P.days.length - 1]).length;
+  const bd = parseD(P.days[bi]);
+  $("tmPstat").innerHTML = `<div><b>${esc(fmtMin(total))}</b><span>Toplam</span></div><div><b>${esc(fmtMin(total / elapsed))}</b><span>Günlük ort.</span></div><div><b>${vals[bi] ? bd.getUTCDate() + " " + MON_S[bd.getUTCMonth()] : "–"}</b><span>${vals[bi] ? "En iyi gün" : "En iyi gün"}</span></div>`;
+  const month = PER === "month", maxV = Math.max(...vals, 30), useGoal = S.goal <= maxV * 1.6, max = useGoal ? Math.max(maxV, S.goal) : maxV, H0 = 82;
+  const plot = $("tmPlot"); plot.className = "tm-plot" + (month ? " month" : "");
+  plot.innerHTML = P.days.map((x,i) => `<button type="button" class="tm-col${x === today ? " today" : ""}${x === SEL ? " sel" : ""}" data-d="${x}" aria-label="${parseD(x).getUTCDate()} ${MONTHS[parseD(x).getUTCMonth()]}: ${esc(fmtMin(vals[i]))}"><span class="v">${!month && vals[i] ? (vals[i] >= 60 ? (vals[i]/60).toFixed(1).replace(".0","").replace(".",",") + " sa" : vals[i] + " dk") : ""}</span><div class="b" style="height:${Math.max(3, Math.round(vals[i] / max * H0))}px;${vals[i] ? "" : "opacity:.45"}"></div></button>`).join("")
+    + (useGoal ? `<div class="tm-goalline" style="bottom:${Math.round(S.goal / max * H0) + 3}px" title="Günlük hedef"></div>` : "");
+  const dd = $("tmDays"); dd.className = "tm-days" + (month ? " month" : "");
+  dd.innerHTML = P.days.map((x,i) => {
+    const dt = parseD(x), show = month ? (dt.getUTCDate() === 1 || dt.getUTCDate() % 5 === 0) : true;
+    return `<span class="${x === today ? "today" : ""}">${show ? (month ? dt.getUTCDate() : DAYS[dt.getUTCDay()]) : ""}</span>`;
+  }).join("");
+  if (SEL && !P.days.includes(SEL)) SEL = null;
+  if (SEL){
+    const dt = parseD(SEL), n = H.filter(h => h.d === SEL).length;
+    $("tmSel").textContent = `${DAYS_LONG[dt.getUTCDay()]} ${dt.getUTCDate()} ${MONTHS[dt.getUTCMonth()]} · ${fmtMin(by[SEL] || 0)}${n ? " · " + n + " çalışma" : ""}`;
+  } else $("tmSel").textContent = "Ayrıntı için bir sütuna dokun";
+  const sub = {};
+  for (const h of H) if (h.d >= P.days[0] && h.d <= P.days[P.days.length - 1]){ const k = h.s || "Konu belirtilmedi"; sub[k] = (sub[k] || 0) + h.m; }
+  const rows = Object.entries(sub).sort((a,b) => b[1] - a[1]).slice(0, 8), top = rows.length ? rows[0][1] : 1;
+  $("tmSubs").innerHTML = rows.length ? rows.map(([n,m]) => `<div class="tm-sub"><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="bar"><i style="width:${Math.round(m/top*100)}%"></i></span></div>`).join("") : `<p class="tm-empty">Bu dönemde çalışma kaydın yok.</p>`;
 }
+$("tmPer").addEventListener("click", e => { const b = e.target.closest("button[data-per]"); if (!b || b.dataset.per === PER) return; PER = b.dataset.per; OFF = 0; SEL = null; renderStats(); });
+$("tmPrev").addEventListener("click", () => { OFF--; SEL = null; renderStats(); });
+$("tmNext").addEventListener("click", () => { if (OFF < 0){ OFF++; SEL = null; renderStats(); } });
+$("tmPlot").addEventListener("click", e => { const b = e.target.closest(".tm-col"); if (!b) return; SEL = SEL === b.dataset.d ? null : b.dataset.d; renderStats(); });
 
 /* ---------- settings ---------- */
 function onSettings(key){
   saveS();
-  if (["focus","short","long"].includes(key) && T.status === "idle"){ T.full = dur(T.phase); T.left = T.full; saveT(); }
+  if (["focus","short","long"].includes(key) && T.status === "idle"){ T.full = dur(T.phase); T.left = T.full; saveX(T); }
+  if (key === "cd" && K.status === "idle"){ K.full = dur("count"); K.left = K.full; saveX(K); }
   render();
 }
 function setVal(k, v){
@@ -1782,23 +1997,42 @@ function setVal(k, v){
   if (k === "cycles" && T.done > S.cycles) T.done = S.cycles;
   onSettings(k);
 }
-$("tmSteps").addEventListener("click", e => {
+function stepperClick(e){
   const b = e.target.closest("button[data-k]"); if (!b) return;
-  const k = b.dataset.k, step = (STEPS.find(s => s[0] === k) || [0,0,1])[2];
-  setVal(k, S[k] + (+b.dataset.d) * step);
-});
-$("tmSteps").addEventListener("change", e => {
+  const k = b.dataset.k; setVal(k, S[k] + (+b.dataset.d) * (k === "goal" ? 15 : 1));
+}
+function stepperChange(e){
   const i = e.target.closest("input[data-k]"); if (!i) return;
   const v = parseInt(i.value, 10);
   if (Number.isFinite(v)) setVal(i.dataset.k, v);
-  i.value = S[i.dataset.k];   // aralık dışı yazılan değer, ayarlanan (sınıra çekilmiş) değerle değişsin
-});
-$("tmSteps").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input[data-k]")) e.target.blur(); });
+  i.value = S[i.dataset.k];
+}
+for (const id of ["tmSteps","tmGoalSt"]){
+  $(id).addEventListener("click", stepperClick);
+  $(id).addEventListener("change", stepperChange);
+  $(id).addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) e.target.blur(); });
+}
 $("tmPresets").addEventListener("click", e => {
   const b = e.target.closest("button[data-p]"); if (!b) return;
   const p = PRESETS.find(x => x.n === b.dataset.p); if (!p) return;
   S.focus = p.f; S.short = p.s; S.long = p.l; onSettings("focus");
 });
+// countdown H/M/S
+function cdParts(){ return {h:Math.floor(S.cd/3600), m:Math.floor(S.cd%3600/60), s:S.cd%60}; }
+function setCd(parts){ setVal("cd", parts.h*3600 + parts.m*60 + parts.s); }
+$("tmCdSteps").addEventListener("click", e => {
+  const b = e.target.closest("button[data-u]"); if (!b) return;
+  const p = cdParts(), u = b.dataset.u, mx = u === "h" ? 10 : 59;
+  p[u] = clamp(p[u] + (+b.dataset.d), 0, mx); setCd(p);
+});
+$("tmCdSteps").addEventListener("change", e => {
+  const i = e.target.closest("input[data-u]"); if (!i) return;
+  const p = cdParts(), v = parseInt(i.value, 10), u = i.dataset.u;
+  if (Number.isFinite(v)) p[u] = clamp(v, 0, u === "h" ? 10 : 59);
+  setCd(p); const q = cdParts(); i.value = q[u];
+});
+$("tmCdSteps").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) e.target.blur(); });
+$("tmCdPresets").addEventListener("click", e => { const b = e.target.closest("button[data-cd]"); if (b) setVal("cd", +b.dataset.cd); });
 for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmWake","wake"],["tmAuto","auto"]]){
   $(id).addEventListener("change", e => {
     S[key] = e.target.checked; saveS();
@@ -1808,44 +2042,34 @@ for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmWake","wake"
   });
 }
 $("tmTest").addEventListener("click", () => { unlockAudio(); chime(true); if (navigator.vibrate) { try { navigator.vibrate([200,100,200]); } catch(e){} } });
-$("tmRound").addEventListener("click", () => { if (confirm("Döngü baştan başlasın mı? Çalışan bölüm sıfırlanır.")) restartRound(); });
+$("tmRound").addEventListener("click", () => { if (confirm("Pomodoro döngüsü baştan başlasın mı? Çalışan bölüm sıfırlanır.")) restartRound(); });
 
 /* ---------- controls ---------- */
-$("tmMain").addEventListener("click", () => { if (T.status === "running") pause(); else startOrResume(); });
+$("tmMain").addEventListener("click", () => { if (cur().status === "running") pause(); else startOrResume(); });
 $("tmReset").addEventListener("click", resetPhase);
 $("tmSkip").addEventListener("click", skipPhase);
-$("tmSubject").addEventListener("input", e => { T.subject = e.target.value.slice(0, 60); saveT(); $("tmShow").textContent = T.phase === "focus" ? (T.subject || "Konu seçmedin") : "Dinlen"; renderChips(); });
+$("tmMode").addEventListener("click", e => {
+  const b = e.target.closest("button[data-m]"); if (!b || b.dataset.m === S.mode) return;
+  if (cur().status !== "idle"){ toast("Önce çalışan sayacı bitir ya da sıfırla"); return; }
+  S.mode = b.dataset.m; flashMsg = ""; saveS(); render();
+});
+$("tmView").addEventListener("click", e => {
+  const b = e.target.closest("button[data-v]"); if (!b) return;
+  S.view = b.dataset.v; saveS(); render();
+});
+$("tmSubject").addEventListener("input", e => {
+  T.subject = e.target.value.slice(0, 60); saveX(T);
+  const sh = (cur().phase === "short" || cur().phase === "long") ? "Dinlen" : (T.subject || "Konu seçmedin");
+  $("tmShow").textContent = sh; $("tmLcdShow").textContent = sh; renderChips();
+});
 $("tmChips").addEventListener("click", e => {
   const b = e.target.closest("button[data-s]"); if (!b) return;
-  T.subject = T.subject === b.dataset.s ? "" : b.dataset.s; saveT(); $("tmSubject").value = T.subject; render();
+  T.subject = T.subject === b.dataset.s ? "" : b.dataset.s; saveX(T); $("tmSubject").value = T.subject; render();
 });
 $("tmSet").open = LS.get("open_tmSet") === "1";
 $("tmSet").addEventListener("toggle", e => LS.set("open_tmSet", e.target.open ? "1" : "0"));
-
-/* ---------- history: export / import / clear ---------- */
-$("tmExport").addEventListener("click", () => {
-  const blob = new Blob([JSON.stringify({v:1, ayar:S, gecmis:H})], {type:"application/json"});
-  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "odak-gecmisi.json";
-  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
-});
-$("tmImportBtn").addEventListener("click", () => $("tmImport").click());
-$("tmImport").addEventListener("change", async e => {
-  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
-  try {
-    const j = JSON.parse(await f.text()); const arr = Array.isArray(j) ? j : j.gecmis;
-    if (!Array.isArray(arr)) throw 0;
-    const ids = new Set(H.map(h => h.id)); let n = 0;
-    for (const x of arr){
-      if (x && typeof x.d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x.d) && Number.isFinite(x.m) && x.m > 0 && x.m <= 600 && !ids.has(x.id)){
-        H.push({id: Number.isFinite(x.id) ? x.id : Date.now() + n, t: Number.isFinite(x.t) ? x.t : 0, d: x.d, m: Math.round(x.m), s: String(x.s || "").slice(0, 60)}); ids.add(x.id); n++;
-      }
-    }
-    H.sort((a,b) => a.d === b.d ? a.t - b.t : a.d < b.d ? -1 : 1); saveH(); render();
-    toast(n ? `${n} kayıt içe aktarıldı` : "Yeni kayıt bulunamadı");
-  } catch(err){ toast("Dosya okunamadı. Bu uygulamadan dışa aktarılmış bir dosya seç."); }
-});
 $("tmClear").addEventListener("click", () => {
-  if (confirm("Tüm çalışma geçmişin silinsin mi? Bu geri alınamaz.")){ H = []; saveH(); render(); toast("Geçmiş silindi"); }
+  if (confirm("Tüm çalışma geçmişin silinsin mi? Bu geri alınamaz.")){ H = []; saveH(); SEL = null; OFF = 0; render(); toast("Geçmiş silindi"); }
 });
 
 /* ---------- menu + routes ---------- */
@@ -1853,7 +2077,7 @@ const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
 function openDrawer(){
   scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add("show"));
   drawer.classList.add("open"); drawer.removeAttribute("inert"); menuBtn.setAttribute("aria-expanded", "true");
-  setTimeout(() => { const cur = drawer.querySelector('[aria-current="page"]') || drawer.querySelector(".di"); if (cur) cur.focus(); }, 60);
+  setTimeout(() => { const c = drawer.querySelector('[aria-current="page"]') || drawer.querySelector(".di"); if (c) c.focus(); }, 60);
 }
 function closeDrawer(focusBack){
   drawer.classList.remove("open"); drawer.setAttribute("inert", ""); scrim.classList.remove("show"); menuBtn.setAttribute("aria-expanded", "false");
@@ -1872,6 +2096,7 @@ drawer.addEventListener("click", e => {
 });
 $("tmPill").addEventListener("click", () => { location.hash = "#sayac"; });
 
+const progTitle = document.title;
 let curRoute = null;
 function route(){
   const r = location.hash === "#sayac" ? "sayac" : "program";
@@ -1879,36 +2104,38 @@ function route(){
   document.body.dataset.route = r;
   $("brandSmall").textContent = r === "sayac" ? "Çalışma" : "İstanbul Tıp · Dönem 1 Türkçe";
   $("brandTitle").textContent = r === "sayac" ? "Odak sayacı" : "Programım";
-  titleBase = r === "sayac" ? "Odak sayacı" : (titleBase === "Odak sayacı" ? progTitle : titleBase);
+  titleBase = r === "sayac" ? "Odak sayacı" : progTitle;
   for (const a of drawer.querySelectorAll("[data-go]")){
     if ((a.dataset.go === "sayac") === (r === "sayac")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
   if (r === "sayac"){ render(); acquireWake(); } else { releaseWake(); paint(); }
   if (changed) window.scrollTo(0, 0);
 }
-const progTitle = document.title;
 window.addEventListener("hashchange", route);
-window.addEventListener("prog-ready", () => { renderChips(); hint(); });
+window.addEventListener("prog-ready", () => { renderChips(); });
 
 /* ---------- loop + sync ---------- */
 setInterval(() => {
-  if (T.status === "running" && T.endAt <= Date.now()) finish();
-  else if (T.status === "running" || document.body.dataset.route === "sayac") paint();
+  let fin = false;
+  for (const x of [T, K]) if (x.status === "running" && x.endAt <= Date.now()){ finish(x); fin = true; }
+  if (!fin && (runner() || document.body.dataset.route === "sayac")) paint();
   if (flashMsg && Date.now() >= flashUntil && document.body.dataset.route === "sayac"){ flashMsg = ""; hint(); }
 }, 250);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
-  if (T.status === "running" && T.endAt <= Date.now()) finish(); else paint();
+  let fin = false;
+  for (const x of [T, K]) if (x.status === "running" && x.endAt <= Date.now()){ finish(x); fin = true; }
+  if (!fin) paint();
   acquireWake();
 });
 window.addEventListener("storage", e => {
-  if ([KS, KT, KH].includes(e.key)){ loadAll(); if (document.body.dataset.route === "sayac") render(); else paint(); }
+  if ([KS, KT, KK, KH].includes(e.key)){ loadAll(); if (document.body.dataset.route === "sayac") render(); else paint(); }
 });
 
-// first paint (+ a session that ended while the page was closed)
-$("tmPrg").style.strokeDasharray = String(C);
+// first paint (+ a timer that ended while the page was closed)
 route();
-if (T.status === "running" && T.endAt <= Date.now()){ finish(); toast("Sayaç sen yokken tamamlandı"); }
+const ended = [T, K].filter(x => x.status === "running" && x.endAt <= Date.now());
+if (ended.length){ ended.forEach(finish); toast("Sayaç sen yokken tamamlandı"); }
 else paint();
 })();
 </script>
