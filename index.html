@@ -1136,17 +1136,18 @@ const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
   }
   // order
   const def = PANEL_IDS.slice();
-  const saved = (() => { try { return JSON.parse(store.get("panelOrder")||"null"); } catch(e){ return null; } })();
+  store.del("panelOrder"); // eski varsayılana göre kaydedilmiş sıralar geçersiz
+  const saved = (() => { try { return JSON.parse(store.get("panelOrder2")||"null"); } catch(e){ return null; } })();
   const apply = order => { for (const id of order) if ($(id)) box.appendChild($(id)); };
   apply(Array.isArray(saved) ? saved.filter(id => def.includes(id)).concat(def.filter(id => !saved.includes(id))) : def);
   const current = () => [...box.children].map(c => c.id);
   const syncReset = () => { $("panelsReset").hidden = current().join() === def.join(); };
   syncReset();
-  $("panelsReset").onclick = () => { apply(def); store.del("panelOrder"); syncReset(); toast("Bölümler varsayılan sıraya döndü"); };
+  $("panelsReset").onclick = () => { apply(def); store.del("panelOrder2"); syncReset(); toast("Bölümler varsayılan sıraya döndü"); };
 
   // long-press + drag
   const HOLD = 420, SLOP = 10;
-  let timer = null, el = null, startY = 0, startScroll = 0, origTop = 0, curT = 0, lastY = 0, active = false, raf = 0, suppressClick = false;
+  let before = "", timer = null, el = null, startY = 0, startScroll = 0, origTop = 0, curT = 0, lastY = 0, active = false, raf = 0, suppressClick = false;
   const docTop = e => e.getBoundingClientRect().top + scrollY;
   function begin(target, y){
     cancel();
@@ -1156,7 +1157,7 @@ const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
   function activate(){
     timer = null; if (!el) return;
     active = true; suppressClick = true;
-    curT = 0; origTop = docTop(el); startScroll = scrollY;
+    curT = 0; origTop = docTop(el); startScroll = scrollY; before = current().join();
     el.classList.add("dragging"); box.classList.add("sorting");
     try { navigator.vibrate && navigator.vibrate(25); } catch(e){}
     loop();
@@ -1174,18 +1175,27 @@ const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
     const want = origTop + (lastY - startY) + (scrollY - startScroll);
     const nat = () => docTop(el) - curT;
     curT = want - nat();
-    const prev = el.previousElementSibling, next = el.nextElementSibling;
-    if (prev && want < docTop(prev) + prev.offsetHeight/2){ box.insertBefore(el, prev); curT = want - nat(); }
-    else if (next && want + el.offsetHeight > docTop(next) + next.offsetHeight/2){ box.insertBefore(next, el); curT = want - nat(); }
+    for (let k=0;k<PANEL_IDS.length;k++){
+      // gizli bölümler (ör. veri gelmeyen hava durumu) atlanır
+      let prev = el.previousElementSibling, next = el.nextElementSibling;
+      while (prev && prev.hidden) prev = prev.previousElementSibling;
+      while (next && next.hidden) next = next.nextElementSibling;
+      if (prev && want < docTop(prev) + prev.offsetHeight/2){ box.insertBefore(el, prev); curT = want - nat(); }
+      else if (next && want + el.offsetHeight > docTop(next) + next.offsetHeight/2){ box.insertBefore(el, next.nextElementSibling); curT = want - nat(); }
+      else break;
+    }
     el.style.transform = `translateY(${curT}px)`;
   }
   function loop(){ if (!active) return; step(); raf = requestAnimationFrame(loop); }
   function end(){
     if (timer){ clearTimeout(timer); timer = null; }
     if (active){
-      cancelAnimationFrame(raf); active = false;
+      cancelAnimationFrame(raf); step(); active = false;
       el.style.transform = ""; el.classList.remove("dragging"); box.classList.remove("sorting");
-      store.set("panelOrder", JSON.stringify(current())); syncReset();
+      if (current().join() !== before){
+        if (current().join() === def.join()) store.del("panelOrder2"); else store.set("panelOrder2", JSON.stringify(current()));
+        syncReset();
+      }
       setTimeout(() => { suppressClick = false; }, 60);
     }
     el = null;
