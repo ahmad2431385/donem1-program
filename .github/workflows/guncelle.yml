@@ -36,7 +36,7 @@ jobs:
       - name: Derle ve kontrol et
         run: tools/update.sh data data.json out/data.json
 
-      - name: Yayınla (Netlify bu push ile yayınlar)
+      - name: Veriyi depoya kaydet
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -50,3 +50,13 @@ jobs:
             echo "push reddedildi, yeniden deneniyor ($i)"; sleep 5
           done
           exit 1
+
+  # Verinin kaydedildiği hâliyle siteyi GitHub Pages'te yayınla.
+  # (GITHUB_TOKEN ile yapılan push başka iş akışlarını tetiklemediği için burada açıkça çağrılır.)
+  yayinla:
+    needs: guncelle
+    uses: ./.github/workflows/pages.yml
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
