@@ -389,6 +389,11 @@ body:not([data-route="grafik"]) #statsView{display:none}
 .tm-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid transparent}
 .tm-dots i.on{background:var(--ph)}
 .tm-dots i.cur{background:transparent;border-color:var(--ph)}
+/* photo background (both analog and digital clocks) */
+.tm-card[data-bg]{--bgdim:.42;position:relative;isolation:isolate;color:#fff;background-color:#0f1815;background-image:var(--bg-img);background-size:cover;background-position:var(--bgpos,50% 50%);--ink:#fff;--muted:rgba(255,255,255,.8);--surface:rgba(9,17,15,.5);--line:rgba(255,255,255,.24);--ph:var(--glow);--ph-ink:#0b1512}
+.tm-card[data-bg]::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;background:linear-gradient(180deg,rgba(4,10,8,calc(var(--bgdim)*.75)),rgba(4,10,8,var(--bgdim)) 55%,rgba(4,10,8,calc(var(--bgdim)*1.3)))}
+.tm-card[data-bg] .tm-time,.tm-card[data-bg] .dg-row,.tm-card[data-bg] .tm-label,.tm-card[data-bg] .tm-show,.tm-card[data-bg] .dg-show,.tm-card[data-bg] .tm-hint{text-shadow:0 1px 12px rgba(0,0,0,.5)}
+.tm-card[data-bg] .tm-chip{background:rgba(9,17,15,.55)}
 .tm-card[data-view="ring"] .tm-dig{display:none}
 .tm-card[data-view="lcd"] .tm-ring{display:none}
 
@@ -614,6 +619,18 @@ body:not([data-route="grafik"]) #statsView{display:none}
 .tm-lg .m{font:600 12.5px var(--mono);color:var(--muted);white-space:nowrap}
 .tm-lg .pc{font:700 13px var(--mono);min-width:46px;text-align:right}
 .tm-lg[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 15%,transparent)}
+.tm-bgs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:8px}
+.tm-bgt{border-radius:12px;border:1.5px solid var(--line);background:var(--bg);padding:4px 4px 5px;display:flex;flex-direction:column;gap:3px;min-width:0;-webkit-tap-highlight-color:transparent}
+.tm-bgt .th{display:grid;place-items:center;width:100%;aspect-ratio:4/5;border-radius:8px;overflow:hidden;background:var(--line);font-size:12px;font-weight:600;color:var(--muted)}
+.tm-bgt .th img{width:100%;height:100%;object-fit:cover;display:block}
+.tm-bgt small{font-size:10px;line-height:1.15;color:var(--muted);font-weight:600;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-bgt[aria-pressed="true"]{border-color:var(--ph);box-shadow:0 0 0 2px color-mix(in srgb,var(--ph) 28%,transparent)}
+.tm-bgt[aria-pressed="true"] small{color:var(--ph)}
+.tm-credit{font-size:12.5px;color:var(--muted);margin:10px 0 0;min-height:1.3em}
+.tm-credit a,.tm-srcs a{color:var(--accent)}
+.tm-srcs{margin-top:10px;font-size:12.5px;color:var(--muted)}
+.tm-srcs summary{cursor:pointer;font-weight:600;padding:4px 0}
+.tm-srcs ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
 .tm-pill{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:9px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-weight:600;font-size:14px;color:var(--ink)}
 .tm-pill b{font-family:var(--mono);font-size:15px}
 .tm-pill .pd{width:9px;height:9px;border-radius:50%;background:var(--accent)}
@@ -836,9 +853,16 @@ body:not([data-route="grafik"]) #statsView{display:none}
         <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
         <p class="tm-lbl">Dijital saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
+        <div id="tmBgSec" hidden>
+          <p class="tm-lbl">Arka plan fotoğrafı · <span id="tmBgCount"></span> manzara</p>
+          <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
+          <p class="tm-credit" id="tmBgCredit"></p>
+          <div class="tm-range"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
+          <details class="tm-srcs"><summary>Fotoğraf kaynakları ve lisanslar</summary><ul id="tmBgSrc"></ul></details>
+        </div>
         <p class="tm-lbl">Renk</p>
         <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
-        <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu.</p>
+        <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu. Fotoğraf arka planda renkler okunaklı olsun diye otomatik açılır.</p>
       </div>
     </details>
 
@@ -1822,6 +1846,8 @@ const VIBS = [
   {id:"kisa",n:"Kısa",p:[250]},{id:"cift",n:"Çift",p:[200,100,200]},{id:"uclu",n:"Üçlü",p:[150,90,150,90,150]},
   {id:"uzun",n:"Uzun",p:[900]},{id:"kalp",n:"Kalp atışı",p:[90,70,180,420,90,70,180]},{id:"sos",n:"SOS",p:[100,80,100,80,100,200,300,80,300,80,300,200,100,80,100,80,100]}
 ];
+/* arka plan fotoğrafları: id, ad, konum, yazar, lisans, kaynak sayfası (Wikimedia Commons) */
+const BGS = /*BGDATA*/[]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Kalın","Terminal","Yuvarlak","Çubuk"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
@@ -1831,8 +1857,8 @@ const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
 const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, color:"auto",
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
-  amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer"};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], alarmVol:[0.1,1], ambVol:[0,1]};
+  amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -1848,11 +1874,12 @@ function loadAll(){
   const s = jget(KS) || {};
   S = {...DEF};
   for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
-  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
   if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
   if (!AMBS.some(a => a.id === S.amb)) S.amb = DEF.amb;
+  if (S.bg && !BGS.some(b => b.id === S.bg)) S.bg = "";
   if (!ALARM_LIST.some(a => a.id === S.alarm)) S.alarm = DEF.alarm;
   if (!VIBS.some(a => a.id === S.vib)) S.vib = DEF.vib;
   if (![1,3,5].includes(S.repeat)) S.repeat = 1;
@@ -2232,12 +2259,12 @@ function digitsHTML(clock, sk){
 /* ============ rendering ============ */
 const lum = hex => { const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255)/255, g = (n >> 8 & 255)/255, b = (n & 255)/255; return .2126*r + .7152*g + .0722*b; };
 function applyColor(el){
-  const c = S.color;
+  const c = S.color, photo = !!S.bg && el.id === "tmCard";
   if (c === "auto"){ for (const k of ["--ph","--ph-soft","--glow","--ph-ink"]) el.style.removeProperty(k); return; }
-  el.style.setProperty("--ph", c);
+  el.style.setProperty("--ph", photo ? `color-mix(in srgb, ${c} 62%, white)` : c);
   el.style.setProperty("--ph-soft", `color-mix(in srgb, ${c} 14%, var(--surface))`);
   el.style.setProperty("--glow", `color-mix(in srgb, ${c} 62%, white)`);
-  el.style.setProperty("--ph-ink", lum(c) > .6 ? "#0b1512" : "#fff");
+  el.style.setProperty("--ph-ink", photo ? "#0b1512" : (lum(c) > .6 ? "#0b1512" : "#fff"));
 }
 let builtR = -1, lastClock = "", lastBarKey = "";
 function mainDial(){
@@ -2270,6 +2297,9 @@ function paint(){
 function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
   const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin;
+  const bgItem = S.bg ? BGS.find(b => b.id === S.bg) : null;
+  if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(S.bgDim)); }
+  else { delete card.dataset.bg; for (const k of ["--bg-img","--bgpos","--bgdim"]) card.style.removeProperty(k); }
   applyColor(card); applyColor($("tmLook"));
   mainDial();
   for (const b of $("tmMode").children) b.setAttribute("aria-pressed", String(b.dataset.m === S.mode));
@@ -2328,9 +2358,28 @@ function renderLook(){
   const isCust = S.color !== "auto" && !COLORS.some(c => c[0].toLowerCase() === S.color.toLowerCase());
   $("tmSwatches").querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : b.dataset.c.toLowerCase() === S.color.toLowerCase())));
   const cl = $("tmSwatches").querySelector(".cust"); if (cl){ cl.setAttribute("aria-pressed", String(isCust)); if (isCust) $("tmColorIn").value = S.color; }
+  renderBg();
   const cn = S.color === "auto" ? "Otomatik renk" : (COLORS.find(c => c[0].toLowerCase() === S.color.toLowerCase()) || [0,"Özel renk"])[1];
-  $("tmLookHint").textContent = `${S.view === "ring" ? "Analog · " + RSKIN[S.rskin] : "Dijital · " + DSKIN[S.dskin]} · ${cn}`;
+  const bn = S.bg ? " · " + (BGS.find(b => b.id === S.bg) || {n:""}).n : "";
+  $("tmLookHint").textContent = `${S.view === "ring" ? "Analog · " + RSKIN[S.rskin] : "Dijital · " + DSKIN[S.dskin]} · ${cn}${bn}`;
 }
+let bgBuilt = false;
+function renderBg(){
+  const sec = $("tmBgSec"); sec.hidden = !BGS.length; if (!BGS.length) return;
+  if (!bgBuilt){
+    bgBuilt = true;
+    $("tmBgCount").textContent = BGS.length;
+    $("tmBgGrid").innerHTML = `<button type="button" class="tm-bgt" data-bg="" aria-pressed="false" aria-label="Fotoğraf yok"><span class="th">Yok</span><small>Düz renk</small></button>`
+      + BGS.map(b => `<button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="false" aria-label="${esc(b.n)}"><span class="th"><img loading="lazy" decoding="async" alt="" src="img/bg/${b.id}t.jpg"></span><small>${esc(b.n)}</small></button>`).join("");
+    $("tmBgSrc").innerHTML = BGS.map(b => `<li><b>${esc(b.n)}</b> · ${esc(b.by)} · <a href="${esc(b.lu)}" target="_blank" rel="noopener">${esc(b.lic)}</a> · <a href="${esc(b.src)}" target="_blank" rel="noopener">Wikimedia Commons</a></li>`).join("");
+  }
+  $("tmBgGrid").querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.bg === S.bg)));
+  const it = S.bg ? BGS.find(b => b.id === S.bg) : null;
+  $("tmBgCredit").innerHTML = it ? `📷 ${esc(it.n)} · Foto: ${esc(it.by)} · <a href="${esc(it.lu)}" target="_blank" rel="noopener">${esc(it.lic)}</a> · <a href="${esc(it.src)}" target="_blank" rel="noopener">Wikimedia Commons</a>` : "Bir fotoğraf seçersen sayacın arkasına gelir.";
+  const dv = Math.round(S.bgDim*100); $("tmBgDim").value = dv; $("tmBgDimO").textContent = "%" + dv;
+}
+$("tmBgGrid").addEventListener("click", e => { const b = e.target.closest("[data-bg]"); if (!b) return; S.bg = b.dataset.bg; saveS(); render(); });
+$("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(S.bgDim)); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });

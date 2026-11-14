@@ -30,6 +30,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html data.json desc.json manifest.json icon-180.png icon-512.png .nojekyll _site/
+          [ -d img ] && cp -r img _site/ || true
 
       - uses: actions/configure-pages@v5
 
