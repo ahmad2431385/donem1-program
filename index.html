@@ -364,8 +364,10 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 @media (prefers-reduced-motion: reduce){.drawer,.drawer-scrim{transition:none}}
 
 /* ---------- route switching ---------- */
-body[data-route="sayac"] #progView, body[data-route="sayac"] #who{display:none !important}
+body[data-route="sayac"] #progView, body[data-route="grafik"] #progView, body[data-route="sayac"] #who, body[data-route="grafik"] #who{display:none !important}
 body:not([data-route="sayac"]) #timerView{display:none}
+body:not([data-route="grafik"]) #statsView{display:none}
+#statsView{display:flex;flex-direction:column;gap:14px}
 
 /* ---------- focus timer ---------- */
 #timerView{display:flex;flex-direction:column;gap:14px}
@@ -591,6 +593,27 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-sub .bar{grid-column:1 / -1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
 .tm-sub .bar i{display:block;height:100%;border-radius:3px;background:var(--pdo)}
 .tm-empty{color:var(--muted);font-size:13.5px;margin:6px 0 0}
+.drawer .di.sub{margin-left:20px;width:calc(100% - 20px);padding:9px 12px;border-left:2px solid var(--line);border-radius:0 13px 13px 0}
+.drawer .di.sub .ic{font-size:19px;width:30px}
+.drawer .di.sub b{font-size:14.5px}
+.tm-statlink{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);color:var(--ink);text-decoration:none;font-size:14px;-webkit-tap-highlight-color:transparent}
+.tm-statlink:hover{border-color:var(--accent)}
+.tm-statlink .go{color:var(--accent);font-weight:600;white-space:nowrap}
+.tm-donutbox{display:flex;flex-direction:column;align-items:center;gap:12px;margin-top:6px}
+.tm-donut{width:min(72vw,250px);aspect-ratio:1;position:relative}
+.tm-donut svg{width:100%;height:100%;display:block;overflow:visible}
+.tm-donut .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 25%;gap:2px;pointer-events:none}
+.tm-donut .ctr b{font-family:var(--display);font-size:clamp(19px,6.4vw,25px);line-height:1.1;max-width:100%}
+.tm-donut .ctr span{font-size:12px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-donut .ctr em{font-style:normal;font:700 13px var(--mono);color:var(--ink)}
+.tm-donut circle.sl{fill:none;cursor:pointer;transition:stroke-width .15s,opacity .15s}
+.tm-legend{width:100%;display:flex;flex-direction:column;gap:2px}
+.tm-lg{display:grid;grid-template-columns:auto 1fr auto auto;align-items:center;gap:10px;padding:10px 8px;border-radius:10px;background:none;border:none;text-align:left;width:100%;color:var(--ink);-webkit-tap-highlight-color:transparent}
+.tm-lg i{width:13px;height:13px;border-radius:4px;background:var(--c)}
+.tm-lg .n{font-weight:600;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-lg .m{font:600 12.5px var(--mono);color:var(--muted);white-space:nowrap}
+.tm-lg .pc{font:700 13px var(--mono);min-width:46px;text-align:right}
+.tm-lg[aria-pressed="true"]{background:color-mix(in srgb,var(--c) 15%,transparent)}
 .tm-pill{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:9px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-weight:600;font-size:14px;color:var(--ink)}
 .tm-pill b{font-family:var(--mono);font-size:15px}
 .tm-pill .pd{width:9px;height:9px;border-radius:50%;background:var(--accent)}
@@ -783,6 +806,8 @@ body:not([data-route="sayac"]) #timerView{display:none}
       <button class="secondary tm-stopal" id="tmStopAlarm" type="button" hidden>🔕 Alarmı durdur</button>
     </section>
 
+    <a class="tm-statlink" id="tmStatLink" href="#sayac/grafik"><span>📊 <b id="tmTodayTxt">Bugün 0 dk</b> · <span id="tmGoalMini">hedef %0</span></span><span class="go">Çalışma grafiği ›</span></a>
+
     <section class="card">
       <h2 class="tm-h">Ne çalışıyorsun?</h2>
       <input class="tm-in" id="tmSubject" type="text" maxlength="60" placeholder="Konu ya da ders adı yaz" autocomplete="off" aria-label="Ne çalışıyorsun?">
@@ -833,36 +858,6 @@ body:not([data-route="sayac"]) #timerView{display:none}
       </div>
     </details>
 
-    <section class="card">
-      <h2 class="tm-h">Çalışma özetin</h2>
-      <div class="tm-big" id="tmBig"></div>
-      <div class="tm-goal" aria-hidden="true"><i id="tmGoalBar" style="width:0"></i></div>
-      <div class="tm-goal-t"><span id="tmGoalTxt"></span><span id="tmGoalPct"></span></div>
-      <div class="tm-steps" style="margin-top:12px"><div class="tm-st wide" id="tmGoalSt"></div></div>
-
-      <hr class="tm-hr">
-      <div class="tm-per">
-        <h2 class="tm-h" style="margin:0">Çalışma grafiği</h2>
-        <div class="tm-seg" id="tmPer" role="group" aria-label="Dönem">
-          <button type="button" data-per="week" aria-pressed="true">Hafta</button>
-          <button type="button" data-per="month" aria-pressed="false">Ay</button>
-        </div>
-      </div>
-      <div class="tm-nav">
-        <button type="button" id="tmPrev" aria-label="Önceki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-        <div class="pl"><b id="tmPerLbl"></b><small id="tmPerSub"></small></div>
-        <button type="button" id="tmNext" aria-label="Sonraki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
-      </div>
-      <div class="tm-pstat" id="tmPstat"></div>
-      <div class="tm-plot" id="tmPlot"></div>
-      <div class="tm-days" id="tmDays"></div>
-      <p class="tm-sel" id="tmSel"></p>
-      <p class="tm-lbl" style="margin-top:6px">Konulara göre</p>
-      <div class="tm-subs" id="tmSubs"></div>
-      <div class="tm-acts"><button class="secondary" id="tmClear" type="button">Geçmişi sil</button></div>
-      <p class="tm-note">Çalışma geçmişin yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Tarayıcı verisini silersen geçmiş de silinir.</p>
-    </section>
-
     <details class="card fold" id="tmSet">
       <summary><span class="ft"><h2>Alarm ve ayarlar</h2><span class="hint" id="tmSetHint">Alarm sesi, titreşim, ekranı açık tutma</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
@@ -888,6 +883,50 @@ body:not([data-route="sayac"]) #timerView{display:none}
       </div>
     </details>
   </section>
+  <!-- ============ Çalışma grafiği (Odak sayacı'nın alt sayfası) ============ -->
+  <section id="statsView" aria-label="Çalışma grafiği">
+
+    <section class="card">
+      <h2 class="tm-h">Bugün</h2>
+      <div class="tm-big" id="tmBig"></div>
+      <div class="tm-goal" aria-hidden="true"><i id="tmGoalBar" style="width:0"></i></div>
+      <div class="tm-goal-t"><span id="tmGoalTxt"></span><span id="tmGoalPct"></span></div>
+      <div class="tm-steps" style="margin-top:12px"><div class="tm-st wide" id="tmGoalSt"></div></div>
+    </section>
+
+    <section class="card">
+      <div class="tm-per">
+        <h2 class="tm-h" style="margin:0">Çalışma grafiği</h2>
+        <div class="tm-seg" id="tmPer" role="group" aria-label="Dönem">
+          <button type="button" data-per="week" aria-pressed="true">Hafta</button>
+          <button type="button" data-per="month" aria-pressed="false">Ay</button>
+        </div>
+      </div>
+      <div class="tm-nav">
+        <button type="button" id="tmPrev" aria-label="Önceki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3 5 8l5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+        <div class="pl"><b id="tmPerLbl"></b><small id="tmPerSub"></small></div>
+        <button type="button" id="tmNext" aria-label="Sonraki dönem"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3 5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+      </div>
+      <div class="tm-pstat" id="tmPstat"></div>
+      <div class="tm-plot" id="tmPlot"></div>
+      <div class="tm-days" id="tmDays"></div>
+      <p class="tm-sel" id="tmSel"></p>
+    </section>
+
+    <section class="card">
+      <h2 class="tm-h" style="margin-bottom:2px">Konulara göre</h2>
+      <p class="tm-note" id="tmDonutPer" style="margin:0 0 6px"></p>
+      <div class="tm-donutbox">
+        <div class="tm-donut" id="tmDonut"></div>
+        <div class="tm-legend" id="tmLegend"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="tm-acts" style="margin-top:0"><button class="secondary" id="tmClear" type="button">Geçmişi sil</button></div>
+      <p class="tm-note">Çalışma geçmişin yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Tarayıcı verisini silersen geçmiş de silinir.</p>
+    </section>
+  </section>
 </div>
 
 <div class="drawer-scrim" id="drawerScrim" hidden></div>
@@ -895,6 +934,7 @@ body:not([data-route="sayac"]) #timerView{display:none}
   <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <button class="di" type="button" data-go="program"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
   <button class="di" type="button" data-go="sayac"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı</b><small id="drawerTimerHint">Pomodoro ile çalış</small></span></button>
+  <button class="di sub" type="button" data-go="grafik"><span class="ic" aria-hidden="true">📊</span><span><b>Çalışma grafiği</b><small>Hafta, ay ve konulara göre</small></span></button>
   <div class="dfoot">Çalışma kayıtların yalnızca bu cihazda saklanır.</div>
 </nav>
 <button class="tm-pill" id="tmPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmPillTime">25:00</b><span id="tmPillPhase">Odak</span></button>
@@ -2381,6 +2421,7 @@ function renderStats(){
   $("tmGoalBar").style.width = pct + "%";
   $("tmGoalTxt").textContent = tm >= S.goal ? "🎯 Günlük hedefe ulaştın!" : `Hedef: ${fmtMin(S.goal)} · kalan ${fmtMin(S.goal - tm)}`;
   $("tmGoalPct").textContent = "%" + pct;
+  $("tmTodayTxt").textContent = "Bugün " + fmtMin(tm); $("tmGoalMini").textContent = "hedef %" + pct;
 
   const P = period(today);
   for (const b of $("tmPer").children) b.setAttribute("aria-pressed", String(b.dataset.per === PER));
@@ -2407,12 +2448,50 @@ function renderStats(){
   } else $("tmSel").textContent = "Ayrıntı için bir sütuna dokun";
   const sub = {};
   for (const h of H) if (h.d >= P.days[0] && h.d <= P.days[P.days.length - 1]){ const k = h.s || "Konu belirtilmedi"; sub[k] = (sub[k] || 0) + h.m; }
-  const rows = Object.entries(sub).sort((a,b) => b[1] - a[1]).slice(0, 8), top = rows.length ? rows[0][1] : 1;
-  $("tmSubs").innerHTML = rows.length ? rows.map(([n,m]) => `<div class="tm-sub"><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="bar"><i style="width:${Math.round(m/top*100)}%"></i></span></div>`).join("") : `<p class="tm-empty">Bu dönemde çalışma kaydın yok.</p>`;
+  $("tmDonutPer").textContent = `${P.label} · ${P.sub}`;
+  renderDonut(sub);
 }
-$("tmPer").addEventListener("click", e => { const b = e.target.closest("button[data-per]"); if (!b || b.dataset.per === PER) return; PER = b.dataset.per; OFF = 0; SEL = null; renderStats(); });
-$("tmPrev").addEventListener("click", () => { if (OFF > OFF_MIN[PER]){ OFF--; SEL = null; renderStats(); } });
-$("tmNext").addEventListener("click", () => { if (OFF < 0){ OFF++; SEL = null; renderStats(); } });
+/* ---------- subject donut ---------- */
+const SUBJ_PAL = ["#10a37f","#3b82f6","#f59e0b","#8b5cf6","#ec4899","#06b6d4","#ef4444","#84cc16","#f97316","#14b8a6"];
+let SUBSEL = null, subjColor = jget("odak_renkler") || {};
+function colorFor(n){
+  if (n === "Diğer") return "#94a3b8"; if (n === "Konu belirtilmedi") return "#9ca3af";
+  if (!subjColor[n]){
+    if (Object.keys(subjColor).length > 80) subjColor = {};
+    const used = new Set(Object.values(subjColor));
+    subjColor[n] = SUBJ_PAL.find(c => !used.has(c)) || SUBJ_PAL[Object.keys(subjColor).length % SUBJ_PAL.length];
+    LS.set("odak_renkler", JSON.stringify(subjColor));
+  }
+  return subjColor[n];
+}
+function renderDonut(sub){
+  let rows = Object.entries(sub).sort((a,b) => b[1] - a[1]);
+  const total = rows.reduce((t,r) => t + r[1], 0);
+  if (rows.length > 8) rows = rows.slice(0,7).concat([["Diğer", rows.slice(7).reduce((t,r) => t + r[1], 0)]]);
+  if (SUBSEL && !rows.some(r => r[0] === SUBSEL)) SUBSEL = null;
+  const box = $("tmDonut"), leg = $("tmLegend");
+  if (!total){
+    box.innerHTML = `<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="70" fill="none" stroke-width="30" style="stroke:color-mix(in srgb,var(--ink) 8%,transparent)"/></svg><div class="ctr"><b>–</b><span>Kayıt yok</span></div>`;
+    leg.innerHTML = `<p class="tm-empty" style="text-align:center">Bu dönemde çalışma kaydın yok.</p>`; return;
+  }
+  const R = 70, C = 2*Math.PI*R, GAP = rows.length > 1 ? 2.6 : 0; let acc = 0;
+  const circles = rows.map(([n,m]) => {
+    const f = m/total, len = Math.max(.5, f*C - GAP), sel = SUBSEL === n, dim = SUBSEL && !sel;
+    const el = `<circle class="sl" data-n="${esc(n)}" cx="100" cy="100" r="${R}" transform="rotate(-90 100 100)" stroke-dasharray="${len.toFixed(2)} ${(C - len).toFixed(2)}" stroke-dashoffset="${(-acc*C).toFixed(2)}" style="stroke:${colorFor(n)};stroke-width:${sel ? 38 : 30};opacity:${dim ? .3 : 1}"><title>${esc(n)}: ${esc(fmtMin(m))}</title></circle>`;
+    acc += f; return el;
+  }).join("");
+  const sr = SUBSEL ? rows.find(r => r[0] === SUBSEL) : null;
+  const pctOf = m => { const v = m/total*100; return (v < 10 && v % 1 ? v.toFixed(1).replace(".",",") : Math.round(v)) + "%"; };
+  box.innerHTML = `<svg viewBox="0 0 200 200" aria-hidden="true"><circle cx="100" cy="100" r="${R}" fill="none" stroke-width="30" style="stroke:color-mix(in srgb,var(--ink) 7%,transparent)"/>${circles}</svg>`
+    + `<div class="ctr">${sr ? `<span>${esc(sr[0])}</span><b>${esc(fmtMin(sr[1]))}</b><em>${pctOf(sr[1])}</em>` : `<span>Toplam</span><b>${esc(fmtMin(total))}</b><span>${rows.length} konu</span>`}</div>`;
+  leg.innerHTML = rows.map(([n,m]) => `<button type="button" class="tm-lg" data-n="${esc(n)}" style="--c:${colorFor(n)}" aria-pressed="${SUBSEL === n}"><i></i><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="pc">${pctOf(m)}</span></button>`).join("");
+}
+const donutPick = e => { const t = e.target.closest("[data-n]"); if (!t) return; SUBSEL = SUBSEL === t.dataset.n ? null : t.dataset.n; renderStats(); };
+$("tmDonut").addEventListener("click", donutPick);
+$("tmLegend").addEventListener("click", donutPick);
+$("tmPer").addEventListener("click", e => { const b = e.target.closest("button[data-per]"); if (!b || b.dataset.per === PER) return; PER = b.dataset.per; OFF = 0; SEL = null; SUBSEL = null; renderStats(); });
+$("tmPrev").addEventListener("click", () => { if (OFF > OFF_MIN[PER]){ OFF--; SEL = null; SUBSEL = null; renderStats(); } });
+$("tmNext").addEventListener("click", () => { if (OFF < 0){ OFF++; SEL = null; SUBSEL = null; renderStats(); } });
 $("tmPlot").addEventListener("click", e => { const b = e.target.closest(".tm-col"); if (!b) return; SEL = SEL === b.dataset.d ? null : b.dataset.d; renderStats(); });
 
 /* ---------- settings ---------- */
@@ -2521,24 +2600,25 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.cla
 drawer.addEventListener("click", e => {
   const b = e.target.closest("[data-go]"); if (!b) return;
   const to = b.dataset.go;
-  if ((location.hash === "#sayac") === (to === "sayac")){ closeDrawer(false); return; }
-  location.hash = to === "sayac" ? "#sayac" : "#program"; closeDrawer(false);
+  if (to === curRoute){ closeDrawer(false); return; }
+  location.hash = to === "sayac" ? "#sayac" : to === "grafik" ? "#sayac/grafik" : "#program"; closeDrawer(false);
 });
 $("tmPill").addEventListener("click", () => { location.hash = "#sayac"; });
 
 const progTitle = document.title;
 let curRoute = null;
 function route(){
-  const r = location.hash === "#sayac" ? "sayac" : "program";
+  const h = location.hash;
+  const r = h === "#sayac/grafik" ? "grafik" : h === "#sayac" ? "sayac" : "program";
   const changed = r !== curRoute; curRoute = r;
   document.body.dataset.route = r;
-  $("brandSmall").textContent = r === "sayac" ? "Çalışma" : "İstanbul Tıp · Dönem 1 Türkçe";
-  $("brandTitle").textContent = r === "sayac" ? "Odak sayacı" : "Programım";
-  titleBase = r === "sayac" ? "Odak sayacı" : progTitle;
+  $("brandSmall").textContent = r === "program" ? "İstanbul Tıp · Dönem 1 Türkçe" : "Çalışma";
+  $("brandTitle").textContent = r === "sayac" ? "Odak sayacı" : r === "grafik" ? "Çalışma grafiği" : "Programım";
+  titleBase = r === "sayac" ? "Odak sayacı" : r === "grafik" ? "Çalışma grafiği" : progTitle;
   for (const a of drawer.querySelectorAll("[data-go]")){
-    if ((a.dataset.go === "sayac") === (r === "sayac")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    if (a.dataset.go === r) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
-  if (r === "sayac"){ render(); acquireWake(); } else { releaseWake(); paint(); }
+  if (r === "sayac"){ render(); acquireWake(); } else if (r === "grafik"){ releaseWake(); SUBSEL = null; render(); } else { releaseWake(); paint(); }
   if (changed) window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
