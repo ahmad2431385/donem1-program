@@ -438,6 +438,39 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-card[data-rskin="9"] .tm-time{text-shadow:0 1px 10px color-mix(in srgb,var(--surface) 80%,transparent)}
 .tm-card[data-rskin="9"] .tm-show{color:var(--ink);opacity:.75}
 
+
+/* enlarged / full-screen timer */
+.tm-rt{display:inline-flex;gap:8px;align-items:center}
+.tm-fs{width:40px;height:38px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink);display:grid;place-items:center;padding:0;-webkit-tap-highlight-color:transparent}
+.tm-fs .cx,.tm-fs[aria-pressed="true"] .ex{display:none}.tm-fs[aria-pressed="true"] .cx{display:block}
+body[data-route="gorunum"] #tmFull{display:none}
+body.tm-full{overflow:hidden}
+body.tm-full #tmCard{position:fixed;inset:0;z-index:80;border-radius:0;border:0;margin:0;max-width:none;width:auto;justify-content:center;gap:3.2vmin;padding:calc(max(12px,env(safe-area-inset-top)) + 56px) 18px max(14px,env(safe-area-inset-bottom));overflow:auto}
+body.tm-full #tmCard .tm-barrow{position:absolute;top:max(12px,env(safe-area-inset-top));left:14px;right:14px;width:auto}
+body.tm-full #tmCard .tm-ring{width:min(86vw,62vh,780px)}
+body.tm-full #tmCard .tm-time{font-size:min(17vw,13vh,140px)}
+body.tm-full #tmCard .tm-time.long{font-size:min(12.5vw,10vh,100px)}
+body.tm-full #tmCard[data-rskin="7"] .tm-time{font-size:min(12vw,9.5vh,100px)}
+body.tm-full #tmCard .tm-label{font-size:clamp(12px,2.4vmin,22px)}
+body.tm-full #tmCard .tm-show,body.tm-full #tmCard .dg-show{font-size:clamp(13px,2.4vmin,22px)}
+body.tm-full #tmCard .tm-dig{--ds:min(30vw,26vh,210px);max-width:none}
+body.tm-full #tmCard .tm-chip{font-size:clamp(13px,2.2vmin,20px)}
+body.tm-full #tmCard .tm-main{height:clamp(54px,9vmin,84px);min-width:clamp(150px,26vmin,260px);font-size:clamp(16px,2.8vmin,26px)}
+body.tm-full #tmCard .tm-round{width:clamp(44px,8vmin,72px);height:clamp(44px,8vmin,72px)}
+body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
+@media (orientation:landscape) and (max-height:520px){body.tm-full #tmCard .tm-top{display:none}}
+/* clock font styles (analog centre time + digital digits; segment/matrix skins are drawn shapes) */
+[data-font="1"]{--tf:Georgia,"Times New Roman",serif;--tw:500}
+[data-font="2"]{--tf:var(--mono);--tw:500}
+[data-font="3"]{--tf:ui-rounded,"SF Pro Rounded","Nunito","Varela Round","Trebuchet MS",system-ui,sans-serif;--tw:700}
+[data-font="4"]{--tf:"Arial Narrow","Roboto Condensed","Helvetica Neue",sans-serif-condensed,"Segoe UI",sans-serif;--tw:600;--tl:-.01em}
+[data-font="5"]{--tf:system-ui,"Segoe UI",sans-serif;--tw:200}
+[data-font="6"]{--tf:"Arial Black","Segoe UI Black","Helvetica Neue",system-ui,sans-serif;--tw:900}
+[data-font="7"]{--tf:"Segoe Script","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive;--tw:600}
+[data-font="8"]{--tf:"Century Gothic","Avenir Next","Futura","Trebuchet MS",system-ui,sans-serif;--tw:500;--tl:.03em}
+[data-font="9"]{--tf:Impact,"Haettenschweiler","Arial Narrow Bold","Franklin Gothic Medium",sans-serif;--tw:400;--tl:.03em}
+.tm-card[data-font] .tm-time,.tm-card[data-font] .dg-row,.tm-card[data-font] .dg-row .c,.tm-card[data-font] .dg-row .sep{font-family:var(--tf) !important;font-weight:var(--tw) !important;letter-spacing:var(--tl,0) !important}
+.tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
 .tm-dig{--ds:clamp(56px,19vw,86px);width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .dg-top{display:flex;justify-content:space-between;width:100%;font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ph);padding:0 4px}
@@ -797,10 +830,10 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
           <button type="button" data-m="pomo" aria-pressed="true">Pomodoro</button>
           <button type="button" data-m="count" aria-pressed="false">Geri sayım</button>
         </div>
-        <div class="tm-seg sm" id="tmView" role="group" aria-label="Saat türü">
+        <div class="tm-rt"><div class="tm-seg sm" id="tmView" role="group" aria-label="Saat türü">
           <button type="button" data-v="ring" aria-pressed="true" aria-label="Analog saat" title="Analog"><svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 5.5V10l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
           <button type="button" data-v="lcd" aria-pressed="false" aria-label="Dijital saat" title="Dijital"><svg width="19" height="17" viewBox="0 0 24 20" aria-hidden="true"><path d="M3 4h18a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 21 16H3a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 3 4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 8v4M9.5 8v4M14.5 8v4M18 8v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-        </div>
+        </div><button type="button" class="tm-fs" id="tmFull" aria-pressed="false" aria-label="Ekranı büyüt" title="Büyüt"><svg class="ex" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="cx" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 3v5H3M12 3v5h5M8 17v-5H3M12 17v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div>
       </div>
       <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
 
@@ -854,6 +887,9 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
         <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
         <p class="tm-lbl">Dijital saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
+        <p class="tm-lbl">Yazı stili · 10 stil</p>
+        <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
+        <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Yazı tipleri cihazına göre biraz farklı görünebilir.</p>
         <div id="tmBgSec">
           <p class="tm-lbl">Arka plan fotoğrafı · <span id="tmBgCount"></span> görsel</p>
           <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
@@ -1859,16 +1895,17 @@ const VIBS = [
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
+const FONTN = ["Varsayılan","Klasik","Daktilo","Yuvarlak","Dar","İnce","Kalın","El yazısı","Geometrik","Afiş"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Kalın","Neon","Cam","Gölge"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, color:"auto",
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,9], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -2308,7 +2345,7 @@ function paint(){
 }
 function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
-  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin;
+  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin; if (S.font) card.dataset.font = S.font; else delete card.dataset.font;
   const bgItem = bgFind(S.bg);
   if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", bgItem.url ? `url("${bgItem.url}")` : `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(bgDimOf(bgItem))); }
   else { delete card.dataset.bg; for (const k of ["--bg-img","--bgpos","--bgdim"]) card.style.removeProperty(k); }
@@ -2361,12 +2398,14 @@ function renderLook(){
     $("tmSkinsR").innerHTML = RSKIN.map((n,i) => `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
     $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
     $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
+    $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">25:08</span></div><small>${n}</small></button>`).join("");
     $("tmSwatches").innerHTML = `<button type="button" class="tm-sw-c auto" data-c="auto" aria-pressed="false" aria-label="Otomatik renk" title="Otomatik">A</button>`
       + COLORS.map(([c,n]) => `<button type="button" class="tm-sw-c" data-c="${c}" style="--c:${c}" aria-pressed="false" aria-label="${n}" title="${n}"></button>`).join("")
       + `<label class="tm-sw-c cust" title="Özel renk" aria-label="Özel renk seç" data-cust="1"><input type="color" id="tmColorIn" value="#10a37f"></label>`;
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
+  $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
   const isCust = S.color !== "auto" && !COLORS.some(c => c[0].toLowerCase() === S.color.toLowerCase());
   $("tmSwatches").querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : b.dataset.c.toLowerCase() === S.color.toLowerCase())));
   const cl = $("tmSwatches").querySelector(".cust"); if (cl){ cl.setAttribute("aria-pressed", String(isCust)); if (isCust) $("tmColorIn").value = S.color; }
@@ -2448,10 +2487,23 @@ $("tmUpGrid").addEventListener("click", e => {
   const x = e.target.closest("[data-del]"); if (x){ upDel(x.dataset.del); return; }
   const b = e.target.closest("[data-bg]"); if (b){ S.bg = b.dataset.bg; saveS(); render(); }
 });
+function setFull(on){
+  document.body.classList.toggle("tm-full", on);
+  const b = $("tmFull"); b.setAttribute("aria-pressed", String(on)); b.title = on ? "Küçült" : "Büyüt"; b.setAttribute("aria-label", on ? "Ekranı küçült" : "Ekranı büyüt");
+  try {
+    if (on && document.documentElement.requestFullscreen) document.documentElement.requestFullscreen({navigationUI:"hide"}).catch(() => {});
+    else if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
+  } catch(e){}
+  if (on) window.scrollTo(0, 0);
+}
+$("tmFull").addEventListener("click", () => setFull(!document.body.classList.contains("tm-full")));
+document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && document.body.classList.contains("tm-full")) setFull(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && document.body.classList.contains("tm-full")) setFull(false); });
 $("tmUpIn").addEventListener("change", e => { const f = e.target.files && e.target.files[0]; e.target.value = ""; if (f) upAdd(f); });
 upInit();
 $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(bgFind(S.bg)))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
+$("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
 $("tmSwatches").addEventListener("input", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); applyColor($("tmCard")); applyColor($("tmLook")); } });
@@ -2728,6 +2780,7 @@ function route(){
   const r = ["grafik","gorunum","ses","ayar"].includes(sub) ? sub : h === "#sayac" ? "sayac" : "program";
   const changed = r !== curRoute; curRoute = r;
   document.body.dataset.route = r;
+  if (r !== "sayac" && document.body.classList.contains("tm-full")) setFull(false);
   $("brandSmall").textContent = r === "program" ? "İstanbul Tıp · Dönem 1 Türkçe" : "Çalışma";
   const RT = {sayac:"Odak sayacı", grafik:"Çalışma grafiği", gorunum:"Görünüm", ses:"Arka plan sesi", ayar:"Alarm ve ayarlar"};
   $("brandTitle").textContent = RT[r] || "Programım";
