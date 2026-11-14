@@ -373,7 +373,7 @@ body[data-route="gorunum"] #timerView{display:contents}
 body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
 body[data-route="gorunum"] #tmCard{--ps:.5;--sh:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);overflow-anchor:none}
 body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:relative;flex:none;width:100%;height:var(--sh);contain:layout style}
-body[data-route="gorunum"] #tmCard .tm-ring,body[data-route="gorunum"] #tmCard .tm-dig{position:absolute;left:50%;top:0;width:300px;transform:translateX(-50%) scale(var(--ps));transform-origin:50% 0;will-change:transform}
+body[data-route="gorunum"] #tmCard .tm-ring,body[data-route="gorunum"] #tmCard .tm-dig{position:absolute;left:50%;top:50%;width:300px;transform:translate(-50%,-50%) scale(var(--ps));transform-origin:50% 50%;will-change:transform}
 body[data-route="gorunum"] #tmCard .tm-time{font-size:60px}
 body[data-route="gorunum"] #tmCard .tm-time.long{font-size:44px}
 body[data-route="gorunum"] #tmCard[data-rskin="5"] .tm-time{font-size:20px}
@@ -467,16 +467,11 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 body[data-route="gorunum"] #tmFull{display:none}
 body.tm-full{overflow:hidden}
 body.tm-full #tmCard{position:fixed;inset:0;z-index:80;border-radius:0;border:0;margin:0;max-width:none;width:auto;justify-content:center;gap:3.2vmin;padding:calc(max(12px,env(safe-area-inset-top)) + 56px) 18px max(14px,env(safe-area-inset-bottom));overflow:auto}
+body.tm-full #tmCard{--rw:var(--fwr,min(86vw,62vh,780px))}
 body.tm-full #tmCard .tm-barrow{position:absolute;top:max(12px,env(safe-area-inset-top));left:14px;right:14px;width:auto}
-body.tm-full #tmCard .tm-ring{width:min(86vw,62vh,780px)}
-body.tm-full #tmCard .tm-time{font-size:min(17vw,13vh,140px)}
-body.tm-full #tmCard .tm-time.long{font-size:min(12.5vw,10vh,100px)}
-body.tm-full #tmCard[data-rskin="5"] .tm-time{font-size:calc(min(86vw,62vh,780px)*.068)}
-body.tm-full #tmCard[data-rskin="5"] .tm-time.long{font-size:calc(min(86vw,62vh,780px)*.05)}
-body.tm-full #tmCard[data-rskin="7"] .tm-time{font-size:min(12vw,9.5vh,100px)}
 body.tm-full #tmCard .tm-label{font-size:clamp(12px,2.4vmin,22px)}
 body.tm-full #tmCard .tm-show,body.tm-full #tmCard .dg-show{font-size:clamp(13px,2.4vmin,22px)}
-body.tm-full #tmCard .tm-dig{--ds:min(30vw,26vh,210px);max-width:none}
+body.tm-full #tmCard .tm-dig{--ds:var(--fdsx,min(30vw,26vh,210px));max-width:none}
 body.tm-full #tmCard .tm-chip{font-size:clamp(13px,2.2vmin,20px)}
 body.tm-full #tmCard .tm-main{height:clamp(54px,9vmin,84px);min-width:clamp(150px,26vmin,260px);font-size:clamp(16px,2.8vmin,26px)}
 body.tm-full #tmCard .tm-round{width:clamp(44px,8vmin,72px);height:clamp(44px,8vmin,72px)}
@@ -2642,6 +2637,9 @@ const pvMax = () => Math.max(PV_MIN + 40, Math.min(560, innerWidth - 56, Math.ro
 function sizeVars(card){
   if (S.rz) card.style.setProperty("--rwx", `min(calc(100cqw*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
   if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(100cqw*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
+  // enlarged (full-screen) mode: the same percentages, measured against the screen
+  if (S.rz) card.style.setProperty("--fwr", `calc(${S.rz}*min(92vw,72vh,900px))`); else card.style.removeProperty("--fwr");
+  if (S.dz) card.style.setProperty("--fdsx", `calc(${S.dz}*min(calc(92vw/3.5),32vh))`); else card.style.removeProperty("--fdsx");
 }
 // default ("auto") size expressed as % of the card width, so the slider can show where it sits
 function autoPct(kind){
@@ -2650,10 +2648,9 @@ function autoPct(kind){
   return Math.min(100, Math.max(40, Math.round(px/inner*100)));
 }
 function pvApply(){
-  const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = S[kind] ? S[kind]*100/autoPct(kind) : 1;
-  const pr = PV_MIN + pvT*(pvMax() - PV_MIN);
-  const D = Math.max(90, Math.min(pr*z, innerWidth - 56, innerHeight*.6 - 112));
-  card.style.setProperty("--ps", (D/300).toFixed(4)); card.style.setProperty("--sh", Math.round(D) + "px");
+  const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = (S[kind] ? S[kind]*100 : autoPct(kind))/100;
+  const H = Math.round(PV_MIN + pvT*(pvMax() - PV_MIN));
+  card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", (H*z/300).toFixed(4));
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
 }
 (() => {
