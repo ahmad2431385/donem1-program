@@ -421,9 +421,10 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
       </div>
     </details>
 
-    <section class="card wx-card" id="wxCard" hidden aria-labelledby="wxH">
+    <details class="card fold" id="wxCard" hidden>
+      <summary><span class="ft"><h2 id="wxH"><span id="wxEmo">🌤️</span> Fatih hava durumu</h2><span class="hint" id="wxHint">Bugün, yarın ve bu hafta · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody wx-card">
       <div class="wx-head">
-        <h2 id="wxH">🌤️ Fatih hava durumu</h2>
         <div class="wx-tabs" role="tablist" aria-label="Gün seç">
           <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
           <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
@@ -432,7 +433,8 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
       </div>
       <div id="wxBody"></div>
       <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
-    </section>
+      </div>
+    </details>
 
     <section class="tools">
       <details class="card fold" id="secCard">
@@ -1088,6 +1090,14 @@ function renderWxCard(){
   const box = $("wxCard");
   if (!WX){ box.hidden = true; return; }
   box.hidden = false;
+  try {
+    const D0 = WX.daily, i = D0.time.indexOf(istNow().date);
+    if (i >= 0){
+      const [e, t] = wxInfo(D0.weather_code[i]);
+      $("wxEmo").textContent = e;
+      $("wxHint").textContent = `Bugün ${t.toLocaleLowerCase("tr")} · ${r0(D0.temperature_2m_min[i])}°–${r0(D0.temperature_2m_max[i])}° · yarın ve bu hafta için dokun`;
+    }
+  } catch(e){}
   box.querySelectorAll("[data-wx]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.wx===wxTab)));
   $("wxBody").innerHTML = wxTab==="w" ? wxWeekView() : wxDayView(+wxTab);
   $("wxUpd").textContent = "güncellendi " + (WX._at||"");
@@ -1106,6 +1116,8 @@ async function loadWx(force=false){
   } catch(e){ if (!WX) { try { const c = JSON.parse(localStorage.getItem("wx")||"null"); if (c) WX = c.d; } catch(_){} } }
   renderWx();
 }
+$("wxCard").open = store.get("wxOpen") === "1";
+$("wxCard").addEventListener("toggle", e => store.set("wxOpen", e.target.open ? "1" : "0"));
 document.querySelectorAll("#wxCard [data-wx]").forEach(b => b.onclick = () => { wxTab = b.dataset.wx; renderWxCard(); });
 setInterval(() => { if (me) loadWx(); }, 30*60e3);
 
