@@ -371,7 +371,16 @@ body:not([data-route="grafik"]) #statsView{display:none}
 body[data-route="gorunum"] #lookView, body[data-route="ses"] #ambView, body[data-route="ayar"] #setView{display:flex}
 body[data-route="gorunum"] #timerView{display:contents}
 body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
-body[data-route="gorunum"] #tmCard{position:sticky;top:calc(var(--hdr,56px) + 6px);z-index:5;zoom:.7;padding-top:10px;padding-bottom:10px;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+body[data-route="gorunum"] #tmCard{--pr:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+body[data-route="gorunum"] #tmCard .tm-ring{width:var(--pr)}
+body[data-route="gorunum"] #tmCard .tm-time{font-size:calc(var(--pr)*.2)}
+body[data-route="gorunum"] #tmCard .tm-time.long{font-size:calc(var(--pr)*.15)}
+body[data-route="gorunum"] #tmCard[data-rskin="7"] .tm-time{font-size:calc(var(--pr)*.14)}
+body[data-route="gorunum"] #tmCard .tm-label{font-size:calc(var(--pr)*.04 + 5px)}
+body[data-route="gorunum"] #tmCard .tm-dig{--ds:calc(var(--pr)*.29);min-height:var(--pr);justify-content:center}
+.tm-grip{display:none}
+body[data-route="gorunum"] .tm-grip{display:flex;align-items:center;justify-content:center;width:100%;height:30px;margin-top:auto;cursor:ns-resize;touch-action:none;-webkit-tap-highlight-color:transparent;outline-offset:-3px}
+.tm-grip i{display:block;width:44px;height:5px;border-radius:3px;background:color-mix(in srgb,currentColor 35%,transparent)}
 body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .tm-hint, body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-bar, body[data-route="gorunum"] #tmCard #tmStopAlarm{display:none}
 .tmsec .fhead{padding:2px 2px 4px}
 .tmsec .fhead h2{font-size:17px}
@@ -509,14 +518,18 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 [data-dskin="5"] .dg-row .c{color:transparent;-webkit-text-stroke:.022em var(--ph);font-weight:300}
 [data-dskin="5"] .dg-row .sep{font-weight:300}
 /* skin 6: Kalın */
-[data-dskin="6"] .dg-row .c{font-weight:800;background:linear-gradient(180deg,color-mix(in srgb,var(--ph) 55%,white),var(--ph));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* skin 6: Şerit (striped digits) */
+[data-dskin="6"] .dg-row{font-weight:800;letter-spacing:-.01em}
+[data-dskin="6"] .dg-row .c{background:repeating-linear-gradient(180deg,var(--ph) 0 .075em,color-mix(in srgb,var(--ph) 22%,transparent) .075em .118em);-webkit-background-clip:text;background-clip:text;color:transparent}
 /* skin 7: Neon */
 [data-dskin="7"] .dg-row{font-weight:600;color:var(--glow);background:#0a1210;padding:.1em .3em;border-radius:.28em;border:1px solid color-mix(in srgb,var(--glow) 35%,#0a1210);text-shadow:0 0 .1em var(--glow),0 0 .3em color-mix(in srgb,var(--glow) 70%,transparent),0 0 .7em color-mix(in srgb,var(--glow) 45%,transparent);box-shadow:0 0 .6em color-mix(in srgb,var(--glow) 22%,transparent),inset 0 0 .5em rgba(0,0,0,.6)}
 [data-dskin="7"] .dg-row .sep{color:var(--glow)}
 /* skin 8: Cam */
 [data-dskin="8"] .dg-row{font-weight:300;padding:.08em .32em;border-radius:.3em;background:linear-gradient(135deg,color-mix(in srgb,var(--ph) 16%,transparent),color-mix(in srgb,var(--ph) 5%,transparent));border:1px solid color-mix(in srgb,var(--ph) 38%,transparent);box-shadow:0 .08em .5em color-mix(in srgb,var(--ph) 14%,transparent),inset 0 1px 0 rgba(255,255,255,.35);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 /* skin 9: Gölge */
-[data-dskin="9"] .dg-row{font-weight:800;letter-spacing:-.01em;text-shadow:.04em .04em 0 var(--ph),.08em .08em 0 color-mix(in srgb,var(--ph) 45%,transparent)}
+/* skin 9: Blok (solid colour tiles) */
+[data-dskin="9"] .dg-row{gap:.07em;font-weight:700}
+[data-dskin="9"] .dg-row .c{width:.7em;background:var(--ph);color:var(--ph-ink);border-radius:.15em;padding:.1em 0;box-shadow:0 .05em .12em rgba(0,0,0,.22)}
 
 /* controls */
 .tm-ctl{display:flex;align-items:center;gap:16px}
@@ -581,7 +594,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-skin[data-dskin="2"] .th .dg-row{font-size:13px}
 .tm-skin[data-dskin="7"] .th .dg-row{font-size:11px}
 .tm-skin[data-dskin="8"] .th .dg-row{font-size:12px}
-.tm-skin[data-dskin="9"] .th .dg-row{font-size:14px}
+.tm-skin[data-dskin="9"] .th .dg-row{font-size:13px}
 .tm-skin small{font-size:10px;color:var(--muted);font-weight:600;line-height:1.1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .tm-skin[aria-pressed="true"]{border-color:var(--ph);box-shadow:0 0 0 2px color-mix(in srgb,var(--ph) 28%,transparent)}
 .tm-skin[aria-pressed="true"] small{color:var(--ph)}
@@ -858,6 +871,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
       </div>
       <p class="tm-hint" id="tmHint" role="status"></p>
       <button class="secondary tm-stopal" id="tmStopAlarm" type="button" hidden>🔕 Alarmı durdur</button>
+      <div class="tm-grip" id="tmGrip" role="slider" tabindex="0" aria-label="Önizleme boyutu" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Aşağı çekerek büyüt"><i></i></div>
     </section>
 
     <a class="tm-statlink" id="tmStatLink" href="#sayac/grafik"><span>📊 <b id="tmTodayTxt">Bugün 0 dk</b> · <span id="tmGoalMini">hedef %0</span></span><span class="go">Çalışma grafiği ›</span></a>
@@ -1900,7 +1914,7 @@ const VIBS = [
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
 const FONTN = ["Varsayılan","Klasik","Daktilo","Yuvarlak","İnce","El yazısı","Çizgi","Neon","Altın","Eğik"];
-const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Kalın","Neon","Cam","Gölge"];
+const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
 
 /* ---------- state ---------- */
@@ -2492,6 +2506,22 @@ $("tmUpGrid").addEventListener("click", e => {
   const x = e.target.closest("[data-del]"); if (x){ upDel(x.dataset.del); return; }
   const b = e.target.closest("[data-bg]"); if (b){ S.bg = b.dataset.bg; saveS(); render(); }
 });
+const PV_MIN = 150;
+let pvT = Math.min(1, Math.max(0, parseFloat(LS.get("odak_onizleme")) || 0));
+const pvMax = () => Math.max(PV_MIN + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
+function pvApply(){
+  const pr = Math.round(PV_MIN + pvT*(pvMax() - PV_MIN));
+  $("tmCard").style.setProperty("--pr", pr + "px"); $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
+}
+(() => {
+  const g = $("tmGrip"); let y0 = 0, t0 = 0, moved = false, on = false;
+  g.addEventListener("pointerdown", e => { on = true; moved = false; y0 = e.clientY; t0 = pvT; try { g.setPointerCapture(e.pointerId); } catch(_){} });
+  g.addEventListener("pointermove", e => { if (!on) return; const dy = e.clientY - y0; if (Math.abs(dy) > 3) moved = true; pvT = Math.min(1, Math.max(0, t0 + dy/(pvMax() - PV_MIN))); pvApply(); });
+  const end = () => { if (!on) return; on = false; if (!moved) pvT = pvT < .5 ? 1 : 0; pvApply(); LS.set("odak_onizleme", String(pvT)); };
+  g.addEventListener("pointerup", end); g.addEventListener("pointercancel", end);
+  g.addEventListener("keydown", e => { const k = e.key === "ArrowDown" || e.key === "ArrowRight" ? .2 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -.2 : 0; if (!k) return; e.preventDefault(); pvT = Math.min(1, Math.max(0, pvT + k)); pvApply(); LS.set("odak_onizleme", String(pvT)); });
+  window.addEventListener("resize", pvApply); pvApply();
+})();
 function setFull(on){
   document.body.classList.toggle("tm-full", on);
   const b = $("tmFull"); b.setAttribute("aria-pressed", String(on)); b.title = on ? "Küçült" : "Büyüt"; b.setAttribute("aria-label", on ? "Ekranı küçült" : "Ekranı büyüt");
