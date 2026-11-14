@@ -1,7 +1,7 @@
 name: Program verisini güncelle
 
 on:
-  # Zamanlama GitHub'da değil, cron-job.org'da: orası her gün 07:25, 11:55 ve 14:55'te
+  # Zamanlama GitHub'da değil, cron-job.org'da: orası her gün 07:25, 10:25, 13:25, 16:25, 19:25 ve 22:25'te
   # GitHub API ile bu iş akışını başlatır (workflow_dispatch). GitHub'ın kendi
   # zamanlayıcısı saatinde çalışmadığı için kullanılmıyor.
   workflow_dispatch: {}    # Actions sekmesinden elle çalıştırma düğmesi

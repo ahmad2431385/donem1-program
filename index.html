@@ -84,6 +84,8 @@ button{cursor:pointer}
 /* notices */
 .warn{background:var(--warn-bg);color:var(--warn-ink);border:1px solid var(--warn-line);border-radius:12px;padding:10px 14px;font-size:13.5px;display:flex;gap:10px;align-items:flex-start}
 .warn svg{flex:none;margin-top:2px}
+.warn.stale{background:var(--exam-soft);color:var(--exam);border-color:color-mix(in srgb, var(--exam) 40%, var(--line))}
+.warn.stale b{color:inherit}
 .sync{display:flex;align-items:center;gap:4px 6px;flex-wrap:wrap;font-size:12.5px;color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 12px}
 .sync .dot{width:8px;height:8px;border-radius:50%;background:var(--uyg);flex:none}
 .sync b{color:var(--ink);font-weight:600}
@@ -354,9 +356,14 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
   <div class="sync" id="sync" hidden></div>
 
+  <div class="warn stale" id="staleBox" role="alert" hidden>
+    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
+    <div id="staleTxt"></div>
+  </div>
+
   <div class="warn" role="note">
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
-    <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları günde üç kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
+    <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları gün içinde altı kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
   </div>
 
   <div class="loading" id="loading">Program yükleniyor…</div>
@@ -703,7 +710,25 @@ function renderWho(){
 }
 function renderSync(){
   const s = $("sync"); s.hidden = false;
-  s.innerHTML = `<span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> her gün ${(D.schedule||[]).join(", ")}</span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
+  const sc = D.schedule || [], hh = x => +String(x).slice(0,2);
+  const when = sc.length >= 4 && hh(sc[1]) > hh(sc[0])
+    ? `her gün ${sc[0]}–${sc[sc.length-1]} arası ${hh(sc[1])-hh(sc[0])} saatte bir`
+    : `her gün ${sc.join(", ")}`;
+  s.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px"><span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> ${when}</span></span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
+}
+const STALE_HOURS = 12;
+function renderStale(){
+  const box = $("staleBox");
+  try {
+    const [d,t] = String(D.lastCheck||"").split(" ");
+    const last = Date.parse(`${d}T${t}:00+03:00`);
+    if (!isFinite(last)){ box.hidden = true; return; }
+    const hrs = (Date.now() - last) / 36e5;
+    if (hrs < STALE_HOURS){ box.hidden = true; return; }
+    const ago = hrs >= 48 ? `${Math.floor(hrs/24)} gün` : `yaklaşık ${Math.floor(hrs)} saat`;
+    $("staleTxt").innerHTML = `<b>Veriler güncellenmiyor olabilir.</b> Programın son kontrolü ${ago} önce yapıldı (${esc(fmtStamp(D.lastCheck))}). Gördüğün program eski olabilir; önemli günlerde sayfanın altındaki asıl programlara da bak.`;
+    box.hidden = false;
+  } catch(e){ box.hidden = true; }
 }
 function renderNow(){
   const now = istNow();
@@ -1233,7 +1258,7 @@ async function refreshData(){
     EV = byDate(D.events); UY = byDate(D.uyg); AM = byDate(D.amfi); CH = byDate(D.changes||[]);
     SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
     dayCache.clear(); _myCh = null;
-    renderSync(); renderWho(); renderChanges(); renderNow(); renderMain(); renderExams();
+    renderSync(); renderStale(); renderWho(); renderChanges(); renderNow(); renderMain(); renderExams();
     if (!document.querySelector("#secBody select:focus")) renderSec();
   } catch(e){ /* ağ yok: bir sonraki denemede */ }
   finally { _refreshing = false; }
@@ -1273,7 +1298,7 @@ async function login(no){
   store.set("ogrNo", no);
   return true;
 }
-renderSync();
+renderSync(); renderStale();
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
   const v = $("noInput").value;
@@ -1290,7 +1315,7 @@ $("datePick").addEventListener("change", e => { if (/^\d{4}-\d{2}-\d{2}$/.test(e
 $("prev").onclick = () => { view = addDays(view, mode==="week" ? -7 : -1); renderMain(); };
 $("next").onclick = () => { view = addDays(view, mode==="week" ? 7 : 1); renderMain(); };
 $("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
-setInterval(() => { if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
+setInterval(() => { renderStale(); if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
 
 const saved = store.get("ogrNo");
 if (saved) await login(saved);
