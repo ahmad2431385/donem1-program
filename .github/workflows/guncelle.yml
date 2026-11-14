@@ -1,19 +1,9 @@
 name: Program verisini güncelle
 
 on:
-  schedule:
-    # GitHub saatleri UTC'dir (İstanbul = UTC+3). GitHub zamanlanmış işleri
-    # geciktirebildiği, bazen de hiç başlatmadığı için her hedef saat için üç
-    # deneme vardır; biri başarılı olduysa sonrakiler "Taze mi?" adımında atlanır.
-    - cron: "55 3 * * *"   # 07:30 hedefi (06:55)
-    - cron: "10 4 * * *"   #              (07:10)
-    - cron: "25 4 * * *"   #              (07:25)
-    - cron: "25 8 * * *"   # 12:00 hedefi (11:25)
-    - cron: "40 8 * * *"   #              (11:40)
-    - cron: "55 8 * * *"   #              (11:55)
-    - cron: "25 11 * * *"  # 15:00 hedefi (14:25)
-    - cron: "40 11 * * *"  #              (14:40)
-    - cron: "55 11 * * *"  #              (14:55)
+  # Zamanlama GitHub'da değil, cron-job.org'da: orası her gün 07:25, 11:55 ve 14:55'te
+  # GitHub API ile bu iş akışını başlatır (workflow_dispatch). GitHub'ın kendi
+  # zamanlayıcısı saatinde çalışmadığı için kullanılmıyor.
   workflow_dispatch: {}    # Actions sekmesinden elle çalıştırma düğmesi
 
 permissions:
@@ -27,42 +17,23 @@ jobs:
   guncelle:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    outputs:
-      atla: ${{ steps.taze.outputs.atla }}
     steps:
       - uses: actions/checkout@v4
 
-      - name: Taze mi? (son 50 dakikada güncellendiyse atla)
-        id: taze
-        if: github.event_name == 'schedule'
-        run: |
-          python3 - <<'PY' >> "$GITHUB_OUTPUT"
-          import json, datetime as dt
-          tz = dt.timezone(dt.timedelta(hours=3))
-          last = dt.datetime.strptime(json.load(open("data.json", encoding="utf-8"))["lastCheck"], "%Y-%m-%d %H:%M").replace(tzinfo=tz)
-          age = (dt.datetime.now(tz) - last).total_seconds() / 60
-          print("atla=" + ("true" if 0 <= age < 50 else "false"))
-          PY
-
       - uses: actions/setup-python@v5
-        if: steps.taze.outputs.atla != 'true'
         with:
           python-version: "3.12"
 
       - name: Bağımlılıklar
-        if: steps.taze.outputs.atla != 'true'
         run: pip install openpyxl==3.1.5
 
       - name: Kaynakları Drive'dan indir
-        if: steps.taze.outputs.atla != 'true'
         run: tools/fetch.sh data
 
       - name: Derle ve kontrol et
-        if: steps.taze.outputs.atla != 'true'
         run: tools/update.sh data data.json out/data.json
 
       - name: Veriyi depoya kaydet
-        if: steps.taze.outputs.atla != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -81,7 +52,6 @@ jobs:
   # (GITHUB_TOKEN ile yapılan push başka iş akışlarını tetiklemediği için burada açıkça çağrılır.)
   yayinla:
     needs: guncelle
-    if: needs.guncelle.outputs.atla != 'true'
     uses: ./.github/workflows/pages.yml
     permissions:
       contents: read
