@@ -601,6 +601,22 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-sw-c{width:36px;height:36px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);background:var(--c);position:relative;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff}
 .tm-sw-c[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--ink)}
 .tm-sw-c.auto{background:conic-gradient(#10a37f,#3b82f6,#8b5cf6,#f59e0b,#10a37f)}
+.tm-swx{position:relative;display:inline-flex}
+.tm-swx .x{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;border:0;background:var(--ink);color:var(--surface);font-size:12px;line-height:1;padding:0;display:grid;place-items:center;cursor:pointer}
+.tm-cp{display:flex;flex-direction:column;gap:10px;margin-top:8px;padding:12px;border:1px solid var(--line);border-radius:14px;background:var(--bg)}
+.tm-cp[hidden]{display:none}
+.cp-sv{--h:150;position:relative;height:150px;border-radius:12px;touch-action:none;cursor:crosshair;background:linear-gradient(to top,#000,rgba(0,0,0,0)),linear-gradient(to right,#fff,hsl(var(--h) 100% 50%));-webkit-tap-highlight-color:transparent}
+.cp-sv i{position:absolute;width:22px;height:22px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.45);transform:translate(-50%,-50%);pointer-events:none}
+.cp-hue{-webkit-appearance:none;appearance:none;width:100%;height:18px;border-radius:9px;background:linear-gradient(to right,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00);outline:0;margin:0;touch-action:none}
+.cp-hue::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5),0 2px 6px rgba(0,0,0,.45)}
+.cp-hue::-moz-range-thumb{width:18px;height:18px;border-radius:50%;background:#fff;border:3px solid #fff;box-shadow:0 0 0 1.5px rgba(0,0,0,.5)}
+.cp-row{display:flex;gap:8px;align-items:center}
+.cp-chip{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--c,#10a37f)}
+.cp-hex{flex:1;min-width:0;font:600 16px var(--mono);padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);text-transform:lowercase}
+.cp-row .secondary{flex:none;padding:9px 14px}
+.cp-pre{display:flex;flex-wrap:wrap;gap:8px}
+.cp-pre button{width:30px;height:30px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);background:var(--c);padding:0}
+.tm-sw-c.cust::after{content:"+";color:#fff;font-size:22px;font-weight:700;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .tm-sw-c.cust{background:conic-gradient(#ef4444,#f59e0b,#eab308,#22c55e,#06b6d4,#3b82f6,#8b5cf6,#ec4899,#ef4444);overflow:hidden}
 .tm-sw-c.cust input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
 .tm-ambs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
@@ -923,6 +939,18 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
         </div>
         <p class="tm-lbl">Renk</p>
         <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
+        <div class="tm-cp" id="tmCp" hidden>
+          <div class="cp-sv" id="cpSv" role="slider" tabindex="0" aria-label="Doygunluk ve parlaklık"><i id="cpDot"></i></div>
+          <input type="range" class="cp-hue" id="cpHue" min="0" max="359" step="1" aria-label="Renk tonu">
+          <div class="cp-row">
+            <span class="cp-chip" id="cpChip" aria-hidden="true"></span>
+            <input class="cp-hex" id="cpHex" type="text" maxlength="7" spellcheck="false" autocomplete="off" autocapitalize="off" aria-label="Renk kodu" placeholder="#10a37f">
+            <button class="secondary" id="cpSave" type="button">Kaydet</button>
+          </div>
+          <p class="tm-lbl" style="margin-top:4px">Hazır tonlar</p>
+          <div class="cp-pre" id="cpPre" role="group" aria-label="Hazır tonlar"></div>
+          <p class="tm-note" id="cpMsg">Renk karesinde ve ton çubuğunda parmağını gezdir ya da kodu yaz. "Kaydet" dersen renk listeye eklenir; en fazla 3 özel renk saklanır.</p>
+        </div>
         <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu. Fotoğraf arka planda renkler okunaklı olsun diye otomatik açılır.</p>
       </div>
     </section>
@@ -1918,11 +1946,11 @@ const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx":
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
 const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
-const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
+const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"],["#ffffff","Beyaz"]];
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:1, dz:1, color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:1, dz:1, saved:[], color:"auto",
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
@@ -1946,6 +1974,7 @@ function loadAll(){
   if (S.fv < 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.rskin === 5) S.rskin = 0;
+  S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-3);
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
@@ -2333,13 +2362,21 @@ function digitsHTML(clock, sk){
 
 /* ============ rendering ============ */
 const lum = hex => { const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255)/255, g = (n >> 8 & 255)/255, b = (n & 255)/255; return .2126*r + .7152*g + .0722*b; };
+const isDarkUI = () => { const t = document.documentElement.dataset.theme; return t === "dark" || (t !== "light" && matchMedia("(prefers-color-scheme: dark)").matches); };
+// very light colours (white) or, in dark mode, very dark ones would vanish on the card: use the dark panel
+const needSolid = () => S.color !== "auto" && !S.bg && (lum(S.color) > .78 || (lum(S.color) < .1 && isDarkUI()));
 function applyColor(el){
-  const c = S.color, photo = !!S.bg && el.id === "tmCard";
-  if (c === "auto"){ for (const k of ["--ph","--ph-soft","--glow","--ph-ink"]) el.style.removeProperty(k); return; }
+  const c = S.color, photo = (!!S.bg || needSolid()) && el.id === "tmCard";
+  if (c === "auto" || (el.id !== "tmCard" && (lum(c) > .78 || lum(c) < .1))){ for (const k of ["--ph","--ph-soft","--glow","--ph-ink"]) el.style.removeProperty(k); return; }
   el.style.setProperty("--ph", photo ? `color-mix(in srgb, ${c} 62%, white)` : c);
   el.style.setProperty("--ph-soft", `color-mix(in srgb, ${c} 14%, var(--surface))`);
   el.style.setProperty("--glow", `color-mix(in srgb, ${c} 62%, white)`);
   el.style.setProperty("--ph-ink", photo ? "#0b1512" : (lum(c) > .6 ? "#0b1512" : "#fff"));
+}
+function refreshColor(){
+  const card = $("tmCard");
+  if (!S.bg){ if (needSolid()){ card.dataset.bg = "solid"; card.style.setProperty("--bgdim", "0"); } else delete card.dataset.bg; }
+  applyColor(card); applyColor($("tmLook"));
 }
 let builtR = -1, lastClock = "", lastBarKey = "";
 function mainDial(){
@@ -2375,7 +2412,7 @@ function render(){
   const bgItem = bgFind(S.bg);
   if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", bgItem.url ? `url("${bgItem.url}")` : `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(bgDimOf(bgItem))); }
   else { delete card.dataset.bg; for (const k of ["--bg-img","--bgpos","--bgdim"]) card.style.removeProperty(k); }
-  applyColor(card); applyColor($("tmLook"));
+  refreshColor();
   mainDial();
   for (const b of $("tmMode").children) b.setAttribute("aria-pressed", String(b.dataset.m === S.mode));
   for (const b of $("tmView").children) b.setAttribute("aria-pressed", String(b.dataset.v === S.view));
@@ -2416,6 +2453,70 @@ function renderChips(){
   $("tmChipsLbl").hidden = !list.length;
 }
 
+/* --- colour picker: swatches, saved custom colours (max 3), HSV creator --- */
+const CP = {open:false, h:150, s:.9, v:.64};
+const hex2rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16));
+const rgb2hex = (r, g, b) => "#" + [r, g, b].map(v => Math.round(v).toString(16).padStart(2, "0")).join("");
+function hsv2hex(h, s, v){ const f = n => { const k = (n + h/60) % 6; return v - v*s*Math.max(0, Math.min(k, 4 - k, 1)); }; return rgb2hex(f(5)*255, f(3)*255, f(1)*255); }
+function hex2hsv(hex){
+  const [r, g, b] = hex2rgb(hex).map(x => x/255), mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn; let h = 0;
+  if (d){ if (mx === r) h = ((g - b)/d + 6) % 6; else if (mx === g) h = (b - r)/d + 2; else h = (r - g)/d + 4; h *= 60; }
+  return {h, s:mx ? d/mx : 0, v:mx};
+}
+const TONES = ["#f43f5e","#fb7185","#fb923c","#facc15","#a3e635","#34d399","#2dd4bf","#38bdf8","#818cf8","#c084fc","#f0abfc","#94a3b8"];
+const isHex = c => /^#[0-9a-f]{6}$/i.test(c);
+function cpFromColor(){ const c = isHex(S.color) ? S.color : "#10a37f"; Object.assign(CP, hex2hsv(c)); }
+function cpPaint(skipHex){
+  $("tmCp").hidden = !CP.open;
+  if (!CP.open) return;
+  const hex = hsv2hex(CP.h, CP.s, CP.v);
+  $("cpSv").style.setProperty("--h", Math.round(CP.h));
+  $("cpDot").style.left = (CP.s*100) + "%"; $("cpDot").style.top = ((1 - CP.v)*100) + "%";
+  $("cpHue").value = Math.round(CP.h) % 360;
+  $("cpChip").style.setProperty("--c", hex);
+  if (!skipHex) $("cpHex").value = hex;
+}
+function cpApply(commit){
+  S.color = hsv2hex(CP.h, CP.s, CP.v); cpPaint(true);
+  if (commit){ saveS(); render(); cpPaint(); } else { refreshColor(); renderSwatches(true); }
+}
+function cpInit(){
+  $("cpPre").innerHTML = TONES.map(c => `<button type="button" style="--c:${c}" data-pre="${c}" aria-label="Ton ${c}"></button>`).join("");
+  const sv = $("cpSv"); let on = false, raf = 0;
+  const at = e => { const r = sv.getBoundingClientRect(); CP.s = Math.min(1, Math.max(0, (e.clientX - r.left)/r.width)); CP.v = 1 - Math.min(1, Math.max(0, (e.clientY - r.top)/r.height)); if (!raf) raf = requestAnimationFrame(() => { raf = 0; cpApply(false); }); };
+  sv.addEventListener("pointerdown", e => { on = true; try { sv.setPointerCapture(e.pointerId); } catch(_){} at(e); });
+  sv.addEventListener("pointermove", e => { if (on) at(e); });
+  const end = () => { if (!on) return; on = false; cpApply(true); };
+  sv.addEventListener("pointerup", end); sv.addEventListener("pointercancel", end);
+  sv.addEventListener("keydown", e => { const d = {ArrowLeft:[-.05,0], ArrowRight:[.05,0], ArrowUp:[0,.05], ArrowDown:[0,-.05]}[e.key]; if (!d) return; e.preventDefault(); CP.s = Math.min(1, Math.max(0, CP.s + d[0])); CP.v = Math.min(1, Math.max(0, CP.v + d[1])); cpApply(true); });
+  $("cpHue").addEventListener("input", e => { CP.h = +e.target.value; cpApply(false); });
+  $("cpHue").addEventListener("change", () => cpApply(true));
+  $("cpHex").addEventListener("input", e => { let v = e.target.value.trim().toLowerCase(); if (v && v[0] !== "#") v = "#" + v; if (isHex(v)){ Object.assign(CP, hex2hsv(v)); S.color = v; cpPaint(true); refreshColor(); renderSwatches(true); } });
+  $("cpHex").addEventListener("change", () => { if (isHex(S.color)){ saveS(); render(); cpPaint(); } else $("cpHex").value = hsv2hex(CP.h, CP.s, CP.v); });
+  $("cpPre").addEventListener("click", e => { const b = e.target.closest("[data-pre]"); if (!b) return; Object.assign(CP, hex2hsv(b.dataset.pre)); cpApply(true); });
+  $("cpSave").addEventListener("click", () => {
+    const c = hsv2hex(CP.h, CP.s, CP.v), msg = $("cpMsg");
+    if (COLORS.some(x => x[0] === c) ){ msg.textContent = "Bu renk zaten listede."; return; }
+    if (S.saved.includes(c)){ msg.textContent = "Bu renk zaten kayıtlı."; return; }
+    S.saved.push(c); const dropped = S.saved.length > 3; S.saved = S.saved.slice(-3); S.color = c; saveS(); render();
+    msg.textContent = dropped ? "Renk eklendi. 3 renk dolu olduğu için en eski özel renk silindi." : "Renk listeye eklendi.";
+  });
+  cpInit = () => {};
+}
+function renderSwatches(light){
+  const eq = c => S.color !== "auto" && c.toLowerCase() === S.color.toLowerCase();
+  const sw = $("tmSwatches");
+  if (light){ sw.querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : eq(b.dataset.c)))); }
+  else {
+    sw.innerHTML = `<button type="button" class="tm-sw-c auto" data-c="auto" aria-pressed="false" aria-label="Otomatik renk" title="Otomatik">A</button>`
+      + COLORS.map(([c,n]) => `<button type="button" class="tm-sw-c" data-c="${c}" style="--c:${c}" aria-pressed="${eq(c)}" aria-label="${n}" title="${n}"></button>`).join("")
+      + S.saved.map((c, i) => `<span class="tm-swx"><button type="button" class="tm-sw-c" data-c="${c}" style="--c:${c}" aria-pressed="${eq(c)}" aria-label="Kayıtlı renk ${i + 1}" title="Kayıtlı renk ${i + 1}"></button><button type="button" class="x" data-delc="${i}" aria-label="Kayıtlı rengi sil">×</button></span>`).join("")
+      + `<button type="button" class="tm-sw-c cust" data-cust="1" aria-pressed="${CP.open}" aria-label="Kendi rengini oluştur" title="Kendi rengini oluştur"></button>`;
+    sw.querySelector('[data-c="auto"]').setAttribute("aria-pressed", String(S.color === "auto"));
+  }
+  const isCust = S.color !== "auto" && !COLORS.some(c => eq(c[0])) && !S.saved.some(eq);
+  const cu = sw.querySelector(".cust"); if (cu) cu.setAttribute("aria-pressed", String(CP.open || isCust));
+}
 /* --- appearance picker (thumbnails drawn with the same code as the real clock) --- */
 let lookBuilt = false;
 function renderLook(){
@@ -2425,17 +2526,13 @@ function renderLook(){
     $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
     $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
     $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">25:08</span></div><small>${n}</small></button>`).join("");
-    $("tmSwatches").innerHTML = `<button type="button" class="tm-sw-c auto" data-c="auto" aria-pressed="false" aria-label="Otomatik renk" title="Otomatik">A</button>`
-      + COLORS.map(([c,n]) => `<button type="button" class="tm-sw-c" data-c="${c}" style="--c:${c}" aria-pressed="false" aria-label="${n}" title="${n}"></button>`).join("")
-      + `<label class="tm-sw-c cust" title="Özel renk" aria-label="Özel renk seç" data-cust="1"><input type="color" id="tmColorIn" value="#10a37f"></label>`;
+    cpInit();
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
   $("tmRz").value = Math.round(S.rz*100); $("tmRzO").textContent = "%" + Math.round(S.rz*100); $("tmDz").value = Math.round(S.dz*100); $("tmDzO").textContent = "%" + Math.round(S.dz*100);
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
-  const isCust = S.color !== "auto" && !COLORS.some(c => c[0].toLowerCase() === S.color.toLowerCase());
-  $("tmSwatches").querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : b.dataset.c.toLowerCase() === S.color.toLowerCase())));
-  const cl = $("tmSwatches").querySelector(".cust"); if (cl){ cl.setAttribute("aria-pressed", String(isCust)); if (isCust) $("tmColorIn").value = S.color; }
+  renderSwatches();
   renderBg();
   const cn = S.color === "auto" ? "Otomatik renk" : (COLORS.find(c => c[0].toLowerCase() === S.color.toLowerCase()) || [0,"Özel renk"])[1];
   const bn = S.bg ? " · " + (bgFind(S.bg) || {n:""}).n : "";
@@ -2554,9 +2651,13 @@ $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data
 for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .7, 1.4); $(id + "O").textContent = "%" + e.target.value; saveS(); const c = $("tmCard"); c.style.setProperty("--" + key, S[key]); pvApply(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
-$("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
-$("tmSwatches").addEventListener("input", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); applyColor($("tmCard")); applyColor($("tmLook")); } });
-$("tmSwatches").addEventListener("change", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); render(); } });
+$("tmSwatches").addEventListener("click", e => {
+  const x = e.target.closest("[data-delc]");
+  if (x){ S.saved.splice(+x.dataset.delc, 1); saveS(); renderSwatches(); return; }
+  if (e.target.closest("[data-cust]")){ CP.open = !CP.open; if (CP.open) cpFromColor(); renderSwatches(); cpPaint(); return; }
+  const b = e.target.closest("button[data-c]"); if (!b) return;
+  S.color = b.dataset.c; saveS(); render(); if (CP.open) { cpFromColor(); cpPaint(); }
+});
 
 /* --- sound pickers --- */
 let audioUIBuilt = false;
