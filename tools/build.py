@@ -411,16 +411,18 @@ def main():
             "amfi": am, "pdoGroups": pg, "pdo": pm, "secmeli": sec or []}
     content_hash = hashlib.sha256(json.dumps({k: v for k, v in data.items() if k not in ("students", "pdo")}, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
     changes = list(prev.get("changes", [])) if prev else []
+    today = now.strftime("%Y-%m-%d")
     if prev and prev.get("hash") != content_hash:
-        new_ch = diff(prev, data, now)
+        # Geçmiş günlere ait değişiklikler (ör. biten bir dersin kaynaktan silinmesi) sayfada
+        # gösterilmez; bu yüzden "son değişiklik" saatini de değiştirmemeli.
+        new_ch = [c for c in diff(prev, data, now) if c["d"] >= today]
         changes = new_ch + changes
-        built = now.strftime("%Y-%m-%d %H:%M")
+        built = now.strftime("%Y-%m-%d %H:%M") if new_ch else (prev.get("built") or now.strftime("%Y-%m-%d %H:%M"))
     else:
         new_ch = []
         built = prev.get("built") if prev else now.strftime("%Y-%m-%d %H:%M")
     # keep 21 days of history, drop changes for dates already past
     cutoff = (now - dt.timedelta(days=21)).strftime("%Y-%m-%d")
-    today = now.strftime("%Y-%m-%d")
     changes = [c for c in changes if c["at"][:10] >= cutoff and c["d"] >= today][:300]
     # Student lookup table: numbers are stored only as salted PBKDF2 hashes, so the published file
     # does not list student numbers. The page derives the same hash from the number the student types.
