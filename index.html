@@ -209,11 +209,16 @@ button.ev:hover .more,button.wi:hover .more{background:var(--c);color:var(--surf
 .btnrow a,.btnrow button{text-decoration:none;font-size:14px}
 
 /* tools */
-.tools{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start}
-@media (max-width:560px){.tools{grid-template-columns:1fr}}
-.tools .card:not(.fold){display:flex;flex-direction:column;gap:8px}
+.panels{display:flex;flex-direction:column;gap:10px}
+.panels-tip{padding:0 4px;margin-top:4px}
+.panels-tip .linkbtn{font-size:13px}
+.panels > .fold > summary{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.panels > .dragging{position:relative;z-index:20;box-shadow:var(--shadow);border-color:var(--accent);transition:box-shadow .15s}
+.panels > .dragging > summary{cursor:grabbing;background:color-mix(in srgb, var(--accent) 7%, transparent)}
+.panels.sorting{touch-action:none}
+.panels > .lifting{transform:scale(.985);transition:transform .25s}
 #secBody{display:flex;flex-direction:column;gap:6px}
-.tools select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
+.panels select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--bg)}
 .steps{margin:0;padding-left:20px;font-size:13.5px;display:flex;flex-direction:column;gap:3px}
 .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:10px;font-size:14px;z-index:30;max-width:90%;box-shadow:var(--shadow)}
 
@@ -253,8 +258,8 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 @media (prefers-reduced-motion: reduce){.fold .chev{transition:none}}
 
 /* exam widget */
-.examw{border-color:color-mix(in srgb, var(--exam) 35%, var(--line));display:flex;flex-direction:column;gap:6px;padding:10px 14px}
-.examw h2{font-size:14px;color:var(--exam);display:flex;align-items:center;gap:6px}
+.examw{border-color:color-mix(in srgb, var(--exam) 35%, var(--line))}
+.examw h2{color:var(--exam);display:flex;align-items:center;gap:6px}
 .examw .next{display:flex;align-items:center;gap:14px;background:var(--exam-soft);border-radius:12px;padding:12px 14px}
 .examw .cd{flex:none;text-align:center;min-width:64px}
 .examw .cd b{display:block;font-family:var(--display);font-size:34px;line-height:1;color:var(--exam)}
@@ -379,7 +384,6 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
     <section class="card wx-today" id="wxToday" hidden aria-live="polite"></section>
 
-
     <section class="card ctl">
       <div class="ctlrow">
         <div class="seg" role="group" aria-label="Görünüm">
@@ -421,22 +425,22 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
       </div>
     </details>
 
-    <details class="card fold" id="wxCard" hidden>
-      <summary><span class="ft"><h2 id="wxH"><span id="wxEmo">🌤️</span> Fatih hava durumu</h2><span class="hint" id="wxHint">Bugün, yarın ve bu hafta · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
-      <div class="fbody wx-card">
-      <div class="wx-head">
-        <div class="wx-tabs" role="tablist" aria-label="Gün seç">
-          <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
-          <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
-          <button type="button" role="tab" data-wx="w" aria-selected="false">Bu hafta</button>
+    <p class="small muted panels-tip" id="panelsTip">💡 Bir bölümün başlığına <b>basılı tut</b>, sonra yukarı/aşağı sürükleyerek sırasını değiştir. <button type="button" class="linkbtn" id="panelsReset" hidden>Varsayılan sıraya dön</button></p>
+    <div class="panels" id="panels">
+      <details class="card fold" id="wxCard" hidden>
+        <summary><span class="ft"><h2 id="wxH"><span id="wxEmo">🌤️</span> Fatih hava durumu</h2><span class="hint" id="wxHint">Bugün, yarın ve bu hafta · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody wx-card">
+        <div class="wx-head">
+          <div class="wx-tabs" role="tablist" aria-label="Gün seç">
+            <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
+            <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
+            <button type="button" role="tab" data-wx="w" aria-selected="false">Bu hafta</button>
+          </div>
         </div>
-      </div>
-      <div id="wxBody"></div>
-      <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
-      </div>
-    </details>
-
-    <section class="tools">
+        <div id="wxBody"></div>
+        <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
+        </div>
+      </details>
       <details class="card fold" id="secCard">
         <summary><span class="ft"><h2>Seçmeli derslerim</h2><span class="hint" id="secHint">Dersini seçmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
         <div class="fbody" id="secBody"><p class="muted small">Seçmeli ders amfi listesi henüz eklenmedi. Eklenince burada dersini seçip amfisini programında görebileceksin.</p></div>
@@ -452,31 +456,30 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
         <p class="muted small">Numaran cihazda hatırlandığı için her açışta doğrudan kendi programın gelir.</p>
         </div>
       </details>
-    </section>
-
+      <details class="card fold" id="linksCard">
+        <summary><span class="ft"><h2>Asıl Programlarım Bağlantısı</h2><span class="hint">Fakültenin asıl programlarını açmak için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody">
+        <p class="muted small">Şüphede kaldığında buradan kontrol et.</p>
+        <div class="links" style="margin-top:0">
+          <a href="https://docs.google.com/spreadsheets/d/1FcXgJIn7L9oFJKFCGLrSeefXHocrToAe/edit" target="_blank" rel="noopener">Ders programı<span>Dönem 1 Türkçe Tıp</span></a>
+          <a href="https://docs.google.com/spreadsheets/d/1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw/edit" target="_blank" rel="noopener">Amfi programı<span>Haftalık, en güncel</span></a>
+          <a href="https://docs.google.com/spreadsheets/d/1fdYXS38zxnWCoWYsFDca3bPHa0PXzKJV/edit" target="_blank" rel="noopener">Uygulama tablosu<span>Gruplara göre uygulamalar</span></a>
+          <a href="https://docs.google.com/spreadsheets/d/1oT06DD-PRquePt2iPr-DhSwjMWX5hb_l/edit" target="_blank" rel="noopener">Öğrenci listesi<span>Grup ve alt gruplar</span></a>
+          <a href="https://docs.google.com/spreadsheets/d/16zVYCUzAEBcb897bYcXpxYXmK9AD_BXX/edit" target="_blank" rel="noopener">Seçmeli ders amfi listesi<span>Seçmeli derslerin yerleri</span></a>
+          <a href="https://sks.istanbul.edu.tr/tr/yemek-listesi" target="_blank" rel="noopener">Yemek listesi<span>İÜ SKS yemekhane menüsü</span></a>
+          <a href="https://itfbut.netlify.app" target="_blank" rel="noopener">İTF Not Hesaplama<span>Not ortalaması hesaplama</span></a>
+          <a href="https://giris.istanbul.edu.tr/" target="_blank" rel="noopener">AKSİS<span>İÜ öğrenci bilgi sistemi girişi</span></a>
+        </div>
+        </div>
+      </details>
+      <details class="card fold examw" id="examBox" hidden>
+        <summary><span class="ft"><h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2><span class="hint" id="examHint">Sınav tarihlerini görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody">
+          <div class="exams" id="examList"></div>
+        </div>
+      </details>
+    </div>
   </main>
-
-  <details class="card fold" id="linksCard">
-    <summary><span class="ft"><h2>Asıl Programlarım Bağlantısı</h2><span class="hint">Fakültenin asıl programlarını açmak için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
-    <div class="fbody">
-    <p class="muted small">Şüphede kaldığında buradan kontrol et.</p>
-    <div class="links" style="margin-top:0">
-      <a href="https://docs.google.com/spreadsheets/d/1FcXgJIn7L9oFJKFCGLrSeefXHocrToAe/edit" target="_blank" rel="noopener">Ders programı<span>Dönem 1 Türkçe Tıp</span></a>
-      <a href="https://docs.google.com/spreadsheets/d/1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw/edit" target="_blank" rel="noopener">Amfi programı<span>Haftalık, en güncel</span></a>
-      <a href="https://docs.google.com/spreadsheets/d/1fdYXS38zxnWCoWYsFDca3bPHa0PXzKJV/edit" target="_blank" rel="noopener">Uygulama tablosu<span>Gruplara göre uygulamalar</span></a>
-      <a href="https://docs.google.com/spreadsheets/d/1oT06DD-PRquePt2iPr-DhSwjMWX5hb_l/edit" target="_blank" rel="noopener">Öğrenci listesi<span>Grup ve alt gruplar</span></a>
-      <a href="https://docs.google.com/spreadsheets/d/16zVYCUzAEBcb897bYcXpxYXmK9AD_BXX/edit" target="_blank" rel="noopener">Seçmeli ders amfi listesi<span>Seçmeli derslerin yerleri</span></a>
-      <a href="https://sks.istanbul.edu.tr/tr/yemek-listesi" target="_blank" rel="noopener">Yemek listesi<span>İÜ SKS yemekhane menüsü</span></a>
-      <a href="https://itfbut.netlify.app" target="_blank" rel="noopener">İTF Not Hesaplama<span>Not ortalaması hesaplama</span></a>
-      <a href="https://giris.istanbul.edu.tr/" target="_blank" rel="noopener">AKSİS<span>İÜ öğrenci bilgi sistemi girişi</span></a>
-    </div>
-    </div>
-  </details>
-
-  <section class="card examw" id="examBox" hidden aria-labelledby="examH">
-    <h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2>
-    <div class="exams" id="examList"></div>
-  </section>
 
   <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
 </div>
@@ -947,6 +950,8 @@ function renderExams(){
   $("examBox").hidden = !top.length;
   if (!top.length) return;
   const daysTo = d => Math.round((new Date(d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
+  { const n = top[0], dn = daysTo(n.d);
+    $("examHint").textContent = `Sıradaki: ${n.t.toLocaleLowerCase("tr").replace(/(^|\s)\S/g, m => m.toLocaleUpperCase("tr"))} · ${dn===0? "bugün" : dn+" gün kaldı"}`; }
   $("examList").innerHTML = top.map(e => {
     const days = daysTo(e.d);
     return `<div class="ex"><div class="ei"><b>${esc(e.t)}</b><span>${fmtDate(e.d)} · ${when(e)}</span><span>${where(e)}</span></div><span class="d">${days===0?"bugün":days+" gün"}</span></div>`;
@@ -1116,10 +1121,88 @@ async function loadWx(force=false){
   } catch(e){ if (!WX) { try { const c = JSON.parse(localStorage.getItem("wx")||"null"); if (c) WX = c.d; } catch(_){} } }
   renderWx();
 }
-$("wxCard").open = store.get("wxOpen") === "1";
-$("wxCard").addEventListener("toggle", e => store.set("wxOpen", e.target.open ? "1" : "0"));
 document.querySelectorAll("#wxCard [data-wx]").forEach(b => b.onclick = () => { wxTab = b.dataset.wx; renderWxCard(); });
 setInterval(() => { if (me) loadWx(); }, 30*60e3);
+
+/* ---------- panels: remembered open state + long-press reordering ---------- */
+const PANEL_IDS = ["wxCard","secCard","homeCard","linksCard","examBox"];
+(function initPanels(){
+  const box = $("panels");
+  // open/closed state: closed by default, remembered per panel on this device
+  for (const id of PANEL_IDS){
+    const el = $(id);
+    el.open = store.get("open_"+id) === "1";
+    el.addEventListener("toggle", () => store.set("open_"+id, el.open ? "1" : "0"));
+  }
+  // order
+  const def = PANEL_IDS.slice();
+  const saved = (() => { try { return JSON.parse(store.get("panelOrder")||"null"); } catch(e){ return null; } })();
+  const apply = order => { for (const id of order) if ($(id)) box.appendChild($(id)); };
+  if (Array.isArray(saved)) apply(saved.filter(id => def.includes(id)).concat(def.filter(id => !saved.includes(id))));
+  const current = () => [...box.children].map(c => c.id);
+  const syncReset = () => { $("panelsReset").hidden = current().join() === def.join(); };
+  syncReset();
+  $("panelsReset").onclick = () => { apply(def); store.del("panelOrder"); syncReset(); toast("Bölümler varsayılan sıraya döndü"); };
+
+  // long-press + drag
+  const HOLD = 420, SLOP = 10;
+  let timer = null, el = null, startY = 0, startScroll = 0, origTop = 0, curT = 0, lastY = 0, active = false, raf = 0, suppressClick = false;
+  const docTop = e => e.getBoundingClientRect().top + scrollY;
+  function begin(target, y){
+    cancel();
+    startY = lastY = y; el = target;
+    timer = setTimeout(activate, HOLD);
+  }
+  function activate(){
+    timer = null; if (!el) return;
+    active = true; suppressClick = true;
+    curT = 0; origTop = docTop(el); startScroll = scrollY;
+    el.classList.add("dragging"); box.classList.add("sorting");
+    try { navigator.vibrate && navigator.vibrate(25); } catch(e){}
+    loop();
+  }
+  function move(y, ev){
+    lastY = y;
+    if (!active){ if (Math.abs(y-startY) > SLOP) cancel(); return; }
+    if (ev && ev.cancelable) ev.preventDefault();
+  }
+  function step(){
+    // auto-scroll near the screen edges
+    const edge = 70;
+    if (lastY < edge) scrollBy(0, -Math.ceil((edge-lastY)/6));
+    else if (lastY > innerHeight-edge) scrollBy(0, Math.ceil((lastY-(innerHeight-edge))/6));
+    const want = origTop + (lastY - startY) + (scrollY - startScroll);
+    const nat = () => docTop(el) - curT;
+    curT = want - nat();
+    const prev = el.previousElementSibling, next = el.nextElementSibling;
+    if (prev && want < docTop(prev) + prev.offsetHeight/2){ box.insertBefore(el, prev); curT = want - nat(); }
+    else if (next && want + el.offsetHeight > docTop(next) + next.offsetHeight/2){ box.insertBefore(next, el); curT = want - nat(); }
+    el.style.transform = `translateY(${curT}px)`;
+  }
+  function loop(){ if (!active) return; step(); raf = requestAnimationFrame(loop); }
+  function end(){
+    if (timer){ clearTimeout(timer); timer = null; }
+    if (active){
+      cancelAnimationFrame(raf); active = false;
+      el.style.transform = ""; el.classList.remove("dragging"); box.classList.remove("sorting");
+      store.set("panelOrder", JSON.stringify(current())); syncReset();
+      setTimeout(() => { suppressClick = false; }, 60);
+    }
+    el = null;
+  }
+  function cancel(){ if (timer){ clearTimeout(timer); timer = null; } if (!active) el = null; }
+  const summaryOf = t => { const sm = t.closest && t.closest("#panels > .fold > summary"); return sm ? sm.parentElement : null; };
+
+  box.addEventListener("touchstart", e => { const p = summaryOf(e.target); if (p && e.touches.length===1) begin(p, e.touches[0].clientY); }, {passive:true});
+  document.addEventListener("touchmove", e => { if (el) move(e.touches[0].clientY, e); }, {passive:false});
+  document.addEventListener("touchend", end); document.addEventListener("touchcancel", end);
+  box.addEventListener("mousedown", e => { if (e.button!==0) return; const p = summaryOf(e.target); if (p) begin(p, e.clientY); });
+  document.addEventListener("mousemove", e => { if (el) move(e.clientY, e); });
+  document.addEventListener("mouseup", end);
+  box.addEventListener("contextmenu", e => { if (summaryOf(e.target)) e.preventDefault(); });
+  // a finished drag must not also open/close the panel
+  box.addEventListener("click", e => { if (suppressClick && summaryOf(e.target)){ e.preventDefault(); e.stopPropagation(); } }, true);
+})();
 
 /* ---------- app ---------- */
 function show(){
