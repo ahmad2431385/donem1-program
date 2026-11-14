@@ -500,7 +500,8 @@ const store = {
 };
 let D, DESC = {};
 try{
-  const [a,b] = await Promise.all([fetch("data.json",{cache:"no-store"}), fetch("desc.json",{cache:"no-store"}).catch(()=>null)]);
+  const bust = "?t=" + Date.now();
+  const [a,b] = await Promise.all([fetch("data.json"+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null)]);
   D = await a.json();
   if (b && b.ok) DESC = await b.json();
 }catch(e){
@@ -543,7 +544,7 @@ function matches(cell, me){
 
 /* ---------- build a student's day ---------- */
 const byDate = arr => { const m = {}; for (const x of arr) (m[x.d] ||= []).push(x); return m; };
-const EV = byDate(D.events), UY = byDate(D.uyg), AM = byDate(D.amfi), CH = byDate(D.changes||[]);
+let EV = byDate(D.events), UY = byDate(D.uyg), AM = byDate(D.amfi), CH = byDate(D.changes||[]);
 const TERM_START = "2026-09-28", TERM_END = "2027-06-11";
 
 function kindOf(t){
@@ -575,7 +576,7 @@ function similar(a,b){
   const A = n(a), B = n(b);
   return ["şimdi","öğrenme","beslenme","iletişim","dikiş","nabız"].some(k => A.includes(k) && B.includes(k));
 }
-const SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
+let SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
 function secFor(slot){ const i = store.get("sec_"+slot.replace(":","")); return (D.secmeli||[]).find(x => x.id === i) || null; }
 function mySecIds(){ return SLOTS.map(secFor).filter(Boolean).map(x => x.id); }
 
@@ -1213,6 +1214,34 @@ const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
   // a finished drag must not also open/close the panel
   box.addEventListener("click", e => { if (suppressClick && summaryOf(e.target)){ e.preventDefault(); e.stopPropagation(); } }, true);
 })();
+
+/* ---------- keep data fresh while the page stays open ---------- */
+let _refreshing = false, _lastRefresh = Date.now();
+async function refreshData(){
+  if (_refreshing || !me) return;
+  _refreshing = true;
+  try {
+    const bust = "?t=" + Date.now();
+    const [a,b] = await Promise.all([fetch("data.json"+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null)]);
+    if (!a.ok) return;
+    const nd = await a.json();
+    _lastRefresh = Date.now();
+    if (!nd || !nd.events || !nd.lastCheck) return;
+    if (nd.lastCheck === D.lastCheck && nd.hash === D.hash) return;
+    const nodes = b && b.ok ? await b.json() : null;
+    D = nd; if (nodes) DESC = nodes;
+    EV = byDate(D.events); UY = byDate(D.uyg); AM = byDate(D.amfi); CH = byDate(D.changes||[]);
+    SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
+    dayCache.clear(); _myCh = null;
+    renderSync(); renderWho(); renderChanges(); renderNow(); renderMain(); renderExams();
+    if (!document.querySelector("#secBody select:focus")) renderSec();
+  } catch(e){ /* ağ yok: bir sonraki denemede */ }
+  finally { _refreshing = false; }
+}
+document.addEventListener("visibilitychange", () => { if (!document.hidden && Date.now() - _lastRefresh > 30e3) refreshData(); });
+window.addEventListener("pageshow", e => { if (e.persisted) refreshData(); });
+window.addEventListener("online", () => refreshData());
+setInterval(() => { if (!document.hidden) refreshData(); }, 5*60e3);
 
 /* ---------- app ---------- */
 function show(){
