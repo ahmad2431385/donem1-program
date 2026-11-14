@@ -1852,8 +1852,8 @@ const VIBS = [
   {id:"kisa",n:"Kısa",p:[250]},{id:"cift",n:"Çift",p:[200,100,200]},{id:"uclu",n:"Üçlü",p:[150,90,150,90,150]},
   {id:"uzun",n:"Uzun",p:[900]},{id:"kalp",n:"Kalp atışı",p:[90,70,180,420,90,70,180]},{id:"sos",n:"SOS",p:[100,80,100,80,100,200,300,80,300,80,300,200,100,80,100,80,100]}
 ];
-/* arka plan fotoğrafları: id, ad, konum, yazar, lisans, kaynak sayfası (Wikimedia Commons) */
-const BGS = /*BGDATA*/[]/*ENDBGDATA*/;
+/* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
+const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Kalın","Neon","Cam","Gölge"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
@@ -2306,7 +2306,7 @@ function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
   const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin;
   const bgItem = S.bg ? BGS.find(b => b.id === S.bg) : null;
-  if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(S.bgDim)); }
+  if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(bgDimOf(bgItem))); }
   else { delete card.dataset.bg; for (const k of ["--bg-img","--bgpos","--bgdim"]) card.style.removeProperty(k); }
   applyColor(card); applyColor($("tmLook"));
   mainDial();
@@ -2371,6 +2371,7 @@ function renderLook(){
   const bn = S.bg ? " · " + (BGS.find(b => b.id === S.bg) || {n:""}).n : "";
   $("tmLookHint").textContent = `${S.view === "ring" ? "Analog · " + RSKIN[S.rskin] : "Dijital · " + DSKIN[S.dskin]} · ${cn}${bn}`;
 }
+const bgDimOf = it => Math.min(.88, S.bgDim + ((it && it.dx) || 0));
 let bgBuilt = false;
 function renderBg(){
   const sec = $("tmBgSec"); sec.hidden = !BGS.length; if (!BGS.length) return;
@@ -2379,15 +2380,15 @@ function renderBg(){
     $("tmBgCount").textContent = BGS.length;
     $("tmBgGrid").innerHTML = `<button type="button" class="tm-bgt" data-bg="" aria-pressed="false" aria-label="Fotoğraf yok"><span class="th">Yok</span><small>Düz renk</small></button>`
       + BGS.map(b => `<button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="false" aria-label="${esc(b.n)}"><span class="th"><img loading="lazy" decoding="async" alt="" src="img/bg/${b.id}t.jpg"></span><small>${esc(b.n)}</small></button>`).join("");
-    $("tmBgSrc").innerHTML = BGS.map(b => `<li><b>${esc(b.n)}</b> · ${esc(b.by)} · <a href="${esc(b.lu)}" target="_blank" rel="noopener">${esc(b.lic)}</a> · <a href="${esc(b.src)}" target="_blank" rel="noopener">Wikimedia Commons</a></li>`).join("");
+    $("tmBgSrc").innerHTML = BGS.map(b => `<li><b>${esc(b.n)}</b>${b.by ? " · " + esc(b.by) : ""}${b.lu ? ` · <a href="${esc(b.lu)}" target="_blank" rel="noopener">${esc(b.lic)}</a>` : ""}${b.src ? ` · <a href="${esc(b.src)}" target="_blank" rel="noopener">Kaynak</a>` : ""}</li>`).join("");
   }
   $("tmBgGrid").querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.bg === S.bg)));
   const it = S.bg ? BGS.find(b => b.id === S.bg) : null;
-  $("tmBgCredit").innerHTML = it ? `📷 ${esc(it.n)} · Foto: ${esc(it.by)} · <a href="${esc(it.lu)}" target="_blank" rel="noopener">${esc(it.lic)}</a> · <a href="${esc(it.src)}" target="_blank" rel="noopener">Wikimedia Commons</a>` : "Bir fotoğraf seçersen sayacın arkasına gelir.";
+  $("tmBgCredit").innerHTML = it ? `📷 ${esc(it.n)}${it.by ? " · " + esc(it.by) : ""}${it.lu ? ` · <a href="${esc(it.lu)}" target="_blank" rel="noopener">${esc(it.lic)}</a>` : ""}${it.src ? ` · <a href="${esc(it.src)}" target="_blank" rel="noopener">Kaynak</a>` : ""}` : "Bir fotoğraf seçersen sayacın arkasına gelir.";
   const dv = Math.round(S.bgDim*100); $("tmBgDim").value = dv; $("tmBgDimO").textContent = "%" + dv;
 }
 $("tmBgGrid").addEventListener("click", e => { const b = e.target.closest("[data-bg]"); if (!b) return; S.bg = b.dataset.bg; saveS(); render(); });
-$("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(S.bgDim)); });
+$("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(S.bg ? BGS.find(b => b.id === S.bg) : null))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
