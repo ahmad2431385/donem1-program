@@ -1125,7 +1125,7 @@ document.querySelectorAll("#wxCard [data-wx]").forEach(b => b.onclick = () => { 
 setInterval(() => { if (me) loadWx(); }, 30*60e3);
 
 /* ---------- panels: remembered open state + long-press reordering ---------- */
-const PANEL_IDS = ["wxCard","secCard","homeCard","linksCard","examBox"];
+const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
 (function initPanels(){
   const box = $("panels");
   // open/closed state: closed by default, remembered per panel on this device
@@ -1138,7 +1138,7 @@ const PANEL_IDS = ["wxCard","secCard","homeCard","linksCard","examBox"];
   const def = PANEL_IDS.slice();
   const saved = (() => { try { return JSON.parse(store.get("panelOrder")||"null"); } catch(e){ return null; } })();
   const apply = order => { for (const id of order) if ($(id)) box.appendChild($(id)); };
-  if (Array.isArray(saved)) apply(saved.filter(id => def.includes(id)).concat(def.filter(id => !saved.includes(id))));
+  apply(Array.isArray(saved) ? saved.filter(id => def.includes(id)).concat(def.filter(id => !saved.includes(id))) : def);
   const current = () => [...box.children].map(c => c.id);
   const syncReset = () => { $("panelsReset").hidden = current().join() === def.join(); };
   syncReset();
