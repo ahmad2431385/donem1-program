@@ -627,10 +627,7 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-bgt[aria-pressed="true"]{border-color:var(--ph);box-shadow:0 0 0 2px color-mix(in srgb,var(--ph) 28%,transparent)}
 .tm-bgt[aria-pressed="true"] small{color:var(--ph)}
 .tm-credit{font-size:12.5px;color:var(--muted);margin:10px 0 0;min-height:1.3em}
-.tm-credit a,.tm-srcs a{color:var(--accent)}
-.tm-srcs{margin-top:10px;font-size:12.5px;color:var(--muted)}
-.tm-srcs summary{cursor:pointer;font-weight:600;padding:4px 0}
-.tm-srcs ul{margin:6px 0 0;padding-left:18px;display:flex;flex-direction:column;gap:5px}
+.tm-credit a{color:var(--accent)}
 .tm-pill{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:9px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-weight:600;font-size:14px;color:var(--ink)}
 .tm-pill b{font-family:var(--mono);font-size:15px}
 .tm-pill .pd{width:9px;height:9px;border-radius:50%;background:var(--accent)}
@@ -858,7 +855,6 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
           <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
           <p class="tm-credit" id="tmBgCredit"></p>
           <div class="tm-range"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
-          <details class="tm-srcs"><summary>Fotoğraf kaynakları ve lisanslar</summary><ul id="tmBgSrc"></ul></details>
         </div>
         <p class="tm-lbl">Renk</p>
         <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
@@ -2380,7 +2376,6 @@ function renderBg(){
     $("tmBgCount").textContent = BGS.length;
     $("tmBgGrid").innerHTML = `<button type="button" class="tm-bgt" data-bg="" aria-pressed="false" aria-label="Fotoğraf yok"><span class="th">Yok</span><small>Düz renk</small></button>`
       + BGS.map(b => `<button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="false" aria-label="${esc(b.n)}"><span class="th"><img loading="lazy" decoding="async" alt="" src="img/bg/${b.id}t.jpg"></span><small>${esc(b.n)}</small></button>`).join("");
-    $("tmBgSrc").innerHTML = BGS.map(b => `<li><b>${esc(b.n)}</b>${b.by ? " · " + esc(b.by) : ""}${b.lu ? ` · <a href="${esc(b.lu)}" target="_blank" rel="noopener">${esc(b.lic)}</a>` : ""}${b.src ? ` · <a href="${esc(b.src)}" target="_blank" rel="noopener">Kaynak</a>` : ""}</li>`).join("");
   }
   $("tmBgGrid").querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.bg === S.bg)));
   const it = S.bg ? BGS.find(b => b.id === S.bg) : null;
