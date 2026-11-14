@@ -372,10 +372,12 @@ body[data-route="gorunum"] #lookView, body[data-route="ses"] #ambView, body[data
 body[data-route="gorunum"] #timerView{display:contents}
 body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
 body[data-route="gorunum"] #tmCard{--ps:.5;--sh:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);overflow-anchor:none}
-body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:relative;flex:none;width:100%;height:var(--sh);contain:layout paint style}
+body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:relative;flex:none;width:100%;height:var(--sh);contain:layout style}
 body[data-route="gorunum"] #tmCard .tm-ring,body[data-route="gorunum"] #tmCard .tm-dig{position:absolute;left:50%;top:0;width:300px;transform:translateX(-50%) scale(var(--ps));transform-origin:50% 0;will-change:transform}
 body[data-route="gorunum"] #tmCard .tm-time{font-size:60px}
 body[data-route="gorunum"] #tmCard .tm-time.long{font-size:44px}
+body[data-route="gorunum"] #tmCard[data-rskin="5"] .tm-time{font-size:17px}
+body[data-route="gorunum"] #tmCard[data-rskin="5"] .tm-time.long{font-size:13px}
 body[data-route="gorunum"] #tmCard[data-rskin="7"] .tm-time{font-size:40px}
 body[data-route="gorunum"] #tmCard .tm-dig{--ds:86px;height:300px;justify-content:center}
 body.pv-drag{-webkit-user-select:none;user-select:none;overflow-anchor:none}
@@ -421,7 +423,7 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-card[data-view="lcd"] .tm-ring{display:none}
 
 /* analog dial (10 skins, drawn in SVG) */
-.tm-card{--rw:min(calc(min(80vw,300px)*var(--rz,1)),calc(100vw - 64px),640px)}
+.tm-card{container-type:inline-size;--rw:var(--rwx,min(80vw,300px))}
 .tm-stage{display:contents}
 .tm-ring{position:relative;width:var(--rw);aspect-ratio:1}
 .tm-ring .dialbox{position:absolute;inset:0}
@@ -442,6 +444,11 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-time{font-family:var(--display);font-size:calc(var(--rw)*.2);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
 .tm-time.long{font-size:calc(var(--rw)*.147)}
 .tm-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-card[data-rskin="5"] .tm-center{justify-content:center;align-items:center;padding:0 3% 0 35.5%;gap:0}
+.tm-card[data-rskin="5"] .tm-label,.tm-card[data-rskin="5"] .tm-show{display:none}
+.tm-card[data-rskin="5"] .tm-time{font-size:calc(var(--rw)*.058);font-weight:700;letter-spacing:0;color:#1d1d1f;text-shadow:none}
+.tm-card[data-rskin="5"] .tm-time.long{font-size:calc(var(--rw)*.043)}
+.tm-card[data-bg][data-rskin="5"] .tm-time{text-shadow:none}
 .tm-card[data-rskin="7"] .tm-center{justify-content:flex-start;padding-top:59%}
 .tm-card[data-rskin="7"] .tm-label,.tm-card[data-rskin="7"] .tm-show{display:none}
 .tm-card[data-rskin="7"] .tm-time{font-size:calc(var(--rw)*.133)}
@@ -465,6 +472,8 @@ body.tm-full #tmCard .tm-barrow{position:absolute;top:max(12px,env(safe-area-ins
 body.tm-full #tmCard .tm-ring{width:min(86vw,62vh,780px)}
 body.tm-full #tmCard .tm-time{font-size:min(17vw,13vh,140px)}
 body.tm-full #tmCard .tm-time.long{font-size:min(12.5vw,10vh,100px)}
+body.tm-full #tmCard[data-rskin="5"] .tm-time{font-size:calc(min(86vw,62vh,780px)*.058)}
+body.tm-full #tmCard[data-rskin="5"] .tm-time.long{font-size:calc(min(86vw,62vh,780px)*.043)}
 body.tm-full #tmCard[data-rskin="7"] .tm-time{font-size:min(12vw,9.5vh,100px)}
 body.tm-full #tmCard .tm-label{font-size:clamp(12px,2.4vmin,22px)}
 body.tm-full #tmCard .tm-show,body.tm-full #tmCard .dg-show{font-size:clamp(13px,2.4vmin,22px)}
@@ -484,7 +493,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 [data-font="4"] .fp,.tm-card[data-font="4"] .tm-time,.tm-card[data-font="4"] .dg-row .c,.tm-card[data-font="4"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
-.tm-dig{--ds:min(calc(clamp(56px,19vw,86px)*var(--dz,1)),calc((100vw - 56px)/3.4));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.tm-dig{--ds:var(--dsx,clamp(56px,19vw,86px));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
 .dg-top{display:flex;justify-content:space-between;width:100%;font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ph);padding:0 4px}
 .dg-row{display:flex;justify-content:center;align-items:center;font-size:var(--ds);line-height:1;font-variant-numeric:tabular-nums;gap:.04em;color:var(--ink);font-family:var(--display)}
 .dg-row.long{font-size:calc(var(--ds)*.72)}
@@ -581,6 +590,8 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-range{display:flex;align-items:center;gap:12px;margin-top:12px}
 .tm-range span{font-size:13px;color:var(--muted);font-weight:600;min-width:64px}
 .tm-range input{flex:1;accent-color:var(--accent);height:28px}
+.tm-rst{flex:none;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:16px;line-height:1;padding:0}
+.tm-rst[hidden]{display:none}
 .tm-range output{font:600 13px var(--mono);min-width:38px;text-align:right}
 
 /* appearance picker */
@@ -918,12 +929,12 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
     <section class="card tm-look tmsec" id="tmLook">
       <div class="fhead"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></div>
       <div class="fbody">
-        <p class="tm-lbl" style="margin-top:2px">Analog saat · 9 tasarım</p>
+        <p class="tm-lbl" style="margin-top:2px">Analog saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
-        <div class="tm-range"><span>Boyut</span><input type="range" id="tmRz" min="70" max="140" step="5" aria-label="Analog saat boyutu"><output id="tmRzO"></output></div>
+        <div class="tm-range"><span>Boyut</span><input type="range" id="tmRz" min="40" max="100" step="2" aria-label="Analog saat boyutu"><output id="tmRzO"></output><button type="button" class="tm-rst" data-rst="rz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
         <p class="tm-lbl">Dijital saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
-        <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="70" max="140" step="5" aria-label="Dijital saat boyutu"><output id="tmDzO"></output></div>
+        <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="40" max="100" step="2" aria-label="Dijital saat boyutu"><output id="tmDzO"></output><button type="button" class="tm-rst" data-rst="dz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
         <p class="tm-lbl">Yazı stili · 5 stil</p>
         <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
         <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik, Daktilo, Yuvarlak ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
@@ -1943,18 +1954,18 @@ const VIBS = [
 ];
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
-const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
+const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Duvar","Parçalı","Mekanik","Neon","Sıvı"];
 const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"],["#ffffff","Beyaz"]];
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:1, dz:1, saved:[], color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, szv:0, saved:[], color:"auto",
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[.7,1.4], dz:[.7,1.4], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -1973,9 +1984,11 @@ function loadAll(){
   if (S.font > 9) S.font = 0;
   if (S.fv < 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
-  if (S.rskin === 5) S.rskin = 0;
+  if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
   S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-3);
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  if (S.rz && S.rz < .4) S.rz = .4;
+  if (S.dz && S.dz < .4) S.dz = .4;
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
   if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
@@ -2301,7 +2314,15 @@ function dialMarkup(sk, u){
     case 2: b = `<circle cx="130" cy="130" r="114" fill="none" style="stroke:color-mix(in srgb,var(--ink) 18%,transparent);stroke-width:2"/>` + Array.from({length:12}, (_,i) => { const p1 = polar(104, i*30), p2 = polar(114, i*30); return `<line x1="${p1[0].toFixed(1)}" y1="${p1[1].toFixed(1)}" x2="${p2[0].toFixed(1)}" y2="${p2[1].toFixed(1)}" style="stroke:var(--ink);stroke-width:3;opacity:.55;stroke-linecap:round"/>`; }).join("") + trk(96,2,14) + `<path data-r="pie" d="" style="fill:color-mix(in srgb,var(--ph) 26%,transparent);stroke:var(--ph);stroke-width:2.5;stroke-linejoin:round"/>`; break;
     case 3: b = disc(72) + trk(106,9) + arc(106,9) + knob(106,7) + trk(86,5) + arc(86,5,"","sec"); break;
     case 4: b = `<circle cx="130" cy="130" r="88" fill="none" style="stroke:color-mix(in srgb,var(--ink) 7%,transparent);stroke-width:1.5"/>` + Array.from({length:60}, (_,i) => { const L = i%5 === 0, p = polar(108, i*6); return `<circle data-r="dot" class="dot" cx="${p[0].toFixed(2)}" cy="${p[1].toFixed(2)}" r="${L ? 4.6 : 3.1}"/>`; }).join(""); break;
-    case 5: b = trk(98,22,8) + arc(98,22) + disc(74); break;
+    case 5: {
+      const num = Array.from({length:12}, (_,i) => { const n = i + 1, p = polar(83, n*30); return `<text x="${p[0].toFixed(1)}" y="${(p[1] + 1).toFixed(1)}" text-anchor="middle" dominant-baseline="central" style="font:600 23px Georgia,'Times New Roman',serif;fill:#1d1d1f">${n}</text>`; }).join("");
+      const tk = Array.from({length:60}, (_,i) => { const L = i%5 === 0, p1 = polar(L ? 97 : 103, i*6), p2 = polar(110, i*6); return `<line x1="${p1[0].toFixed(2)}" y1="${p1[1].toFixed(2)}" x2="${p2[0].toFixed(2)}" y2="${p2[1].toFixed(2)}" style="stroke:${L ? "#1d1d1f" : "#8d887c"};stroke-width:${L ? 3 : 1.2};stroke-linecap:round"/>`; }).join("");
+      b = `<circle cx="130" cy="130" r="125" style="fill:#2b2e33;filter:drop-shadow(0 6px 14px rgba(0,0,0,.28))"/>` + `<circle cx="130" cy="130" r="119.5" fill="none" style="stroke:rgba(255,255,255,.14);stroke-width:5"/>` + arc(119.5,5,"stroke:var(--glow);")
+        + `<circle cx="130" cy="130" r="114" style="fill:#fbf9f3;stroke:#d8d3c6;stroke-width:1"/>` + tk + num
+        + `<rect x="150" y="118" width="48" height="24" rx="4" style="fill:#fff;stroke:#cfc9bb;stroke-width:1"/>`
+        + `<g style="filter:drop-shadow(1px 2px 2px rgba(0,0,0,.28))"><line data-r="hh" x1="130" y1="142" x2="130" y2="74" style="stroke:#1d1d1f;stroke-width:7;stroke-linecap:round"/><line data-r="mh" x1="130" y1="148" x2="130" y2="40" style="stroke:#1d1d1f;stroke-width:4.4;stroke-linecap:round"/><g data-r="sh"><line x1="130" y1="156" x2="130" y2="30" style="stroke:var(--ph);stroke-width:1.8;stroke-linecap:round"/><circle cx="130" cy="150" r="4.2" style="fill:var(--ph)"/></g></g>`
+        + `<circle cx="130" cy="130" r="6.2" style="fill:#1d1d1f"/><circle cx="130" cy="130" r="2.4" style="fill:var(--ph)"/>`; break;
+    }
     case 6: b = Array.from({length:12}, (_,i) => { const p1 = polar(100, i*30 + 3), p2 = polar(100, i*30 + 27); return `<path data-r="seg" class="seg" d="M${p1[0].toFixed(2)} ${p1[1].toFixed(2)}A100 100 0 0 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}" style="stroke-width:14;stroke-linecap:round"/>`; }).join("") + `<circle cx="130" cy="130" r="80" fill="url(#d${u})" style="filter:drop-shadow(0 5px 12px rgba(10,30,25,.14))"/>`; break;
     case 7: b = `<circle cx="130" cy="130" r="118" style="fill:var(--surface);stroke:color-mix(in srgb,var(--ink) 25%,transparent);stroke-width:3;filter:drop-shadow(0 6px 16px rgba(10,30,25,.16))"/>` + Array.from({length:60}, (_,i) => { const L = i%5 === 0, p1 = polar(L ? 98 : 106, i*6), p2 = polar(112, i*6); return `<line x1="${p1[0].toFixed(2)}" y1="${p1[1].toFixed(2)}" x2="${p2[0].toFixed(2)}" y2="${p2[1].toFixed(2)}" style="stroke:${L ? "var(--ink)" : "var(--muted)"};stroke-width:${L ? 3.2 : 1.2};opacity:${L ? .8 : .5}"/>`; }).join("") + arc(88,4) + `<line data-r="hand" x1="130" y1="150" x2="130" y2="56" style="stroke:var(--ph);stroke-width:2.6;stroke-linecap:round"/><circle cx="130" cy="130" r="6" style="fill:var(--ph)"/><circle cx="130" cy="130" r="2.4" style="fill:var(--surface)"/>`; break;
     case 8: b = `<circle cx="130" cy="130" r="116" style="fill:#09130f;stroke:color-mix(in srgb,var(--ph) 55%,#09130f);stroke-width:2;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--ph) 40%,transparent))"/>` + `<circle cx="130" cy="130" r="100" fill="none" style="stroke:rgba(255,255,255,.1);stroke-width:6"/>` + arc(100,6,"stroke:var(--glow);filter:drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 12px color-mix(in srgb,var(--glow) 60%,transparent));") + knob(100,5,"var(--glow)","stroke:var(--glow);") + `<circle cx="130" cy="130" r="84" fill="none" style="stroke:var(--glow);stroke-width:1;opacity:.28"/>`; break;
@@ -2311,17 +2332,18 @@ function dialMarkup(sk, u){
 }
 const dialCache = new WeakMap();
 function dialIndex(svg){
-  const c = {arcs:[], secs:[], knobs:[], ticks:[], dots:[], segs:[], pies:[], hands:[], liquids:[], lit60:-1, lit12:-1};
+  const c = {arcs:[], secs:[], knobs:[], ticks:[], dots:[], segs:[], pies:[], hands:[], liquids:[], hh:[], mh:[], sh:[], lit60:-1, lit12:-1};
   svg.querySelectorAll("[data-r]").forEach(el => {
     const r = el.dataset.r;
     if (r === "arc") c.arcs.push(el); else if (r === "sec") c.secs.push(el); else if (r === "knob") c.knobs.push(el);
     else if (r === "tick") c.ticks.push(el); else if (r === "dot") c.dots.push(el); else if (r === "seg") c.segs.push(el);
     else if (r === "pie") c.pies.push(el); else if (r === "hand") c.hands.push(el); else if (r === "liquid") c.liquids.push(el);
+    else if (r === "hh") c.hh.push(el); else if (r === "mh") c.mh.push(el); else if (r === "sh") c.sh.push(el);
   });
   dialCache.set(svg, c); return c;
 }
 const secFrac = rem => { const s = (rem % 60000)/60000; return rem > 0 && s === 0 ? 1 : s; };
-function dialUpdate(svg, frac, rem){
+function dialUpdate(svg, frac, rem, full){
   const c = dialCache.get(svg) || dialIndex(svg);
   for (const el of c.arcs){ const L = 2*Math.PI*(+el.dataset.rad); el.style.strokeDasharray = String(L); el.style.strokeDashoffset = String(L*(1 - frac)); el.style.opacity = frac <= 0 ? "0" : "1"; }
   if (c.secs.length){ const f = secFrac(rem); for (const el of c.secs){ const L = 2*Math.PI*(+el.dataset.rad); el.style.strokeDasharray = String(L); el.style.strokeDashoffset = String(L*(1 - f)); } }
@@ -2337,6 +2359,11 @@ function dialUpdate(svg, frac, rem){
     el.setAttribute("d", d);
   }
   for (const el of c.hands) el.setAttribute("transform", `rotate(${(360*(1 - secFrac(rem))).toFixed(1)} 130 130)`);
+  if (c.hh.length){
+    const fl = full || (frac > 0 ? rem/frac : 0), el0 = Math.max(0, fl - rem);
+    const rot = (els, deg) => { for (const el of els) el.setAttribute("transform", `rotate(${deg.toFixed(2)} 130 130)`); };
+    rot(c.hh, (el0/43200000 % 1)*360); rot(c.mh, (el0/3600000 % 1)*360); rot(c.sh, (el0/60000 % 1)*360);
+  }
   for (const el of c.liquids) el.setAttribute("transform", `translate(0,${(232 - frac*204).toFixed(1)})`);
 }
 const svgDial = (sk, u) => `<svg class="dial" viewBox="0 0 260 260" aria-hidden="true">${dialMarkup(sk, u)}</svg>`;
@@ -2392,7 +2419,7 @@ function paint(){
     const tm = $("tmTime"); tm.textContent = clock; tm.classList.toggle("long", clock.length > 5);
     const dg = $("tmDigits"); dg.innerHTML = digitsHTML(clock, S.dskin); dg.classList.toggle("long", clock.length > 5); dg.setAttribute("aria-label", clock);
   }
-  if (S.view === "ring") dialUpdate(mainDial(), frac, rem);
+  if (S.view === "ring") dialUpdate(mainDial(), frac, rem, full);
   $("tmCard").dataset.run = running ? "1" : "0";
   if (!titleTimer) document.title = running ? `${clock} · ${phaseName(x.phase)}` : titleBase;
   const L = liveOne(), pill = $("tmPill");
@@ -2407,7 +2434,7 @@ function paint(){
 }
 function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
-  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.style.setProperty("--rz", S.rz); card.style.setProperty("--dz", S.dz); if (typeof pvApply === "function" && $("tmGrip")) pvApply();
+  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; sizeVars(card); if (typeof pvApply === "function" && $("tmGrip")) pvApply();
   card.dataset.dskin = S.dskin; if (S.font) card.dataset.font = S.font; else delete card.dataset.font;
   const bgItem = bgFind(S.bg);
   if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", bgItem.url ? `url("${bgItem.url}")` : `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(bgDimOf(bgItem))); }
@@ -2522,7 +2549,7 @@ let lookBuilt = false;
 function renderLook(){
   if (!lookBuilt){
     lookBuilt = true;
-    $("tmSkinsR").innerHTML = RSKIN.map((n,i) => i === 5 ? "" : `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
+    $("tmSkinsR").innerHTML = RSKIN.map((n,i) => `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
     $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
     $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
     $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">25:08</span></div><small>${n}</small></button>`).join("");
@@ -2530,7 +2557,7 @@ function renderLook(){
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
-  $("tmRz").value = Math.round(S.rz*100); $("tmRzO").textContent = "%" + Math.round(S.rz*100); $("tmDz").value = Math.round(S.dz*100); $("tmDzO").textContent = "%" + Math.round(S.dz*100);
+  for (const k of ["rz", "dz"]){ const pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(k === "rz" ? "tmRz" : "tmDz").value = pct; $(k === "rz" ? "tmRzO" : "tmDzO").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
   renderSwatches();
   renderBg();
@@ -2614,8 +2641,18 @@ $("tmUpGrid").addEventListener("click", e => {
 });
 const PV_MIN = 150;
 const pvMax = () => Math.max(PV_MIN + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
+function sizeVars(card){
+  if (S.rz) card.style.setProperty("--rwx", `min(calc(100cqw*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
+  if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(100cqw*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
+}
+// default ("auto") size expressed as % of the card width, so the slider can show where it sits
+function autoPct(kind){
+  const card = $("tmCard"), cs = getComputedStyle(card), inner = Math.max(120, card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+  const px = kind === "dz" ? Math.min(Math.max(56, innerWidth*.19), 86)*3.5 : Math.min(innerWidth*.8, 300);
+  return Math.min(100, Math.max(40, Math.round(px/inner*100)));
+}
 function pvApply(){
-  const card = $("tmCard"), z = S.view === "lcd" ? S.dz : S.rz;
+  const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = S[kind] ? S[kind]*100/autoPct(kind) : 1;
   const pr = PV_MIN + pvT*(pvMax() - PV_MIN);
   const D = Math.max(90, Math.min(pr*z, innerWidth - 56, innerHeight*.6 - 112));
   card.style.setProperty("--ps", (D/300).toFixed(4)); card.style.setProperty("--sh", Math.round(D) + "px");
@@ -2648,7 +2685,8 @@ $("tmUpIn").addEventListener("change", e => { const f = e.target.files && e.targ
 upInit();
 $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(bgFind(S.bg)))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
-for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .7, 1.4); $(id + "O").textContent = "%" + e.target.value; saveS(); const c = $("tmCard"); c.style.setProperty("--" + key, S[key]); pvApply(); });
+for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
+document.querySelectorAll("[data-rst]").forEach(b => b.addEventListener("click", () => { S[b.dataset.rst] = 0; saveS(); render(); }));
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => {
