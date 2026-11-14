@@ -476,16 +476,12 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 @media (orientation:landscape) and (max-height:520px){body.tm-full #tmCard .tm-top{display:none}}
 /* clock font styles (analog centre time + digital digits; segment/matrix skins are drawn shapes) */
 [data-font="1"]{--tf:Georgia,"Times New Roman",serif;--tw:500}
-[data-font="2"]{--tf:var(--mono);--tw:500}
-[data-font="3"]{--tf:ui-rounded,"SF Pro Rounded","Nunito","Varela Round","Trebuchet MS",system-ui,sans-serif;--tw:700}
-[data-font="4"]{--tf:system-ui,"Segoe UI",sans-serif;--tw:200}
-[data-font="5"]{--tf:"Segoe Script","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive;--tw:600}
-[data-font="6"]{--tf:var(--display);--tw:800}
-[data-font="7"]{--tf:var(--display);--tw:700}
+[data-font="2"]{--tf:system-ui,"Segoe UI",sans-serif;--tw:200}
+[data-font="3"]{--tf:"Segoe Script","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive;--tw:600}
+[data-font="4"]{--tf:var(--display);--tw:800}
 .tm-card[data-font] .tm-time,.tm-card[data-font] .dg-row,.tm-card[data-font] .dg-row .c,.tm-card[data-font] .dg-row .sep{font-family:var(--tf) !important;font-weight:var(--tw) !important;letter-spacing:var(--tl,0) !important;font-style:var(--ti,normal) !important}
-/* effect styles: outline, neon glow, gold */
-[data-font="6"] .fp,.tm-card[data-font="6"] .tm-time,.tm-card[data-font="6"] .dg-row .c,.tm-card[data-font="6"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
-[data-font="7"] .fp,.tm-card[data-font="7"] .tm-time,.tm-card[data-font="7"] .dg-row .c,.tm-card[data-font="7"] .dg-row .sep{color:var(--ph) !important;text-shadow:0 0 .08em var(--ph),0 0 .26em color-mix(in srgb,var(--ph) 75%,transparent),0 0 .6em color-mix(in srgb,var(--ph) 55%,transparent) !important}
+/* effect style: outline */
+[data-font="4"] .fp,.tm-card[data-font="4"] .tm-time,.tm-card[data-font="4"] .dg-row .c,.tm-card[data-font="4"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
 .tm-dig{--ds:min(calc(clamp(56px,19vw,86px)*var(--dz,1)),calc((100vw - 56px)/3.4));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -912,7 +908,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
         <p class="tm-lbl">Dijital saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="70" max="140" step="5" aria-label="Dijital saat boyutu"><output id="tmDzO"></output></div>
-        <p class="tm-lbl">Yazı stili · 8 stil</p>
+        <p class="tm-lbl">Yazı stili · 5 stil</p>
         <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
         <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik, Daktilo, Yuvarlak ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
         <div id="tmBgSec">
@@ -1920,7 +1916,7 @@ const VIBS = [
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
-const FONTN = ["Varsayılan","Klasik","Daktilo","Yuvarlak","İnce","El yazısı","Çizgi","Neon"];
+const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
 
@@ -1930,7 +1926,7 @@ const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"r
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,7], fv:[0,2], rz:[.7,1.4], dz:[.7,1.4], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[.7,1.4], dz:[.7,1.4], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -1946,10 +1942,11 @@ function loadAll(){
   const s = jget(KS) || {};
   S = {...DEF};
   for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
-  if (S.font > 7) S.font = 0;
+  if (S.font > 9) S.font = 0;
+  if (S.fv < 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
+  if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.rskin === 5) S.rskin = 0;
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
-  if (S.fv !== 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
   if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
