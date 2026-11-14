@@ -37,5 +37,18 @@ jobs:
         with:
           path: _site
 
-      - id: deployment
+      # GitHub tarafında geçici hatalar olabildiği için bir kez daha denenir.
+      - id: deploy1
         uses: actions/deploy-pages@v4
+        continue-on-error: true
+
+      - name: Kısa bekleme (yeniden deneme öncesi)
+        if: steps.deploy1.outcome == 'failure'
+        run: sleep 30
+
+      - id: deploy2
+        if: steps.deploy1.outcome == 'failure'
+        uses: actions/deploy-pages@v4
+
+      - id: deployment
+        run: echo "page_url=${{ steps.deploy1.outputs.page_url || steps.deploy2.outputs.page_url }}" >> "$GITHUB_OUTPUT"
