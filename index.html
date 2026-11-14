@@ -272,6 +272,68 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .loading{padding:40px 0;text-align:center;color:var(--muted)}
 @media (prefers-reduced-motion:no-preference){.ev,.wi{transition:border-color .15s, box-shadow .2s}}
+
+/* weather */
+.wx-today{display:flex;flex-direction:column;gap:10px;background:linear-gradient(135deg,var(--amfi-soft),var(--surface) 70%)}
+.wx-top{display:flex;align-items:center;gap:12px}
+.wx-emo{font-size:40px;line-height:1;flex:none}
+.wx-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.wx-main .lbl{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);font-weight:600}
+.wx-main b{font-size:16px}
+.wx-main span{font-size:13px;color:var(--muted)}
+.wx-temp{flex:none;text-align:right;font-family:var(--display);font-size:26px;line-height:1;font-weight:600}
+.wx-temp small{display:block;font-family:var(--body);font-size:12px;color:var(--muted);font-weight:500;margin-top:4px}
+.wx-tips{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.wx-tips li{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:7px 10px}
+.wx-tips li .i{flex:none;font-size:16px;line-height:1.3}
+.wx-tips li.rain{border-color:color-mix(in srgb, var(--amfi) 40%, var(--line))}
+.wx-card{display:flex;flex-direction:column;gap:12px}
+.wx-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.wx-head h2{font-size:17px;display:flex;align-items:center;gap:6px}
+.wx-tabs{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.wx-tabs button{border:none;background:none;padding:5px 12px;border-radius:7px;font-weight:600;color:var(--muted);font-size:13.5px}
+.wx-tabs button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.wx-hero{display:flex;align-items:center;gap:14px;background:var(--amfi-soft);border-radius:12px;padding:12px 14px}
+.wx-hero .wx-emo{font-size:48px}
+.wx-hero .d{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.wx-hero .d b{font-size:16px}
+.wx-hero .d span{font-size:13px;color:var(--muted)}
+.wx-hero .t{font-family:var(--display);font-size:24px;font-weight:600;white-space:nowrap}
+.wx-hero .t span{color:var(--muted);font-weight:500}
+.wx-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.wx-stats div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center;display:flex;flex-direction:column;gap:1px;min-width:0}
+.wx-stats div span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.wx-stats div b{font-size:14px;white-space:nowrap}
+@media (max-width:400px){.wx-stats{grid-template-columns:repeat(2,1fr)}}
+.wx-parts{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.wx-parts div{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border-radius:10px;background:var(--bg);border:1px solid var(--line);min-width:0}
+.wx-parts .n{font-size:12px;color:var(--muted);font-weight:600}
+.wx-parts .e{font-size:24px;line-height:1.2}
+.wx-parts .tt{font-weight:600;font-size:14px}
+.wx-parts .r{font-size:11.5px;color:var(--amfi);font-weight:600}
+.wx-hours{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
+.wx-hours div{flex:none;width:52px;display:flex;flex-direction:column;align-items:center;gap:1px;padding:6px 0;border-radius:10px;background:var(--bg);border:1px solid var(--line)}
+.wx-hours div.now{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.wx-hours .h{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.wx-hours .e{font-size:20px;line-height:1.3}
+.wx-hours .tt{font-size:13px;font-weight:600}
+.wx-hours .r{font-size:11px;color:var(--amfi);font-weight:600;min-height:1.2em}
+.wx-sub{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.05em}
+.wx-week{display:flex;flex-direction:column}
+.wx-week .row{display:grid;grid-template-columns:62px 30px 1fr 74px;align-items:center;gap:8px;padding:8px 0;border-top:1px solid var(--line);font-size:13.5px}
+.wx-week .row:first-child{border-top:none}
+.wx-week .dn{font-weight:600}
+.wx-week .dn small{display:block;font-weight:500;color:var(--muted);font-size:11.5px}
+.wx-week .e{font-size:22px;text-align:center}
+.wx-week .mid{min-width:0;display:flex;flex-direction:column;gap:3px}
+.wx-week .mid span{font-size:12.5px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wx-week .bar{height:5px;border-radius:3px;background:var(--line);position:relative;overflow:hidden}
+.wx-week .bar i{position:absolute;top:0;bottom:0;border-radius:3px;background:linear-gradient(90deg,var(--amfi),var(--pdo))}
+.wx-week .tt{text-align:right;font-weight:600;white-space:nowrap}
+.wx-week .tt span{color:var(--muted);font-weight:500}
+.wx-week .rp{font-size:11.5px;color:var(--amfi);font-weight:600}
+.wx-src{font-size:11.5px;color:var(--muted)}
+.wx-src a{color:inherit}
 </style>
 </head>
 <body>
@@ -315,6 +377,8 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
     <section class="now" id="nowBox"></section>
 
+    <section class="card wx-today" id="wxToday" hidden aria-live="polite"></section>
+
 
     <section class="card ctl">
       <div class="ctlrow">
@@ -356,6 +420,19 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
       <ul class="amfilist" id="amfiList" style="margin-top:0"></ul>
       </div>
     </details>
+
+    <section class="card wx-card" id="wxCard" hidden aria-labelledby="wxH">
+      <div class="wx-head">
+        <h2 id="wxH">🌤️ Fatih hava durumu</h2>
+        <div class="wx-tabs" role="tablist" aria-label="Gün seç">
+          <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
+          <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
+          <button type="button" role="tab" data-wx="w" aria-selected="false">Bu hafta</button>
+        </div>
+      </div>
+      <div id="wxBody"></div>
+      <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
+    </section>
 
     <section class="tools">
       <details class="card fold" id="secCard">
@@ -874,6 +951,164 @@ function renderExams(){
   }).join("");
 }
 
+/* ---------- weather (Fatih, Open-Meteo) ---------- */
+const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=41.0186&longitude=28.9497"
+  + "&current=temperature_2m,apparent_temperature,weather_code,is_day,wind_speed_10m"
+  + "&hourly=temperature_2m,apparent_temperature,precipitation_probability,precipitation,weather_code,is_day,wind_speed_10m"
+  + "&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset"
+  + "&timezone=Europe%2FIstanbul&forecast_days=7";
+let WX = null, wxTab = "0";
+function wxInfo(code, day=1){
+  const c = +code;
+  if (c===0) return day? ["☀️","Açık ve güneşli"] : ["🌙","Açık"];
+  if (c===1) return day? ["🌤️","Çoğunlukla açık"] : ["🌙","Çoğunlukla açık"];
+  if (c===2) return ["⛅","Parçalı bulutlu"];
+  if (c===3) return ["☁️","Kapalı"];
+  if (c===45||c===48) return ["🌫️","Sisli"];
+  if (c>=51&&c<=57) return ["🌦️","Çisenti"];
+  if (c===61) return ["🌦️","Hafif yağmurlu"];
+  if (c===63||c===66) return ["🌧️","Yağmurlu"];
+  if (c===65||c===67) return ["🌧️","Kuvvetli yağmur"];
+  if (c===71||c===77) return ["🌨️","Hafif kar"];
+  if (c===73||c===75) return ["❄️","Karlı"];
+  if (c===80) return ["🌦️","Hafif sağanak"];
+  if (c===81) return ["🌧️","Sağanak yağış"];
+  if (c===82) return ["⛈️","Kuvvetli sağanak"];
+  if (c===85||c===86) return ["🌨️","Kar sağanağı"];
+  if (c>=95) return ["⛈️","Gök gürültülü sağanak"];
+  return ["🌡️","—"];
+}
+const r0 = x => Math.round(x);
+const wxDay = i => WX.daily.time[i];
+function wxHours(date, from=0, to=24){
+  const H = WX.hourly, out = [];
+  for (let i=0;i<H.time.length;i++){
+    const t = H.time[i]; if (t.slice(0,10)!==date) continue;
+    const h = +t.slice(11,13); if (h<from || h>=to) continue;
+    out.push({h, t:H.temperature_2m[i], f:H.apparent_temperature[i], p:H.precipitation_probability[i]??0, mm:H.precipitation[i]??0, c:H.weather_code[i], d:H.is_day[i], w:H.wind_speed_10m[i]});
+  }
+  return out;
+}
+function rainSpans(hrs, thr=40){
+  const spans = []; let cur = null;
+  for (const x of hrs){
+    if (x.p>=thr){ if (cur && cur.e===x.h) cur.e = x.h+1; else { cur = {s:x.h, e:x.h+1}; spans.push(cur); } }
+  }
+  const z = n => String(n%24).padStart(2,"0")+":00";
+  return spans.map(s => `${z(s.s)}–${z(s.e)}`);
+}
+function wxAdvice(date){
+  const hrs = wxHours(date, 7, 22);
+  if (!hrs.length) return null;
+  const maxP = Math.max(...hrs.map(x=>x.p)), mm = hrs.reduce((a,x)=>a+x.mm,0);
+  const fmin = Math.min(...hrs.map(x=>x.f)), fmax = Math.max(...hrs.map(x=>x.f)), wmax = Math.max(...hrs.map(x=>x.w));
+  const snow = hrs.some(x => (x.c>=71&&x.c<=77)||x.c===85||x.c===86);
+  const spans = rainSpans(hrs);
+  let umb;
+  if (snow) umb = ["❄️", `Kar bekleniyor${spans.length? " ("+spans.join(", ")+")":""}. Kaymayan ayakkabı ve şemsiye iyi olur.`, true];
+  else if (maxP>=60 || mm>=2) umb = ["☂️", `Şemsiye al. Yağmur ihtimali %${maxP}${spans.length? ", özellikle "+spans.join(", "):""}.`, true];
+  else if (maxP>=35 || mm>=0.5) umb = ["🌂", `Küçük bir şemsiyeyi yanına almak iyi olur (yağmur ihtimali en fazla %${maxP}${spans.length? ", "+spans.join(", "):""}).`, true];
+  else umb = ["😎", `Şemsiye gerekmez (yağmur ihtimali en fazla %${maxP}).`, false];
+  const cold = Math.min(fmin, (fmin+fmax)/2);
+  let wear;
+  if (cold<=0) wear = "Kalın mont, bere, atkı ve eldiven";
+  else if (cold<=6) wear = "Kalın mont ve kazak";
+  else if (cold<=12) wear = "Mont ya da kalın ceket, altına kazak";
+  else if (cold<=17) wear = "İnce ceket veya hırka, uzun kollu";
+  else if (cold<=22) wear = "Uzun kollu ya da tişört üstüne ince bir hırka";
+  else wear = "Tişört ve ince, rahat kıyafetler";
+  const extra = [];
+  if (fmax-fmin>=6) extra.push("gün içinde sıcaklık değişiyor, katmanlı giyin");
+  if (wmax>=35) extra.push("rüzgârlı, rüzgâr geçirmeyen bir şey iyi olur");
+  if (maxP>=60 && !snow) extra.push("su geçirmeyen ayakkabı tercih et");
+  return { umb, wear: `${wear}${extra.length? "; "+extra.join(", "):""}.`, fmin:r0(fmin), fmax:r0(fmax) };
+}
+function renderWxToday(){
+  const box = $("wxToday");
+  if (!WX){ box.hidden = true; return; }
+  const n = istNow(), late = n.min >= 20*60;
+  const date = late ? addDays(n.date,1) : n.date;
+  const i = WX.daily.time.indexOf(date);
+  const adv = wxAdvice(date);
+  if (i<0 || !adv){ box.hidden = true; return; }
+  const D0 = WX.daily, C = WX.current;
+  const [emo, txt] = late ? wxInfo(D0.weather_code[i]) : wxInfo(C.weather_code, C.is_day);
+  box.hidden = false;
+  box.innerHTML = `<div class="wx-top"><span class="wx-emo" aria-hidden="true">${emo}</span>
+      <div class="wx-main"><span class="lbl">${late? "Yarın · Fatih":"Bugün · Fatih"}</span><b>${esc(late? wxInfo(D0.weather_code[i])[1] : txt)}</b>
+      <span>${late? `En düşük ${r0(D0.temperature_2m_min[i])}°, en yüksek ${r0(D0.temperature_2m_max[i])}°` : `Şu an hissedilen ${r0(C.apparent_temperature)}° · gün içinde ${r0(D0.temperature_2m_min[i])}°–${r0(D0.temperature_2m_max[i])}°`}</span></div>
+      <div class="wx-temp">${late? r0(D0.temperature_2m_max[i]) : r0(C.temperature_2m)}°<small>%${D0.precipitation_probability_max[i]??0} yağış</small></div></div>
+    <ul class="wx-tips">
+      <li class="${adv.umb[2]?"rain":""}"><span class="i" aria-hidden="true">${adv.umb[0]}</span><span>${esc(adv.umb[1])}</span></li>
+      <li><span class="i" aria-hidden="true">🧥</span><span><b>Ne giymeli:</b> ${esc(adv.wear)}</span></li>
+    </ul>`;
+}
+function wxDayView(i){
+  const D0 = WX.daily, date = D0.time[i];
+  const [emo, txt] = wxInfo(D0.weather_code[i]);
+  const hrs = wxHours(date), adv = wxAdvice(date);
+  const part = (name, a, b) => {
+    const xs = hrs.filter(x => x.h>=a && x.h<b); if (!xs.length) return "";
+    const worst = xs.reduce((m,x) => x.c>m.c? x : m, xs[0]);
+    const avg = r0(xs.reduce((s,x)=>s+x.t,0)/xs.length), p = Math.max(...xs.map(x=>x.p));
+    return `<div><span class="n">${name}</span><span class="e" aria-hidden="true">${wxInfo(worst.c, a>=6&&a<18?1:0)[0]}</span><span class="tt">${avg}°</span><span class="r">${p? "💧%"+p:"&nbsp;"}</span></div>`;
+  };
+  const n = istNow(), nowH = Math.floor(n.min/60);
+  const strip = hrs.filter(x => i>0 || x.h>=Math.max(0,nowH)).map(x =>
+    `<div class="${i===0&&x.h===nowH?"now":""}"><span class="h">${i===0&&x.h===nowH? "Şimdi" : String(x.h).padStart(2,"0")+":00"}</span><span class="e" aria-hidden="true">${wxInfo(x.c,x.d)[0]}</span><span class="tt">${r0(x.t)}°</span><span class="r">${x.p>=20? "%"+x.p:""}</span></div>`).join("");
+  const sr = (D0.sunrise[i]||"").slice(11,16), ss = (D0.sunset[i]||"").slice(11,16);
+  return `<div class="wx-hero"><span class="wx-emo" aria-hidden="true">${emo}</span>
+      <div class="d"><b>${esc(txt)}</b><span>${fmtDate(date)}</span></div>
+      <div class="t">${r0(D0.temperature_2m_max[i])}° <span>/ ${r0(D0.temperature_2m_min[i])}°</span></div></div>
+    <div class="wx-stats">
+      <div><span>💧 Yağış</span><b>%${D0.precipitation_probability_max[i]??0}</b></div>
+      <div><span>🌧️ Miktar</span><b>${(D0.precipitation_sum[i]??0).toFixed(1)} mm</b></div>
+      <div><span>💨 Rüzgâr</span><b>${r0(D0.wind_speed_10m_max[i])} km/sa</b></div>
+      <div><span>🌅 Güneş</span><b>${sr}–${ss}</b></div>
+    </div>
+    <div class="wx-parts">${part("Sabah",6,12)}${part("Öğle",12,17)}${part("Akşam",17,22)}${part("Gece",22,24)}</div>
+    <span class="wx-sub">Saat saat</span>
+    <div class="wx-hours" tabindex="0" aria-label="Saatlik tahmin">${strip}</div>
+    ${adv? `<ul class="wx-tips"><li class="${adv.umb[2]?"rain":""}"><span class="i" aria-hidden="true">${adv.umb[0]}</span><span>${esc(adv.umb[1])}</span></li>
+      <li><span class="i" aria-hidden="true">🧥</span><span><b>Ne giymeli:</b> ${esc(adv.wear)}</span></li></ul>` : ""}`;
+}
+function wxWeekView(){
+  const D0 = WX.daily, lo = Math.min(...D0.temperature_2m_min), hi = Math.max(...D0.temperature_2m_max), span = Math.max(1, hi-lo);
+  const today = istNow().date;
+  return `<div class="wx-week">` + D0.time.map((d,i) => {
+    const [emo, txt] = wxInfo(D0.weather_code[i]);
+    const a = D0.temperature_2m_min[i], b = D0.temperature_2m_max[i], p = D0.precipitation_probability_max[i]??0;
+    const name = d===today? "Bugün" : d===addDays(today,1)? "Yarın" : DAYS[new Date(d+"T12:00:00Z").getUTCDay()];
+    return `<div class="row"><span class="dn">${name}<small>${fmtDate(d,false)}</small></span><span class="e" aria-hidden="true">${emo}</span>
+      <span class="mid"><span>${esc(txt)}${p>=20? ` · <b class="rp">💧%${p}</b>`:""}</span><span class="bar"><i style="left:${(a-lo)/span*100}%;right:${(hi-b)/span*100}%"></i></span></span>
+      <span class="tt">${r0(b)}° <span>/ ${r0(a)}°</span></span></div>`;
+  }).join("") + `</div>`;
+}
+function renderWxCard(){
+  const box = $("wxCard");
+  if (!WX){ box.hidden = true; return; }
+  box.hidden = false;
+  box.querySelectorAll("[data-wx]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.wx===wxTab)));
+  $("wxBody").innerHTML = wxTab==="w" ? wxWeekView() : wxDayView(+wxTab);
+  $("wxUpd").textContent = "güncellendi " + (WX._at||"");
+}
+function renderWx(){ try { renderWxToday(); renderWxCard(); } catch(e){ $("wxToday").hidden = true; $("wxCard").hidden = true; } }
+async function loadWx(force=false){
+  const now = Date.now();
+  if (!force){
+    try { const c = JSON.parse(localStorage.getItem("wx")||"null"); if (c && now-c.t < 30*60e3 && c.d.daily.time.includes(istNow().date)){ WX = c.d; renderWx(); return; } } catch(e){}
+  }
+  try {
+    const r = await fetch(WX_URL, {cache:"no-store"}); if (!r.ok) throw 0;
+    const d = await r.json(); if (!d.daily || !d.hourly) throw 0;
+    const n = istNow(); d._at = String(Math.floor(n.min/60)).padStart(2,"0")+":"+String(n.min%60).padStart(2,"0");
+    WX = d; try { localStorage.setItem("wx", JSON.stringify({t:now, d})); } catch(e){}
+  } catch(e){ if (!WX) { try { const c = JSON.parse(localStorage.getItem("wx")||"null"); if (c) WX = c.d; } catch(_){} } }
+  renderWx();
+}
+document.querySelectorAll("#wxCard [data-wx]").forEach(b => b.onclick = () => { wxTab = b.dataset.wx; renderWxCard(); });
+setInterval(() => { if (me) loadWx(); }, 30*60e3);
+
 /* ---------- app ---------- */
 function show(){
   dayCache.clear(); _myCh = null;
@@ -883,7 +1118,7 @@ function show(){
     return;
   }
   $("loginView").hidden = true; $("mainView").hidden = false;
-  renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec();
+  renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec(); loadWx();
 }
 // Student numbers are not in the data file; only salted PBKDF2 hashes are. Derive the same hash here.
 async function hashNo(no){
