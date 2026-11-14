@@ -710,10 +710,7 @@ function renderWho(){
 }
 function renderSync(){
   const s = $("sync"); s.hidden = false;
-  const sc = D.schedule || [], hh = x => +String(x).slice(0,2);
-  const when = sc.length >= 4 && hh(sc[1]) > hh(sc[0])
-    ? `her gün ${sc[0]}–${sc[sc.length-1]} arası ${hh(sc[1])-hh(sc[0])} saatte bir`
-    : `her gün ${sc.join(", ")}`;
+  const when = `her gün ${(D.schedule||[]).join(", ")}`;
   s.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px"><span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> ${when}</span></span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
 }
 const STALE_HOURS = 12;
