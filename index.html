@@ -371,13 +371,16 @@ body:not([data-route="grafik"]) #statsView{display:none}
 body[data-route="gorunum"] #lookView, body[data-route="ses"] #ambView, body[data-route="ayar"] #setView{display:flex}
 body[data-route="gorunum"] #timerView{display:contents}
 body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
-body[data-route="gorunum"] #tmCard{--pr:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
-body[data-route="gorunum"] #tmCard .tm-ring{width:var(--pr)}
-body[data-route="gorunum"] #tmCard .tm-time{font-size:calc(var(--pr)*.2)}
-body[data-route="gorunum"] #tmCard .tm-time.long{font-size:calc(var(--pr)*.15)}
-body[data-route="gorunum"] #tmCard[data-rskin="7"] .tm-time{font-size:calc(var(--pr)*.14)}
-body[data-route="gorunum"] #tmCard .tm-label{font-size:calc(var(--pr)*.04 + 5px)}
-body[data-route="gorunum"] #tmCard .tm-dig{--ds:calc(var(--pr)*.29);min-height:var(--pr);justify-content:center}
+body[data-route="gorunum"] #tmCard{--ps:.5;--sh:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);overflow-anchor:none}
+body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:relative;flex:none;width:100%;height:var(--sh);contain:layout paint style}
+body[data-route="gorunum"] #tmCard .tm-ring,body[data-route="gorunum"] #tmCard .tm-dig{position:absolute;left:50%;top:0;width:300px;transform:translateX(-50%) scale(var(--ps));transform-origin:50% 0;will-change:transform}
+body[data-route="gorunum"] #tmCard .tm-time{font-size:60px}
+body[data-route="gorunum"] #tmCard .tm-time.long{font-size:44px}
+body[data-route="gorunum"] #tmCard[data-rskin="7"] .tm-time{font-size:40px}
+body[data-route="gorunum"] #tmCard .tm-dig{--ds:86px;height:300px;justify-content:center}
+body.pv-drag{-webkit-user-select:none;user-select:none;overflow-anchor:none}
+body.pv-drag #tmCard{box-shadow:none !important}
+body.pv-drag #tmCard *{transition:none !important}
 .tm-grip{display:none}
 body[data-route="gorunum"] .tm-grip{display:flex;align-items:center;justify-content:center;width:100%;height:30px;margin-top:auto;cursor:ns-resize;touch-action:none;-webkit-tap-highlight-color:transparent;outline-offset:-3px}
 .tm-grip i{display:block;width:44px;height:5px;border-radius:3px;background:color-mix(in srgb,currentColor 35%,transparent)}
@@ -418,7 +421,9 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-card[data-view="lcd"] .tm-ring{display:none}
 
 /* analog dial (10 skins, drawn in SVG) */
-.tm-ring{position:relative;width:min(80vw,300px);aspect-ratio:1}
+.tm-card{--rw:min(calc(min(80vw,300px)*var(--rz,1)),calc(100vw - 64px),640px)}
+.tm-stage{display:contents}
+.tm-ring{position:relative;width:var(--rw);aspect-ratio:1}
 .tm-ring .dialbox{position:absolute;inset:0}
 .dial{width:100%;height:100%;display:block;overflow:visible}
 .dial .tk{stroke:var(--muted);opacity:.28;stroke-linecap:round;transition:opacity .2s,stroke .2s}
@@ -434,12 +439,12 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 @media (prefers-reduced-motion: reduce){.dial .wv1,.dial .wv2{animation:none}.dial [data-r="arc"],.dial [data-r="sec"]{transition:none}}
 .tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 19%;text-align:center;pointer-events:none}
 .tm-label{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ph)}
-.tm-time{font-family:var(--display);font-size:clamp(42px,14vw,60px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
-.tm-time.long{font-size:clamp(32px,10.5vw,44px)}
+.tm-time{font-family:var(--display);font-size:calc(var(--rw)*.2);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.tm-time.long{font-size:calc(var(--rw)*.147)}
 .tm-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tm-card[data-rskin="7"] .tm-center{justify-content:flex-start;padding-top:59%}
 .tm-card[data-rskin="7"] .tm-label,.tm-card[data-rskin="7"] .tm-show{display:none}
-.tm-card[data-rskin="7"] .tm-time{font-size:clamp(30px,9.5vw,40px)}
+.tm-card[data-rskin="7"] .tm-time{font-size:calc(var(--rw)*.133)}
 .tm-card[data-rskin="2"] .tm-time,.tm-card[data-rskin="2"] .tm-label,.tm-card[data-rskin="2"] .tm-show{text-shadow:0 0 6px var(--surface),0 0 10px var(--surface),0 0 14px var(--surface)}
 .tm-card[data-rskin="8"] .tm-center{color:#eafff6}
 .tm-card[data-rskin="8"] .tm-label{color:var(--glow)}
@@ -449,8 +454,9 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 
 
 /* enlarged / full-screen timer */
-.tm-rt{display:inline-flex;gap:8px;align-items:center}
+.tm-rt{display:inline-flex;gap:8px;align-items:center;margin-left:auto}
 .tm-fs{width:40px;height:38px;border-radius:12px;border:1px solid var(--line);background:color-mix(in srgb,var(--ink) 6%,transparent);color:var(--ink);display:grid;place-items:center;padding:0;-webkit-tap-highlight-color:transparent}
+@media (max-width:430px){.tm-barrow .tm-seg button{padding:7px 9px;font-size:13px}.tm-rt{gap:5px}.tm-fs{width:34px}.tm-barrow{gap:6px}}
 .tm-fs .cx,.tm-fs[aria-pressed="true"] .ex{display:none}.tm-fs[aria-pressed="true"] .cx{display:block}
 body[data-route="gorunum"] #tmFull{display:none}
 body.tm-full{overflow:hidden}
@@ -476,16 +482,13 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 [data-font="5"]{--tf:"Segoe Script","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive;--tw:600}
 [data-font="6"]{--tf:var(--display);--tw:800}
 [data-font="7"]{--tf:var(--display);--tw:700}
-[data-font="8"]{--tf:Georgia,"Times New Roman",serif;--tw:800}
-[data-font="9"]{--tf:Georgia,"Times New Roman",serif;--tw:600;--ti:italic}
 .tm-card[data-font] .tm-time,.tm-card[data-font] .dg-row,.tm-card[data-font] .dg-row .c,.tm-card[data-font] .dg-row .sep{font-family:var(--tf) !important;font-weight:var(--tw) !important;letter-spacing:var(--tl,0) !important;font-style:var(--ti,normal) !important}
 /* effect styles: outline, neon glow, gold */
 [data-font="6"] .fp,.tm-card[data-font="6"] .tm-time,.tm-card[data-font="6"] .dg-row .c,.tm-card[data-font="6"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
 [data-font="7"] .fp,.tm-card[data-font="7"] .tm-time,.tm-card[data-font="7"] .dg-row .c,.tm-card[data-font="7"] .dg-row .sep{color:var(--ph) !important;text-shadow:0 0 .08em var(--ph),0 0 .26em color-mix(in srgb,var(--ph) 75%,transparent),0 0 .6em color-mix(in srgb,var(--ph) 55%,transparent) !important}
-[data-font="8"] .fp,.tm-card[data-font="8"] .tm-time,.tm-card[data-font="8"] .dg-row .c,.tm-card[data-font="8"] .dg-row .sep{background:linear-gradient(180deg,#fff2a8 0%,#f2c230 34%,#a8740a 58%,#f6d675 100%);-webkit-background-clip:text;background-clip:text;color:transparent !important;-webkit-text-fill-color:transparent;text-shadow:none !important;filter:drop-shadow(0 .02em .015em rgba(0,0,0,.4))}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
-.tm-dig{--ds:clamp(56px,19vw,86px);width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.tm-dig{--ds:min(calc(clamp(56px,19vw,86px)*var(--dz,1)),calc((100vw - 56px)/3.4));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
 .dg-top{display:flex;justify-content:space-between;width:100%;font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ph);padding:0 4px}
 .dg-row{display:flex;justify-content:center;align-items:center;font-size:var(--ds);line-height:1;font-variant-numeric:tabular-nums;gap:.04em;color:var(--ink);font-family:var(--display)}
 .dg-row.long{font-size:calc(var(--ds)*.72)}
@@ -854,6 +857,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
       </div>
       <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
 
+      <div class="tm-stage" id="tmStage">
       <div class="tm-ring" id="tmRing">
         <div class="dialbox" id="tmDial" aria-hidden="true"></div>
         <div class="tm-center"><div class="tm-label" id="tmLabel">Odak</div><div class="tm-time" id="tmTime" role="timer" aria-live="off">25:00</div><div class="tm-show" id="tmShow"></div></div>
@@ -862,6 +866,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
       <div class="tm-dig" id="tmDig">
         <div class="dg-row" id="tmDigits" role="timer" aria-live="off"></div>
         <div class="dg-show" id="tmDigShow"></div>
+      </div>
       </div>
 
       <div class="tm-ctl">
@@ -901,11 +906,13 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
     <section class="card tm-look tmsec" id="tmLook">
       <div class="fhead"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></div>
       <div class="fbody">
-        <p class="tm-lbl" style="margin-top:2px">Analog saat · 10 tasarım</p>
+        <p class="tm-lbl" style="margin-top:2px">Analog saat · 9 tasarım</p>
         <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
+        <div class="tm-range"><span>Boyut</span><input type="range" id="tmRz" min="70" max="140" step="5" aria-label="Analog saat boyutu"><output id="tmRzO"></output></div>
         <p class="tm-lbl">Dijital saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
-        <p class="tm-lbl">Yazı stili · 10 stil</p>
+        <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="70" max="140" step="5" aria-label="Dijital saat boyutu"><output id="tmDzO"></output></div>
+        <p class="tm-lbl">Yazı stili · 8 stil</p>
         <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
         <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik, Daktilo, Yuvarlak ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
         <div id="tmBgSec">
@@ -1913,17 +1920,17 @@ const VIBS = [
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
-const FONTN = ["Varsayılan","Klasik","Daktilo","Yuvarlak","İnce","El yazısı","Çizgi","Neon","Altın","Eğik"];
+const FONTN = ["Varsayılan","Klasik","Daktilo","Yuvarlak","İnce","El yazısı","Çizgi","Neon"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:1, dz:1, color:"auto",
   sound:true, vibrate:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,9], fv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,7], fv:[0,2], rz:[.7,1.4], dz:[.7,1.4], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -1939,7 +1946,9 @@ function loadAll(){
   const s = jget(KS) || {};
   S = {...DEF};
   for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
-  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  if (S.font > 7) S.font = 0;
+  if (S.rskin === 5) S.rskin = 0;
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.fv !== 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
@@ -2364,7 +2373,8 @@ function paint(){
 }
 function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
-  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin; if (S.font) card.dataset.font = S.font; else delete card.dataset.font;
+  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.style.setProperty("--rz", S.rz); card.style.setProperty("--dz", S.dz); if (typeof pvApply === "function" && $("tmGrip")) pvApply();
+  card.dataset.dskin = S.dskin; if (S.font) card.dataset.font = S.font; else delete card.dataset.font;
   const bgItem = bgFind(S.bg);
   if (bgItem){ card.dataset.bg = bgItem.id; card.style.setProperty("--bg-img", bgItem.url ? `url("${bgItem.url}")` : `url("img/bg/${bgItem.id}.jpg")`); card.style.setProperty("--bgpos", bgItem.pos || "50% 50%"); card.style.setProperty("--bgdim", String(bgDimOf(bgItem))); }
   else { delete card.dataset.bg; for (const k of ["--bg-img","--bgpos","--bgdim"]) card.style.removeProperty(k); }
@@ -2414,7 +2424,7 @@ let lookBuilt = false;
 function renderLook(){
   if (!lookBuilt){
     lookBuilt = true;
-    $("tmSkinsR").innerHTML = RSKIN.map((n,i) => `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
+    $("tmSkinsR").innerHTML = RSKIN.map((n,i) => i === 5 ? "" : `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
     $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
     $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
     $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">25:08</span></div><small>${n}</small></button>`).join("");
@@ -2424,6 +2434,7 @@ function renderLook(){
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
+  $("tmRz").value = Math.round(S.rz*100); $("tmRzO").textContent = "%" + Math.round(S.rz*100); $("tmDz").value = Math.round(S.dz*100); $("tmDzO").textContent = "%" + Math.round(S.dz*100);
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
   const isCust = S.color !== "auto" && !COLORS.some(c => c[0].toLowerCase() === S.color.toLowerCase());
   $("tmSwatches").querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : b.dataset.c.toLowerCase() === S.color.toLowerCase())));
@@ -2433,6 +2444,7 @@ function renderLook(){
   const bn = S.bg ? " · " + (bgFind(S.bg) || {n:""}).n : "";
   $("tmLookHint").textContent = `${S.view === "ring" ? "Analog · " + RSKIN[S.rskin] : "Dijital · " + DSKIN[S.dskin]} · ${cn}${bn}`;
 }
+let pvT = 0;
 const UP = {items:[], db:null, ok:true};
 const bgFind = id => !id ? null : BGS.find(b => b.id === id) || UP.items.find(b => b.id === id) || null;
 const upDB = () => new Promise((res, rej) => { try { const r = indexedDB.open("odak_foto", 1); r.onupgradeneeded = () => r.result.createObjectStore("f", {keyPath:"id"}); r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); } catch(e){ rej(e); } });
@@ -2507,17 +2519,21 @@ $("tmUpGrid").addEventListener("click", e => {
   const b = e.target.closest("[data-bg]"); if (b){ S.bg = b.dataset.bg; saveS(); render(); }
 });
 const PV_MIN = 150;
-let pvT = Math.min(1, Math.max(0, parseFloat(LS.get("odak_onizleme")) || 0));
 const pvMax = () => Math.max(PV_MIN + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
 function pvApply(){
-  const pr = Math.round(PV_MIN + pvT*(pvMax() - PV_MIN));
-  $("tmCard").style.setProperty("--pr", pr + "px"); $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
+  const card = $("tmCard"), z = S.view === "lcd" ? S.dz : S.rz;
+  const pr = PV_MIN + pvT*(pvMax() - PV_MIN);
+  const D = Math.max(90, Math.min(pr*z, innerWidth - 56, innerHeight*.6 - 112));
+  card.style.setProperty("--ps", (D/300).toFixed(4)); card.style.setProperty("--sh", Math.round(D) + "px");
+  $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
 }
 (() => {
-  const g = $("tmGrip"); let y0 = 0, t0 = 0, moved = false, on = false;
-  g.addEventListener("pointerdown", e => { on = true; moved = false; y0 = e.clientY; t0 = pvT; try { g.setPointerCapture(e.pointerId); } catch(_){} });
-  g.addEventListener("pointermove", e => { if (!on) return; const dy = e.clientY - y0; if (Math.abs(dy) > 3) moved = true; pvT = Math.min(1, Math.max(0, t0 + dy/(pvMax() - PV_MIN))); pvApply(); });
-  const end = () => { if (!on) return; on = false; if (!moved) pvT = pvT < .5 ? 1 : 0; pvApply(); LS.set("odak_onizleme", String(pvT)); };
+  pvT = Math.min(1, Math.max(0, parseFloat(LS.get("odak_onizleme")) || 0));
+  const g = $("tmGrip"); let y0 = 0, t0 = 0, moved = false, on = false, raf = 0;
+  const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; pvApply(); }); };
+  g.addEventListener("pointerdown", e => { on = true; moved = false; y0 = e.clientY; t0 = pvT; document.body.classList.add("pv-drag"); try { g.setPointerCapture(e.pointerId); } catch(_){} });
+  g.addEventListener("pointermove", e => { if (!on) return; const dy = e.clientY - y0; if (Math.abs(dy) > 3) moved = true; pvT = Math.min(1, Math.max(0, t0 + dy/(pvMax() - PV_MIN))); sched(); });
+  const end = () => { if (!on) return; on = false; document.body.classList.remove("pv-drag"); if (!moved) pvT = pvT < .5 ? 1 : 0; pvApply(); LS.set("odak_onizleme", String(pvT)); };
   g.addEventListener("pointerup", end); g.addEventListener("pointercancel", end);
   g.addEventListener("keydown", e => { const k = e.key === "ArrowDown" || e.key === "ArrowRight" ? .2 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -.2 : 0; if (!k) return; e.preventDefault(); pvT = Math.min(1, Math.max(0, pvT + k)); pvApply(); LS.set("odak_onizleme", String(pvT)); });
   window.addEventListener("resize", pvApply); pvApply();
@@ -2538,6 +2554,7 @@ $("tmUpIn").addEventListener("change", e => { const f = e.target.files && e.targ
 upInit();
 $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(bgFind(S.bg)))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
+for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .7, 1.4); $(id + "O").textContent = "%" + e.target.value; saveS(); const c = $("tmCard"); c.style.setProperty("--" + key, S[key]); pvApply(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
