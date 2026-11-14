@@ -10,3 +10,5 @@
 - `data.json` – birleştirilmiş program verisi (öğrenci numaraları yalnızca tek yönlü karma olarak bulunur, isim yoktur)
 - `desc.json` – ders açıklamaları
 - `tools/build.py` – kaynak tablolardan `data.json` üreten betik
+
+**Odak sayacı:** Sağ üstteki menüden (☰) açılır. Pomodoro tarzı çalışma sayacıdır; süreler değiştirilebilir, çalışma geçmişi yalnızca kullanıcının kendi cihazında (tarayıcı deposunda) saklanır.

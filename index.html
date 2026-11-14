@@ -74,7 +74,6 @@ button{cursor:pointer}
 [hidden]{display:none !important}
 
 /* top */
-.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .brand small{display:block;font-size:12px;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;font-weight:600}
 .chips{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
 .chip{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:3px 10px;font-size:13px;font-weight:600;background:var(--accent-soft);color:var(--accent);white-space:nowrap}
@@ -342,6 +341,120 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .wx-week .tt .rp.lo{color:var(--muted);font-weight:500}
 .wx-src{font-size:11.5px;color:var(--muted)}
 .wx-src a{color:inherit}
+
+/* ---------- header menu + drawer ---------- */
+.top{display:grid;grid-template-columns:1fr auto;align-items:start;gap:10px 12px}
+.top .chips{grid-column:1 / -1}
+.menubtn{position:relative;width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);flex:none}
+.menubtn:hover{border-color:var(--accent)}
+.menubtn[data-live="1"]::after{content:"";position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
+.drawer-scrim{position:fixed;inset:0;background:rgba(5,15,12,.5);z-index:60;opacity:0;transition:opacity .2s}
+.drawer-scrim.show{opacity:1}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(330px,88vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);z-index:61;transform:translateX(104%);visibility:hidden;transition:transform .25s ease,visibility .25s;display:flex;flex-direction:column;gap:6px;padding:max(16px,env(safe-area-inset-top)) 14px 16px}
+.drawer.open{transform:none;visibility:visible}
+.drawer .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.drawer .dh b{font-family:var(--display);font-size:19px}
+.drawer .di{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;border:1px solid transparent;color:var(--ink);background:none;text-align:left;width:100%}
+.drawer .di:hover{background:var(--bg)}
+.drawer .di .ic{font-size:24px;width:34px;text-align:center;flex:none}
+.drawer .di b{display:block;font-size:15.5px}
+.drawer .di small{display:block;color:var(--muted);font-size:12.5px;font-weight:500}
+.drawer .di[aria-current="page"]{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.drawer .dfoot{margin-top:auto;font-size:12px;color:var(--muted);padding:8px 4px}
+@media (prefers-reduced-motion: reduce){.drawer,.drawer-scrim{transition:none}}
+
+/* ---------- route switching ---------- */
+body[data-route="sayac"] #progView, body[data-route="sayac"] #who{display:none !important}
+body:not([data-route="sayac"]) #timerView{display:none}
+
+/* ---------- focus timer ---------- */
+#timerView{display:flex;flex-direction:column;gap:14px}
+.tm-card{--ph:var(--accent);--ph-soft:var(--accent-soft);--ph-ink:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;padding:20px 16px 18px;background:linear-gradient(180deg,var(--ph-soft),var(--surface) 65%)}
+.tm-card[data-phase="short"]{--ph:var(--amfi);--ph-soft:var(--amfi-soft)}
+.tm-card[data-phase="long"]{--ph:var(--sec);--ph-soft:var(--sec-soft)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tm-card{--ph-ink:#0b1512}}
+:root[data-theme="dark"] .tm-card{--ph-ink:#0b1512}
+.tm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center}
+.tm-chip{font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px;background:var(--surface);color:var(--ph);border:1px solid color-mix(in srgb,var(--ph) 40%,transparent)}
+.tm-dots{display:flex;gap:6px}
+.tm-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid transparent}
+.tm-dots i.on{background:var(--ph)}
+.tm-dots i.cur{background:transparent;border-color:var(--ph)}
+.tm-ring{position:relative;width:min(76vw,264px);aspect-ratio:1}
+.tm-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.tm-ring .trk{fill:none;stroke:var(--line);stroke-width:12}
+.tm-ring .prg{fill:none;stroke:var(--ph);stroke-width:12;stroke-linecap:round;transition:stroke-dashoffset .3s linear}
+@media (prefers-reduced-motion: reduce){.tm-ring .prg{transition:none}}
+.tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:0 20%;text-align:center}
+.tm-time{font-family:var(--display);font-size:clamp(42px,15vw,60px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
+.tm-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-ctl{display:flex;align-items:center;gap:16px}
+.tm-main{min-width:156px;height:56px;border-radius:999px;border:none;background:var(--ph);color:var(--ph-ink);font-weight:700;font-size:17px;padding:0 28px;box-shadow:0 6px 18px color-mix(in srgb,var(--ph) 32%,transparent)}
+.tm-main,.tm-round,.tm-st .stp button,.tm-presets button,.tm-chips button,.menubtn,.drawer .di,.tm-pill{-webkit-tap-highlight-color:transparent}
+.tm-main:active{transform:scale(.98)}
+.tm-round{width:48px;height:48px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink)}
+.tm-round:hover{border-color:var(--ph)}
+.tm-hint{font-size:13.5px;color:var(--muted);text-align:center;min-height:1.4em;margin:0}
+.tm-exam{margin:0;text-align:center}
+.tm-h{font-size:15.5px;margin:0 0 10px}
+.tm-in{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font-size:15px}
+.tm-in:focus{border-color:var(--accent);outline:none}
+.tm-lbl{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:12px 0 0}
+.tm-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tm-chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tm-presets{display:flex;gap:6px;flex-wrap:wrap}
+.tm-presets button{flex:1 1 90px;padding:9px 10px;border-radius:11px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13.5px;display:flex;flex-direction:column;gap:1px;align-items:center}
+.tm-presets button small{font-weight:500;color:var(--muted);font-size:11.5px}
+.tm-presets button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.tm-presets button[aria-pressed="true"] small{color:inherit;opacity:.85}
+.tm-steps{display:grid;grid-template-columns:1fr 1fr;gap:12px 10px;margin-top:14px}
+.tm-st{display:flex;flex-direction:column;gap:4px;min-width:0}
+.tm-st.wide{grid-column:1 / -1}
+.tm-st label{font-size:12.5px;color:var(--muted);font-weight:600}
+.tm-st .stp{display:flex;align-items:center;border:1px solid var(--line);border-radius:12px;background:var(--bg);overflow:hidden}
+.tm-st .stp button{width:42px;height:44px;border:none;background:none;font-size:21px;color:var(--ink);flex:none}
+.tm-st .stp button:active{background:var(--accent-soft)}
+.tm-st .stp input{flex:1;min-width:0;width:100%;text-align:center;border:none;background:none;font:600 17px var(--mono);color:var(--ink);padding:0;-moz-appearance:textfield}
+.tm-st .stp input::-webkit-outer-spin-button,.tm-st .stp input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.tm-st .stp input:focus{outline:none}
+.tm-st .stp:focus-within{border-color:var(--accent)}
+.tm-note{font-size:12.5px;color:var(--muted);margin:10px 0 0}
+.tm-sw{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-top:1px solid var(--line);font-size:14.5px}
+.tm-sw:first-of-type{border-top:none}
+.tm-sw small{display:block;color:var(--muted);font-size:12.5px}
+.tm-sw input{-webkit-appearance:none;appearance:none;width:48px;height:28px;border-radius:999px;background:var(--line);position:relative;flex:none;transition:background .15s;cursor:pointer;margin:0}
+.tm-sw input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .15s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
+.tm-sw input:checked{background:var(--accent)}
+.tm-sw input:checked::after{transform:translateX(20px)}
+.tm-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tm-big b{font-family:var(--display);font-size:19px;white-space:nowrap}
+.tm-big span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
+.tm-goal{height:9px;border-radius:5px;background:var(--line);overflow:hidden;margin:12px 0 4px}
+.tm-goal i{display:block;height:100%;border-radius:5px;background:var(--accent);transition:width .3s}
+.tm-goal-t{font-size:12.5px;color:var(--muted);display:flex;justify-content:space-between;gap:8px}
+.tm-plot{position:relative;display:flex;align-items:flex-end;gap:8px;height:104px;margin-top:14px;padding-top:6px}
+.tm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0;height:100%}
+.tm-col .v{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;min-height:12px}
+.tm-col .b{width:100%;max-width:36px;border-radius:6px 6px 3px 3px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);min-height:3px}
+.tm-col.today .b{background:var(--accent);border-color:var(--accent)}
+.tm-goalline{position:absolute;left:0;right:0;border-top:1.5px dashed color-mix(in srgb,var(--pdo) 70%,transparent);pointer-events:none}
+.tm-days{display:flex;gap:8px;margin-top:4px}
+.tm-days span{flex:1;text-align:center;font-size:11.5px;color:var(--muted);font-weight:600}
+.tm-days span.today{color:var(--accent)}
+.tm-subs{display:flex;flex-direction:column;gap:9px;margin-top:8px}
+.tm-sub{display:grid;grid-template-columns:1fr auto;gap:3px 10px;font-size:13.5px}
+.tm-sub .n{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:600}
+.tm-sub .m{color:var(--muted);font-family:var(--mono);font-size:12.5px}
+.tm-sub .bar{grid-column:1 / -1;height:5px;border-radius:3px;background:var(--line);overflow:hidden}
+.tm-sub .bar i{display:block;height:100%;border-radius:3px;background:var(--pdo)}
+.tm-empty{color:var(--muted);font-size:13.5px;margin:6px 0 0}
+.tm-pill{position:fixed;left:50%;bottom:max(14px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:9px;padding:10px 18px;border-radius:999px;border:1px solid var(--line);background:var(--surface);box-shadow:var(--shadow);font-weight:600;font-size:14px;color:var(--ink)}
+.tm-pill b{font-family:var(--mono);font-size:15px}
+.tm-pill .pd{width:9px;height:9px;border-radius:50%;background:var(--accent)}
+.tm-pill[data-paused="1"] .pd{background:var(--pdo)}
 </style>
 </head>
 <body>
@@ -349,12 +462,14 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 
   <header class="top">
     <div class="brand">
-      <small>İstanbul Tıp · Dönem 1 Türkçe</small>
-      <h1>Programım</h1>
+      <small id="brandSmall">İstanbul Tıp · Dönem 1 Türkçe</small>
+      <h1 id="brandTitle">Programım</h1>
     </div>
+    <button class="menubtn" id="menuBtn" type="button" aria-label="Menüyü aç" aria-haspopup="true" aria-expanded="false" aria-controls="drawer"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     <div class="chips" id="who" hidden></div>
   </header>
 
+  <div id="progView">
   <div class="sync" id="sync" hidden></div>
 
   <div class="warn stale" id="staleBox" role="alert" hidden>
@@ -490,7 +605,84 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
   </main>
 
   <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
+  </div>
+
+  <!-- ============ Odak sayacı ============ -->
+  <section id="timerView" aria-label="Odak sayacı">
+
+    <section class="card tm-card" id="tmCard" data-phase="focus">
+      <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
+      <div class="tm-ring">
+        <svg viewBox="0 0 220 220" aria-hidden="true"><circle class="trk" cx="110" cy="110" r="98"/><circle class="prg" id="tmPrg" cx="110" cy="110" r="98"/></svg>
+        <div class="tm-center"><div class="tm-time" id="tmTime" role="timer" aria-live="off">25:00</div><div class="tm-show" id="tmShow"></div></div>
+      </div>
+      <div class="tm-ctl">
+        <button class="tm-round" id="tmReset" type="button" aria-label="Bu bölümü sıfırla" title="Sıfırla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M4 11a7 7 0 1 0 2.2-5.1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M3.5 3.5v4.2h4.2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="tm-main" id="tmMain" type="button">Başlat</button>
+        <button class="tm-round" id="tmSkip" type="button" aria-label="Sonraki bölüme geç" title="Atla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 4.5 14 11l-9 6.5v-13Z" fill="currentColor"/><path d="M17.5 4.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
+      </div>
+      <p class="tm-hint" id="tmHint" role="status"></p>
+      <p class="tm-exam small muted" id="tmExam" hidden></p>
+    </section>
+
+    <section class="card">
+      <h2 class="tm-h">Ne çalışıyorsun?</h2>
+      <input class="tm-in" id="tmSubject" type="text" maxlength="60" placeholder="Konu ya da ders adı yaz" autocomplete="off" aria-label="Ne çalışıyorsun?">
+      <p class="tm-lbl" id="tmChipsLbl" hidden>Bugünkü derslerin ve son çalıştıkların</p>
+      <div class="tm-chips" id="tmChips"></div>
+    </section>
+
+    <section class="card">
+      <h2 class="tm-h">Süreler</h2>
+      <div class="tm-presets" id="tmPresets"></div>
+      <div class="tm-steps" id="tmSteps"></div>
+      <p class="tm-note">Sürelerin hepsini kendin de yazabilirsin. Çalışan bölüm değişmez, yeni süre bir sonraki bölümden başlar.</p>
+    </section>
+
+    <section class="card">
+      <h2 class="tm-h">Çalışma özetin</h2>
+      <div class="tm-big" id="tmBig"></div>
+      <div class="tm-goal" aria-hidden="true"><i id="tmGoalBar" style="width:0"></i></div>
+      <div class="tm-goal-t"><span id="tmGoalTxt"></span><span id="tmGoalPct"></span></div>
+      <p class="tm-lbl">Son 7 gün</p>
+      <div class="tm-plot" id="tmPlot"></div>
+      <div class="tm-days" id="tmDays"></div>
+      <p class="tm-lbl">Konulara göre (son 7 gün)</p>
+      <div class="tm-subs" id="tmSubs"></div>
+      <div class="tm-acts">
+        <button class="secondary" id="tmExport" type="button">Geçmişi dışa aktar</button>
+        <button class="secondary" id="tmImportBtn" type="button">İçe aktar</button>
+        <button class="secondary" id="tmClear" type="button">Geçmişi sil</button>
+        <input type="file" id="tmImport" accept="application/json,.json" hidden>
+      </div>
+      <p class="tm-note">Çalışma geçmişin yalnızca bu telefonda saklanır, hiçbir yere gönderilmez. Tarayıcı verisini silersen geçmiş de silinir; yedeklemek için "dışa aktar"ı kullan.</p>
+    </section>
+
+    <details class="card fold" id="tmSet">
+      <summary><span class="ft"><h2>Ses ve ayarlar</h2><span class="hint">Alarm, titreşim, ekranı açık tutma</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+        <label class="tm-sw"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
+        <label class="tm-sw"><span>Titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
+        <label class="tm-sw"><span>Ekranı açık tut<small>Sayaç çalışırken ekran kararmasın, alarm kaçmasın</small></span><input type="checkbox" id="tmWake"></label>
+        <label class="tm-sw"><span>Sonraki bölüme otomatik geç<small>Odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
+        <div class="tm-acts">
+          <button class="secondary" id="tmTest" type="button">Alarmı dene</button>
+          <button class="secondary" id="tmRound" type="button">Döngüyü baştan başlat</button>
+        </div>
+        <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak.</p>
+      </div>
+    </details>
+  </section>
 </div>
+
+<div class="drawer-scrim" id="drawerScrim" hidden></div>
+<nav class="drawer" id="drawer" aria-label="Ana menü" inert>
+  <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <button class="di" type="button" data-go="program"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
+  <button class="di" type="button" data-go="sayac"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı</b><small id="drawerTimerHint">Pomodoro ile çalış</small></span></button>
+  <div class="dfoot">Çalışma kayıtların yalnızca bu cihazda saklanır.</div>
+</nav>
+<button class="tm-pill" id="tmPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmPillTime">25:00</b><span id="tmPillPhase">Odak</span></button>
 
 <div class="scrim" id="scrim" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" id="sheet"></div>
@@ -1319,8 +1511,405 @@ const saved = store.get("ogrNo");
 if (saved) await login(saved);
 show();
 
+// odak sayacı sayfası için: bugünkü dersler ve sıradaki sınav
+window.PROG = {
+  lessons(){
+    try {
+      return [...new Set(buildDay(istNow().date).filter(x => ["amfi","uyg","pdo","sec"].includes(x.kind))
+        .map(x => String(x.title || "").replace(/^\d+\s*-\s*/, "").trim()).filter(Boolean))];
+    } catch(e){ return []; }
+  },
+  exam(){
+    try {
+      const n = istNow().date; let best = null;
+      for (const e of D.events){
+        if (e.d < n) continue;
+        const u = e.t.toLocaleUpperCase("tr"); if (!/SINAV/.test(u) || /^SERBEST/.test(u)) continue;
+        if (!best || e.d < best.d) best = e;
+      }
+      return best ? {t: best.t, days: Math.round((new Date(best.d+"T12:00:00Z") - new Date(n+"T12:00:00Z"))/864e5)} : null;
+    } catch(e){ return null; }
+  }
+};
+window.dispatchEvent(new Event("prog-ready"));
+
 // optional platform capability: file downloads (calendar export)
 
+})();
+</script>
+<script>
+/* ============ Menü + Odak sayacı (ayrı betik: program betiğinden bağımsız çalışır) ============ */
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const LS = {
+  get(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del(k){ try{ localStorage.removeItem(k); }catch(e){} }
+};
+const jget = k => { try{ return JSON.parse(LS.get(k)||"null"); }catch(e){ return null; } };
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+const clamp = (v,a,b) => Math.min(b, Math.max(a, v));
+const pad = n => String(n).padStart(2,"0");
+const TZ = "Europe/Istanbul";
+const dayStr = ms => new Intl.DateTimeFormat("en-CA",{timeZone:TZ,year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date(ms));
+const addDays = (iso,n) => { const d = new Date(iso+"T12:00:00Z"); d.setUTCDate(d.getUTCDate()+n); return d.toISOString().slice(0,10); };
+const DAYS = ["Paz","Pzt","Sal","Çar","Per","Cum","Cmt"];
+const fmtMin = m => m < 60 ? `${m} dk` : `${Math.floor(m/60)} sa${m%60 ? " "+(m%60)+" dk" : ""}`;
+const fmtClock = ms => { const s = Math.max(0, Math.ceil(ms/1000)); return `${pad(Math.floor(s/60))}:${pad(s%60)}`; };
+function toast(msg){ const t = $("toast"); if (!t) return; t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 4200); }
+
+/* ---------- state ---------- */
+const KS = "odak_ayar", KT = "odak_durum", KH = "odak_gecmis";
+const DEF = {focus:25, short:5, long:15, cycles:4, sound:true, vibrate:true, wake:true, auto:false, goal:240};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], goal:[15,720]};
+const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
+let S, T, H;
+const dur = p => (p === "focus" ? S.focus : p === "short" ? S.short : S.long) * 60000;
+const phaseName = p => p === "focus" ? "Odak" : p === "short" ? "Kısa mola" : "Uzun mola";
+function freshT(){ return {phase:"focus", status:"idle", left:S.focus*60000, full:S.focus*60000, endAt:0, done:0, subject:"", sid:0}; }
+function validT(t){
+  return t && ["focus","short","long"].includes(t.phase) && ["idle","running","paused"].includes(t.status)
+    && [t.left,t.full,t.endAt,t.done].every(Number.isFinite) && t.full > 0 && typeof t.subject === "string";
+}
+function loadAll(){
+  const s = jget(KS) || {};
+  S = {...DEF};
+  for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
+  for (const k in LIM) S[k] = clamp(Math.round(S[k]) || DEF[k], LIM[k][0], LIM[k][1]);
+  const t = jget(KT); T = validT(t) ? t : freshT();
+  const h = jget(KH);
+  H = Array.isArray(h) ? h.filter(x => x && typeof x.d === "string" && Number.isFinite(x.m) && x.m > 0) : [];
+}
+const saveS = () => LS.set(KS, JSON.stringify(S));
+const saveT = () => LS.set(KT, JSON.stringify(T));
+function saveH(){
+  const cut = addDays(dayStr(Date.now()), -180);
+  H = H.filter(h => h.d >= cut).slice(-4000);
+  LS.set(KH, JSON.stringify(H));
+}
+loadAll();
+
+/* ---------- engine ---------- */
+const remaining = () => T.status === "running" ? Math.max(0, T.endAt - Date.now()) : T.left;
+const elapsedMs = () => T.status === "idle" ? 0 : Math.max(0, T.full - remaining());
+let flashMsg = "", flashUntil = 0;
+const flash = m => { flashMsg = m; flashUntil = Date.now() + 12000; };
+
+function startOrResume(silent){
+  if (!silent) unlockAudio();
+  if (T.status === "idle"){ T.full = dur(T.phase); T.left = T.full; if (T.phase === "focus") T.sid = Date.now(); }
+  T.endAt = Date.now() + T.left; T.status = "running";
+  if (!silent) flashMsg = ""; saveT(); acquireWake(); render();
+}
+function pause(){ T.left = remaining(); T.endAt = 0; T.status = "paused"; saveT(); releaseWake(); render(); }
+function logFocus(min, complete){
+  const m = complete ? Math.max(1, Math.round(min)) : Math.floor(min);
+  if (m < 1) return false;
+  if (!T.sid) T.sid = Date.now();
+  if (H.some(h => h.id === T.sid)) return false;
+  const t = Date.now();
+  H.push({id:T.sid, t, d:dayStr(t), m, s:(T.subject||"").trim()});
+  saveH(); return true;
+}
+function advance(){
+  if (T.phase === "focus"){ if (T.done >= S.cycles){ T.phase = "long"; T.done = 0; } else T.phase = "short"; }
+  else T.phase = "focus";
+  T.full = dur(T.phase); T.left = T.full; T.status = "idle"; T.endAt = 0;
+}
+function finish(){
+  const wasFocus = T.phase === "focus";
+  if (wasFocus){ logFocus(T.full/60000, true); T.done++; }
+  const toLong = wasFocus && T.done >= S.cycles;
+  flash(wasFocus ? `🎉 Odak bitti! ${toLong ? S.long+" dk uzun" : S.short+" dk"} mola hakkını kazandın.` : "☕ Mola bitti. Sıradaki odak hazır.");
+  alarm(wasFocus);
+  advance(); releaseWake();
+  if (S.auto) startOrResume(true); else { saveT(); render(); }
+}
+function skipPhase(){
+  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000 && logFocus(el/60000, false)) T.done++; }
+  const was = T.status === "running";
+  advance(); releaseWake();
+  if (was && S.auto) startOrResume(true); else { saveT(); render(); }
+}
+function resetPhase(){
+  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000) logFocus(el/60000, false); }
+  T.status = "idle"; T.full = dur(T.phase); T.left = T.full; T.endAt = 0; flashMsg = "";
+  releaseWake(); saveT(); render();
+}
+function restartRound(){
+  if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(); if (el >= 60000) logFocus(el/60000, false); }
+  T = freshT(); releaseWake(); saveT(); render(); toast("Döngü baştan başladı");
+}
+
+/* ---------- alarm: sound, vibration, title ---------- */
+let AC = null;
+function unlockAudio(){
+  try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch(e){}
+}
+function tone(f, t0, d, g){
+  const o = AC.createOscillator(), a = AC.createGain();
+  o.type = "sine"; o.frequency.value = f;
+  a.gain.setValueAtTime(0.0001, t0); a.gain.linearRampToValueAtTime(g, t0 + 0.02); a.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
+  o.connect(a); a.connect(AC.destination); o.start(t0); o.stop(t0 + d + 0.05);
+}
+function chime(focusDone){
+  if (!AC) return;
+  try {
+    const t = AC.currentTime + 0.03, seq = focusDone ? [659, 784, 988, 1319] : [988, 784, 659];
+    seq.forEach((f,i) => { tone(f, t + i*0.2, 1.0, 0.2); tone(f*2, t + i*0.2, 0.5, 0.04); });
+  } catch(e){}
+}
+let titleBase = document.title, titleTimer = null;
+function flashTitle(msg){
+  clearInterval(titleTimer); let on = true; document.title = msg;
+  titleTimer = setInterval(() => { document.title = on ? titleBase : msg; on = !on; }, 900);
+  const stop = () => { clearInterval(titleTimer); titleTimer = null; document.title = titleBase; window.removeEventListener("focus", stop); document.removeEventListener("pointerdown", stop, true); };
+  window.addEventListener("focus", stop); document.addEventListener("pointerdown", stop, true);
+}
+function alarm(wasFocus){
+  if (S.sound) chime(wasFocus);
+  if (S.vibrate && navigator.vibrate) { try { navigator.vibrate(wasFocus ? [250,120,250,120,450] : [300,150,300]); } catch(e){} }
+  if (document.hidden) flashTitle(wasFocus ? "🎉 Odak bitti!" : "☕ Mola bitti!");
+}
+
+/* ---------- screen wake lock (only while running on the timer page) ---------- */
+let wl = null;
+async function acquireWake(){
+  if (!S.wake || !("wakeLock" in navigator) || T.status !== "running" || document.hidden || document.body.dataset.route !== "sayac" || wl) return;
+  try { wl = await navigator.wakeLock.request("screen"); wl.addEventListener("release", () => { wl = null; }); } catch(e){ wl = null; }
+}
+function releaseWake(){ if (wl){ try { wl.release(); } catch(e){} wl = null; } }
+
+/* ---------- rendering ---------- */
+const C = 2 * Math.PI * 98;
+let lastPaint = "";
+function paint(){
+  const rem = remaining(), full = T.full || dur(T.phase);
+  const frac = T.status === "idle" ? 1 : clamp(rem / full, 0, 1);
+  const clock = fmtClock(rem);
+  const key = clock + "|" + T.status + "|" + T.phase;
+  if (key !== lastPaint){
+    lastPaint = key;
+    $("tmTime").textContent = clock;
+    $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
+  } else {
+    $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
+  }
+  if (!titleTimer) document.title = T.status === "running" ? `${clock} · ${phaseName(T.phase)}` : titleBase;
+  const live = T.status !== "idle";
+  const pill = $("tmPill");
+  pill.hidden = !(live && document.body.dataset.route !== "sayac");
+  pill.dataset.paused = T.status === "paused" ? "1" : "0";
+  $("tmPillTime").textContent = clock; $("tmPillPhase").textContent = phaseName(T.phase) + (T.status === "paused" ? " · durdu" : "");
+  $("menuBtn").dataset.live = T.status === "running" ? "1" : "0";
+  $("drawerTimerHint").textContent = live ? `${clock} · ${phaseName(T.phase)}${T.status === "paused" ? " (durdu)" : ""}` : "Pomodoro ile çalış";
+}
+function render(){
+  $("tmCard").dataset.phase = T.phase;
+  $("tmChip").textContent = T.phase === "focus" ? `Odak ${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : phaseName(T.phase);
+  const filled = T.phase === "long" ? S.cycles : T.done;
+  $("tmDots").innerHTML = Array.from({length:S.cycles}, (_,i) => `<i class="${i < filled ? "on" : (T.phase === "focus" && i === T.done ? "cur" : "")}"></i>`).join("");
+  const isBreak = T.phase !== "focus";
+  $("tmMain").textContent = T.status === "running" ? "Duraklat" : T.status === "paused" ? "Devam et" : (isBreak ? "Molayı başlat" : "Başlat");
+  $("tmMain").setAttribute("aria-label", T.status === "running" ? "Duraklat" : T.status === "paused" ? "Devam et" : "Başlat");
+  $("tmShow").textContent = isBreak ? "Dinlen" : (T.subject || "Konu seçmedin");
+  hint();
+  const sub = $("tmSubject"); if (document.activeElement !== sub) sub.value = T.subject;
+  renderChips(); renderSteps(); renderStats(); paint();
+}
+function hint(){
+  let h;
+  if (flashMsg && Date.now() < flashUntil) h = flashMsg;
+  else if (T.status === "running") h = T.phase === "focus" ? "Şu an sadece bu işe odaklan. Telefonu bırak 📵" : "Kalk, su iç, gözlerini dinlendir 💧";
+  else if (T.status === "paused") h = "Duraklatıldı. Hazır olunca devam et.";
+  else h = T.phase === "focus" ? `${S.focus} dk odaklan, sonra ${T.done + 1 >= S.cycles ? S.long + " dk uzun" : S.short + " dk"} mola.` : `${Math.round(dur(T.phase)/60000)} dk mola hazır.`;
+  $("tmHint").textContent = h;
+  let ex = null; try { ex = window.PROG && window.PROG.exam(); } catch(e){}
+  const el = $("tmExam");
+  if (ex){ el.hidden = false; el.textContent = `🎯 Sıradaki sınav: ${ex.t.toLocaleLowerCase("tr").replace(/(^|\s)\S/g, m => m.toLocaleUpperCase("tr"))} · ${ex.days === 0 ? "bugün" : ex.days + " gün kaldı"}`; }
+  else el.hidden = true;
+}
+function renderChips(){
+  let les = []; try { les = (window.PROG && window.PROG.lessons()) || []; } catch(e){}
+  const rec = [];
+  for (let i = H.length - 1; i >= 0 && rec.length < 6; i--){ const s = H[i].s; if (s && !rec.includes(s)) rec.push(s); }
+  const list = [...new Set([...les.slice(0,5), ...rec])].slice(0, 9);
+  $("tmChips").innerHTML = list.map(s => `<button type="button" data-s="${esc(s)}" aria-pressed="${s === T.subject}">${esc(s)}</button>`).join("");
+  $("tmChipsLbl").hidden = !list.length;
+}
+const STEPS = [["focus","Odak (dk)",1],["short","Kısa mola (dk)",1],["long","Uzun mola (dk)",1],["cycles","Uzun mola için odak sayısı",1],["goal","Günlük hedef (dk)",15]];
+function renderSteps(){
+  $("tmPresets").innerHTML = PRESETS.map(p => `<button type="button" data-p="${p.n}" aria-pressed="${S.focus===p.f && S.short===p.s && S.long===p.l}">${p.f} · ${p.s}<small>${p.n}</small></button>`).join("");
+  const box = $("tmSteps");
+  if (!box.firstChild){
+    box.innerHTML = STEPS.map(([k,label],i) => `<div class="tm-st${k==="goal" ? " wide" : ""}"><label for="tmIn_${k}">${label}</label><div class="stp"><button type="button" data-k="${k}" data-d="-1" aria-label="${label} azalt">−</button><input id="tmIn_${k}" data-k="${k}" type="number" inputmode="numeric" min="${LIM[k][0]}" max="${LIM[k][1]}" step="1"><button type="button" data-k="${k}" data-d="1" aria-label="${label} artır">+</button></div></div>`).join("");
+  }
+  for (const [k] of STEPS){ const inp = $("tmIn_"+k); if (document.activeElement !== inp) inp.value = S[k]; }
+  $("tmSound").checked = S.sound; $("tmVib").checked = S.vibrate; $("tmWake").checked = S.wake; $("tmAuto").checked = S.auto;
+}
+function renderStats(){
+  const today = dayStr(Date.now());
+  const by = {}; for (const h of H) by[h.d] = (by[h.d] || 0) + h.m;
+  const tm = by[today] || 0, tn = H.filter(h => h.d === today).length;
+  let streak = 0, d = tm >= 10 ? today : addDays(today, -1);
+  while ((by[d] || 0) >= 10 && streak < 1000){ streak++; d = addDays(d, -1); }
+  $("tmBig").innerHTML = `<div><b>${esc(fmtMin(tm))}</b><span>Bugün</span></div><div><b>${tn}</b><span>Odak</span></div><div><b>${streak}${streak ? " 🔥" : ""}</b><span>Gün seri</span></div>`;
+  const pct = clamp(Math.round(tm / S.goal * 100), 0, 100);
+  $("tmGoalBar").style.width = pct + "%";
+  $("tmGoalTxt").textContent = tm >= S.goal ? "🎯 Günlük hedefe ulaştın!" : `Hedef: ${fmtMin(S.goal)} · kalan ${fmtMin(S.goal - tm)}`;
+  $("tmGoalPct").textContent = "%" + pct;
+  const days = Array.from({length:7}, (_,i) => addDays(today, i - 6));
+  const vals = days.map(x => by[x] || 0), max = Math.max(S.goal, ...vals, 30), H0 = 74;
+  $("tmPlot").innerHTML = days.map((x,i) => `<div class="tm-col${x === today ? " today" : ""}" title="${x}: ${fmtMin(vals[i])}"><span class="v">${vals[i] ? (vals[i] >= 60 ? (vals[i]/60).toFixed(1).replace(".0","").replace(".",",") + " sa" : vals[i] + " dk") : ""}</span><div class="b" style="height:${Math.max(3, Math.round(vals[i] / max * H0))}px"></div></div>`).join("")
+    + `<div class="tm-goalline" style="bottom:${Math.round(S.goal / max * H0) + 3}px" title="Günlük hedef"></div>`;
+  $("tmDays").innerHTML = days.map(x => `<span class="${x === today ? "today" : ""}">${DAYS[new Date(x+"T12:00:00Z").getUTCDay()]}</span>`).join("");
+  const sub = {}; const from = days[0];
+  for (const h of H) if (h.d >= from){ const k = h.s || "Konu belirtilmedi"; sub[k] = (sub[k] || 0) + h.m; }
+  const rows = Object.entries(sub).sort((a,b) => b[1] - a[1]).slice(0, 6), top = rows.length ? rows[0][1] : 1;
+  $("tmSubs").innerHTML = rows.length ? rows.map(([n,m]) => `<div class="tm-sub"><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="bar"><i style="width:${Math.round(m/top*100)}%"></i></span></div>`).join("") : `<p class="tm-empty">Henüz çalışma kaydın yok. İlk odağını bitirince burada görünür.</p>`;
+}
+
+/* ---------- settings ---------- */
+function onSettings(key){
+  saveS();
+  if (["focus","short","long"].includes(key) && T.status === "idle"){ T.full = dur(T.phase); T.left = T.full; saveT(); }
+  render();
+}
+function setVal(k, v){
+  if (!Number.isFinite(v)) return;
+  S[k] = clamp(Math.round(v), LIM[k][0], LIM[k][1]);
+  if (k === "cycles" && T.done > S.cycles) T.done = S.cycles;
+  onSettings(k);
+}
+$("tmSteps").addEventListener("click", e => {
+  const b = e.target.closest("button[data-k]"); if (!b) return;
+  const k = b.dataset.k, step = (STEPS.find(s => s[0] === k) || [0,0,1])[2];
+  setVal(k, S[k] + (+b.dataset.d) * step);
+});
+$("tmSteps").addEventListener("change", e => {
+  const i = e.target.closest("input[data-k]"); if (!i) return;
+  const v = parseInt(i.value, 10);
+  if (Number.isFinite(v)) setVal(i.dataset.k, v);
+  i.value = S[i.dataset.k];   // aralık dışı yazılan değer, ayarlanan (sınıra çekilmiş) değerle değişsin
+});
+$("tmSteps").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input[data-k]")) e.target.blur(); });
+$("tmPresets").addEventListener("click", e => {
+  const b = e.target.closest("button[data-p]"); if (!b) return;
+  const p = PRESETS.find(x => x.n === b.dataset.p); if (!p) return;
+  S.focus = p.f; S.short = p.s; S.long = p.l; onSettings("focus");
+});
+for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmWake","wake"],["tmAuto","auto"]]){
+  $(id).addEventListener("change", e => {
+    S[key] = e.target.checked; saveS();
+    if (key === "wake"){ if (S.wake) acquireWake(); else releaseWake(); }
+    if (key === "sound" && S.sound){ unlockAudio(); chime(false); }
+    if (key === "vibrate" && S.vibrate && navigator.vibrate){ try { navigator.vibrate(60); } catch(_){} }
+  });
+}
+$("tmTest").addEventListener("click", () => { unlockAudio(); chime(true); if (navigator.vibrate) { try { navigator.vibrate([200,100,200]); } catch(e){} } });
+$("tmRound").addEventListener("click", () => { if (confirm("Döngü baştan başlasın mı? Çalışan bölüm sıfırlanır.")) restartRound(); });
+
+/* ---------- controls ---------- */
+$("tmMain").addEventListener("click", () => { if (T.status === "running") pause(); else startOrResume(); });
+$("tmReset").addEventListener("click", resetPhase);
+$("tmSkip").addEventListener("click", skipPhase);
+$("tmSubject").addEventListener("input", e => { T.subject = e.target.value.slice(0, 60); saveT(); $("tmShow").textContent = T.phase === "focus" ? (T.subject || "Konu seçmedin") : "Dinlen"; renderChips(); });
+$("tmChips").addEventListener("click", e => {
+  const b = e.target.closest("button[data-s]"); if (!b) return;
+  T.subject = T.subject === b.dataset.s ? "" : b.dataset.s; saveT(); $("tmSubject").value = T.subject; render();
+});
+$("tmSet").open = LS.get("open_tmSet") === "1";
+$("tmSet").addEventListener("toggle", e => LS.set("open_tmSet", e.target.open ? "1" : "0"));
+
+/* ---------- history: export / import / clear ---------- */
+$("tmExport").addEventListener("click", () => {
+  const blob = new Blob([JSON.stringify({v:1, ayar:S, gecmis:H})], {type:"application/json"});
+  const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "odak-gecmisi.json";
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+});
+$("tmImportBtn").addEventListener("click", () => $("tmImport").click());
+$("tmImport").addEventListener("change", async e => {
+  const f = e.target.files && e.target.files[0]; e.target.value = ""; if (!f) return;
+  try {
+    const j = JSON.parse(await f.text()); const arr = Array.isArray(j) ? j : j.gecmis;
+    if (!Array.isArray(arr)) throw 0;
+    const ids = new Set(H.map(h => h.id)); let n = 0;
+    for (const x of arr){
+      if (x && typeof x.d === "string" && /^\d{4}-\d{2}-\d{2}$/.test(x.d) && Number.isFinite(x.m) && x.m > 0 && x.m <= 600 && !ids.has(x.id)){
+        H.push({id: Number.isFinite(x.id) ? x.id : Date.now() + n, t: Number.isFinite(x.t) ? x.t : 0, d: x.d, m: Math.round(x.m), s: String(x.s || "").slice(0, 60)}); ids.add(x.id); n++;
+      }
+    }
+    H.sort((a,b) => a.d === b.d ? a.t - b.t : a.d < b.d ? -1 : 1); saveH(); render();
+    toast(n ? `${n} kayıt içe aktarıldı` : "Yeni kayıt bulunamadı");
+  } catch(err){ toast("Dosya okunamadı. Bu uygulamadan dışa aktarılmış bir dosya seç."); }
+});
+$("tmClear").addEventListener("click", () => {
+  if (confirm("Tüm çalışma geçmişin silinsin mi? Bu geri alınamaz.")){ H = []; saveH(); render(); toast("Geçmiş silindi"); }
+});
+
+/* ---------- menu + routes ---------- */
+const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
+function openDrawer(){
+  scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add("show"));
+  drawer.classList.add("open"); drawer.removeAttribute("inert"); menuBtn.setAttribute("aria-expanded", "true");
+  setTimeout(() => { const cur = drawer.querySelector('[aria-current="page"]') || drawer.querySelector(".di"); if (cur) cur.focus(); }, 60);
+}
+function closeDrawer(focusBack){
+  drawer.classList.remove("open"); drawer.setAttribute("inert", ""); scrim.classList.remove("show"); menuBtn.setAttribute("aria-expanded", "false");
+  setTimeout(() => { if (!drawer.classList.contains("open")) scrim.hidden = true; }, 220);
+  if (focusBack) menuBtn.focus();
+}
+menuBtn.addEventListener("click", () => drawer.classList.contains("open") ? closeDrawer(true) : openDrawer());
+scrim.addEventListener("click", () => closeDrawer(true));
+$("drawerClose").addEventListener("click", () => closeDrawer(true));
+document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer(true); });
+drawer.addEventListener("click", e => {
+  const b = e.target.closest("[data-go]"); if (!b) return;
+  const to = b.dataset.go;
+  if ((location.hash === "#sayac") === (to === "sayac")){ closeDrawer(false); return; }
+  location.hash = to === "sayac" ? "#sayac" : "#program"; closeDrawer(false);
+});
+$("tmPill").addEventListener("click", () => { location.hash = "#sayac"; });
+
+let curRoute = null;
+function route(){
+  const r = location.hash === "#sayac" ? "sayac" : "program";
+  const changed = r !== curRoute; curRoute = r;
+  document.body.dataset.route = r;
+  $("brandSmall").textContent = r === "sayac" ? "Çalışma" : "İstanbul Tıp · Dönem 1 Türkçe";
+  $("brandTitle").textContent = r === "sayac" ? "Odak sayacı" : "Programım";
+  titleBase = r === "sayac" ? "Odak sayacı" : (titleBase === "Odak sayacı" ? progTitle : titleBase);
+  for (const a of drawer.querySelectorAll("[data-go]")){
+    if ((a.dataset.go === "sayac") === (r === "sayac")) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  }
+  if (r === "sayac"){ render(); acquireWake(); } else { releaseWake(); paint(); }
+  if (changed) window.scrollTo(0, 0);
+}
+const progTitle = document.title;
+window.addEventListener("hashchange", route);
+window.addEventListener("prog-ready", () => { renderChips(); hint(); });
+
+/* ---------- loop + sync ---------- */
+setInterval(() => {
+  if (T.status === "running" && T.endAt <= Date.now()) finish();
+  else if (T.status === "running" || document.body.dataset.route === "sayac") paint();
+  if (flashMsg && Date.now() >= flashUntil && document.body.dataset.route === "sayac"){ flashMsg = ""; hint(); }
+}, 250);
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) return;
+  if (T.status === "running" && T.endAt <= Date.now()) finish(); else paint();
+  acquireWake();
+});
+window.addEventListener("storage", e => {
+  if ([KS, KT, KH].includes(e.key)){ loadAll(); if (document.body.dataset.route === "sayac") render(); else paint(); }
+});
+
+// first paint (+ a session that ended while the page was closed)
+$("tmPrg").style.strokeDasharray = String(C);
+route();
+if (T.status === "running" && T.endAt <= Date.now()){ finish(); toast("Sayaç sen yokken tamamlandı"); }
+else paint();
 })();
 </script>
 </body>
