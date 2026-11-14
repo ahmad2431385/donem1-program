@@ -364,9 +364,20 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 @media (prefers-reduced-motion: reduce){.drawer,.drawer-scrim{transition:none}}
 
 /* ---------- route switching ---------- */
-body[data-route="sayac"] #progView, body[data-route="grafik"] #progView, body[data-route="sayac"] #who, body[data-route="grafik"] #who{display:none !important}
-body:not([data-route="sayac"]) #timerView{display:none}
+body:not([data-route="program"]) #progView, body:not([data-route="program"]) #who{display:none !important}
+body:not([data-route="sayac"]):not([data-route="gorunum"]) #timerView{display:none}
 body:not([data-route="grafik"]) #statsView{display:none}
+.tmpage{display:none;flex-direction:column;gap:14px}
+body[data-route="gorunum"] #lookView, body[data-route="ses"] #ambView, body[data-route="ayar"] #setView{display:flex}
+body[data-route="gorunum"] #timerView{display:contents}
+body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
+body[data-route="gorunum"] #tmCard{position:sticky;top:calc(var(--hdr,56px) + 6px);z-index:5;zoom:.7;padding-top:10px;padding-bottom:10px;gap:6px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .tm-hint, body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-bar, body[data-route="gorunum"] #tmCard #tmStopAlarm{display:none}
+.tmsec .fhead{padding:2px 2px 4px}
+.tmsec .fhead h2{font-size:17px}
+.tmsec .fhead .hint{display:block;font-size:12.5px;color:var(--muted);font-weight:500}
+.tmsec{display:flex;flex-direction:column;gap:8px;padding:14px 16px}
+.tmsec .fbody{padding:0}
 #statsView{display:flex;flex-direction:column;gap:14px}
 
 /* ---------- focus timer ---------- */
@@ -845,9 +856,10 @@ body:not([data-route="grafik"]) #statsView{display:none}
       <div class="tm-steps three" id="tmCdSteps"></div>
       <p class="tm-note">İstediğin süreyi saat, dakika ve saniye olarak yaz. Süre dolunca alarm çalar; en az 1 dakikalık sayımlar çalışma geçmişine eklenir.</p>
     </section>
-
-    <details class="card fold tm-look" id="tmLook">
-      <summary><span class="ft"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+  </section>
+  <section class="tmpage" id="lookView" aria-label="Görünüm">
+    <section class="card tm-look tmsec" id="tmLook">
+      <div class="fhead"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></div>
       <div class="fbody">
         <p class="tm-lbl" style="margin-top:2px">Analog saat · 10 tasarım</p>
         <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
@@ -864,10 +876,11 @@ body:not([data-route="grafik"]) #statsView{display:none}
         <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
         <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu. Fotoğraf arka planda renkler okunaklı olsun diye otomatik açılır.</p>
       </div>
-    </details>
-
-    <details class="card fold" id="tmAmbCard">
-      <summary><span class="ft"><h2>Arka plan sesi</h2><span class="hint" id="tmAmbHint">Yağmur, dalga, ateş ve daha fazlası</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+    </section>
+  </section>
+  <section class="tmpage" id="ambView" aria-label="Arka plan sesi">
+    <section class="card tmsec" id="tmAmbCard">
+      <div class="fhead"><h2>Arka plan sesi</h2><span class="hint" id="tmAmbHint">Yağmur, dalga, ateş ve daha fazlası</span></div>
       <div class="fbody">
         <div class="tm-ambs" id="tmAmbs" role="group" aria-label="Arka plan sesi"></div>
         <div class="tm-range"><span>Ses seviyesi</span><input type="range" id="tmAmbVol" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><output id="tmAmbVolO"></output></div>
@@ -880,10 +893,11 @@ body:not([data-route="grafik"]) #statsView{display:none}
         </div>
         <p class="tm-note">Sesler cihazında üretilir, internet gerekmez. Telefon kilitlenince ya da sayfa arka plana gidince ses durabilir; kesintisiz dinlemek için sayfayı açık bırak.</p>
       </div>
-    </details>
-
-    <details class="card fold" id="tmSet">
-      <summary><span class="ft"><h2>Alarm ve ayarlar</h2><span class="hint" id="tmSetHint">Alarm sesi, titreşim, ekranı açık tutma</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+    </section>
+  </section>
+  <section class="tmpage" id="setView" aria-label="Alarm ve ayarlar">
+    <section class="card tmsec" id="tmSet">
+      <div class="fhead"><h2>Alarm ve ayarlar</h2><span class="hint" id="tmSetHint">Alarm sesi, titreşim, ekranı açık tutma</span></div>
       <div class="fbody">
         <label class="tm-sw"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
         <label class="tm-sw"><span>Titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
@@ -901,11 +915,12 @@ body:not([data-route="grafik"]) #statsView{display:none}
 
         <div class="tm-acts">
           <button class="secondary" id="tmTest" type="button">Alarmı dene</button>
+          <button class="secondary" id="tmStopAlarm2" type="button" hidden>🔕 Alarmı durdur</button>
           <button class="secondary" id="tmRound" type="button">Pomodoro döngüsünü baştan başlat</button>
         </div>
         <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak. Titreşim bazı telefonlarda ve tarayıcılarda desteklenmez.</p>
       </div>
-    </details>
+    </section>
   </section>
   <!-- ============ Çalışma grafiği (Odak sayacı'nın alt sayfası) ============ -->
   <section id="statsView" aria-label="Çalışma grafiği">
@@ -959,6 +974,9 @@ body:not([data-route="grafik"]) #statsView{display:none}
   <button class="di" type="button" data-go="program"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
   <button class="di" type="button" data-go="sayac"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı</b><small id="drawerTimerHint">Pomodoro ile çalış</small></span></button>
   <button class="di sub" type="button" data-go="grafik"><span class="ic" aria-hidden="true">📊</span><span><b>Çalışma grafiği</b><small>Hafta, ay ve konulara göre</small></span></button>
+  <button class="di sub" type="button" data-go="gorunum"><span class="ic" aria-hidden="true">🎨</span><span><b>Görünüm</b><small>Saat tasarımı, renk, fotoğraf</small></span></button>
+  <button class="di sub" type="button" data-go="ses"><span class="ic" aria-hidden="true">🎧</span><span><b>Arka plan sesi</b><small>Yağmur, dalga, ateş…</small></span></button>
+  <button class="di sub" type="button" data-go="ayar"><span class="ic" aria-hidden="true">⚙️</span><span><b>Alarm ve ayarlar</b><small>Alarm, titreşim, ekran</small></span></button>
   <div class="dfoot">Çalışma kayıtların yalnızca bu cihazda saklanır.</div>
 </nav>
 <button class="tm-pill" id="tmPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmPillTime">25:00</b><span id="tmPillPhase">Odak</span></button>
@@ -1970,7 +1988,7 @@ function vibrate(id, repeats){
   for (let i = 0; i < (repeats || 1); i++) arr = i ? arr.concat([600], p) : p.slice();
   try { return navigator.vibrate(arr); } catch(e){ return false; }
 }
-function refreshStopBtn(){ const b = $("tmStopAlarm"); if (b) b.hidden = !(alarmEnd > Date.now()); }
+function refreshStopBtn(){ for (const id of ["tmStopAlarm","tmStopAlarm2"]){ const b = $(id); if (b) b.hidden = !(alarmEnd > Date.now()); } }
 
 /* --- ambient sounds: generated once as looping buffers --- */
 const rnd = Math.random;
@@ -1991,79 +2009,82 @@ function loopify(a, xf){
   for (let i = 0; i < xf; i++){ const w = i/xf; r[i] = a[i]*w + a[L+i]*(1-w); }
   return r;
 }
+/* calm, dark and slow on purpose: two-stage low-pass filters, soft "plops" instead of bright pings, long swells */
+const lp2 = (a, fc) => lp(lp(a, fc), fc);
+const swell = (N, per, depth, ph) => { const m = new Float32Array(N); for (let i = 0; i < N; i++) m[i] = 1 - depth + depth*(.5 + .5*Math.sin(2*Math.PI*i/SR/per + ph)); return m; };
+function plop(o, at, f, len, amp){ for (let i = 0; i < len && at + i < o.length; i++){ const e = Math.sin(Math.PI*i/len); o[at+i] += amp*e*e*Math.sin(2*Math.PI*f*i/SR); } }
 function rainCh(p, N){
-  const bed = white(N); hp(bed, p.hpf); lp(bed, p.lpf); scaleRms(bed, p.level);
+  const bed = white(N); hp(bed, p.hpf); lp2(bed, p.lpf); scaleRms(bed, p.level);
+  const m1 = swell(N, p.sec/2, .22, rnd()*6), m2 = swell(N, p.sec/5, .1, rnd()*6);
+  for (let i = 0; i < N; i++) bed[i] *= m1[i]*m2[i];
   const nd = Math.round(p.rate*p.sec);
-  for (let d = 0; d < nd; d++){
-    const at = (rnd()*N)|0, f = 1800 + rnd()*3800, len = ((.012 + rnd()*.02)*SR)|0, amp = p.drop*(.3 + rnd()*.7);
-    for (let i = 0; i < len && at + i < N; i++) bed[at+i] += amp*Math.sin(2*Math.PI*f*i/SR)*Math.exp(-i/(len*.28));
-  }
+  for (let d = 0; d < nd; d++) plop(bed, (rnd()*N)|0, 420 + rnd()*900, ((.035 + rnd()*.05)*SR)|0, p.drop*(.3 + rnd()*.7));
   if (p.thunder){
     for (let k = 0; k < 2; k++){
-      const len = (6*SR)|0, at = ((3 + (k ? 16 : 4) + rnd()*3)*SR)|0, rum = lp(brownN(len), 140); scaleRms(rum, .22);
-      for (let i = 0; i < len && at + i < N; i++){ const t = i/SR; bed[at+i] += rum[i]*(1 - Math.exp(-t/.3))*Math.exp(-t/2.2)*3.2; }
+      const len = (8*SR)|0, at = ((3 + (k ? 16 : 4) + rnd()*3)*SR)|0, rum = lp2(brownN(len), 90); scaleRms(rum, .12);
+      for (let i = 0; i < len && at + i < N; i++){ const t = i/SR; bed[at+i] += rum[i]*(1 - Math.exp(-t/1.2))*Math.exp(-t/3)*2.4; }
     }
   }
-  return softClip(loopify(bed, SR));
+  return softClip(loopify(bed, SR*2));
 }
 const RAIN = {
-  hafif:{sec:20,hpf:1000,lpf:5000,level:.075,rate:5,drop:.09},
-  yagmur:{sec:20,hpf:700,lpf:7000,level:.09,rate:16,drop:.08},
-  siddetli:{sec:20,hpf:450,lpf:9500,level:.15,rate:45,drop:.1},
-  saganak:{sec:30,hpf:320,lpf:10000,level:.2,rate:80,drop:.12,thunder:true}
+  hafif:{sec:24,hpf:300,lpf:1700,level:.07,rate:1.6,drop:.035},
+  yagmur:{sec:24,hpf:250,lpf:2200,level:.085,rate:4,drop:.04},
+  siddetli:{sec:24,hpf:200,lpf:2900,level:.12,rate:9,drop:.045},
+  saganak:{sec:32,hpf:160,lpf:3500,level:.16,rate:15,drop:.05,thunder:true}
 };
 function waveCh(N){
-  const T = 8, a = lp(brownN(N), 400), b = hp(lp(white(N), 6500), 1800); scaleRms(a, .11); scaleRms(b, .035);
+  const T = 13, a = lp2(brownN(N), 260), b = hp(lp2(white(N), 1800), 500); scaleRms(a, .1); scaleRms(b, .025);
   const ph = rnd()*2;
   for (let i = 0; i < N; i++){
-    const t = i/SR, e = Math.pow(.5 + .5*Math.sin(2*Math.PI*t/T - Math.PI/2 + ph), 1.7);
-    a[i] *= .25 + e*1.1; b[i] *= e*e*1.6;
+    const t = i/SR, e = Math.pow(.5 + .5*Math.sin(2*Math.PI*t/T - Math.PI/2 + ph), 1.4);
+    a[i] *= .35 + e*.9; b[i] *= e*e*1.3;
   }
   const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = a[i] + b[i];
-  return softClip(loopify(o, SR));
+  return softClip(loopify(o, SR*2));
 }
 function fireCh(N){
-  const rum = lp(brownN(N), 700); scaleRms(rum, .07);
-  const hiss = hp(lp(white(N), 9000), 4500); scaleRms(hiss, .008);
-  const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = rum[i] + hiss[i];
-  const pops = Math.round(15*(N/SR)), snaps = Math.round(.8*(N/SR));
-  const burst = (at, len, amp) => { let prev = 0; for (let i = 0; i < len && at + i < N; i++){ const w = rnd()*2 - 1, x = (w - prev)*.7; prev = w; o[at+i] += amp*x*Math.exp(-i/(len*.3)); } };
-  for (let i = 0; i < pops; i++) burst((rnd()*N)|0, ((.003 + rnd()*.02)*SR)|0, .03 + Math.pow(rnd(),3)*.5);
-  for (let i = 0; i < snaps; i++) burst((rnd()*N)|0, ((.01 + rnd()*.012)*SR)|0, .5 + rnd()*.5);
-  return softClip(loopify(o, SR));
+  const rum = lp2(brownN(N), 380); scaleRms(rum, .07);
+  const hiss = hp(lp2(white(N), 2600), 900); scaleRms(hiss, .01);
+  const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = rum[i]*(.8 + .2*Math.sin(2*Math.PI*i/SR/6.5)) + hiss[i];
+  const pops = Math.round(3.2*(N/SR)), snaps = Math.round(.22*(N/SR));
+  const burst = (at, len, amp, fc) => {
+    const seg = new Float32Array(len); for (let i = 0; i < len; i++) seg[i] = (rnd()*2 - 1)*Math.exp(-i/(len*.35));
+    lp2(seg, fc); for (let i = 0; i < len && at + i < N; i++) o[at+i] += amp*seg[i];
+  };
+  for (let i = 0; i < pops; i++) burst((rnd()*N)|0, ((.006 + rnd()*.02)*SR)|0, .12 + rnd()*.25, 1200 + rnd()*900);
+  for (let i = 0; i < snaps; i++) burst((rnd()*N)|0, ((.02 + rnd()*.02)*SR)|0, .55 + rnd()*.3, 1500);
+  return softClip(loopify(o, SR*2));
 }
 function windCh(N){
-  const a = pinkN(N), ph1 = rnd()*6, ph2 = rnd()*6; let y = 0;
+  const a = pinkN(N), ph1 = rnd()*6, ph2 = rnd()*6; let y = 0, y2 = 0;
   for (let i = 0; i < N; i++){
-    const t = i/SR, fc = 220 + 800*(.5 + .5*Math.sin(2*Math.PI*t/7.3 + ph1))*(.6 + .4*Math.sin(2*Math.PI*t/3.1 + ph2)), k = 1 - Math.exp(-2*Math.PI*fc/SR);
-    y += k*(a[i] - y); a[i] = y*(.55 + .45*Math.sin(2*Math.PI*t/5.9 + ph2));
+    const t = i/SR, fc = 110 + 380*(.5 + .5*Math.sin(2*Math.PI*t/11 + ph1))*(.65 + .35*Math.sin(2*Math.PI*t/7.3 + ph2)), k = 1 - Math.exp(-2*Math.PI*fc/SR);
+    y += k*(a[i] - y); y2 += k*(y - y2); a[i] = y2*(.6 + .4*Math.sin(2*Math.PI*t/9.1 + ph2));
   }
-  return softClip(loopify(scaleRms(a, .1), SR));
+  return softClip(loopify(scaleRms(a, .1), SR*2));
 }
 function nightCh(N){
-  const o = lp(pinkN(N), 2500); scaleRms(o, .03);
-  for (let ins = 0; ins < 4; ins++){
-    const f0 = 4000 + ins*370 + rnd()*200; let t = rnd()*.8;
-    while (t*SR < N - SR*.5){
-      const pulses = 3 + ((rnd()*3)|0), gap = .055 + rnd()*.01;
-      for (let p = 0; p < pulses; p++){
-        const at = ((t + p*gap)*SR)|0, len = (.02*SR)|0;
-        for (let i = 0; i < len && at + i < N; i++){ const e = Math.sin(Math.PI*i/len); o[at+i] += .16*e*Math.sin(2*Math.PI*f0*i/SR); }
-      }
-      t += pulses*gap + .5 + rnd()*1.1;
+  const o = lp2(pinkN(N), 900); scaleRms(o, .035);
+  for (let ins = 0; ins < 3; ins++){
+    const f0 = 2900 + ins*260 + rnd()*120; let t = rnd()*2;
+    while (t*SR < N - SR*.8){
+      const pulses = 3 + ((rnd()*2)|0), gap = .11 + rnd()*.02;
+      for (let p = 0; p < pulses; p++) plop(o, ((t + p*gap)*SR)|0, f0, (.055*SR)|0, .035);
+      t += pulses*gap + 2 + rnd()*3;
     }
   }
-  return softClip(loopify(o, SR));
+  return softClip(loopify(o, SR*2));
 }
 const NOISE = {
-  beyaz:N => softClip(loopify(scaleRms(white(N), .1), SR)),
-  pembe:N => softClip(loopify(scaleRms(pinkN(N), .09), SR)),
-  kahve:N => softClip(loopify(scaleRms(brownN(N), .11), SR))
+  beyaz:N => softClip(loopify(scaleRms(lp2(white(N), 4200), .09), SR)),
+  pembe:N => softClip(loopify(scaleRms(lp(pinkN(N), 2500), .09), SR)),
+  kahve:N => softClip(loopify(scaleRms(lp(brownN(N), 700), .1), SR))
 };
 const ambCache = {};
 function ambBuffer(id){
   if (ambCache[id]) return ambCache[id];
-  const sec = RAIN[id] ? RAIN[id].sec : id === "dalga" ? 32 : id === "ates" ? 24 : 20, N = sec*SR + SR;
+  const sec = RAIN[id] ? RAIN[id].sec : id === "dalga" ? 39 : id === "ates" ? 30 : 24, N = sec*SR + SR*(RAIN[id]||["dalga","ates","ruzgar","gece"].includes(id) ? 2 : 1);
   const mk = () => RAIN[id] ? rainCh(RAIN[id], N) : id === "dalga" ? waveCh(N) : id === "ates" ? fireCh(N) : id === "ruzgar" ? windCh(N) : id === "gece" ? nightCh(N) : NOISE[id](N);
   const L = mk(), R = mk(), buf = AC.createBuffer(2, L.length, SR);
   buf.getChannelData(0).set(L); buf.getChannelData(1).set(R);
@@ -2078,7 +2099,7 @@ function ambStart(){
   try {
     const src = AC.createBufferSource(); src.buffer = ambBuffer(S.amb); src.loop = true;
     const g = AC.createGain(); g.gain.value = .0001; src.connect(g); g.connect(MASTER); src.start();
-    g.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .4);
+    g.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, 1.2);
     ambNode = src; ambGain = g; ambId = S.amb;
   } catch(e){ ambNode = null; }
 }
@@ -2385,8 +2406,6 @@ $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data
 $("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
 $("tmSwatches").addEventListener("input", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); applyColor($("tmCard")); applyColor($("tmLook")); } });
 $("tmSwatches").addEventListener("change", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); render(); } });
-$("tmLook").open = LS.get("open_tmLook") === "1";
-$("tmLook").addEventListener("toggle", e => LS.set("open_tmLook", e.target.open ? "1" : "0"));
 
 /* --- sound pickers --- */
 let audioUIBuilt = false;
@@ -2419,9 +2438,8 @@ $("tmAlVol").addEventListener("input", e => { S.alarmVol = clamp((+e.target.valu
 $("tmAlarms").addEventListener("click", e => { const b = e.target.closest("[data-al]"); if (!b) return; S.alarm = b.dataset.al; saveS(); renderAudioUI(); playAlarm(S.alarm, 1, false); });
 $("tmRepeat").addEventListener("click", e => { const b = e.target.closest("[data-rp]"); if (!b) return; S.repeat = +b.dataset.rp; saveS(); renderAudioUI(); });
 $("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-vb]"); if (!b) return; S.vib = b.dataset.vb; saveS(); renderAudioUI(); if (!vibrate(S.vib, 1)) toast("Bu cihaz ya da tarayıcı titreşimi desteklemiyor"); });
-$("tmAmbCard").open = LS.get("open_tmAmbCard") === "1";
-$("tmAmbCard").addEventListener("toggle", e => LS.set("open_tmAmbCard", e.target.open ? "1" : "0"));
 $("tmStopAlarm").addEventListener("click", () => stopAlarm());
+$("tmStopAlarm2").addEventListener("click", () => stopAlarm());
 
 /* --- steppers --- */
 const STEPS = [["focus","Odak (dk)",1],["short","Kısa mola (dk)",1],["long","Uzun mola (dk)",1],["cycles","Uzun mola için odak sayısı",1]];
@@ -2624,8 +2642,6 @@ $("tmChips").addEventListener("click", e => {
   const b = e.target.closest("button[data-s]"); if (!b) return;
   T.subject = T.subject === b.dataset.s ? "" : b.dataset.s; saveX(T); $("tmSubject").value = T.subject; render();
 });
-$("tmSet").open = LS.get("open_tmSet") === "1";
-$("tmSet").addEventListener("toggle", e => LS.set("open_tmSet", e.target.open ? "1" : "0"));
 $("tmClear").addEventListener("click", () => {
   if (confirm("Tüm çalışma geçmişin silinsin mi? Bu geri alınamaz.")){ H = []; saveH(); SEL = null; OFF = 0; render(); toast("Geçmiş silindi"); }
 });
@@ -2650,7 +2666,7 @@ drawer.addEventListener("click", e => {
   const b = e.target.closest("[data-go]"); if (!b) return;
   const to = b.dataset.go;
   if (to === curRoute){ closeDrawer(false); return; }
-  location.hash = to === "sayac" ? "#sayac" : to === "grafik" ? "#sayac/grafik" : "#program"; closeDrawer(false);
+  location.hash = to === "sayac" ? "#sayac" : to === "program" ? "#program" : "#sayac/" + to; closeDrawer(false);
 });
 $("tmPill").addEventListener("click", () => { location.hash = "#sayac"; });
 
@@ -2658,16 +2674,18 @@ const progTitle = document.title;
 let curRoute = null;
 function route(){
   const h = location.hash;
-  const r = h === "#sayac/grafik" ? "grafik" : h === "#sayac" ? "sayac" : "program";
+  const sub = h.startsWith("#sayac/") ? h.slice(7) : "";
+  const r = ["grafik","gorunum","ses","ayar"].includes(sub) ? sub : h === "#sayac" ? "sayac" : "program";
   const changed = r !== curRoute; curRoute = r;
   document.body.dataset.route = r;
   $("brandSmall").textContent = r === "program" ? "İstanbul Tıp · Dönem 1 Türkçe" : "Çalışma";
-  $("brandTitle").textContent = r === "sayac" ? "Odak sayacı" : r === "grafik" ? "Çalışma grafiği" : "Programım";
-  titleBase = r === "sayac" ? "Odak sayacı" : r === "grafik" ? "Çalışma grafiği" : progTitle;
+  const RT = {sayac:"Odak sayacı", grafik:"Çalışma grafiği", gorunum:"Görünüm", ses:"Arka plan sesi", ayar:"Alarm ve ayarlar"};
+  $("brandTitle").textContent = RT[r] || "Programım";
+  titleBase = RT[r] || progTitle;
   for (const a of drawer.querySelectorAll("[data-go]")){
     if (a.dataset.go === r) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   }
-  if (r === "sayac"){ render(); acquireWake(); } else if (r === "grafik"){ releaseWake(); SUBSEL = null; render(); } else { releaseWake(); paint(); }
+  if (r === "sayac"){ render(); acquireWake(); } else if (r === "gorunum" || r === "ses" || r === "ayar"){ render(); releaseWake(); } else if (r === "grafik"){ releaseWake(); SUBSEL = null; render(); } else { releaseWake(); paint(); }
   if (changed) window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
@@ -2677,7 +2695,7 @@ window.addEventListener("prog-ready", () => { renderChips(); });
 setInterval(() => {
   let fin = false;
   for (const x of [T, K]) if (x.status === "running" && x.endAt <= Date.now()){ finish(x); fin = true; }
-  if (!fin && (runner() || document.body.dataset.route === "sayac")) paint();
+  if (!fin && (runner() || ["sayac","gorunum"].includes(document.body.dataset.route))) paint();
   if (flashMsg && Date.now() >= flashUntil && document.body.dataset.route === "sayac"){ flashMsg = ""; hint(); }
   if (alarmEnd && alarmEnd <= Date.now()){ alarmEnd = 0; refreshStopBtn(); }
 }, 250);
@@ -2689,7 +2707,7 @@ document.addEventListener("visibilitychange", () => {
   acquireWake();
 });
 window.addEventListener("storage", e => {
-  if ([KS, KT, KK, KH].includes(e.key)){ loadAll(); builtR = -1; if (document.body.dataset.route === "sayac") render(); else paint(); }
+  if ([KS, KT, KK, KH].includes(e.key)){ loadAll(); builtR = -1; if (["sayac","gorunum","ses","ayar"].includes(document.body.dataset.route)) render(); else paint(); }
 });
 
 // first paint (+ a timer that ended while the page was closed)
