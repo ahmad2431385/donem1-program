@@ -369,15 +369,16 @@ body:not([data-route="sayac"]) #timerView{display:none}
 
 /* ---------- focus timer ---------- */
 #timerView{display:flex;flex-direction:column;gap:14px}
-.tm-card{--ph:var(--accent);--ph-soft:var(--accent-soft);--glow:#3fd8ae;--ph-ink:#fff;display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 14px 18px;background:linear-gradient(180deg,var(--ph-soft),var(--surface) 70%);overflow:hidden}
+.tm-card,.tm-look{--ph:var(--accent);--ph-soft:var(--accent-soft);--glow:#3fd8ae;--ph-ink:#fff}
 .tm-card[data-phase="short"]{--ph:var(--amfi);--ph-soft:var(--amfi-soft);--glow:#7fb0ff}
 .tm-card[data-phase="long"]{--ph:var(--sec);--ph-soft:var(--sec-soft);--glow:#c8a2ff}
 .tm-card[data-phase="count"]{--ph:var(--pdo);--ph-soft:var(--pdo-soft);--glow:#ffbe5c}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tm-card{--ph-ink:#0b1512}}
-:root[data-theme="dark"] .tm-card{--ph-ink:#0b1512}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .tm-card,:root:not([data-theme="light"]) .tm-look{--ph-ink:#0b1512}}
+:root[data-theme="dark"] .tm-card,:root[data-theme="dark"] .tm-look{--ph-ink:#0b1512}
+.tm-card{display:flex;flex-direction:column;align-items:center;gap:14px;padding:16px 14px 18px;background:linear-gradient(180deg,var(--ph-soft),var(--surface) 70%);overflow:hidden}
 .tm-barrow{display:flex;gap:8px;flex-wrap:wrap;justify-content:space-between;align-items:center;width:100%}
 .tm-seg{display:inline-flex;background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid var(--line);border-radius:12px;padding:3px;gap:2px}
-.tm-seg button{border:none;background:none;padding:7px 13px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px;-webkit-tap-highlight-color:transparent}
+.tm-seg button{border:none;background:none;padding:7px 13px;border-radius:9px;font-weight:600;font-size:13.5px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .tm-seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.14)}
 .tm-seg.sm button{padding:7px 10px}
 .tm-top{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;min-height:28px}
@@ -386,43 +387,94 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-dots i{width:10px;height:10px;border-radius:50%;background:var(--line);border:2px solid transparent}
 .tm-dots i.on{background:var(--ph)}
 .tm-dots i.cur{background:transparent;border-color:var(--ph)}
-/* ring dial */
+.tm-card[data-view="ring"] .tm-dig{display:none}
+.tm-card[data-view="lcd"] .tm-ring{display:none}
+
+/* analog dial (10 skins, drawn in SVG) */
 .tm-ring{position:relative;width:min(80vw,300px);aspect-ratio:1}
-.tm-ring svg{width:100%;height:100%;display:block;overflow:visible}
-.tm-ring .tk{stroke:var(--muted);stroke-width:1.6;stroke-linecap:round;opacity:.28;transition:opacity .2s,stroke .2s}
-.tm-ring .tk.L{stroke-width:2.4;opacity:.45}
-.tm-ring .tk.on{stroke:var(--ph);opacity:.95}
-.tm-ring .trk{fill:none;stroke:color-mix(in srgb,var(--ink) 9%,transparent);stroke-width:10}
-.tm-ring .prg{fill:none;stroke:url(#tmGrad);stroke-width:10;stroke-linecap:round;transition:stroke-dashoffset .3s linear;filter:drop-shadow(0 0 7px color-mix(in srgb,var(--ph) 55%,transparent))}
-.tm-ring .knob{fill:var(--surface);stroke:var(--ph);stroke-width:3.5;filter:drop-shadow(0 1px 3px rgba(0,0,0,.35))}
-.tm-ring .disc{filter:drop-shadow(0 6px 16px rgba(10,30,25,.16))}
-.tm-card[data-run="1"] .tm-ring .disc-glow{animation:tmbreathe 3.6s ease-in-out infinite}
-@keyframes tmbreathe{0%,100%{opacity:.55}50%{opacity:1}}
-@media (prefers-reduced-motion: reduce){.tm-ring .prg{transition:none}.tm-card[data-run="1"] .tm-ring .disc-glow{animation:none}}
-.tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 19%;text-align:center}
+.tm-ring .dialbox{position:absolute;inset:0}
+.dial{width:100%;height:100%;display:block;overflow:visible}
+.dial .tk{stroke:var(--muted);opacity:.28;stroke-linecap:round;transition:opacity .2s,stroke .2s}
+.dial .tk.on{stroke:var(--ph);opacity:.95}
+.dial .dot{fill:var(--muted);opacity:.3;transition:opacity .2s,fill .2s}
+.dial .dot.on{fill:var(--ph);opacity:1}
+.dial .seg{fill:none;stroke:color-mix(in srgb,var(--ink) 10%,transparent);transition:stroke .2s}
+.dial .seg.on{stroke:var(--ph)}
+.dial [data-r="arc"],.dial [data-r="sec"]{transition:stroke-dashoffset .3s linear}
+@keyframes tmwave{to{transform:translateX(-130px)}}
+.dial .wv1{animation:tmwave 7s linear infinite}
+.dial .wv2{animation:tmwave 11s linear infinite reverse}
+@media (prefers-reduced-motion: reduce){.dial .wv1,.dial .wv2{animation:none}.dial [data-r="arc"],.dial [data-r="sec"]{transition:none}}
+.tm-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:0 19%;text-align:center;pointer-events:none}
 .tm-label{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ph)}
 .tm-time{font-family:var(--display);font-size:clamp(42px,14vw,60px);font-weight:600;letter-spacing:-.02em;font-variant-numeric:tabular-nums;line-height:1}
 .tm-time.long{font-size:clamp(32px,10.5vw,44px)}
 .tm-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-/* digital (7-segment) display */
-.tm-lcd{width:100%;max-width:360px;border-radius:22px;padding:14px 16px 16px;background:linear-gradient(180deg,#0e1a17,#070f0d);border:1px solid #1e2d29;box-shadow:inset 0 2px 16px rgba(0,0,0,.65),0 10px 26px rgba(10,30,25,.2);display:flex;flex-direction:column;gap:12px;color:var(--glow)}
-.tm-lcd .lt{display:flex;justify-content:space-between;gap:8px;font:600 11px var(--mono);letter-spacing:.14em;text-transform:uppercase}
-.lcd-row{--dh:clamp(60px,20vw,90px);display:flex;justify-content:center;align-items:center;gap:calc(var(--dh)*.07);transform:skewX(-5deg);padding:4px 0}
-.lcd-row .dg{height:var(--dh);width:calc(var(--dh)*.6);flex:none}
-.lcd-row .cl{height:var(--dh);width:calc(var(--dh)*.2);flex:none}
-.dg polygon{fill:rgba(255,255,255,.055)}
-.dg polygon.on{fill:var(--glow);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--glow) 75%,transparent))}
-.cl circle{fill:rgba(255,255,255,.055)}
-.cl circle.on{fill:var(--glow);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--glow) 75%,transparent))}
-.tm-card[data-run="1"] .cl circle.on{animation:tmblink 1s steps(1) infinite}
-@keyframes tmblink{0%{opacity:1}50%{opacity:.18}}
-@media (prefers-reduced-motion: reduce){.tm-card[data-run="1"] .cl circle.on{animation:none}}
-.led{display:grid;grid-template-columns:repeat(40,1fr);gap:2px;height:8px}
-.led i{border-radius:1.5px;background:rgba(255,255,255,.07)}
-.led i.on{background:var(--glow);box-shadow:0 0 5px color-mix(in srgb,var(--glow) 70%,transparent)}
-.lcd-show{font:500 12.5px var(--mono);opacity:.85;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tm-card[data-view="ring"] .tm-lcd{display:none}
-.tm-card[data-view="lcd"] .tm-ring{display:none}
+.tm-card[data-rskin="7"] .tm-center{justify-content:flex-start;padding-top:59%}
+.tm-card[data-rskin="7"] .tm-label,.tm-card[data-rskin="7"] .tm-show{display:none}
+.tm-card[data-rskin="7"] .tm-time{font-size:clamp(30px,9.5vw,40px)}
+.tm-card[data-rskin="2"] .tm-time,.tm-card[data-rskin="2"] .tm-label,.tm-card[data-rskin="2"] .tm-show{text-shadow:0 0 6px var(--surface),0 0 10px var(--surface),0 0 14px var(--surface)}
+.tm-card[data-rskin="8"] .tm-center{color:#eafff6}
+.tm-card[data-rskin="8"] .tm-label{color:var(--glow)}
+.tm-card[data-rskin="8"] .tm-show{color:#a9c9bf}
+.tm-card[data-rskin="9"] .tm-time{text-shadow:0 1px 10px color-mix(in srgb,var(--surface) 80%,transparent)}
+.tm-card[data-rskin="9"] .tm-show{color:var(--ink);opacity:.75}
+
+/* digital clock (10 skins) */
+.tm-dig{--ds:clamp(56px,19vw,86px);width:100%;max-width:380px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.dg-top{display:flex;justify-content:space-between;width:100%;font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ph);padding:0 4px}
+.dg-row{display:flex;justify-content:center;align-items:center;font-size:var(--ds);line-height:1;font-variant-numeric:tabular-nums;gap:.04em;color:var(--ink);font-family:var(--display)}
+.dg-row.long{font-size:calc(var(--ds)*.72)}
+.dg-row .c{display:inline-block;text-align:center;width:.62em}
+.dg-row .sep{display:inline-block;width:.28em;text-align:center;color:var(--ph);position:relative;top:-.04em}
+.dg-bar{width:100%;height:5px;border-radius:3px;background:color-mix(in srgb,var(--ink) 10%,transparent);overflow:hidden}
+.dg-bar i{display:block;height:100%;width:var(--f,100%);border-radius:3px;background:var(--ph);transition:width .3s linear}
+.dg-show{font-size:13px;color:var(--muted);max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dg-row svg{flex:none}
+.dg-row .dg{height:1em;width:.6em}
+.dg-row .cl{height:1em;width:.2em}
+.dg-row .mx{height:.92em;width:.66em}
+.dg-row .mc{height:.92em;width:.28em}
+.dg polygon{fill:color-mix(in srgb,var(--ink) 8%,transparent)}
+.dg polygon.on{fill:var(--ph)}
+.cl circle,.mc circle,.mx circle{fill:color-mix(in srgb,var(--ink) 8%,transparent)}
+.cl circle.on,.mc circle.on,.mx circle.on{fill:var(--ph)}
+@media (prefers-reduced-motion: reduce){.dg-bar i{transition:none}}
+/* skin 0: Sade (default) */
+[data-dskin="0"] .dg-row{font-weight:500;letter-spacing:-.025em}
+/* skin 1: Kart */
+[data-dskin="1"] .dg-row{gap:.06em}
+[data-dskin="1"] .dg-row .c{width:.66em;background:var(--surface);border:1px solid var(--line);border-radius:.16em;box-shadow:0 .04em .14em rgba(0,0,0,.1);padding:.1em 0;font-weight:600}
+/* skin 2: Çevirmeli */
+[data-dskin="2"] .dg-row{gap:.06em}
+[data-dskin="2"] .dg-row .c{position:relative;width:.68em;background:linear-gradient(#26342f 50%,#1b2623 50%);color:#f2f7f5;border-radius:.12em;padding:.1em 0;font-weight:600;box-shadow:0 .05em .16em rgba(0,0,0,.35)}
+[data-dskin="2"] .dg-row .c::after{content:"";position:absolute;left:0;right:0;top:50%;height:.022em;background:rgba(0,0,0,.6)}
+/* skin 3: Segment (SVG) · skin 4: Matris (SVG) */
+[data-dskin="3"] .dg-row{gap:.07em}
+[data-dskin="4"] .dg-row{gap:.08em}
+/* skin 5: İnce çizgi */
+[data-dskin="5"] .dg-row{font-family:var(--body)}
+[data-dskin="5"] .dg-row .c{color:transparent;-webkit-text-stroke:.022em var(--ph);font-weight:300}
+[data-dskin="5"] .dg-row .sep{font-weight:300}
+/* skin 6: Kalın */
+[data-dskin="6"] .dg-row .c{font-weight:800;background:linear-gradient(180deg,color-mix(in srgb,var(--ph) 55%,white),var(--ph));-webkit-background-clip:text;background-clip:text;color:transparent}
+/* skin 7: Terminal */
+[data-dskin="7"] .dg-row{font-family:var(--mono);font-weight:500;color:var(--glow);background:#09110f;padding:.14em .26em;border-radius:.18em;border:1px solid #1d2b27;text-shadow:0 0 .2em color-mix(in srgb,var(--glow) 45%,transparent);box-shadow:inset 0 0 .5em rgba(0,0,0,.6)}
+[data-dskin="7"] .dg-row .c{width:.6em}
+[data-dskin="7"] .dg-row .sep{color:var(--glow);width:.42em}
+[data-dskin="7"] .dg-row::before{content:">";font-size:.5em;opacity:.55;margin-right:.3em}
+[data-dskin="7"] .dg-row::after{content:"";width:.34em;height:.62em;background:var(--glow);margin-left:.14em;animation:tmcur 1.1s steps(1) infinite}
+@keyframes tmcur{50%{opacity:0}}
+@media (prefers-reduced-motion: reduce){[data-dskin="7"] .dg-row::after{animation:none}}
+/* skin 8: Yuvarlak */
+[data-dskin="8"] .dg-row{gap:.05em}
+[data-dskin="8"] .dg-row .c{font-size:.74em;width:1.12em;height:1.12em;line-height:1.12em;border-radius:50%;background:color-mix(in srgb,var(--ph) 14%,var(--surface));border:.04em solid var(--ph);font-weight:600}
+[data-dskin="8"] .dg-row .sep{font-size:.74em}
+/* skin 9: Çubuk */
+[data-dskin="9"] .dg-row{font-weight:300;letter-spacing:-.01em}
+[data-dskin="9"] .dg-bar{height:14px;border-radius:7px;background-image:repeating-linear-gradient(90deg,transparent 0 calc(10% - 2px),var(--surface) calc(10% - 2px) 10%)}
+[data-dskin="9"] .dg-bar i{border-radius:7px;background:linear-gradient(90deg,color-mix(in srgb,var(--ph) 55%,white),var(--ph))}
+
 /* controls */
 .tm-ctl{display:flex;align-items:center;gap:16px}
 .tm-main{min-width:164px;height:58px;border-radius:999px;border:none;background:linear-gradient(180deg,color-mix(in srgb,var(--ph) 88%,white),var(--ph));color:var(--ph-ink);font-weight:700;font-size:17px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 20px color-mix(in srgb,var(--ph) 34%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
@@ -430,17 +482,19 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-round{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .tm-round:hover{border-color:var(--ph)}
 .tm-round[hidden]{display:grid !important;visibility:hidden}
-.tm-main,.tm-round,.tm-seg button,.tm-st .stp button,.tm-presets button,.tm-chips button,.menubtn,.drawer .di,.tm-pill,.tm-per button,.tm-nav button{-webkit-tap-highlight-color:transparent}
+.tm-main,.tm-round,.tm-seg button,.tm-st .stp button,.tm-presets button,.tm-chips button,.menubtn,.drawer .di,.tm-pill,.tm-nav button,.tm-skin,.tm-opt,.tm-sw-c,.tm-col{-webkit-tap-highlight-color:transparent}
 @media (max-width:370px){.tm-ctl{gap:10px}.tm-main{min-width:0;height:54px;padding:0 20px;font-size:16px}.tm-round{width:44px;height:44px}.tm-card{padding:14px 10px 16px}}
 .tm-hint{font-size:13.5px;color:var(--muted);text-align:center;min-height:1.4em;margin:0}
+.tm-stopal{margin-top:-4px}
+
 /* cards */
 .tm-h{font-size:15.5px;margin:0 0 10px}
 .tm-in{width:100%;padding:11px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);font-size:15px}
 .tm-in:focus{border-color:var(--accent);outline:none}
 .tm-lbl{font-size:12px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.04em;margin:14px 0 0}
 .tm-chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.tm-chips button{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:6px 12px;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tm-chips button[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
+.tm-chips button,.tm-opt{border:1px solid var(--line);background:var(--bg);border-radius:999px;padding:7px 13px;font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tm-chips button[aria-pressed="true"],.tm-opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent);font-weight:600}
 .tm-presets{display:flex;gap:6px;flex-wrap:wrap}
 .tm-presets button{flex:1 1 84px;padding:9px 10px;border-radius:11px;border:1px solid var(--line);background:var(--bg);font-weight:600;font-size:13.5px;display:flex;flex-direction:column;gap:1px;align-items:center}
 .tm-presets button small{font-weight:500;color:var(--muted);font-size:11.5px}
@@ -469,6 +523,33 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-sw input:checked{background:var(--accent)}
 .tm-sw input:checked::after{transform:translateX(20px)}
 .tm-acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.tm-range{display:flex;align-items:center;gap:12px;margin-top:12px}
+.tm-range span{font-size:13px;color:var(--muted);font-weight:600;min-width:64px}
+.tm-range input{flex:1;accent-color:var(--accent);height:28px}
+.tm-range output{font:600 13px var(--mono);min-width:38px;text-align:right}
+
+/* appearance picker */
+.tm-skins{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+.tm-skin{border-radius:14px;border:1.5px solid var(--line);background:var(--bg);padding:6px 3px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
+.tm-skin .th{width:100%;aspect-ratio:1;display:grid;place-items:center;overflow:hidden}
+.tm-skin .th svg.dial{width:100%;height:100%}
+.tm-skin .th .dg-row{font-size:15px}
+.tm-skin[data-dskin="1"] .th .dg-row{font-size:14px}
+.tm-skin[data-dskin="2"] .th .dg-row{font-size:13px}
+.tm-skin[data-dskin="7"] .th .dg-row{font-size:11px}
+.tm-skin[data-dskin="8"] .th .dg-row{font-size:10.5px}
+.tm-skin small{font-size:10px;color:var(--muted);font-weight:600;line-height:1.1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.tm-skin[aria-pressed="true"]{border-color:var(--ph);box-shadow:0 0 0 2px color-mix(in srgb,var(--ph) 28%,transparent)}
+.tm-skin[aria-pressed="true"] small{color:var(--ph)}
+.tm-swatches{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.tm-sw-c{width:36px;height:36px;border-radius:50%;border:2px solid var(--surface);box-shadow:0 0 0 1.5px var(--line);background:var(--c);position:relative;display:grid;place-items:center;font-weight:700;font-size:12px;color:#fff}
+.tm-sw-c[aria-pressed="true"]{box-shadow:0 0 0 2.5px var(--ink)}
+.tm-sw-c.auto{background:conic-gradient(#10a37f,#3b82f6,#8b5cf6,#f59e0b,#10a37f)}
+.tm-sw-c.cust{background:conic-gradient(#ef4444,#f59e0b,#eab308,#22c55e,#06b6d4,#3b82f6,#8b5cf6,#ec4899,#ef4444);overflow:hidden}
+.tm-sw-c.cust input{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer}
+.tm-ambs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.tm-opt .e{margin-right:5px}
+
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -491,7 +572,7 @@ body:not([data-route="sayac"]) #timerView{display:none}
 .tm-pstat span{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.03em}
 .tm-plot{position:relative;display:flex;align-items:flex-end;gap:8px;height:116px;margin-top:14px;padding-top:6px}
 .tm-plot.month{gap:3px}
-.tm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0;height:100%;background:none;border:none;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tm-col{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:3px;min-width:0;height:100%;background:none;border:none;padding:0;cursor:pointer}
 .tm-col .v{font-size:10px;color:var(--muted);font-family:var(--mono);white-space:nowrap;min-height:12px}
 .tm-col .b{width:100%;max-width:38px;border-radius:6px 6px 3px 3px;background:var(--accent-soft);border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);min-height:3px}
 .tm-plot.month .tm-col .b{max-width:none;border-radius:3px 3px 2px 2px}
@@ -669,40 +750,28 @@ body:not([data-route="sayac"]) #timerView{display:none}
   <!-- ============ Odak sayacı ============ -->
   <section id="timerView" aria-label="Odak sayacı">
 
-    <section class="card tm-card" id="tmCard" data-phase="focus" data-view="ring" data-run="0">
+    <section class="card tm-card" id="tmCard" data-phase="focus" data-view="ring" data-run="0" data-rskin="0" data-dskin="0">
       <div class="tm-barrow">
         <div class="tm-seg" id="tmMode" role="group" aria-label="Sayaç türü">
           <button type="button" data-m="pomo" aria-pressed="true">Pomodoro</button>
           <button type="button" data-m="count" aria-pressed="false">Geri sayım</button>
         </div>
-        <div class="tm-seg sm" id="tmView" role="group" aria-label="Görünüm">
-          <button type="button" data-v="ring" aria-pressed="true" aria-label="Halka görünümü" title="Halka"><svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M10 2.8a7.2 7.2 0 0 1 6.2 3.6" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round"/></svg></button>
-          <button type="button" data-v="lcd" aria-pressed="false" aria-label="Dijital görünüm" title="Dijital"><svg width="19" height="17" viewBox="0 0 24 20" aria-hidden="true"><path d="M4 3h6v2H4zM4 9h6v2H4zM4 15h6v2H4zM3 4h2v6H3zM9 4h2v6H9zM3 10h2v6H3zM9 10h2v6H9z" fill="currentColor" opacity=".9"/><path d="M14 3h6v2h-6zM14 9h6v2h-6zM14 15h6v2h-6zM19 4h2v6h-2zM19 10h2v6h-2z" fill="currentColor" opacity=".9"/></svg></button>
+        <div class="tm-seg sm" id="tmView" role="group" aria-label="Saat türü">
+          <button type="button" data-v="ring" aria-pressed="true" aria-label="Analog saat" title="Analog"><svg width="17" height="17" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7.2" fill="none" stroke="currentColor" stroke-width="2"/><path d="M10 5.5V10l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+          <button type="button" data-v="lcd" aria-pressed="false" aria-label="Dijital saat" title="Dijital"><svg width="19" height="17" viewBox="0 0 24 20" aria-hidden="true"><path d="M3 4h18a1.5 1.5 0 0 1 1.5 1.5v9A1.5 1.5 0 0 1 21 16H3a1.5 1.5 0 0 1-1.5-1.5v-9A1.5 1.5 0 0 1 3 4Z" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M6 8v4M9.5 8v4M14.5 8v4M18 8v4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
         </div>
       </div>
       <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
 
-      <div class="tm-ring">
-        <svg viewBox="0 0 260 260" aria-hidden="true">
-          <defs>
-            <linearGradient id="tmGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--ph) 55%,white)"/><stop offset="1" style="stop-color:var(--ph)"/></linearGradient>
-            <radialGradient id="tmDisc" cx="50%" cy="38%" r="75%"><stop offset="0" style="stop-color:var(--surface)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--ph-soft) 70%,var(--surface))"/></radialGradient>
-          </defs>
-          <g id="tmTicks"></g>
-          <circle class="disc" cx="130" cy="130" r="86" fill="url(#tmDisc)"/>
-          <circle class="disc-glow" cx="130" cy="130" r="86" fill="none" style="stroke:color-mix(in srgb,var(--ph) 30%,transparent)" stroke-width="2"/>
-          <circle class="trk" cx="130" cy="130" r="100"/>
-          <circle class="prg" id="tmPrg" cx="130" cy="130" r="100" transform="rotate(-90 130 130)"/>
-          <circle class="knob" id="tmKnob" cx="130" cy="30" r="8.5"/>
-        </svg>
+      <div class="tm-ring" id="tmRing">
+        <div class="dialbox" id="tmDial" aria-hidden="true"></div>
         <div class="tm-center"><div class="tm-label" id="tmLabel">Odak</div><div class="tm-time" id="tmTime" role="timer" aria-live="off">25:00</div><div class="tm-show" id="tmShow"></div></div>
       </div>
 
-      <div class="tm-lcd" id="tmLcd">
-        <div class="lt"><span id="tmLcdPh">Odak</span><span id="tmLcdSub">1/4</span></div>
-        <div class="lcd-row" id="tmDigits" role="timer" aria-live="off"></div>
-        <div class="led" id="tmLed" aria-hidden="true"></div>
-        <div class="lcd-show" id="tmLcdShow"></div>
+      <div class="tm-dig" id="tmDig">
+        <div class="dg-row" id="tmDigits" role="timer" aria-live="off"></div>
+        <div class="dg-bar" aria-hidden="true"><i id="tmDigBar"></i></div>
+        <div class="dg-show" id="tmDigShow"></div>
       </div>
 
       <div class="tm-ctl">
@@ -711,6 +780,7 @@ body:not([data-route="sayac"]) #timerView{display:none}
         <button class="tm-round" id="tmSkip" type="button" aria-label="Sonraki bölüme geç" title="Atla"><svg width="20" height="20" viewBox="0 0 22 22" aria-hidden="true"><path d="M5 4.5 14 11l-9 6.5v-13Z" fill="currentColor"/><path d="M17.5 4.5v13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
       </div>
       <p class="tm-hint" id="tmHint" role="status"></p>
+      <button class="secondary tm-stopal" id="tmStopAlarm" type="button" hidden>🔕 Alarmı durdur</button>
     </section>
 
     <section class="card">
@@ -733,6 +803,35 @@ body:not([data-route="sayac"]) #timerView{display:none}
       <div class="tm-steps three" id="tmCdSteps"></div>
       <p class="tm-note">İstediğin süreyi saat, dakika ve saniye olarak yaz. Süre dolunca alarm çalar; en az 1 dakikalık sayımlar çalışma geçmişine eklenir.</p>
     </section>
+
+    <details class="card fold tm-look" id="tmLook">
+      <summary><span class="ft"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+        <p class="tm-lbl" style="margin-top:2px">Analog saat · 10 tasarım</p>
+        <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
+        <p class="tm-lbl">Dijital saat · 10 tasarım</p>
+        <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
+        <p class="tm-lbl">Renk</p>
+        <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
+        <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu.</p>
+      </div>
+    </details>
+
+    <details class="card fold" id="tmAmbCard">
+      <summary><span class="ft"><h2>Arka plan sesi</h2><span class="hint" id="tmAmbHint">Yağmur, dalga, ateş ve daha fazlası</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+        <div class="tm-ambs" id="tmAmbs" role="group" aria-label="Arka plan sesi"></div>
+        <div class="tm-range"><span>Ses seviyesi</span><input type="range" id="tmAmbVol" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><output id="tmAmbVolO"></output></div>
+        <label class="tm-sw" style="margin-top:8px"><span>Sesi çal<small id="tmAmbState">Bir ses seç</small></span><input type="checkbox" id="tmAmbOn"></label>
+        <div class="tm-barrow" style="margin-top:6px"><span class="small muted">Ne zaman çalsın?</span>
+          <div class="tm-seg" id="tmAmbMode" role="group" aria-label="Ne zaman çalsın">
+            <button type="button" data-am="timer" aria-pressed="true">Sayaç çalışırken</button>
+            <button type="button" data-am="always" aria-pressed="false">Sürekli</button>
+          </div>
+        </div>
+        <p class="tm-note">Sesler cihazında üretilir, internet gerekmez. Telefon kilitlenince ya da sayfa arka plana gidince ses durabilir; kesintisiz dinlemek için sayfayı açık bırak.</p>
+      </div>
+    </details>
 
     <section class="card">
       <h2 class="tm-h">Çalışma özetin</h2>
@@ -765,17 +864,27 @@ body:not([data-route="sayac"]) #timerView{display:none}
     </section>
 
     <details class="card fold" id="tmSet">
-      <summary><span class="ft"><h2>Ses ve ayarlar</h2><span class="hint">Alarm, titreşim, ekranı açık tutma</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <summary><span class="ft"><h2>Alarm ve ayarlar</h2><span class="hint" id="tmSetHint">Alarm sesi, titreşim, ekranı açık tutma</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
         <label class="tm-sw"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
         <label class="tm-sw"><span>Titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
         <label class="tm-sw"><span>Ekranı açık tut<small>Sayaç çalışırken ekran kararmasın, alarm kaçmasın</small></span><input type="checkbox" id="tmWake"></label>
         <label class="tm-sw"><span>Sonraki bölüme otomatik geç<small>Pomodoro'da odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
+
+        <p class="tm-lbl">Alarm sesi</p>
+        <div class="tm-ambs" id="tmAlarms" role="group" aria-label="Alarm sesi"></div>
+        <div class="tm-range"><span>Alarm sesi seviyesi</span><input type="range" id="tmAlVol" min="10" max="100" step="1" aria-label="Alarm sesi seviyesi"><output id="tmAlVolO"></output></div>
+        <p class="tm-lbl">Alarm kaç kez çalsın?</p>
+        <div class="tm-ambs" id="tmRepeat" role="group" aria-label="Alarm tekrarı"></div>
+
+        <p class="tm-lbl">Titreşim türü</p>
+        <div class="tm-ambs" id="tmVibs" role="group" aria-label="Titreşim türü"></div>
+
         <div class="tm-acts">
           <button class="secondary" id="tmTest" type="button">Alarmı dene</button>
           <button class="secondary" id="tmRound" type="button">Pomodoro döngüsünü baştan başlat</button>
         </div>
-        <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak.</p>
+        <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak. Titreşim bazı telefonlarda ve tarayıcılarda desteklenmez.</p>
       </div>
     </details>
   </section>
@@ -1662,10 +1771,28 @@ const fmtClock = ms => {
 const fmtSec = s => { const h = Math.floor(s/3600), m = Math.floor(s%3600/60), x = s%60; return [h && h+" sa", m && m+" dk", x && x+" sn"].filter(Boolean).join(" ") || "0 sn"; };
 function toast(msg){ const t = $("toast"); if (!t) return; t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 4200); }
 
+/* ---------- catalogues ---------- */
+const AMBS = [
+  {id:"hafif",n:"Hafif yağmur",e:"💧"},{id:"yagmur",n:"Yağmur",e:"🌧️"},{id:"siddetli",n:"Şiddetli yağmur",e:"⛈️"},{id:"saganak",n:"Sağanak",e:"🌩️"},
+  {id:"dalga",n:"Dalga sesi",e:"🌊"},{id:"ates",n:"Ateş",e:"🔥"},{id:"ruzgar",n:"Rüzgâr",e:"🍃"},
+  {id:"beyaz",n:"Beyaz gürültü",e:"⚪"},{id:"pembe",n:"Pembe gürültü",e:"🌸"},{id:"kahve",n:"Kahverengi gürültü",e:"🟤"},{id:"gece",n:"Gece böcekleri",e:"🦗"}
+];
+const ALARM_LIST = [{id:"can",n:"Çan"},{id:"zil",n:"Klasik zil"},{id:"bip",n:"Dijital bip"},{id:"melodi",n:"Yumuşak melodi"},{id:"gong",n:"Gong"},{id:"telefon",n:"Telefon zili"},{id:"sonar",n:"Sonar"}];
+const VIBS = [
+  {id:"kisa",n:"Kısa",p:[250]},{id:"cift",n:"Çift",p:[200,100,200]},{id:"uclu",n:"Üçlü",p:[150,90,150,90,150]},
+  {id:"uzun",n:"Uzun",p:[900]},{id:"kalp",n:"Kalp atışı",p:[90,70,180,420,90,70,180]},{id:"sos",n:"SOS",p:[100,80,100,80,100,200,300,80,300,80,300,200,100,80,100,80,100]}
+];
+const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Kalın","Parçalı","Mekanik","Neon","Sıvı"];
+const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Kalın","Terminal","Yuvarlak","Çubuk"];
+const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"]];
+
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", sound:true, vibrate:true, wake:true, auto:false, goal:240};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720]};
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, color:"auto",
+  sound:true, vibrate:true, wake:true, auto:false, goal:240,
+  alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
+  amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer"};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], alarmVol:[0.1,1], ambVol:[0,1]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -1681,9 +1808,15 @@ function loadAll(){
   const s = jget(KS) || {};
   S = {...DEF};
   for (const k in DEF) if (typeof s[k] === typeof DEF[k]) S[k] = s[k];
-  for (const k in LIM) S[k] = clamp(Math.round(S[k]) || DEF[k], LIM[k][0], LIM[k][1]);
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
+  if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
+  if (!AMBS.some(a => a.id === S.amb)) S.amb = DEF.amb;
+  if (!ALARM_LIST.some(a => a.id === S.alarm)) S.alarm = DEF.alarm;
+  if (!VIBS.some(a => a.id === S.vib)) S.vib = DEF.vib;
+  if (![1,3,5].includes(S.repeat)) S.repeat = 1;
+  if (!["timer","always"].includes(S.ambMode)) S.ambMode = "timer";
   const t = jget(KT); T = validX(t, ["focus","short","long"]) ? t : freshT();
   const k = jget(KK); K = validX(k, ["count"]) ? k : freshK();
   const h = jget(KH);
@@ -1698,7 +1831,206 @@ function saveH(){
 }
 loadAll();
 
-/* ---------- engine (the same code drives Pomodoro and the free countdown) ---------- */
+/* ============ AUDIO: alarm sounds, vibration, ambient sounds ============ */
+const SR = 22050;
+let AC = null, MASTER = null, AN = null, mediaEl = null;
+function ensureAudio(){
+  try {
+    if (!AC){
+      AC = new (window.AudioContext || window.webkitAudioContext)();
+      MASTER = AC.createGain(); MASTER.gain.value = 1;
+      AN = AC.createAnalyser(); AN.fftSize = 1024; MASTER.connect(AN);
+      let routed = false;
+      // route through a media element so the browser treats it as media playback (keeps playing with the screen off where supported)
+      try {
+        if (AC.createMediaStreamDestination){
+          const dest = AC.createMediaStreamDestination(); MASTER.connect(dest);
+          mediaEl = new Audio(); mediaEl.srcObject = dest.stream; mediaEl.setAttribute("playsinline", "");
+          const pr = mediaEl.play(); routed = true;
+          if (pr && pr.catch) pr.catch(() => { try { MASTER.connect(AC.destination); } catch(e){} });
+        }
+      } catch(e){ routed = false; }
+      if (!routed) MASTER.connect(AC.destination);
+    }
+    if (AC.state === "suspended") AC.resume();
+    if (mediaEl && mediaEl.paused){ const p = mediaEl.play(); if (p && p.catch) p.catch(() => {}); }
+  } catch(e){}
+}
+const unlockAudio = ensureAudio;
+
+/* --- alarm sounds (synthesised, no files) --- */
+function osc(type, f, t0, d, peak, a, dest){
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.type = type; o.frequency.value = f;
+  g.gain.setValueAtTime(0.0001, t0); g.gain.linearRampToValueAtTime(peak, t0 + a); g.gain.exponentialRampToValueAtTime(0.0001, t0 + a + d);
+  o.connect(g); g.connect(dest); o.start(t0); o.stop(t0 + a + d + 0.05);
+}
+const ALARMS = {
+  can:{d:2.3, p:(t,o) => { [659,784,988,1319].forEach((f,i) => { osc("sine",f,t+i*.2,1,.45,.02,o); osc("sine",f*2,t+i*.2,.5,.08,.02,o); }); }},
+  zil:{d:2.1, p:(t,o) => { for (let k = 0; k < 2; k++) for (let i = 0; i < 18; i++) osc("square", i%2 ? 1750 : 2090, t + k*1.05 + i*.05, .035, .32, .002, o); }},
+  bip:{d:2.3, p:(t,o) => { for (let r = 0; r < 2; r++){ for (let i = 0; i < 3; i++) osc("square",1000,t+r*1.15+i*.2,.1,.3,.005,o); osc("square",1000,t+r*1.15+.65,.35,.3,.005,o); } }},
+  melodi:{d:2.7, p:(t,o) => { [523,659,784,1047,784,659,523].forEach((f,i) => { osc("triangle",f,t+i*.3,.55,.35,.02,o); osc("sine",f*2,t+i*.3,.3,.07,.02,o); }); }},
+  gong:{d:4.6, p:(t,o) => { [[196,1],[298,.6],[392,.5],[541,.35],[764,.2]].forEach(([f,a]) => osc("sine",f,t,3.8,.3*a,.01,o)); }},
+  telefon:{d:2.6, p:(t,o) => { for (let b = 0; b < 2; b++) for (let i = 0; i < 26; i++) osc("sine", i%2 ? 1400 : 1000, t + b*1.3 + i*.04, .04, .45, .003, o); }},
+  sonar:{d:3.3, p:(t,o) => { [0,1.5].forEach(of => { osc("sine",1250,t+of,1.1,.45,.005,o); osc("sine",1250,t+of+.25,.8,.16,.005,o); osc("sine",1250,t+of+.5,.6,.07,.005,o); }); }}
+};
+let alarmGain = null, alarmEnd = 0, alarmTimer = null;
+function playAlarm(id, repeats, withVib){
+  ensureAudio(); stopAlarm(true);
+  const a = ALARMS[id] || ALARMS.can; let total = 0;
+  if (AC){
+    try {
+      alarmGain = AC.createGain(); alarmGain.gain.value = clamp(S.alarmVol, .1, 1); alarmGain.connect(MASTER);
+      let t = AC.currentTime + .03;
+      for (let k = 0; k < repeats; k++){ a.p(t, alarmGain); t += a.d + .5; }
+      total = (t - AC.currentTime) * 1000;
+    } catch(e){}
+  }
+  if (withVib) vibrate(S.vib, repeats);
+  alarmEnd = Date.now() + total; clearTimeout(alarmTimer);
+  alarmTimer = setTimeout(() => { alarmEnd = 0; refreshStopBtn(); }, total + 100);
+  refreshStopBtn();
+}
+function stopAlarm(silent){
+  if (alarmGain && AC){ try { alarmGain.gain.cancelScheduledValues(AC.currentTime); alarmGain.gain.setTargetAtTime(0, AC.currentTime, .02); const g = alarmGain; setTimeout(() => { try { g.disconnect(); } catch(e){} }, 300); } catch(e){} }
+  alarmGain = null; alarmEnd = 0; clearTimeout(alarmTimer);
+  try { navigator.vibrate && navigator.vibrate(0); } catch(e){}
+  if (!silent) refreshStopBtn();
+}
+function vibrate(id, repeats){
+  if (!navigator.vibrate) return false;
+  const p = (VIBS.find(v => v.id === id) || VIBS[1]).p; let arr = [];
+  for (let i = 0; i < (repeats || 1); i++) arr = i ? arr.concat([600], p) : p.slice();
+  try { return navigator.vibrate(arr); } catch(e){ return false; }
+}
+function refreshStopBtn(){ const b = $("tmStopAlarm"); if (b) b.hidden = !(alarmEnd > Date.now()); }
+
+/* --- ambient sounds: generated once as looping buffers --- */
+const rnd = Math.random;
+const white = N => { const a = new Float32Array(N); for (let i = 0; i < N; i++) a[i] = rnd()*2 - 1; return a; };
+function lp(a, fc){ const k = 1 - Math.exp(-2*Math.PI*fc/SR); let y = 0; for (let i = 0; i < a.length; i++){ y += k*(a[i] - y); a[i] = y; } return a; }
+function hp(a, fc){ const k = 1 - Math.exp(-2*Math.PI*fc/SR); let y = 0; for (let i = 0; i < a.length; i++){ y += k*(a[i] - y); a[i] -= y; } return a; }
+function pinkN(N){
+  const a = white(N); let b0=0,b1=0,b2=0,b3=0,b4=0,b5=0,b6=0;
+  for (let i = 0; i < N; i++){ const w = a[i]; b0=.99886*b0+w*.0555179; b1=.99332*b1+w*.0750759; b2=.969*b2+w*.153852; b3=.8665*b3+w*.3104856; b4=.55*b4+w*.5329522; b5=-.7616*b5-w*.016898; a[i]=b0+b1+b2+b3+b4+b5+b6+w*.5362; b6=w*.115926; }
+  return a;
+}
+function brownN(N){ const a = white(N); let l = 0; for (let i = 0; i < N; i++){ l = (l + .02*a[i])/1.02; a[i] = l*3.5; } return a; }
+function scaleRms(a, target){ let s = 0; for (let i = 0; i < a.length; i++) s += a[i]*a[i]; const r = Math.sqrt(s/a.length) || 1, g = target/r; for (let i = 0; i < a.length; i++) a[i] *= g; return a; }
+function softClip(a){ for (let i = 0; i < a.length; i++){ const v = a[i]; a[i] = Math.abs(v) < .8 ? v : Math.sign(v)*(.8 + .2*Math.tanh((Math.abs(v) - .8)/.2)); } return a; }
+function loopify(a, xf){
+  const L = a.length - xf, r = new Float32Array(L);
+  for (let i = 0; i < L; i++) r[i] = a[i];
+  for (let i = 0; i < xf; i++){ const w = i/xf; r[i] = a[i]*w + a[L+i]*(1-w); }
+  return r;
+}
+function rainCh(p, N){
+  const bed = white(N); hp(bed, p.hpf); lp(bed, p.lpf); scaleRms(bed, p.level);
+  const nd = Math.round(p.rate*p.sec);
+  for (let d = 0; d < nd; d++){
+    const at = (rnd()*N)|0, f = 1800 + rnd()*3800, len = ((.012 + rnd()*.02)*SR)|0, amp = p.drop*(.3 + rnd()*.7);
+    for (let i = 0; i < len && at + i < N; i++) bed[at+i] += amp*Math.sin(2*Math.PI*f*i/SR)*Math.exp(-i/(len*.28));
+  }
+  if (p.thunder){
+    for (let k = 0; k < 2; k++){
+      const len = (6*SR)|0, at = ((3 + (k ? 16 : 4) + rnd()*3)*SR)|0, rum = lp(brownN(len), 140); scaleRms(rum, .22);
+      for (let i = 0; i < len && at + i < N; i++){ const t = i/SR; bed[at+i] += rum[i]*(1 - Math.exp(-t/.3))*Math.exp(-t/2.2)*3.2; }
+    }
+  }
+  return softClip(loopify(bed, SR));
+}
+const RAIN = {
+  hafif:{sec:20,hpf:1000,lpf:5000,level:.075,rate:5,drop:.09},
+  yagmur:{sec:20,hpf:700,lpf:7000,level:.09,rate:16,drop:.08},
+  siddetli:{sec:20,hpf:450,lpf:9500,level:.15,rate:45,drop:.1},
+  saganak:{sec:30,hpf:320,lpf:10000,level:.2,rate:80,drop:.12,thunder:true}
+};
+function waveCh(N){
+  const T = 8, a = lp(brownN(N), 400), b = hp(lp(white(N), 6500), 1800); scaleRms(a, .11); scaleRms(b, .035);
+  const ph = rnd()*2;
+  for (let i = 0; i < N; i++){
+    const t = i/SR, e = Math.pow(.5 + .5*Math.sin(2*Math.PI*t/T - Math.PI/2 + ph), 1.7);
+    a[i] *= .25 + e*1.1; b[i] *= e*e*1.6;
+  }
+  const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = a[i] + b[i];
+  return softClip(loopify(o, SR));
+}
+function fireCh(N){
+  const rum = lp(brownN(N), 700); scaleRms(rum, .07);
+  const hiss = hp(lp(white(N), 9000), 4500); scaleRms(hiss, .008);
+  const o = new Float32Array(N); for (let i = 0; i < N; i++) o[i] = rum[i] + hiss[i];
+  const pops = Math.round(15*(N/SR)), snaps = Math.round(.8*(N/SR));
+  const burst = (at, len, amp) => { let prev = 0; for (let i = 0; i < len && at + i < N; i++){ const w = rnd()*2 - 1, x = (w - prev)*.7; prev = w; o[at+i] += amp*x*Math.exp(-i/(len*.3)); } };
+  for (let i = 0; i < pops; i++) burst((rnd()*N)|0, ((.003 + rnd()*.02)*SR)|0, .03 + Math.pow(rnd(),3)*.5);
+  for (let i = 0; i < snaps; i++) burst((rnd()*N)|0, ((.01 + rnd()*.012)*SR)|0, .5 + rnd()*.5);
+  return softClip(loopify(o, SR));
+}
+function windCh(N){
+  const a = pinkN(N), ph1 = rnd()*6, ph2 = rnd()*6; let y = 0;
+  for (let i = 0; i < N; i++){
+    const t = i/SR, fc = 220 + 800*(.5 + .5*Math.sin(2*Math.PI*t/7.3 + ph1))*(.6 + .4*Math.sin(2*Math.PI*t/3.1 + ph2)), k = 1 - Math.exp(-2*Math.PI*fc/SR);
+    y += k*(a[i] - y); a[i] = y*(.55 + .45*Math.sin(2*Math.PI*t/5.9 + ph2));
+  }
+  return softClip(loopify(scaleRms(a, .1), SR));
+}
+function nightCh(N){
+  const o = lp(pinkN(N), 2500); scaleRms(o, .03);
+  for (let ins = 0; ins < 4; ins++){
+    const f0 = 4000 + ins*370 + rnd()*200; let t = rnd()*.8;
+    while (t*SR < N - SR*.5){
+      const pulses = 3 + ((rnd()*3)|0), gap = .055 + rnd()*.01;
+      for (let p = 0; p < pulses; p++){
+        const at = ((t + p*gap)*SR)|0, len = (.02*SR)|0;
+        for (let i = 0; i < len && at + i < N; i++){ const e = Math.sin(Math.PI*i/len); o[at+i] += .16*e*Math.sin(2*Math.PI*f0*i/SR); }
+      }
+      t += pulses*gap + .5 + rnd()*1.1;
+    }
+  }
+  return softClip(loopify(o, SR));
+}
+const NOISE = {
+  beyaz:N => softClip(loopify(scaleRms(white(N), .1), SR)),
+  pembe:N => softClip(loopify(scaleRms(pinkN(N), .09), SR)),
+  kahve:N => softClip(loopify(scaleRms(brownN(N), .11), SR))
+};
+const ambCache = {};
+function ambBuffer(id){
+  if (ambCache[id]) return ambCache[id];
+  const sec = RAIN[id] ? RAIN[id].sec : id === "dalga" ? 32 : id === "ates" ? 24 : 20, N = sec*SR + SR;
+  const mk = () => RAIN[id] ? rainCh(RAIN[id], N) : id === "dalga" ? waveCh(N) : id === "ates" ? fireCh(N) : id === "ruzgar" ? windCh(N) : id === "gece" ? nightCh(N) : NOISE[id](N);
+  const L = mk(), R = mk(), buf = AC.createBuffer(2, L.length, SR);
+  buf.getChannelData(0).set(L); buf.getChannelData(1).set(R);
+  return (ambCache[id] = buf);
+}
+let ambNode = null, ambGain = null, ambId = "";
+const ambLevel = () => Math.pow(S.ambVol, 2);
+function ambStart(){
+  ensureAudio(); if (!AC) return;
+  if (ambNode && ambId === S.amb){ ambGain.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .15); return; }
+  ambStop(true);
+  try {
+    const src = AC.createBufferSource(); src.buffer = ambBuffer(S.amb); src.loop = true;
+    const g = AC.createGain(); g.gain.value = .0001; src.connect(g); g.connect(MASTER); src.start();
+    g.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .4);
+    ambNode = src; ambGain = g; ambId = S.amb;
+  } catch(e){ ambNode = null; }
+}
+function ambStop(now){
+  if (!ambNode) return;
+  const n = ambNode, g = ambGain; ambNode = null; ambGain = null; ambId = "";
+  try { g.gain.setTargetAtTime(.0001, AC.currentTime, now ? .02 : .25); } catch(e){}
+  setTimeout(() => { try { n.stop(); n.disconnect(); g.disconnect(); } catch(e){} }, now ? 120 : 1200);
+}
+function ambWanted(){
+  const r = runner(), timerOn = !!r && (r.phase === "focus" || r.phase === "count");
+  return !!S.amb && S.ambOn && (S.ambMode === "always" || timerOn);
+}
+function syncAmbient(){ if (ambWanted()) ambStart(); else ambStop(false); }
+// browsers only allow sound after a tap: resume on the first touch (e.g. after a page reload)
+document.addEventListener("pointerdown", () => { if (AC && AC.state === "suspended") AC.resume(); if (!AC && S.ambOn && ambWanted()) syncAmbient(); }, true);
+window.ODAK_DEBUG = { level(){ if (!AN) return -1; const b = new Float32Array(AN.fftSize); AN.getFloatTimeDomainData(b); let s = 0; for (const v of b) s += v*v; return Math.sqrt(s/b.length); }, ctx(){ return AC ? AC.state : "yok"; }, amb(){ return ambId; }, ringing(){ return alarmEnd > Date.now(); } };
+
+/* ============ engine (the same code drives Pomodoro and the free countdown) ============ */
 const cur = () => S.mode === "count" ? K : T;
 const runner = () => T.status === "running" ? T : K.status === "running" ? K : null;
 const liveOne = () => runner() || (T.status === "paused" ? T : K.status === "paused" ? K : null);
@@ -1711,7 +2043,7 @@ function startOrResume(silent){
   const x = cur(); if (!silent) unlockAudio();
   if (x.status === "idle"){ x.full = dur(x.phase); x.left = x.full; if (x.phase !== "short" && x.phase !== "long") x.sid = Date.now(); }
   x.endAt = Date.now() + x.left; x.status = "running";
-  if (!silent) flashMsg = ""; saveX(x); acquireWake(); render();
+  if (!silent) { flashMsg = ""; stopAlarm(); } saveX(x); acquireWake(); render();
 }
 function pause(){ const x = cur(); x.left = remaining(x); x.endAt = 0; x.status = "paused"; saveX(x); releaseWake(); render(); }
 function logStudy(x, ms, complete){
@@ -1727,6 +2059,13 @@ function advance(){
   if (T.phase === "focus"){ if (T.done >= S.cycles){ T.phase = "long"; T.done = 0; } else T.phase = "short"; }
   else T.phase = "focus";
   T.full = dur(T.phase); T.left = T.full; T.status = "idle"; T.endAt = 0;
+}
+function alarm(done){
+  if (S.sound || S.vibrate){
+    if (S.sound) playAlarm(S.alarm, S.repeat, S.vibrate);
+    else if (S.vibrate) vibrate(S.vib, S.repeat);
+  }
+  if (document.hidden) flashTitle(done ? "🎉 Süre bitti!" : "☕ Mola bitti!");
 }
 function finish(x){
   if (x === K){
@@ -1759,25 +2098,6 @@ function restartRound(){
   if (T.phase === "focus" && T.status !== "idle"){ const el = elapsedMs(T); if (el >= 60000) logStudy(T, el, false); }
   T = freshT(); releaseWake(); saveX(T); render(); toast("Döngü baştan başladı");
 }
-
-/* ---------- alarm: sound, vibration, title ---------- */
-let AC = null;
-function unlockAudio(){
-  try { if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === "suspended") AC.resume(); } catch(e){}
-}
-function tone(f, t0, d, g){
-  const o = AC.createOscillator(), a = AC.createGain();
-  o.type = "sine"; o.frequency.value = f;
-  a.gain.setValueAtTime(0.0001, t0); a.gain.linearRampToValueAtTime(g, t0 + 0.02); a.gain.exponentialRampToValueAtTime(0.0001, t0 + d);
-  o.connect(a); a.connect(AC.destination); o.start(t0); o.stop(t0 + d + 0.05);
-}
-function chime(focusDone){
-  if (!AC) return;
-  try {
-    const t = AC.currentTime + 0.03, seq = focusDone ? [659, 784, 988, 1319] : [988, 784, 659];
-    seq.forEach((f,i) => { tone(f, t + i*0.2, 1.0, 0.2); tone(f*2, t + i*0.2, 0.5, 0.04); });
-  } catch(e){}
-}
 let titleBase = document.title, titleTimer = null;
 function flashTitle(msg){
   clearInterval(titleTimer); let on = true; document.title = msg;
@@ -1785,13 +2105,6 @@ function flashTitle(msg){
   const stop = () => { clearInterval(titleTimer); titleTimer = null; document.title = titleBase; window.removeEventListener("focus", stop); document.removeEventListener("pointerdown", stop, true); };
   window.addEventListener("focus", stop); document.addEventListener("pointerdown", stop, true);
 }
-function alarm(done){
-  if (S.sound) chime(done);
-  if (S.vibrate && navigator.vibrate) { try { navigator.vibrate(done ? [250,120,250,120,450] : [300,150,300]); } catch(e){} }
-  if (document.hidden) flashTitle(done ? "🎉 Süre bitti!" : "☕ Mola bitti!");
-}
-
-/* ---------- screen wake lock (only while running on the timer page) ---------- */
 let wl = null;
 async function acquireWake(){
   if (!S.wake || !("wakeLock" in navigator) || !runner() || document.hidden || document.body.dataset.route !== "sayac" || wl) return;
@@ -1799,32 +2112,98 @@ async function acquireWake(){
 }
 function releaseWake(){ if (wl){ try { wl.release(); } catch(e){} wl = null; } }
 
-/* ---------- 7-segment digits ---------- */
+/* ============ clock designs ============ */
+/* --- 10 analog dial designs (SVG) --- */
+const polar = (r, deg) => { const a = deg*Math.PI/180; return [130 + r*Math.sin(a), 130 - r*Math.cos(a)]; };
+function dialMarkup(sk, u){
+  const defs = `<defs><linearGradient id="g${u}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" style="stop-color:color-mix(in srgb,var(--ph) 55%,white)"/><stop offset="1" style="stop-color:var(--ph)"/></linearGradient><radialGradient id="d${u}" cx="50%" cy="38%" r="75%"><stop offset="0" style="stop-color:var(--surface)"/><stop offset="1" style="stop-color:color-mix(in srgb,var(--ph-soft) 70%,var(--surface))"/></radialGradient><clipPath id="c${u}"><circle cx="130" cy="130" r="98"/></clipPath></defs>`;
+  const ticks = (r1s, r1l, r2, ws, wl) => Array.from({length:60}, (_,i) => { const L = i%5 === 0, a = i*6, p1 = polar(L ? r1l : r1s, a), p2 = polar(r2, a); return `<line data-r="tick" class="tk" x1="${p1[0].toFixed(2)}" y1="${p1[1].toFixed(2)}" x2="${p2[0].toFixed(2)}" y2="${p2[1].toFixed(2)}" style="stroke-width:${L ? wl : ws}"/>`; }).join("");
+  const trk = (r, w, a = 9) => `<circle cx="130" cy="130" r="${r}" fill="none" style="stroke:color-mix(in srgb,var(--ink) ${a}%,transparent);stroke-width:${w}"/>`;
+  const arc = (r, w, extra = "", role = "arc") => `<circle data-r="${role}" data-rad="${r}" cx="130" cy="130" r="${r}" fill="none" transform="rotate(-90 130 130)" style="stroke:url(#g${u});stroke-width:${w};stroke-linecap:round;${extra}"/>`;
+  const knob = (r, k, fill = "var(--surface)", extra = "") => `<circle data-r="knob" data-rad="${r}" cx="130" cy="${130 - r}" r="${k}" style="fill:${fill};stroke:var(--ph);stroke-width:3.5;filter:drop-shadow(0 1px 3px rgba(0,0,0,.3));${extra}"/>`;
+  const disc = r => `<circle cx="130" cy="130" r="${r}" fill="url(#d${u})" style="filter:drop-shadow(0 6px 16px rgba(10,30,25,.16))"/>`;
+  const wave = (amp, ph) => { let d = ""; for (let x = -140; x <= 400; x += 10){ const y = amp*Math.sin(x/130*2*Math.PI + ph); d += (d ? "L" : "M") + x + " " + y.toFixed(2); } return d + "L400 300L-140 300Z"; };
+  let b = "";
+  switch (sk){
+    case 0: b = ticks(113,110,122,1.6,2.4) + disc(86) + `<circle cx="130" cy="130" r="86" fill="none" style="stroke:color-mix(in srgb,var(--ph) 30%,transparent);stroke-width:2"/>` + trk(100,10) + arc(100,10) + knob(100,8.5); break;
+    case 1: b = trk(108,3,12) + arc(108,3,"stroke:var(--ph);") + knob(108,6,"var(--ph)","stroke:var(--surface);stroke-width:2"); break;
+    case 2: b = `<circle cx="130" cy="130" r="114" fill="none" style="stroke:color-mix(in srgb,var(--ink) 18%,transparent);stroke-width:2"/>` + Array.from({length:12}, (_,i) => { const p1 = polar(104, i*30), p2 = polar(114, i*30); return `<line x1="${p1[0].toFixed(1)}" y1="${p1[1].toFixed(1)}" x2="${p2[0].toFixed(1)}" y2="${p2[1].toFixed(1)}" style="stroke:var(--ink);stroke-width:3;opacity:.55;stroke-linecap:round"/>`; }).join("") + trk(96,2,14) + `<path data-r="pie" d="" style="fill:color-mix(in srgb,var(--ph) 26%,transparent);stroke:var(--ph);stroke-width:2.5;stroke-linejoin:round"/>`; break;
+    case 3: b = disc(72) + trk(106,9) + arc(106,9) + knob(106,7) + trk(86,5) + arc(86,5,"","sec"); break;
+    case 4: b = `<circle cx="130" cy="130" r="88" fill="none" style="stroke:color-mix(in srgb,var(--ink) 7%,transparent);stroke-width:1.5"/>` + Array.from({length:60}, (_,i) => { const L = i%5 === 0, p = polar(108, i*6); return `<circle data-r="dot" class="dot" cx="${p[0].toFixed(2)}" cy="${p[1].toFixed(2)}" r="${L ? 4.6 : 3.1}"/>`; }).join(""); break;
+    case 5: b = trk(98,22,8) + arc(98,22) + disc(74); break;
+    case 6: b = Array.from({length:12}, (_,i) => { const p1 = polar(100, i*30 + 3), p2 = polar(100, i*30 + 27); return `<path data-r="seg" class="seg" d="M${p1[0].toFixed(2)} ${p1[1].toFixed(2)}A100 100 0 0 1 ${p2[0].toFixed(2)} ${p2[1].toFixed(2)}" style="stroke-width:14;stroke-linecap:round"/>`; }).join("") + `<circle cx="130" cy="130" r="80" fill="url(#d${u})" style="filter:drop-shadow(0 5px 12px rgba(10,30,25,.14))"/>`; break;
+    case 7: b = `<circle cx="130" cy="130" r="118" style="fill:var(--surface);stroke:color-mix(in srgb,var(--ink) 25%,transparent);stroke-width:3;filter:drop-shadow(0 6px 16px rgba(10,30,25,.16))"/>` + Array.from({length:60}, (_,i) => { const L = i%5 === 0, p1 = polar(L ? 98 : 106, i*6), p2 = polar(112, i*6); return `<line x1="${p1[0].toFixed(2)}" y1="${p1[1].toFixed(2)}" x2="${p2[0].toFixed(2)}" y2="${p2[1].toFixed(2)}" style="stroke:${L ? "var(--ink)" : "var(--muted)"};stroke-width:${L ? 3.2 : 1.2};opacity:${L ? .8 : .5}"/>`; }).join("") + arc(88,4) + `<line data-r="hand" x1="130" y1="150" x2="130" y2="56" style="stroke:var(--ph);stroke-width:2.6;stroke-linecap:round"/><circle cx="130" cy="130" r="6" style="fill:var(--ph)"/><circle cx="130" cy="130" r="2.4" style="fill:var(--surface)"/>`; break;
+    case 8: b = `<circle cx="130" cy="130" r="116" style="fill:#09130f;stroke:color-mix(in srgb,var(--ph) 55%,#09130f);stroke-width:2;filter:drop-shadow(0 0 14px color-mix(in srgb,var(--ph) 40%,transparent))"/>` + `<circle cx="130" cy="130" r="100" fill="none" style="stroke:rgba(255,255,255,.1);stroke-width:6"/>` + arc(100,6,"stroke:var(--glow);filter:drop-shadow(0 0 5px var(--glow)) drop-shadow(0 0 12px color-mix(in srgb,var(--glow) 60%,transparent));") + knob(100,5,"var(--glow)","stroke:var(--glow);") + `<circle cx="130" cy="130" r="84" fill="none" style="stroke:var(--glow);stroke-width:1;opacity:.28"/>`; break;
+    case 9: b = `<circle cx="130" cy="130" r="106" fill="none" style="stroke:color-mix(in srgb,var(--ph) 40%,transparent);stroke-width:3"/><circle cx="130" cy="130" r="100" style="fill:var(--surface)"/><g clip-path="url(#c${u})"><g data-r="liquid" transform="translate(0,130)"><path class="wv2" d="${wave(6,1.7)}" style="fill:var(--ph);opacity:.32"/><path class="wv1" d="${wave(5,0)}" style="fill:var(--ph);opacity:.5"/></g></g><circle cx="130" cy="130" r="100" fill="none" style="stroke:color-mix(in srgb,var(--ink) 10%,transparent);stroke-width:1.5"/>`; break;
+  }
+  return defs + b;
+}
+const dialCache = new WeakMap();
+function dialIndex(svg){
+  const c = {arcs:[], secs:[], knobs:[], ticks:[], dots:[], segs:[], pies:[], hands:[], liquids:[], lit60:-1, lit12:-1};
+  svg.querySelectorAll("[data-r]").forEach(el => {
+    const r = el.dataset.r;
+    if (r === "arc") c.arcs.push(el); else if (r === "sec") c.secs.push(el); else if (r === "knob") c.knobs.push(el);
+    else if (r === "tick") c.ticks.push(el); else if (r === "dot") c.dots.push(el); else if (r === "seg") c.segs.push(el);
+    else if (r === "pie") c.pies.push(el); else if (r === "hand") c.hands.push(el); else if (r === "liquid") c.liquids.push(el);
+  });
+  dialCache.set(svg, c); return c;
+}
+const secFrac = rem => { const s = (rem % 60000)/60000; return rem > 0 && s === 0 ? 1 : s; };
+function dialUpdate(svg, frac, rem){
+  const c = dialCache.get(svg) || dialIndex(svg);
+  for (const el of c.arcs){ const L = 2*Math.PI*(+el.dataset.rad); el.style.strokeDasharray = String(L); el.style.strokeDashoffset = String(L*(1 - frac)); el.style.opacity = frac <= 0 ? "0" : "1"; }
+  if (c.secs.length){ const f = secFrac(rem); for (const el of c.secs){ const L = 2*Math.PI*(+el.dataset.rad); el.style.strokeDasharray = String(L); el.style.strokeDashoffset = String(L*(1 - f)); } }
+  for (const el of c.knobs){ const p = polar(+el.dataset.rad, frac*360); el.setAttribute("cx", p[0].toFixed(2)); el.setAttribute("cy", p[1].toFixed(2)); el.style.opacity = frac <= 0 ? "0" : "1"; }
+  const n60 = Math.ceil(frac*60 - 1e-9);
+  if (n60 !== c.lit60){ c.lit60 = n60; c.ticks.forEach((t,i) => t.classList.toggle("on", i < n60)); c.dots.forEach((t,i) => t.classList.toggle("on", i < n60)); }
+  const n12 = Math.ceil(frac*12 - 1e-9);
+  if (n12 !== c.lit12){ c.lit12 = n12; c.segs.forEach((t,i) => t.classList.toggle("on", i < n12)); }
+  for (const el of c.pies){
+    let d = "";
+    if (frac >= .9999) d = "M130 130m-96 0a96 96 0 1 0 192 0a96 96 0 1 0-192 0Z";
+    else if (frac > 0){ const p = polar(96, frac*360); d = `M130 130L130 34A96 96 0 ${frac > .5 ? 1 : 0} 1 ${p[0].toFixed(2)} ${p[1].toFixed(2)}Z`; }
+    el.setAttribute("d", d);
+  }
+  for (const el of c.hands) el.setAttribute("transform", `rotate(${(360*(1 - secFrac(rem))).toFixed(1)} 130 130)`);
+  for (const el of c.liquids) el.setAttribute("transform", `translate(0,${(232 - frac*204).toFixed(1)})`);
+}
+const svgDial = (sk, u) => `<svg class="dial" viewBox="0 0 260 260" aria-hidden="true">${dialMarkup(sk, u)}</svg>`;
+
+/* --- 10 digital clock designs --- */
 const SEGS = (() => {
   const s = 5, hz = (x0,x1,y) => `${x0},${y} ${x0+s},${y-s} ${x1-s},${y-s} ${x1},${y} ${x1-s},${y+s} ${x0+s},${y+s}`;
   const vt = (x,y0,y1) => `${x},${y0} ${x+s},${y0+s} ${x+s},${y1-s} ${x},${y1} ${x-s},${y1-s} ${x-s},${y0+s}`;
   return {a:hz(9,51,7), g:hz(9,51,50), d:hz(9,51,93), f:vt(5,10,47), b:vt(55,10,47), e:vt(5,53,90), c:vt(55,53,90)};
 })();
 const DMAP = {"0":"abcdef","1":"bc","2":"abged","3":"abgcd","4":"fgbc","5":"afgcd","6":"afgedc","7":"abc","8":"abcdefg","9":"abcdfg"};
-const digitSVG = ch => ch === ":"
-  ? `<svg class="cl" viewBox="0 0 20 100" aria-hidden="true"><circle cx="10" cy="34" r="5.5" class="on"/><circle cx="10" cy="66" r="5.5" class="on"/></svg>`
-  : `<svg class="dg" viewBox="0 0 60 100" aria-hidden="true">${Object.keys(SEGS).map(k => `<polygon points="${SEGS[k]}"${(DMAP[ch]||"").includes(k) ? ' class="on"' : ""}/>`).join("")}</svg>`;
+const MX = {"0":["01110","10001","10011","10101","11001","10001","01110"],"1":["00100","01100","00100","00100","00100","00100","01110"],"2":["01110","10001","00001","00010","00100","01000","11111"],"3":["11110","00001","00001","01110","00001","00001","11110"],"4":["00010","00110","01010","10010","11111","00010","00010"],"5":["11111","10000","11110","00001","00001","10001","01110"],"6":["00110","01000","10000","11110","10001","10001","01110"],"7":["11111","00001","00010","00100","01000","01000","01000"],"8":["01110","10001","10001","01110","10001","10001","01110"],"9":["01110","10001","10001","01111","00001","00010","01100"]};
+function digitsHTML(clock, sk){
+  if (sk === 3) return [...clock].map(ch => ch === ":"
+    ? `<svg class="cl" viewBox="0 0 20 100" aria-hidden="true"><circle cx="10" cy="34" r="5.5" class="on"/><circle cx="10" cy="66" r="5.5" class="on"/></svg>`
+    : `<svg class="dg" viewBox="0 0 60 100" aria-hidden="true">${Object.keys(SEGS).map(k => `<polygon points="${SEGS[k]}"${DMAP[ch].includes(k) ? ' class="on"' : ""}/>`).join("")}</svg>`).join("");
+  if (sk === 4) return [...clock].map(ch => {
+    if (ch === ":") return `<svg class="mc" viewBox="0 0 2 7" aria-hidden="true"><circle cx="1" cy="2.5" r=".62" class="on"/><circle cx="1" cy="4.5" r=".62" class="on"/></svg>`;
+    return `<svg class="mx" viewBox="0 0 5 7" aria-hidden="true">${MX[ch].map((row,y) => [...row].map((v,x) => `<circle cx="${x + .5}" cy="${y + .5}" r=".4"${v === "1" ? ' class="on"' : ""}/>`).join("")).join("")}</svg>`;
+  }).join("");
+  return [...clock].map(ch => ch === ":" ? `<span class="sep">:</span>` : `<span class="c">${ch}</span>`).join("");
+}
 
-/* ---------- ring ticks ---------- */
-let ticks = [];
-(function buildTicks(){
-  let h = "";
-  for (let i = 0; i < 60; i++){
-    const a = i * 6 * Math.PI / 180, L = i % 5 === 0, r1 = L ? 110 : 113, r2 = 122, sn = Math.sin(a), cs = Math.cos(a);
-    h += `<line class="tk${L ? " L" : ""}" x1="${(130 + r1*sn).toFixed(2)}" y1="${(130 - r1*cs).toFixed(2)}" x2="${(130 + r2*sn).toFixed(2)}" y2="${(130 - r2*cs).toFixed(2)}"/>`;
-  }
-  $("tmTicks").innerHTML = h; ticks = [...$("tmTicks").children];
-  $("tmLed").innerHTML = "<i></i>".repeat(40);
-})();
-const C = 2 * Math.PI * 100;
-let lastTicks = -1, lastLed = -1, lastClock = "";
-
-/* ---------- rendering ---------- */
+/* ============ rendering ============ */
+const lum = hex => { const n = parseInt(hex.slice(1), 16), r = (n >> 16 & 255)/255, g = (n >> 8 & 255)/255, b = (n & 255)/255; return .2126*r + .7152*g + .0722*b; };
+function applyColor(el){
+  const c = S.color;
+  if (c === "auto"){ for (const k of ["--ph","--ph-soft","--glow","--ph-ink"]) el.style.removeProperty(k); return; }
+  el.style.setProperty("--ph", c);
+  el.style.setProperty("--ph-soft", `color-mix(in srgb, ${c} 14%, var(--surface))`);
+  el.style.setProperty("--glow", `color-mix(in srgb, ${c} 62%, white)`);
+  el.style.setProperty("--ph-ink", lum(c) > .6 ? "#0b1512" : "#fff");
+}
+let builtR = -1, lastClock = "", lastBarKey = "";
+function mainDial(){
+  if (builtR !== S.rskin || !$("tmDial").firstChild){ builtR = S.rskin; $("tmDial").innerHTML = svgDial(S.rskin, "m"); }
+  return $("tmDial").firstChild;
+}
 function paint(){
   const x = cur(), rem = remaining(x), full = x.full || dur(x.phase);
   const frac = x.status === "idle" ? 1 : clamp(rem / full, 0, 1);
@@ -1832,20 +2211,10 @@ function paint(){
   if (clock !== lastClock){
     lastClock = clock;
     const tm = $("tmTime"); tm.textContent = clock; tm.classList.toggle("long", clock.length > 5);
-    $("tmDigits").innerHTML = [...clock].map(digitSVG).join("");
-    $("tmDigits").setAttribute("aria-label", clock);
+    const dg = $("tmDigits"); dg.innerHTML = digitsHTML(clock, S.dskin); dg.classList.toggle("long", clock.length > 5); dg.setAttribute("aria-label", clock);
   }
-  $("tmPrg").style.strokeDasharray = String(C);
-  $("tmPrg").style.strokeDashoffset = String(C * (1 - frac));
-  $("tmPrg").style.opacity = frac <= 0 ? "0" : "1";
-  const th = frac * 2 * Math.PI;
-  $("tmKnob").setAttribute("cx", (130 + 100 * Math.sin(th)).toFixed(2));
-  $("tmKnob").setAttribute("cy", (130 - 100 * Math.cos(th)).toFixed(2));
-  $("tmKnob").style.opacity = frac <= 0 ? "0" : "1";
-  const nt = Math.ceil(frac * 60 - 1e-9);
-  if (nt !== lastTicks){ lastTicks = nt; ticks.forEach((t,i) => t.classList.toggle("on", i < nt)); }
-  const nl = Math.ceil(frac * 40 - 1e-9);
-  if (nl !== lastLed){ lastLed = nl; [...$("tmLed").children].forEach((e,i) => e.classList.toggle("on", i < nl)); }
+  if (S.view === "ring") dialUpdate(mainDial(), frac, rem);
+  else $("tmDigBar").style.setProperty("--f", (frac*100).toFixed(2) + "%");
   $("tmCard").dataset.run = running ? "1" : "0";
   if (!titleTimer) document.title = running ? `${clock} · ${phaseName(x.phase)}` : titleBase;
   const L = liveOne(), pill = $("tmPill");
@@ -1860,7 +2229,9 @@ function paint(){
 }
 function render(){
   const x = cur(), isCount = S.mode === "count", isBreak = x.phase === "short" || x.phase === "long";
-  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view;
+  const card = $("tmCard"); card.dataset.phase = x.phase; card.dataset.view = S.view; card.dataset.rskin = S.rskin; card.dataset.dskin = S.dskin;
+  applyColor(card); applyColor($("tmLook"));
+  mainDial();
   for (const b of $("tmMode").children) b.setAttribute("aria-pressed", String(b.dataset.m === S.mode));
   for (const b of $("tmView").children) b.setAttribute("aria-pressed", String(b.dataset.v === S.view));
   const chip = isCount ? "Geri sayım" : x.phase === "focus" ? `Odak ${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : phaseName(x.phase);
@@ -1869,19 +2240,17 @@ function render(){
   const filled = T.phase === "long" ? S.cycles : T.done;
   $("tmDots").innerHTML = Array.from({length:S.cycles}, (_,i) => `<i class="${i < filled ? "on" : (T.phase === "focus" && i === T.done ? "cur" : "")}"></i>`).join("");
   $("tmLabel").textContent = phaseName(x.phase);
-  $("tmLcdPh").textContent = phaseName(x.phase);
-  $("tmLcdSub").textContent = isCount ? fmtSec(S.cd) : (x.phase === "focus" ? `${Math.min(T.done + 1, S.cycles)}/${S.cycles}` : fmtMin(dur(x.phase)/60000));
   const label = x.status === "running" ? "Duraklat" : x.status === "paused" ? "Devam et" : (isBreak ? "Molayı başlat" : "Başlat");
   $("tmMainTxt").textContent = label; $("tmMain").setAttribute("aria-label", label);
   $("tmMainIco").innerHTML = x.status === "running" ? '<rect x="5" y="3.5" width="4.4" height="15" rx="1.4" fill="currentColor"/><rect x="12.6" y="3.5" width="4.4" height="15" rx="1.4" fill="currentColor"/>' : '<path d="M6 3.5v15l13-7.5z" fill="currentColor"/>';
   $("tmSkip").hidden = isCount;
   const sh = isBreak ? "Dinlen" : (T.subject || "Konu seçmedin");
-  $("tmShow").textContent = sh; $("tmLcdShow").textContent = sh;
+  $("tmShow").textContent = sh; $("tmDigShow").textContent = sh;
   $("tmPomoCard").hidden = isCount; $("tmCdCard").hidden = !isCount;
   hint();
   const sub = $("tmSubject"); if (document.activeElement !== sub) sub.value = T.subject;
-  lastClock = ""; lastTicks = -1; lastLed = -1;
-  renderChips(); renderSteps(); renderStats(); paint();
+  lastClock = ""; lastBarKey = "";
+  renderChips(); renderSteps(); renderLook(); renderAudioUI(); renderStats(); paint(); syncAmbient();
 }
 function hint(){
   const x = cur(); let h;
@@ -1891,6 +2260,7 @@ function hint(){
   else if (x.status === "paused") h = "Duraklatıldı. Hazır olunca devam et.";
   else h = x.phase === "focus" ? `${S.focus} dk odaklan, sonra ${T.done + 1 >= S.cycles ? S.long + " dk uzun" : S.short + " dk"} mola.` : `${Math.round(dur(x.phase)/60000)} dk mola hazır.`;
   $("tmHint").textContent = h;
+  refreshStopBtn();
 }
 function renderChips(){
   let les = []; try { les = (window.PROG && window.PROG.lessons()) || []; } catch(e){}
@@ -1901,7 +2271,70 @@ function renderChips(){
   $("tmChipsLbl").hidden = !list.length;
 }
 
-/* steppers */
+/* --- appearance picker (thumbnails drawn with the same code as the real clock) --- */
+let lookBuilt = false;
+function renderLook(){
+  if (!lookBuilt){
+    lookBuilt = true;
+    $("tmSkinsR").innerHTML = RSKIN.map((n,i) => `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
+    $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
+    $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
+    $("tmSwatches").innerHTML = `<button type="button" class="tm-sw-c auto" data-c="auto" aria-pressed="false" aria-label="Otomatik renk" title="Otomatik">A</button>`
+      + COLORS.map(([c,n]) => `<button type="button" class="tm-sw-c" data-c="${c}" style="--c:${c}" aria-pressed="false" aria-label="${n}" title="${n}"></button>`).join("")
+      + `<label class="tm-sw-c cust" title="Özel renk" aria-label="Özel renk seç" data-cust="1"><input type="color" id="tmColorIn" value="#10a37f"></label>`;
+  }
+  $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
+  $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
+  const isCust = S.color !== "auto" && !COLORS.some(c => c[0].toLowerCase() === S.color.toLowerCase());
+  $("tmSwatches").querySelectorAll("button[data-c]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.c === "auto" ? S.color === "auto" : b.dataset.c.toLowerCase() === S.color.toLowerCase())));
+  const cl = $("tmSwatches").querySelector(".cust"); if (cl){ cl.setAttribute("aria-pressed", String(isCust)); if (isCust) $("tmColorIn").value = S.color; }
+  const cn = S.color === "auto" ? "Otomatik renk" : (COLORS.find(c => c[0].toLowerCase() === S.color.toLowerCase()) || [0,"Özel renk"])[1];
+  $("tmLookHint").textContent = `${S.view === "ring" ? "Analog · " + RSKIN[S.rskin] : "Dijital · " + DSKIN[S.dskin]} · ${cn}`;
+}
+$("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
+$("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
+$("tmSwatches").addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; S.color = b.dataset.c === "auto" ? "auto" : b.dataset.c; saveS(); render(); });
+$("tmSwatches").addEventListener("input", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); applyColor($("tmCard")); applyColor($("tmLook")); } });
+$("tmSwatches").addEventListener("change", e => { if (e.target.id === "tmColorIn"){ S.color = e.target.value; saveS(); render(); } });
+$("tmLook").open = LS.get("open_tmLook") === "1";
+$("tmLook").addEventListener("toggle", e => LS.set("open_tmLook", e.target.open ? "1" : "0"));
+
+/* --- sound pickers --- */
+let audioUIBuilt = false;
+function renderAudioUI(){
+  if (!audioUIBuilt){
+    audioUIBuilt = true;
+    $("tmAmbs").innerHTML = AMBS.map(a => `<button type="button" class="tm-opt" data-a="${a.id}" aria-pressed="false"><span class="e">${a.e}</span>${a.n}</button>`).join("");
+    $("tmAlarms").innerHTML = ALARM_LIST.map(a => `<button type="button" class="tm-opt" data-al="${a.id}" aria-pressed="false"><span class="e">🔔</span>${a.n}</button>`).join("");
+    $("tmRepeat").innerHTML = [1,3,5].map(n => `<button type="button" class="tm-opt" data-rp="${n}" aria-pressed="false">${n === 1 ? "Bir kez" : n + " kez"}</button>`).join("");
+    $("tmVibs").innerHTML = VIBS.map(v => `<button type="button" class="tm-opt" data-vb="${v.id}" aria-pressed="false"><span class="e">📳</span>${v.n}</button>`).join("");
+  }
+  $("tmAmbs").querySelectorAll("[data-a]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.a === S.amb)));
+  $("tmAlarms").querySelectorAll("[data-al]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.al === S.alarm)));
+  $("tmRepeat").querySelectorAll("[data-rp]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.rp === S.repeat)));
+  $("tmVibs").querySelectorAll("[data-vb]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.vb === S.vib)));
+  const vol = Math.round(S.ambVol*100); $("tmAmbVol").value = vol; $("tmAmbVolO").textContent = "%" + vol;
+  const av = Math.round(S.alarmVol*100); $("tmAlVol").value = av; $("tmAlVolO").textContent = "%" + av;
+  $("tmAmbOn").checked = S.ambOn;
+  for (const b of $("tmAmbMode").children) b.setAttribute("aria-pressed", String(b.dataset.am === S.ambMode));
+  const an = (AMBS.find(a => a.id === S.amb) || AMBS[1]).n;
+  $("tmAmbState").textContent = !S.ambOn ? `${an} · kapalı` : ambWanted() ? `${an} · çalıyor` : `${an} · sayaç başlayınca çalacak`;
+  $("tmAmbHint").textContent = S.ambOn ? `${an}${ambWanted() ? " · çalıyor" : ""}` : "Yağmur, dalga, ateş ve daha fazlası";
+  $("tmSetHint").textContent = `${ALARM_LIST.find(a => a.id === S.alarm).n} · ${VIBS.find(v => v.id === S.vib).n} titreşim`;
+}
+$("tmAmbs").addEventListener("click", e => { const b = e.target.closest("[data-a]"); if (!b) return; ensureAudio(); S.amb = b.dataset.a; S.ambOn = true; saveS(); renderAudioUI(); syncAmbient(); });
+$("tmAmbOn").addEventListener("change", e => { ensureAudio(); S.ambOn = e.target.checked; saveS(); renderAudioUI(); syncAmbient(); });
+$("tmAmbMode").addEventListener("click", e => { const b = e.target.closest("[data-am]"); if (!b) return; S.ambMode = b.dataset.am; saveS(); renderAudioUI(); syncAmbient(); });
+$("tmAmbVol").addEventListener("input", e => { S.ambVol = clamp((+e.target.value)/100, 0, 1); $("tmAmbVolO").textContent = "%" + e.target.value; saveS(); if (ambNode) ambGain.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .05); });
+$("tmAlVol").addEventListener("input", e => { S.alarmVol = clamp((+e.target.value)/100, .1, 1); $("tmAlVolO").textContent = "%" + e.target.value; saveS(); });
+$("tmAlarms").addEventListener("click", e => { const b = e.target.closest("[data-al]"); if (!b) return; S.alarm = b.dataset.al; saveS(); renderAudioUI(); playAlarm(S.alarm, 1, false); });
+$("tmRepeat").addEventListener("click", e => { const b = e.target.closest("[data-rp]"); if (!b) return; S.repeat = +b.dataset.rp; saveS(); renderAudioUI(); });
+$("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-vb]"); if (!b) return; S.vib = b.dataset.vb; saveS(); renderAudioUI(); if (!vibrate(S.vib, 1)) toast("Bu cihaz ya da tarayıcı titreşimi desteklemiyor"); });
+$("tmAmbCard").open = LS.get("open_tmAmbCard") === "1";
+$("tmAmbCard").addEventListener("toggle", e => LS.set("open_tmAmbCard", e.target.open ? "1" : "0"));
+$("tmStopAlarm").addEventListener("click", () => stopAlarm());
+
+/* --- steppers --- */
 const STEPS = [["focus","Odak (dk)",1],["short","Kısa mola (dk)",1],["long","Uzun mola (dk)",1],["cycles","Uzun mola için odak sayısı",1]];
 const stepHTML = (k,label,lim) => `<div class="tm-st"><label for="tmIn_${k}">${label}</label><div class="stp"><button type="button" data-k="${k}" data-d="-1" aria-label="${label} azalt">−</button><input id="tmIn_${k}" data-k="${k}" type="number" inputmode="numeric" min="${lim[0]}" max="${lim[1]}" step="1"><button type="button" data-k="${k}" data-d="1" aria-label="${label} artır">+</button></div></div>`;
 function renderSteps(){
@@ -1911,7 +2344,6 @@ function renderSteps(){
   for (const [k] of STEPS){ const inp = $("tmIn_"+k); if (document.activeElement !== inp) inp.value = S[k]; }
   if (!$("tmGoalSt").firstChild) $("tmGoalSt").innerHTML = stepHTML("goal","Günlük hedef (dk)",LIM.goal);
   const gi = $("tmIn_goal"); if (document.activeElement !== gi) gi.value = S.goal;
-  // countdown: hours / minutes / seconds
   $("tmCdPresets").innerHTML = CD_PRESETS.map(s => `<button type="button" data-cd="${s}" aria-pressed="${S.cd === s}">${s < 3600 ? s/60 + " dk" : (s/3600).toString().replace(".",",") + " sa"}</button>`).join("");
   const cb = $("tmCdSteps");
   if (!cb.firstChild){
@@ -1924,6 +2356,7 @@ function renderSteps(){
 
 /* ---------- study stats: today + weekly / monthly charts ---------- */
 let PER = "week", OFF = 0, SEL = null;
+const OFF_MIN = {week:-260, month:-60};
 const monday = iso => addDays(iso, -((parseD(iso).getUTCDay() + 6) % 7));
 const monthFirst = (iso, off) => { const d = parseD(iso); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + off, 1, 12)).toISOString().slice(0,10); };
 const monthLen = first => { const d = parseD(first); return new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth() + 1, 0)).getUTCDate(); };
@@ -1932,10 +2365,10 @@ function period(today){
     const start = addDays(monday(today), 7 * OFF), days = Array.from({length:7}, (_,i) => addDays(start, i));
     const a = parseD(days[0]), b = parseD(days[6]), y = a.getUTCFullYear(), curY = parseD(today).getUTCFullYear();
     const lbl = a.getUTCMonth() === b.getUTCMonth() ? `${a.getUTCDate()}–${b.getUTCDate()} ${MONTHS[a.getUTCMonth()]}` : `${a.getUTCDate()} ${MON_S[a.getUTCMonth()]} – ${b.getUTCDate()} ${MON_S[b.getUTCMonth()]}`;
-    return {start, days, label: lbl, sub: OFF === 0 ? "Bu hafta" : OFF === -1 ? "Geçen hafta" : (y !== curY ? String(y) : `${-OFF} hafta önce`), first: monday};
+    return {start, days, label: lbl, sub: OFF === 0 ? "Bu hafta" : OFF === -1 ? "Geçen hafta" : `${-OFF} hafta önce${y !== curY ? " · " + y : ""}`};
   }
   const start = monthFirst(today, OFF), n = monthLen(start), days = Array.from({length:n}, (_,i) => addDays(start, i)), d = parseD(start);
-  return {start, days, label: `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`, sub: OFF === 0 ? "Bu ay" : OFF === -1 ? "Geçen ay" : `${-OFF} ay önce`, first: x => monthFirst(x, 0)};
+  return {start, days, label: `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`, sub: OFF === 0 ? "Bu ay" : OFF === -1 ? "Geçen ay" : `${-OFF} ay önce`};
 }
 function renderStats(){
   const today = dayStr(Date.now());
@@ -1949,23 +2382,21 @@ function renderStats(){
   $("tmGoalTxt").textContent = tm >= S.goal ? "🎯 Günlük hedefe ulaştın!" : `Hedef: ${fmtMin(S.goal)} · kalan ${fmtMin(S.goal - tm)}`;
   $("tmGoalPct").textContent = "%" + pct;
 
-  // period
-  const P = period(today), earliest = H.length ? H.reduce((m,h) => h.d < m ? h.d : m, H[0].d) : null;
+  const P = period(today);
   for (const b of $("tmPer").children) b.setAttribute("aria-pressed", String(b.dataset.per === PER));
   $("tmPerLbl").textContent = P.label; $("tmPerSub").textContent = P.sub;
   $("tmNext").disabled = OFF >= 0;
-  $("tmPrev").disabled = !earliest || P.start <= P.first(earliest);
+  $("tmPrev").disabled = OFF <= OFF_MIN[PER];
   const vals = P.days.map(x => by[x] || 0), total = vals.reduce((a,b) => a + b, 0);
   const elapsed = Math.max(1, P.days.filter(x => x <= today).length), bi = vals.indexOf(Math.max(...vals));
-  const sessions = H.filter(h => h.d >= P.days[0] && h.d <= P.days[P.days.length - 1]).length;
   const bd = parseD(P.days[bi]);
-  $("tmPstat").innerHTML = `<div><b>${esc(fmtMin(total))}</b><span>Toplam</span></div><div><b>${esc(fmtMin(total / elapsed))}</b><span>Günlük ort.</span></div><div><b>${vals[bi] ? bd.getUTCDate() + " " + MON_S[bd.getUTCMonth()] : "–"}</b><span>${vals[bi] ? "En iyi gün" : "En iyi gün"}</span></div>`;
+  $("tmPstat").innerHTML = `<div><b>${esc(fmtMin(total))}</b><span>Toplam</span></div><div><b>${esc(fmtMin(total / elapsed))}</b><span>Günlük ort.</span></div><div><b>${vals[bi] ? bd.getUTCDate() + " " + MON_S[bd.getUTCMonth()] : "–"}</b><span>En iyi gün</span></div>`;
   const month = PER === "month", maxV = Math.max(...vals, 30), useGoal = S.goal <= maxV * 1.6, max = useGoal ? Math.max(maxV, S.goal) : maxV, H0 = 82;
   const plot = $("tmPlot"); plot.className = "tm-plot" + (month ? " month" : "");
   plot.innerHTML = P.days.map((x,i) => `<button type="button" class="tm-col${x === today ? " today" : ""}${x === SEL ? " sel" : ""}" data-d="${x}" aria-label="${parseD(x).getUTCDate()} ${MONTHS[parseD(x).getUTCMonth()]}: ${esc(fmtMin(vals[i]))}"><span class="v">${!month && vals[i] ? (vals[i] >= 60 ? (vals[i]/60).toFixed(1).replace(".0","").replace(".",",") + " sa" : vals[i] + " dk") : ""}</span><div class="b" style="height:${Math.max(3, Math.round(vals[i] / max * H0))}px;${vals[i] ? "" : "opacity:.45"}"></div></button>`).join("")
     + (useGoal ? `<div class="tm-goalline" style="bottom:${Math.round(S.goal / max * H0) + 3}px" title="Günlük hedef"></div>` : "");
   const dd = $("tmDays"); dd.className = "tm-days" + (month ? " month" : "");
-  dd.innerHTML = P.days.map((x,i) => {
+  dd.innerHTML = P.days.map(x => {
     const dt = parseD(x), show = month ? (dt.getUTCDate() === 1 || dt.getUTCDate() % 5 === 0) : true;
     return `<span class="${x === today ? "today" : ""}">${show ? (month ? dt.getUTCDate() : DAYS[dt.getUTCDay()]) : ""}</span>`;
   }).join("");
@@ -1980,7 +2411,7 @@ function renderStats(){
   $("tmSubs").innerHTML = rows.length ? rows.map(([n,m]) => `<div class="tm-sub"><span class="n">${esc(n)}</span><span class="m">${esc(fmtMin(m))}</span><span class="bar"><i style="width:${Math.round(m/top*100)}%"></i></span></div>`).join("") : `<p class="tm-empty">Bu dönemde çalışma kaydın yok.</p>`;
 }
 $("tmPer").addEventListener("click", e => { const b = e.target.closest("button[data-per]"); if (!b || b.dataset.per === PER) return; PER = b.dataset.per; OFF = 0; SEL = null; renderStats(); });
-$("tmPrev").addEventListener("click", () => { OFF--; SEL = null; renderStats(); });
+$("tmPrev").addEventListener("click", () => { if (OFF > OFF_MIN[PER]){ OFF--; SEL = null; renderStats(); } });
 $("tmNext").addEventListener("click", () => { if (OFF < 0){ OFF++; SEL = null; renderStats(); } });
 $("tmPlot").addEventListener("click", e => { const b = e.target.closest(".tm-col"); if (!b) return; SEL = SEL === b.dataset.d ? null : b.dataset.d; renderStats(); });
 
@@ -2017,7 +2448,6 @@ $("tmPresets").addEventListener("click", e => {
   const p = PRESETS.find(x => x.n === b.dataset.p); if (!p) return;
   S.focus = p.f; S.short = p.s; S.long = p.l; onSettings("focus");
 });
-// countdown H/M/S
 function cdParts(){ return {h:Math.floor(S.cd/3600), m:Math.floor(S.cd%3600/60), s:S.cd%60}; }
 function setCd(parts){ setVal("cd", parts.h*3600 + parts.m*60 + parts.s); }
 $("tmCdSteps").addEventListener("click", e => {
@@ -2037,11 +2467,11 @@ for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmWake","wake"
   $(id).addEventListener("change", e => {
     S[key] = e.target.checked; saveS();
     if (key === "wake"){ if (S.wake) acquireWake(); else releaseWake(); }
-    if (key === "sound" && S.sound){ unlockAudio(); chime(false); }
-    if (key === "vibrate" && S.vibrate && navigator.vibrate){ try { navigator.vibrate(60); } catch(_){} }
+    if (key === "sound" && S.sound) playAlarm(S.alarm, 1, false);
+    if (key === "vibrate" && S.vibrate) vibrate(S.vib, 1);
   });
 }
-$("tmTest").addEventListener("click", () => { unlockAudio(); chime(true); if (navigator.vibrate) { try { navigator.vibrate([200,100,200]); } catch(e){} } });
+$("tmTest").addEventListener("click", () => { playAlarm(S.alarm, S.repeat, S.vibrate); });
 $("tmRound").addEventListener("click", () => { if (confirm("Pomodoro döngüsü baştan başlasın mı? Çalışan bölüm sıfırlanır.")) restartRound(); });
 
 /* ---------- controls ---------- */
@@ -2060,7 +2490,7 @@ $("tmView").addEventListener("click", e => {
 $("tmSubject").addEventListener("input", e => {
   T.subject = e.target.value.slice(0, 60); saveX(T);
   const sh = (cur().phase === "short" || cur().phase === "long") ? "Dinlen" : (T.subject || "Konu seçmedin");
-  $("tmShow").textContent = sh; $("tmLcdShow").textContent = sh; renderChips();
+  $("tmShow").textContent = sh; $("tmDigShow").textContent = sh; renderChips();
 });
 $("tmChips").addEventListener("click", e => {
   const b = e.target.closest("button[data-s]"); if (!b) return;
@@ -2120,6 +2550,7 @@ setInterval(() => {
   for (const x of [T, K]) if (x.status === "running" && x.endAt <= Date.now()){ finish(x); fin = true; }
   if (!fin && (runner() || document.body.dataset.route === "sayac")) paint();
   if (flashMsg && Date.now() >= flashUntil && document.body.dataset.route === "sayac"){ flashMsg = ""; hint(); }
+  if (alarmEnd && alarmEnd <= Date.now()){ alarmEnd = 0; refreshStopBtn(); }
 }, 250);
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) return;
@@ -2129,7 +2560,7 @@ document.addEventListener("visibilitychange", () => {
   acquireWake();
 });
 window.addEventListener("storage", e => {
-  if ([KS, KT, KK, KH].includes(e.key)){ loadAll(); if (document.body.dataset.route === "sayac") render(); else paint(); }
+  if ([KS, KT, KK, KH].includes(e.key)){ loadAll(); builtR = -1; if (document.body.dataset.route === "sayac") render(); else paint(); }
 });
 
 // first paint (+ a timer that ended while the page was closed)
