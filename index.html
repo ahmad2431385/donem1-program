@@ -790,6 +790,10 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 
 .lk-pv{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
 .lk-pv > span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
+.pv-frame{display:none}
+body[data-route="gorunum"] .pv-frame{display:block;position:absolute;left:50%;top:var(--pft,58px);height:var(--pfh,100px);width:var(--pfw,100px);transform:translateX(-50%);border-radius:var(--pfr,14px);border:1.5px solid color-mix(in srgb,var(--ink) 28%,transparent);background:color-mix(in srgb,var(--ink) 4%,transparent);pointer-events:none;z-index:0}
+.tm-card[data-bg] .pv-frame{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.05)}
+body[data-route="gorunum"] #tmCard > :is(.tm-barrow,.tm-top,.tm-stage,.tm-ctl,.tm-grip){position:relative;z-index:1}
 /* Görünüm: preview of the enlarged screen (clock at its big-screen size + the mini player design) */
 .np-prev{display:none}
 body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 100%;box-shadow:var(--shadow)}
@@ -1045,6 +1049,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-grip{margin-top:var(--npspa
       </div>
       <div class="tm-top"><span class="tm-chip" id="tmChip">Odak 1/4</span><span class="tm-dots" id="tmDots" aria-hidden="true"></span></div>
 
+      <div class="pv-frame" id="tmPvFrame" aria-hidden="true"></div>
       <i id="tmPhProbe" aria-hidden="true" style="display:none;color:var(--ph)"></i>
       <div class="tm-stage" id="tmStage">
       <div class="tm-ring" id="tmRing">
@@ -2959,6 +2964,20 @@ function autoPct(kind){
   const px = kind === "dz" ? Math.min(Math.max(56, innerWidth*.19), 86)*3.5 : Math.min(innerWidth*.8, 300);
   return Math.min(100, Math.max(40, Math.round(px/inner*100)));
 }
+// draws the outline of the real card / screen around the preview, centred on the clock
+function pvFrame(w, h, r){
+  const card = $("tmCard");
+  requestAnimationFrame(() => {
+    const cr = card.getBoundingClientRect(), parts = [card.querySelector(".tm-top"), $("tmStage"), card.querySelector(".tm-ctl"), $("tmNpPrev")].filter(e => e && !e.hidden && e.offsetParent);
+    const top = Math.min(...parts.map(e => e.getBoundingClientRect().top)) - cr.top, bot = Math.max(...parts.map(e => e.getBoundingClientRect().bottom)) - cr.top;
+    const hh = Math.max(h, bot - top + 14), mid = (top + bot)/2;
+    const t = Math.max(52, Math.min(mid - hh/2, cr.height - 34 - hh));
+    card.style.setProperty("--pfw", Math.round(Math.min(w, cr.width - 12)) + "px");
+    card.style.setProperty("--pfh", Math.round(Math.min(hh, cr.height - 34 - t)) + "px");
+    card.style.setProperty("--pft", Math.round(t) + "px");
+    card.style.setProperty("--pfr", Math.round(r) + "px");
+  });
+}
 let pvBig = true;   // Görünüm preview shows the enlarged screen unless switched to "Normal ekran"
 function pvApply(){
   const card = $("tmCard"), lcd = S.view === "lcd", kind = lcd ? "dz" : "rz";
@@ -2974,6 +2993,7 @@ function pvApply(){
     const g = Math.min(1, (total - gaps)/(chipH + maxH + ctlH));
     H = Math.max(50, Math.round(total - gaps - (chipH + ctlH)*g)); ps = real*g/(lcd ? 301 : 300);
     card.style.setProperty("--pz", g.toFixed(4));
+    pvFrame(card.clientWidth*g, 0, 14*g + 4);
   } else {
     // real size of the clock on the enlarged screen (same formulas as the CSS)
     const W = innerWidth, VH = innerHeight;
@@ -2989,6 +3009,7 @@ function pvApply(){
     card.style.setProperty("--pz", f.toFixed(4));
     card.style.setProperty("--npk", f.toFixed(4)); card.style.setProperty("--npspace", space + "px");
     card.style.setProperty("--ppw", Math.round(Math.min(520, (W - 24)/(S.npSz || 1))) + "px");
+    pvFrame(W*f, Math.min(VH*f, total + 8), 20*f + 4);
   }
   card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", ps.toFixed(4));
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
