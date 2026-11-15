@@ -148,7 +148,8 @@ button{cursor:pointer}
 /* event cards */
 .list{display:flex;flex-direction:column;gap:8px}
 .ev{position:relative;display:grid;grid-template-columns:62px 1fr 28px;gap:12px;width:100%;text-align:left;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--c, var(--line));border-radius:12px;padding:10px 12px;color:inherit}
-button.ev{cursor:pointer}
+button.ev{cursor:pointer;-webkit-tap-highlight-color:transparent}
+button.ev:active{border-color:var(--accent)}
 button.ev:hover{border-color:var(--c);border-left-color:var(--c)}
 .ev .t{font-family:var(--mono);font-size:13px;line-height:1.35;color:var(--muted);font-variant-numeric:tabular-nums}
 .ev .t b{display:block;color:var(--ink);font-weight:500;font-size:14px}
@@ -590,6 +591,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 
 /* appearance picker */
 .tm-skins{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+@media (max-width:360px){.tm-skins{grid-template-columns:repeat(4,1fr)}}
 .tm-skin{border-radius:14px;border:1.5px solid var(--line);background:var(--bg);padding:6px 3px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0}
 .tm-skin .th{width:100%;aspect-ratio:1;display:grid;place-items:center;overflow:hidden}
 .tm-skin .th svg.dial{width:100%;height:100%}
@@ -2632,11 +2634,15 @@ $("tmUpGrid").addEventListener("click", e => {
   const x = e.target.closest("[data-del]"); if (x){ upDel(x.dataset.del); return; }
   const b = e.target.closest("[data-bg]"); if (b){ S.bg = b.dataset.bg; saveS(); render(); }
 });
-const PV_MIN = 150;
-const pvMax = () => Math.max(PV_MIN + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
+// smallest preview window: 150px on phones, a little taller on big screens
+const pvMin = () => innerWidth >= 700 ? Math.round(Math.min(240, Math.max(150, innerHeight*.27))) : 150;
+const pvMax = () => Math.max(pvMin() + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
+const CQ = !!(window.CSS && CSS.supports && CSS.supports("width", "1cqw"));
 function sizeVars(card){
-  if (S.rz) card.style.setProperty("--rwx", `min(calc(100cqw*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
-  if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(100cqw*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
+  // card width: container units where supported (older Safari lacks them: estimate from the screen width instead)
+  const W = CQ ? "100cqw" : "(min(100vw, 680px) - 64px)";
+  if (S.rz) card.style.setProperty("--rwx", `min(calc(${W}*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
+  if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(${W}*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
   // enlarged (full-screen) mode: the same percentages, measured against the screen
   if (S.rz) card.style.setProperty("--fwr", `calc(${S.rz}*min(92vw,72vh,900px))`); else card.style.removeProperty("--fwr");
   if (S.dz) card.style.setProperty("--fdsx", `calc(${S.dz}*min(calc(92vw/3.5),32vh))`); else card.style.removeProperty("--fdsx");
@@ -2649,7 +2655,7 @@ function autoPct(kind){
 }
 function pvApply(){
   const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = (S[kind] ? S[kind]*100 : autoPct(kind))/100;
-  const H = Math.round(PV_MIN + pvT*(pvMax() - PV_MIN));
+  const H = Math.round(pvMin() + pvT*(pvMax() - pvMin()));
   card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", (H*z/300).toFixed(4));
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
 }
@@ -2658,7 +2664,7 @@ function pvApply(){
   const g = $("tmGrip"); let y0 = 0, t0 = 0, moved = false, on = false, raf = 0;
   const sched = () => { if (!raf) raf = requestAnimationFrame(() => { raf = 0; pvApply(); }); };
   g.addEventListener("pointerdown", e => { on = true; moved = false; y0 = e.clientY; t0 = pvT; document.body.classList.add("pv-drag"); try { g.setPointerCapture(e.pointerId); } catch(_){} });
-  g.addEventListener("pointermove", e => { if (!on) return; const dy = e.clientY - y0; if (Math.abs(dy) > 3) moved = true; pvT = Math.min(1, Math.max(0, t0 + dy/(pvMax() - PV_MIN))); sched(); });
+  g.addEventListener("pointermove", e => { if (!on) return; const dy = e.clientY - y0; if (Math.abs(dy) > 3) moved = true; pvT = Math.min(1, Math.max(0, t0 + dy/(pvMax() - pvMin()))); sched(); });
   const end = () => { if (!on) return; on = false; document.body.classList.remove("pv-drag"); if (!moved) pvT = pvT < .5 ? 1 : 0; pvApply(); LS.set("odak_onizleme", String(pvT)); };
   g.addEventListener("pointerup", end); g.addEventListener("pointercancel", end);
   g.addEventListener("keydown", e => { const k = e.key === "ArrowDown" || e.key === "ArrowRight" ? .2 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -.2 : 0; if (!k) return; e.preventDefault(); pvT = Math.min(1, Math.max(0, pvT + k)); pvApply(); LS.set("odak_onizleme", String(pvT)); });
