@@ -32,6 +32,16 @@ jobs:
           cp index.html data.json desc.json manifest.json icon-180.png icon-512.png .nojekyll _site/
           [ -d img ] && cp -r img _site/ || true
 
+      # Yayınlanan sayfa küçültülür ve kod karıştırılır (okunması zorlaşır).
+      # Bir hata olursa sayfa olduğu gibi yayınlanır; site hiçbir zaman bozulmaz.
+      - name: Kodu küçült ve karıştır
+        run: |
+          npx --yes html-minifier-terser@7.2.0 --collapse-whitespace --conservative-collapse --remove-comments --minify-css true \
+            --minify-js '{"compress":{"passes":2},"mangle":{"toplevel":true},"format":{"comments":false}}' \
+            -o _site/index.min.html index.html \
+            && mv _site/index.min.html _site/index.html \
+            || echo "Küçültme başarısız; sayfa olduğu gibi yayınlanıyor."
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
