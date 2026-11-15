@@ -688,6 +688,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .set-o{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13.5px;text-align:left;min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .set-o .ck{flex:none;width:18px;height:18px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--ink) 30%,transparent);display:grid;place-items:center}
 .set-o span{line-height:1.25;overflow-wrap:anywhere}
+.set-o .sd{display:block;font-size:11px;color:var(--muted);font-weight:500}
 .set-o[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
 .set-o[aria-pressed="true"] .ck{border-color:var(--accent);background:var(--accent)}
 .set-o[aria-pressed="true"] .ck::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
@@ -708,7 +709,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .np-eq{flex:none;display:none;align-items:flex-end;gap:2px;height:14px}
 .np-eq i{width:3px;height:5px;border-radius:2px;background:var(--accent);animation:tmEq 1.2s ease-in-out infinite}
 .np-eq i:nth-child(2){animation-delay:-.4s}.np-eq i:nth-child(3){animation-delay:-.8s}
-.tm-np[data-on="1"] .np-eq{display:flex}
+.tm-np[data-play="1"] .np-eq{display:flex}
 @media (prefers-reduced-motion: reduce){.np-eq i{animation:none;height:9px}}
 .np-btns{flex:none;display:flex;align-items:center;gap:4px}
 .np-btns button{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;padding:0;line-height:0;-webkit-tap-highlight-color:transparent}
@@ -723,6 +724,48 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .np-vol output{font:600 12.5px var(--mono);min-width:36px;text-align:right}
 @media (max-width:480px){.np-btns{gap:2px}.np-btns button{width:34px;height:34px}.np-btns .pp{width:38px;height:38px}.np-eq{display:none !important}.np-tx b{white-space:normal;line-height:1.2;font-size:14px}}
 @media (max-width:370px){.np-ic{display:none}.np-vol{padding-left:4px}}
+
+/* --- appearance page: tabs and sections --- */
+.lk-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:4px;margin:2px 0 6px;border-radius:14px;background:color-mix(in srgb,var(--ink) 6%,transparent);border:1px solid var(--line)}
+.lk-tabs button{display:flex;flex-direction:column;align-items:center;gap:3px;padding:8px 2px 7px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-size:12.5px;font-weight:600;min-width:0;-webkit-tap-highlight-color:transparent}
+.lk-tabs button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.lk-tabs button[aria-selected="true"]{background:var(--surface);color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+.lk-pane[hidden],.lk-sub[hidden]{display:none}
+.lk-cap{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:12px 0 0}
+.lk-type{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px}
+.lk-type .lk-cap{margin:0}
+.lk-type .tm-seg button{padding:7px 16px}
+.lk-pane .set-grp{margin-top:18px}
+.tm-skin{position:relative}
+.tm-skin[aria-pressed="true"]::after,.tm-bgt[aria-pressed="true"]::after{content:"";position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:var(--ph) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6.5 12.5 3.5 3.5 7.5-8' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/12px no-repeat;box-shadow:0 0 0 2px var(--surface)}
+.tm-bgt{position:relative}
+#tmBgDimRow[hidden]{display:none}
+/* mini player while the timer is enlarged: pinned under the clock */
+body.tm-full #tmNp:not([hidden]){position:fixed;left:50%;transform:translateX(-50%) scale(var(--nps,1));transform-origin:50% 100%;bottom:max(12px,env(safe-area-inset-bottom));width:min(520px,calc((100vw - 24px)/var(--nps,1)));z-index:82;margin:0;box-shadow:var(--shadow)}
+body.tm-full.np-on #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 84px*var(--nps,1))}
+body.tm-full.np-on.np-vol-open #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 122px*var(--nps,1))}
+/* enlarged-screen player designs: 1 Şeffaf (no background), 2 Hap, 3 Cam, 4 Koyu */
+body.tm-full #tmNp[data-sk="1"]{background:transparent;border-color:transparent;box-shadow:none}
+body.tm-full #tmNp[data-sk="1"] .np-ic{background:transparent}
+body.tm-full #tmNp[data-sk="1"] .np-btns button:not(.pp){background:transparent}
+body.tm-full.tm-photo #tmNp[data-sk="1"]{color:#fff;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+body.tm-full.tm-photo #tmNp[data-sk="1"] .np-tx small,body.tm-full.tm-photo #tmNp[data-sk="1"] .np-btns button:not(.pp),body.tm-full.tm-photo #tmNp[data-sk="1"] .np-ic{color:#fff}
+body.tm-full #tmNp[data-sk="2"]{border-radius:999px;padding:6px 8px 6px 14px;width:auto;max-width:calc((100vw - 24px)/var(--nps,1))}
+body.tm-full #tmNp[data-sk="2"] .np-ic,body.tm-full #tmNp[data-sk="2"] .np-tx small{display:none}
+body.tm-full #tmNp[data-sk="2"] .np-vol{padding:0 12px 4px 6px}
+body.tm-full #tmNp[data-sk="3"]{background:color-mix(in srgb,var(--surface) 38%,transparent);border-color:rgba(255,255,255,.35);-webkit-backdrop-filter:blur(16px) saturate(1.3);backdrop-filter:blur(16px) saturate(1.3)}
+body.tm-full.tm-photo #tmNp[data-sk="3"]{background:rgba(255,255,255,.14);color:#fff}
+body.tm-full.tm-photo #tmNp[data-sk="3"] .np-tx small,body.tm-full.tm-photo #tmNp[data-sk="3"] .np-btns button:not(.pp){color:#fff}
+body.tm-full #tmNp[data-sk="4"]{background:#0f1513;border-color:#0f1513;color:#f2f7f5}
+body.tm-full #tmNp[data-sk="4"] .np-tx small{color:#93a8a1}
+body.tm-full #tmNp[data-sk="4"] .np-btns button:not(.pp){color:#f2f7f5}
+body.tm-full #tmNp[data-sk="4"] .np-ic{background:#1d2724}
+@media (orientation:landscape) and (max-height:520px){
+  body.tm-full.np-on #tmCard{--rw:min(var(--fwr,62vh),calc(100vh - 245px))}
+  body.tm-full.np-on #tmCard .tm-hint{display:none}
+  body.tm-full.np-on.np-vol-open #tmCard{--rw:min(var(--fwr,62vh),calc(100vh - 283px))}
+  body.tm-full.np-on #tmCard .tm-dig{--ds:min(var(--fdsx,26vh),calc((100vh - 250px)/1.25))}
+}
 
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -1031,30 +1074,64 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
     </section>
   </section>
   <section class="tmpage" id="lookView" aria-label="Görünüm">
-    <section class="card tm-look tmsec" id="tmLook">
+    <section class="card tm-look tmsec look-card" id="tmLook">
       <div class="fhead"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></div>
+      <div class="lk-tabs" id="lkTabs" role="tablist" aria-label="Görünüm bölümleri">
+        <button type="button" role="tab" data-lt="saat" aria-selected="true"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg><span>Saat</span></button>
+        <button type="button" role="tab" data-lt="yazi" aria-selected="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg><span>Yazı</span></button>
+        <button type="button" role="tab" data-lt="bg" aria-selected="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="10" r="1.6"/><path d="m4 17 5-5 4 4 2.5-2.5L20 17"/></svg><span>Fotoğraf</span></button>
+        <button type="button" role="tab" data-lt="renk" aria-selected="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5a8.5 8.5 0 1 0 0 17c1.2 0 1.8-.9 1.4-2-.5-1.3.3-2.6 1.7-2.6H17a3.5 3.5 0 0 0 3.5-3.5c0-4.9-3.8-8.9-8.5-8.9Z"/><circle cx="7.8" cy="11" r="1.1"/><circle cx="10.5" cy="7.5" r="1.1"/><circle cx="15" cy="7.8" r="1.1"/></svg><span>Renk</span></button>
+      </div>
       <div class="fbody">
-        <p class="tm-lbl" style="margin-top:2px">Analog saat · 10 tasarım</p>
-        <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
+        <div class="lk-pane" data-lp="saat" role="tabpanel">
+          <div class="lk-type"><span class="lk-cap">Saat türü</span>
+            <div class="tm-seg" id="lkType" role="group" aria-label="Saat türü"><button type="button" data-lv="ring" aria-pressed="true">Analog</button><button type="button" data-lv="lcd" aria-pressed="false">Dijital</button></div>
+          </div>
+          <div class="lk-sub" data-lvs="ring">
+            <p class="lk-cap">Analog tasarımlar · 10</p>
+            <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmRz" min="40" max="100" step="2" aria-label="Analog saat boyutu"><output id="tmRzO"></output><button type="button" class="tm-rst" data-rst="rz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
-        <p class="tm-lbl">Dijital saat · 10 tasarım</p>
-        <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
+          </div>
+          <div class="lk-sub" data-lvs="lcd" hidden>
+            <p class="lk-cap">Dijital tasarımlar · 10</p>
+            <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="40" max="100" step="2" aria-label="Dijital saat boyutu"><output id="tmDzO"></output><button type="button" class="tm-rst" data-rst="dz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
-        <p class="tm-lbl">Yazı stili · 5 stil</p>
-        <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
-        <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik, Daktilo, Yuvarlak ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
-        <div id="tmBgSec">
-          <p class="tm-lbl">Arka plan fotoğrafı · <span id="tmBgCount"></span> görsel</p>
-          <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
-          <p class="tm-lbl">Kendi fotoğrafın</p>
-          <div class="tm-bgs" id="tmUpGrid" role="group" aria-label="Kendi fotoğrafların"></div>
-          <input type="file" id="tmUpIn" accept="image/*" hidden>
-          <p class="tm-note" id="tmUpMsg">Cihazından bir fotoğraf seç. Fotoğraf yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Son 10 fotoğraf kalır; 11.'yi eklersen en eskisi silinir.</p>
-          <p class="tm-credit" id="tmBgCredit"></p>
-          <div class="tm-range"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
+          </div>
+          <div class="set-grp">
+            <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span>Büyütülmüş ekran</div>
+            <div class="set-box">
+              <div class="set-row col"><span class="rl">Mini çalıcı tasarımı</span><div class="set-opts" id="tmNpSkins" role="group" aria-label="Büyük ekranda mini çalıcı tasarımı"></div></div>
+              <div class="set-row"><span class="rl">Mini çalıcı boyutu</span><div class="set-rng"><input type="range" id="tmNpSz" min="70" max="140" step="5" aria-label="Büyük ekranda mini çalıcı boyutu"><output id="tmNpSzO"></output></div></div>
+              <div class="set-row"><span class="rl">Saat boyutu</span><div class="set-rng"><input type="range" id="tmFz" min="40" max="100" step="2" aria-label="Büyütülmüş ekranda saat boyutu"><output id="tmFzO"></output><button type="button" class="tm-rst" data-rst="fz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div></div>
+            </div>
+          </div>
+          <div class="set-grp">
+            <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l11-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="17.5" cy="16" r="2.5"/></svg></span>Sayaç sayfası</div>
+            <div class="set-box">
+              <label class="tm-sw set-row"><span>Arka plan sesi mini çalıcısı<small>Sayaç sayfasında saatin altında görünür. Büyütülmüş ekranda yalnızca ses açıkken çıkar.</small></span><input type="checkbox" id="tmNpShow"></label>
+            </div>
+          </div>
         </div>
-        <p class="tm-lbl">Renk</p>
-        <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
+        <div class="lk-pane" data-lp="yazi" role="tabpanel" hidden>
+          <p class="lk-cap">Yazı stilleri · 5</p>
+          <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
+        <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
+        </div>
+        <div class="lk-pane" data-lp="bg" role="tabpanel" hidden>
+          <div id="tmBgSec">
+            <p class="lk-cap">Kendi fotoğrafların</p>
+            <div class="tm-bgs" id="tmUpGrid" role="group" aria-label="Kendi fotoğrafların"></div>
+            <input type="file" id="tmUpIn" accept="image/*" hidden>
+          <p class="tm-note" id="tmUpMsg">Cihazından bir fotoğraf seç. Fotoğraf yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Son 10 fotoğraf kalır; 11.'yi eklersen en eskisi silinir.</p>
+            <p class="lk-cap" style="margin-top:16px">Hazır görseller · <span id="tmBgCount"></span></p>
+            <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
+            <p class="tm-credit" id="tmBgCredit"></p>
+            <div class="tm-range" id="tmBgDimRow"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
+          </div>
+        </div>
+        <div class="lk-pane" data-lp="renk" role="tabpanel" hidden>
+          <p class="lk-cap">Renkler</p>
+          <div class="tm-swatches" id="tmSwatches" role="group" aria-label="Renk"></div>
         <div class="tm-cp" id="tmCp" hidden>
           <div class="cp-sv" id="cpSv" role="slider" tabindex="0" aria-label="Doygunluk ve parlaklık"><i id="cpDot"></i></div>
           <input type="range" class="cp-hue" id="cpHue" min="0" max="359" step="1" aria-label="Renk tonu">
@@ -1068,6 +1145,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
           <p class="tm-note" id="cpMsg">Renk karesinde ve ton çubuğunda parmağını gezdir ya da kodu yaz. "Kaydet" dersen renk listeye eklenir; en fazla 5 özel renk saklanır.</p>
         </div>
         <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu. Fotoğraf arka planda renkler okunaklı olsun diye otomatik açılır.</p>
+        </div>
       </div>
     </section>
   </section>
@@ -1115,7 +1193,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
             <label class="tm-sw set-row"><span>Bölüm bitince titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
             <div class="set-row col"><span class="rl">Titreşim türü</span><div class="set-opts" id="tmVibs" role="group" aria-label="Titreşim türü"></div></div>
             <label class="tm-sw set-row"><span>Odak başlarken titreşim<small>"Başlat"a basınca bir kısa titreşim</small></span><input type="checkbox" id="tmHapF"></label>
-            <label class="tm-sw set-row"><span>Mola başlarken titreşim<small>Molayı başlatınca iki hafif titreşim</small></span><input type="checkbox" id="tmHapB"></label>
+            <label class="tm-sw set-row"><span>Mola başlarken titreşim<small>Molayı başlatınca iki kısa titreşim</small></span><input type="checkbox" id="tmHapB"></label>
           </div>
         </div>
         <div class="set-grp">
@@ -2098,11 +2176,11 @@ const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, szv:0, saved:[], color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, szv:0, saved:[], color:"auto",
   sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,4], npSz:[.7,1.4], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -2123,9 +2201,10 @@ function loadAll(){
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
   S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-COLOR_MAX);
-  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.rz && S.rz < .4) S.rz = .4;
   if (S.dz && S.dz < .4) S.dz = .4;
+  if (S.fz && S.fz < .4) S.fz = .4;
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
   if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
@@ -2370,7 +2449,7 @@ function startOrResume(silent){
 function haptic(phase){
   const brk = phase === "short" || phase === "long";
   if (!(brk ? S.hapB : S.hapF) || !navigator.vibrate) return;
-  try { navigator.vibrate(brk ? [25, 90, 25] : 45); } catch(e){}
+  try { navigator.vibrate(brk ? [45, 130, 45] : 45); } catch(e){}
 }
 function pause(){ const x = cur(); x.left = remaining(x); x.endAt = 0; x.status = "paused"; saveX(x); releaseWake(); render(); }
 function logStudy(x, ms, complete){
@@ -2699,7 +2778,18 @@ function renderLook(){
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
-  for (const k of ["rz", "dz"]){ const pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(k === "rz" ? "tmRz" : "tmDz").value = pct; $(k === "rz" ? "tmRzO" : "tmDzO").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
+  for (const k of ["rz", "dz", "fz"]){ const id = {rz:"tmRz", dz:"tmDz", fz:"tmFz"}[k], pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(id).value = pct; $(id + "O").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
+  // tabs, clock type and sections
+  const tab = ["saat","yazi","bg","renk"].includes(LS.get("odak_gorunum_sekme")) ? LS.get("odak_gorunum_sekme") : "saat";
+  $("lkTabs").querySelectorAll("[data-lt]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.lt === tab)));
+  document.querySelectorAll("#tmLook .lk-pane").forEach(p => p.hidden = p.dataset.lp !== tab);
+  $("lkType").querySelectorAll("[data-lv]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lv === S.view)));
+  document.querySelectorAll("#tmLook .lk-sub").forEach(p => p.hidden = p.dataset.lvs !== S.view);
+  $("tmNpShow").checked = S.npShow;
+  if (!$("tmNpSkins").firstChild) $("tmNpSkins").innerHTML = NP_SKINS.map(([n,d], i) => `<button type="button" class="set-o" data-nk="${i}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${n}<small class="sd">${d}</small></span></button>`).join("");
+  $("tmNpSkins").querySelectorAll("[data-nk]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.nk === S.npSkin)));
+  $("tmNpSz").value = Math.round(S.npSz*100); $("tmNpSzO").textContent = "%" + Math.round(S.npSz*100);
+  $("tmBgDimRow").hidden = !S.bg;
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
   renderSwatches();
   renderBg();
@@ -2791,12 +2881,15 @@ function sizeVars(card){
   if (S.rz) card.style.setProperty("--rwx", `min(calc(${W}*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
   if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(${W}*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
   // enlarged (full-screen) mode: the same percentages, measured against the screen
-  if (S.rz) card.style.setProperty("--fwr", `calc(${S.rz}*min(92vw,72vh,900px))`); else card.style.removeProperty("--fwr");
-  if (S.dz) card.style.setProperty("--fdsx", `calc(${S.dz}*min(calc(92vw/3.5),32vh))`); else card.style.removeProperty("--fdsx");
+  // the enlarged screen has its own size setting; without it, the normal size settings are used there too
+  const fr = S.fz || S.rz, fd = S.fz || S.dz;
+  if (fr) card.style.setProperty("--fwr", `calc(${fr}*min(92vw,72vh,900px))`); else card.style.removeProperty("--fwr");
+  if (fd) card.style.setProperty("--fdsx", `calc(${fd}*min(calc(92vw/3.5),32vh))`); else card.style.removeProperty("--fdsx");
 }
 // default ("auto") size expressed as % of the card width, so the slider can show where it sits
 function autoPct(kind){
   const card = $("tmCard"), cs = getComputedStyle(card), inner = Math.max(120, card.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight));
+  if (kind === "fz"){ const ref = Math.min(innerWidth*.92, innerHeight*.72, 900); return Math.min(100, Math.max(40, Math.round(Math.min(innerWidth*.86, innerHeight*.62, 780)/ref*100))); }
   const px = kind === "dz" ? Math.min(Math.max(56, innerWidth*.19), 86)*3.5 : Math.min(innerWidth*.8, 300);
   return Math.min(100, Math.max(40, Math.round(px/inner*100)));
 }
@@ -2825,6 +2918,7 @@ function setFull(on){
     else if (!on && document.fullscreenElement) document.exitFullscreen().catch(() => {});
   } catch(e){}
   if (on) window.scrollTo(0, 0);
+  renderNp();
 }
 $("tmFull").addEventListener("click", () => setFull(!document.body.classList.contains("tm-full")));
 document.addEventListener("fullscreenchange", () => { if (!document.fullscreenElement && document.body.classList.contains("tm-full")) setFull(false); });
@@ -2833,8 +2927,14 @@ $("tmUpIn").addEventListener("change", e => { const f = e.target.files && e.targ
 upInit();
 $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(bgFind(S.bg)))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
-for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
+for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"], ["tmFz", "fz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
 document.querySelectorAll("[data-rst]").forEach(b => b.addEventListener("click", () => { S[b.dataset.rst] = 0; saveS(); render(); }));
+$("lkTabs").addEventListener("click", e => { const b = e.target.closest("[data-lt]"); if (!b) return; LS.set("odak_gorunum_sekme", b.dataset.lt); renderLook(); });
+$("lkTabs").addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const t = [...$("lkTabs").children], i = t.indexOf(document.activeElement); if (i < 0) return; const n = t[(i + (e.key === "ArrowRight" ? 1 : t.length - 1)) % t.length]; n.focus(); n.click(); });
+$("lkType").addEventListener("click", e => { const b = e.target.closest("[data-lv]"); if (!b) return; S.view = b.dataset.lv; saveS(); render(); });
+$("tmNpShow").addEventListener("change", e => { S.npShow = e.target.checked; saveS(); renderNp(); });
+$("tmNpSkins").addEventListener("click", e => { const b = e.target.closest("[data-nk]"); if (!b) return; S.npSkin = +b.dataset.nk; saveS(); renderLook(); renderNp(); });
+$("tmNpSz").addEventListener("input", e => { S.npSz = clamp((+e.target.value)/100, .7, 1.4); $("tmNpSzO").textContent = "%" + e.target.value; saveS(); renderNp(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => {
@@ -2881,19 +2981,23 @@ $("tmRepeat").addEventListener("click", e => { const b = e.target.closest("[data
 $("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-vb]"); if (!b) return; S.vib = b.dataset.vb; saveS(); renderAudioUI(); if (!vibrate(S.vib, 1)) toast("Bu cihaz ya da tarayıcı titreşimi desteklemiyor"); });
 
 /* --- now-playing mini player: visible on the timer page while the timer runs with a background sound --- */
-let npKeep = false;
+// Always on the timer page (unless switched off in Görünüm); on the enlarged screen only while the sound is on.
+const NP_SKINS = [["Kart","Dolu kart"],["Şeffaf","Arka planı kapatmaz"],["Hap","İnce, yuvarlak"],["Cam","Buzlu cam"],["Koyu","Koyu şerit"]];
 function renderNp(){
   const np = $("tmNp"); if (!np) return;
-  const r = runner();
-  if (!r){ npKeep = false; np.hidden = true; return; }
-  if (S.ambOn && S.amb) npKeep = true;
-  np.hidden = !npKeep;
+  const full = document.body.classList.contains("tm-full");
+  np.hidden = !S.npShow || (full && !(S.ambOn && S.amb));
+  np.dataset.sk = S.npSkin;
+  document.body.style.setProperty("--nps", String(S.npSz || 1));
+  document.body.classList.toggle("np-on", !np.hidden);
+  document.body.classList.toggle("np-vol-open", !np.hidden && !$("tmNpVol").hidden);
+  document.body.classList.toggle("tm-photo", !!$("tmCard").dataset.bg);
   if (np.hidden) return;
-  const am = AMBS.find(a => a.id === S.amb) || AMBS[1], on = S.ambOn && ambWanted();
-  np.dataset.on = on ? "1" : "0";
+  const am = AMBS.find(a => a.id === S.amb) || AMBS[1], play = S.ambOn && ambWanted();
+  np.dataset.on = S.ambOn ? "1" : "0"; np.dataset.play = play ? "1" : "0";
   $("tmNpName").textContent = am.n; $("tmNpIco").innerHTML = ambSvg(am.id, 22);
-  $("tmNpSt").textContent = on ? "Çalıyor" : "Durdu";
-  $("tmNpPlay").setAttribute("aria-label", on ? "Sesi durdur" : "Sesi oynat");
+  $("tmNpSt").textContent = play ? "Çalıyor" : S.ambOn ? "Sayaç başlayınca çalacak" : "Kapalı";
+  $("tmNpPlay").setAttribute("aria-label", S.ambOn ? "Sesi durdur" : "Sesi aç");
   const v = Math.round(S.ambVol*100); if (document.activeElement !== $("tmNpVolIn")) $("tmNpVolIn").value = v; $("tmNpVolO").textContent = "%" + v;
 }
 function setAmbVol(v){
@@ -2908,7 +3012,7 @@ function npStep(d){
 $("tmNpPrev").addEventListener("click", () => npStep(-1));
 $("tmNpNext").addEventListener("click", () => npStep(1));
 $("tmNpPlay").addEventListener("click", () => { ensureAudio(); S.ambOn = !S.ambOn; saveS(); syncAmbient(); renderAudioUI(); });
-$("tmNpVolBtn").addEventListener("click", () => { const p = $("tmNpVol"), open = p.hidden; p.hidden = !open; $("tmNpVolBtn").setAttribute("aria-expanded", String(open)); });
+$("tmNpVolBtn").addEventListener("click", () => { const p = $("tmNpVol"), open = p.hidden; p.hidden = !open; $("tmNpVolBtn").setAttribute("aria-expanded", String(open)); document.body.classList.toggle("np-vol-open", open); });
 $("tmNpVolIn").addEventListener("input", e => setAmbVol(+e.target.value));
 $("tmStopAlarm").addEventListener("click", () => stopAlarm());
 $("tmStopAlarm2").addEventListener("click", () => stopAlarm());
