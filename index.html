@@ -490,6 +490,9 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-card[data-font] :is(.tm-seg button,.tm-chip,.tm-label,.tm-show,.dg-show,.tm-main,.tm-hint),.tm-np[data-font] :is(.np-tx b,.np-tx small){font-family:var(--tf) !important;font-style:var(--ti,normal) !important}
 /* effect style: outline */
 [data-font="4"] .fp,.tm-card[data-font="4"] .tm-time,.tm-card[data-font="4"] .dg-row .c,.tm-card[data-font="4"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
+[data-font="5"],[data-font="6"]{--tf:var(--display);--tw:600}
+.tm-time .tdg{font-size:1em;display:inline-flex;gap:.04em;color:inherit;vertical-align:middle}
+.tm-skin .th .fp .dg-row{font-size:15px}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
 .tm-dig{opacity:var(--dop,1);transition:opacity .15s;--ds:var(--dsx,clamp(56px,19vw,86px));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
@@ -1138,7 +1141,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-grip{margin-top:var(--npspa
         <p class="tm-note">Işığı azaltınca saat soluklaşır, arkadaki fotoğraf daha iyi görünür.</p>
           </div>
           <div class="lk-sub" data-lvs="lcd" hidden>
-            <p class="lk-cap">Dijital tasarımlar · 10</p>
+            <p class="lk-cap">Dijital tasarımlar · 7</p>
             <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="40" max="100" step="2" aria-label="Dijital saat boyutu"><output id="tmDzO"></output><button type="button" class="tm-rst" data-rst="dz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
         <div class="tm-range"><span>Işık</span><input type="range" id="tmDop" min="20" max="100" step="5" aria-label="Dijital saatin ışığı"><output id="tmDopO"></output></div>
@@ -1161,9 +1164,9 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-grip{margin-top:var(--npspa
           </div>
         </div>
         <div class="lk-pane" data-lp="yazi" role="tabpanel" hidden>
-          <p class="lk-cap">Yazı stilleri · 5</p>
+          <p class="lk-cap">Yazı stilleri · 7</p>
           <div class="tm-skins" id="tmFonts" role="group" aria-label="Yazı stili"></div>
-        <p class="tm-note">Stil, analog saatin ortasındaki süreye ve dijital saatin rakamlarına uygulanır. Segment ve Matris tasarımları çizim olduğu için değişmez. Klasik ve El yazısı cihazındaki yazı tiplerini kullanır, biraz farklı görünebilir.</p>
+        <p class="tm-note">Stil; analog saatin ortasındaki süreye, dijital saatin rakamlarına ve sayaçtaki diğer yazılara uygulanır. Segment ve Matris rakamları çizgi ve noktalarla çizer; diğer yazılar sade kalır. Klasik ve El yazısı cihazındaki yazı tiplerini kullanır.</p>
         </div>
         <div class="lk-pane" data-lp="bg" role="tabpanel" hidden>
           <div id="tmBgSec">
@@ -2217,7 +2220,10 @@ const VIBS = [
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
 const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Duvar","Parçalı","Mekanik","Neon","Sıvı"];
-const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi"];
+const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi","Segment","Matris"];
+const DSKIN_HIDDEN = [3, 4, 6];   // Segment, Matris (now font styles) and Şerit are no longer offered as digital designs
+// Segment / Matris font styles draw the digits as shapes: 3 = seven-segment, 4 = dot matrix
+const fontDigits = () => S.font === 5 ? 3 : S.font === 6 ? 4 : -1;
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
 const UP_MAX = 10, COLOR_MAX = 5;   // own photos kept on the device / saved custom colours
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"],["#ffffff","Beyaz"]];
@@ -2228,7 +2234,7 @@ const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"r
   sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,5], npOp:[.2,1], npSz:[.7,1.4], rOp:[.2,1], dOp:[.2,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,6], fv:[0,4], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,5], npOp:[.2,1], npSz:[.7,1.4], rOp:[.2,1], dOp:[.2,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -2247,6 +2253,7 @@ function loadAll(){
   if (S.font > 9) S.font = 0;
   if (S.fv < 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
+  if (S.fv < 4){ if (S.dskin === 3){ S.dskin = 0; S.font = 5; } else if (S.dskin === 4){ S.dskin = 0; S.font = 6; } else if (S.dskin === 6) S.dskin = 0; S.fv = 4; try { localStorage.setItem(KS, JSON.stringify(S)); } catch(e){} }
   if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
   S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-COLOR_MAX);
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" || k === "rOp" || k === "dOp" || k === "npOp" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
@@ -2687,8 +2694,8 @@ function paint(){
   const clock = fmtClock(rem), running = x.status === "running";
   if (clock !== lastClock){
     lastClock = clock;
-    const tm = $("tmTime"); tm.textContent = clock; tm.classList.toggle("long", clock.length > 5);
-    const dg = $("tmDigits"); dg.innerHTML = digitsHTML(clock, S.dskin); dg.classList.toggle("long", clock.length > 5); dg.setAttribute("aria-label", clock);
+    const tm = $("tmTime"), fd = fontDigits(); if (fd >= 0) tm.innerHTML = `<span class="dg-row tdg">${digitsHTML(clock, fd)}</span>`; else tm.textContent = clock; tm.classList.toggle("long", clock.length > 5);
+    const dg = $("tmDigits"); dg.innerHTML = digitsHTML(clock, fontDigits() >= 0 ? fontDigits() : S.dskin); dg.classList.toggle("long", clock.length > 5); dg.setAttribute("aria-label", clock);
   }
   if (S.view === "ring") dialUpdate(mainDial(), frac, rem, full);
   $("tmCard").dataset.run = running ? "1" : "0";
@@ -2823,8 +2830,8 @@ function renderLook(){
     lookBuilt = true;
     $("tmSkinsR").innerHTML = RSKIN.map((n,i) => `<button type="button" class="tm-skin" data-rs="${i}" aria-pressed="false" aria-label="Analog saat: ${n}"><div class="th">${svgDial(i, "p"+i)}</div><small>${n}</small></button>`).join("");
     $("tmSkinsR").querySelectorAll("svg.dial").forEach(svg => dialUpdate(svg, .62, 14*60000 + 40000));
-    $("tmSkinsD").innerHTML = DSKIN.map((n,i) => `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
-    $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">25:08</span></div><small>${n}</small></button>`).join("");
+    $("tmSkinsD").innerHTML = DSKIN.map((n,i) => DSKIN_HIDDEN.includes(i) ? "" : `<button type="button" class="tm-skin" data-ds="${i}" data-dskin="${i}" aria-pressed="false" aria-label="Dijital saat: ${n}"><div class="th"><div class="dg-row">${digitsHTML("25:08", i)}</div></div><small>${n}</small></button>`).join("");
+    $("tmFonts").innerHTML = FONTN.map((n,i) => `<button type="button" class="tm-skin" data-fn="${i}"${i ? ` data-font="${i}"` : ""} aria-pressed="false" aria-label="Yazı stili: ${n}"><div class="th"><span class="fp">${i >= 5 ? `<span class="dg-row">${digitsHTML("25:08", i === 5 ? 3 : 4)}</span>` : "25:08"}</span></div><small>${n}</small></button>`).join("");
     cpInit();
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
