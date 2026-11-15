@@ -697,6 +697,33 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 #tmRepeat{flex:none}
 @media (max-width:380px){.set-row:not(.col):not(.tm-sw){flex-wrap:wrap}.set-rng{max-width:none}}
 
+/* --- now-playing mini player on the timer page --- */
+.tm-np{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.tm-np[hidden]{display:none}
+.np-row{display:flex;align-items:center;gap:10px;min-width:0}
+.np-ic{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent)}
+.np-tx{flex:1;min-width:0;display:flex;flex-direction:column}
+.np-tx small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.np-tx b{font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.np-eq{flex:none;display:none;align-items:flex-end;gap:2px;height:14px}
+.np-eq i{width:3px;height:5px;border-radius:2px;background:var(--accent);animation:tmEq 1.2s ease-in-out infinite}
+.np-eq i:nth-child(2){animation-delay:-.4s}.np-eq i:nth-child(3){animation-delay:-.8s}
+.tm-np[data-on="1"] .np-eq{display:flex}
+@media (prefers-reduced-motion: reduce){.np-eq i{animation:none;height:9px}}
+.np-btns{flex:none;display:flex;align-items:center;gap:4px}
+.np-btns button{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;padding:0;line-height:0;-webkit-tap-highlight-color:transparent}
+.np-btns button:active{background:color-mix(in srgb,var(--ink) 8%,transparent)}
+.np-btns .pp{background:var(--accent);color:#fff;width:40px;height:40px}
+.np-btns .pp .pl,.tm-np[data-on="0"] .pp .pa{display:none}
+.tm-np[data-on="0"] .pp .pl{display:block;margin-left:2px}
+#tmNpVolBtn[aria-expanded="true"]{color:var(--accent);background:var(--accent-soft)}
+.np-vol{display:flex;align-items:center;gap:10px;padding:0 4px 2px 50px}
+.np-vol[hidden]{display:none}
+.np-vol input{flex:1;min-width:0;accent-color:var(--accent);height:28px;margin:0}
+.np-vol output{font:600 12.5px var(--mono);min-width:36px;text-align:right}
+@media (max-width:480px){.np-btns{gap:2px}.np-btns button{width:34px;height:34px}.np-btns .pp{width:38px;height:38px}.np-eq{display:none !important}.np-tx b{white-space:normal;line-height:1.2;font-size:14px}}
+@media (max-width:370px){.np-ic{display:none}.np-vol{padding-left:4px}}
+
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -966,6 +993,20 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
       <div class="tm-grip" id="tmGrip" role="slider" tabindex="0" aria-label="Önizleme boyutu" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Aşağı çekerek büyüt"><i></i></div>
     </section>
 
+    <div class="card tm-np" id="tmNp" hidden>
+      <div class="np-row">
+        <span class="np-ic" id="tmNpIco" aria-hidden="true"></span>
+        <div class="np-tx"><small id="tmNpSt">Arka plan sesi</small><b id="tmNpName"></b></div>
+        <span class="np-eq" aria-hidden="true"><i></i><i></i><i></i></span>
+        <div class="np-btns">
+          <button type="button" id="tmNpPrev" aria-label="Önceki ses" title="Önceki ses"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M6.5 5.5v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M18 6v12l-9-6z" fill="currentColor"/></svg></button>
+          <button type="button" id="tmNpPlay" class="pp" aria-label="Sesi durdur" title="Durdur / oynat"><span class="pa"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/><rect x="13.4" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/></svg></span><span class="pl"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13l10-6.5z" fill="currentColor"/></svg></span></button>
+          <button type="button" id="tmNpNext" aria-label="Sonraki ses" title="Sonraki ses"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 5.5v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 6v12l9-6z" fill="currentColor"/></svg></button>
+          <button type="button" id="tmNpVolBtn" aria-label="Ses seviyesi" aria-expanded="false" title="Ses seviyesi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
+        </div>
+      </div>
+      <div class="np-vol" id="tmNpVol" hidden><input type="range" id="tmNpVolIn" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><output id="tmNpVolO"></output></div>
+    </div>
     <a class="tm-statlink" id="tmStatLink" href="#sayac/grafik"><span>📊 <b id="tmTodayTxt">Bugün 0 dk</b> · <span id="tmGoalMini">hedef %0</span></span><span class="go">Çalışma grafiği ›</span></a>
 
     <section class="card">
@@ -2828,15 +2869,47 @@ function renderAudioUI(){
   $("tmAmbState").textContent = !S.ambOn ? "Kapalı · çalmak için ▶ düğmesine bas" : ambWanted() ? "Çalıyor" : "Sayaç başlayınca çalacak";
   $("tmAmbHint").textContent = S.ambOn ? `${an}${ambWanted() ? " · çalıyor" : ""}` : "Yağmur, dalga, ateş ve daha fazlası";
   $("tmSetHint").textContent = `${ALARM_LIST.find(a => a.id === S.alarm).n} · ${VIBS.find(v => v.id === S.vib).n} titreşim`;
+  renderNp();
 }
 $("tmAmbs").addEventListener("click", e => { const b = e.target.closest("[data-a]"); if (!b) return; ensureAudio(); S.amb = b.dataset.a; S.ambOn = true; saveS(); renderAudioUI(); syncAmbient(); });
 $("tmAmbOn").addEventListener("change", e => { ensureAudio(); S.ambOn = e.target.checked; saveS(); renderAudioUI(); syncAmbient(); });
 $("tmAmbMode").addEventListener("click", e => { const b = e.target.closest("[data-am]"); if (!b) return; S.ambMode = b.dataset.am; saveS(); renderAudioUI(); syncAmbient(); });
-$("tmAmbVol").addEventListener("input", e => { S.ambVol = clamp((+e.target.value)/100, 0, 1); $("tmAmbVolO").textContent = "%" + e.target.value; saveS(); if (ambNode) ambGain.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .05); });
+$("tmAmbVol").addEventListener("input", e => setAmbVol(+e.target.value));
 $("tmAlVol").addEventListener("input", e => { S.alarmVol = clamp((+e.target.value)/100, .1, 1); $("tmAlVolO").textContent = "%" + e.target.value; saveS(); });
 $("tmAlarms").addEventListener("click", e => { const b = e.target.closest("[data-al]"); if (!b) return; S.alarm = b.dataset.al; saveS(); renderAudioUI(); playAlarm(S.alarm, 1, false); });
 $("tmRepeat").addEventListener("click", e => { const b = e.target.closest("[data-rp]"); if (!b) return; S.repeat = +b.dataset.rp; saveS(); renderAudioUI(); });
 $("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-vb]"); if (!b) return; S.vib = b.dataset.vb; saveS(); renderAudioUI(); if (!vibrate(S.vib, 1)) toast("Bu cihaz ya da tarayıcı titreşimi desteklemiyor"); });
+
+/* --- now-playing mini player: visible on the timer page while the timer runs with a background sound --- */
+let npKeep = false;
+function renderNp(){
+  const np = $("tmNp"); if (!np) return;
+  const r = runner();
+  if (!r){ npKeep = false; np.hidden = true; return; }
+  if (S.ambOn && S.amb) npKeep = true;
+  np.hidden = !npKeep;
+  if (np.hidden) return;
+  const am = AMBS.find(a => a.id === S.amb) || AMBS[1], on = S.ambOn && ambWanted();
+  np.dataset.on = on ? "1" : "0";
+  $("tmNpName").textContent = am.n; $("tmNpIco").innerHTML = ambSvg(am.id, 22);
+  $("tmNpSt").textContent = on ? "Çalıyor" : "Durdu";
+  $("tmNpPlay").setAttribute("aria-label", on ? "Sesi durdur" : "Sesi oynat");
+  const v = Math.round(S.ambVol*100); if (document.activeElement !== $("tmNpVolIn")) $("tmNpVolIn").value = v; $("tmNpVolO").textContent = "%" + v;
+}
+function setAmbVol(v){
+  S.ambVol = clamp(v/100, 0, 1); saveS();
+  if (ambNode) ambGain.gain.setTargetAtTime(Math.max(.0001, ambLevel()), AC.currentTime, .05);
+  $("tmAmbVol").value = Math.round(v); $("tmAmbVolO").textContent = "%" + Math.round(v); $("tmNpVolIn").value = Math.round(v); $("tmNpVolO").textContent = "%" + Math.round(v);
+}
+function npStep(d){
+  const i = Math.max(0, AMBS.findIndex(a => a.id === S.amb)), n = AMBS.length;
+  ensureAudio(); S.amb = AMBS[(i + d + n) % n].id; S.ambOn = true; saveS(); renderAudioUI(); syncAmbient(); renderAudioUI();
+}
+$("tmNpPrev").addEventListener("click", () => npStep(-1));
+$("tmNpNext").addEventListener("click", () => npStep(1));
+$("tmNpPlay").addEventListener("click", () => { ensureAudio(); S.ambOn = !S.ambOn; saveS(); syncAmbient(); renderAudioUI(); });
+$("tmNpVolBtn").addEventListener("click", () => { const p = $("tmNpVol"), open = p.hidden; p.hidden = !open; $("tmNpVolBtn").setAttribute("aria-expanded", String(open)); });
+$("tmNpVolIn").addEventListener("input", e => setAmbVol(+e.target.value));
 $("tmStopAlarm").addEventListener("click", () => stopAlarm());
 $("tmStopAlarm2").addEventListener("click", () => stopAlarm());
 
