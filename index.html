@@ -426,7 +426,7 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 /* analog dial (10 skins, drawn in SVG) */
 .tm-card{container-type:inline-size;--rw:var(--rwx,min(80vw,300px))}
 .tm-stage{display:contents}
-.tm-ring{position:relative;width:var(--rw);aspect-ratio:1}
+.tm-ring{position:relative;width:var(--rw);aspect-ratio:1;opacity:var(--rop,1);transition:opacity .15s}
 .tm-ring .dialbox{position:absolute;inset:0}
 .dial{width:100%;height:100%;display:block;overflow:visible}
 .dial .tk{stroke:var(--muted);opacity:.28;stroke-linecap:round;transition:opacity .2s,stroke .2s}
@@ -488,7 +488,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 [data-font="4"] .fp,.tm-card[data-font="4"] .tm-time,.tm-card[data-font="4"] .dg-row .c,.tm-card[data-font="4"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
 /* digital clock (10 skins) */
-.tm-dig{--ds:var(--dsx,clamp(56px,19vw,86px));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
+.tm-dig{opacity:var(--dop,1);transition:opacity .15s;--ds:var(--dsx,clamp(56px,19vw,86px));width:100%;display:flex;flex-direction:column;align-items:center;gap:12px}
 .dg-top{display:flex;justify-content:space-between;width:100%;font:700 11.5px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--ph);padding:0 4px}
 .dg-row{display:flex;justify-content:center;align-items:center;font-size:var(--ds);line-height:1;font-variant-numeric:tabular-nums;gap:.04em;color:var(--ink);font-family:var(--display)}
 .dg-row.long{font-size:calc(var(--ds)*.72)}
@@ -1120,11 +1120,15 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--n
             <p class="lk-cap">Analog tasarımlar · 10</p>
             <div class="tm-skins" id="tmSkinsR" role="group" aria-label="Analog saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmRz" min="40" max="100" step="2" aria-label="Analog saat boyutu"><output id="tmRzO"></output><button type="button" class="tm-rst" data-rst="rz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
+        <div class="tm-range"><span>Işık</span><input type="range" id="tmRop" min="20" max="100" step="5" aria-label="Analog saatin ışığı"><output id="tmRopO"></output></div>
+        <p class="tm-note">Işığı azaltınca saat soluklaşır, arkadaki fotoğraf daha iyi görünür.</p>
           </div>
           <div class="lk-sub" data-lvs="lcd" hidden>
             <p class="lk-cap">Dijital tasarımlar · 10</p>
             <div class="tm-skins" id="tmSkinsD" role="group" aria-label="Dijital saat tasarımı"></div>
         <div class="tm-range"><span>Boyut</span><input type="range" id="tmDz" min="40" max="100" step="2" aria-label="Dijital saat boyutu"><output id="tmDzO"></output><button type="button" class="tm-rst" data-rst="dz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div>
+        <div class="tm-range"><span>Işık</span><input type="range" id="tmDop" min="20" max="100" step="5" aria-label="Dijital saatin ışığı"><output id="tmDopO"></output></div>
+        <p class="tm-note">Işığı azaltınca rakamlar soluklaşır, arkadaki fotoğraf daha iyi görünür.</p>
           </div>
           <div class="set-grp">
             <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span>Büyütülmüş ekran</div>
@@ -2205,11 +2209,11 @@ const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, npAt:"alt", szv:0, saved:[], color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, npAt:"alt", rOp:1, dOp:1, szv:0, saved:[], color:"auto",
   sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,4], npSz:[.7,1.4], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,4], npSz:[.7,1.4], rOp:[.2,1], dOp:[.2,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -2230,7 +2234,7 @@ function loadAll(){
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
   S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-COLOR_MAX);
-  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" || k === "rOp" || k === "dOp" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.rz && S.rz < .4) S.rz = .4;
   if (S.dz && S.dz < .4) S.dz = .4;
   S.fz = 0;   // separate big-screen size was removed; the normal size settings apply there
@@ -2810,6 +2814,7 @@ function renderLook(){
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
+  for (const [id, k] of [["tmRop", "rOp"], ["tmDop", "dOp"]]){ const v = Math.round(S[k]*100); $(id).value = v; $(id + "O").textContent = "%" + v; }
   for (const k of ["rz", "dz"]){ const id = {rz:"tmRz", dz:"tmDz"}[k], pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(id).value = pct; $(id + "O").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
   // tabs, clock type and sections
   const tab = ["saat","yazi","bg","renk"].includes(LS.get("odak_gorunum_sekme")) ? LS.get("odak_gorunum_sekme") : "saat";
@@ -2912,6 +2917,7 @@ const pvMin = () => innerWidth >= 700 ? Math.round(Math.min(240, Math.max(150, i
 const pvMax = () => Math.max(pvMin() + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
 const CQ = !!(window.CSS && CSS.supports && CSS.supports("width", "1cqw"));
 function sizeVars(card){
+  card.style.setProperty("--rop", String(S.rOp)); card.style.setProperty("--dop", String(S.dOp));
   // card width: container units where supported (older Safari lacks them: estimate from the screen width instead)
   const W = CQ ? "100cqw" : "(min(100vw, 680px) - 64px)";
   if (S.rz) card.style.setProperty("--rwx", `min(calc(${W}*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
@@ -2995,6 +3001,7 @@ $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
 for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
 document.querySelectorAll("[data-rst]").forEach(b => b.addEventListener("click", () => { S[b.dataset.rst] = 0; saveS(); render(); }));
+for (const [id, k] of [["tmRop", "rOp"], ["tmDop", "dOp"]]) $(id).addEventListener("input", e => { S[k] = clamp((+e.target.value)/100, .2, 1); $(id + "O").textContent = "%" + e.target.value; saveS(); sizeVars($("tmCard")); });
 $("lkPv").addEventListener("click", e => { const b = e.target.closest("[data-pv]"); if (!b) return; LS.set("odak_onizleme_tur", b.dataset.pv); pvBig = b.dataset.pv !== "small"; renderLook(); pvApply(); });
 $("lkTabs").addEventListener("click", e => { const b = e.target.closest("[data-lt]"); if (!b) return; LS.set("odak_gorunum_sekme", b.dataset.lt); renderLook(); });
 $("lkTabs").addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const t = [...$("lkTabs").children], i = t.indexOf(document.activeElement); if (i < 0) return; const n = t[(i + (e.key === "ArrowRight" ? 1 : t.length - 1)) % t.length]; n.focus(); n.click(); });
