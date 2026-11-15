@@ -3003,7 +3003,7 @@ function upDel(id){
   render();
 }
 /* --- photo categories: built-in ones, "Kendi fotoğrafların", and categories the user creates (saved on the device) --- */
-const BG_CATS = [["kendi","Kendi fotoğrafların"],["islami","İslami"],["saglik","Sağlık"],["doga","Doğa"],["kedi","Kedi"],["araba","Araba"],["diger","Diğer"]];
+const BG_CATS = [["kendi","Kendi fotoğrafların"],["islami","İslami"],["saglik","Sağlık"],["doga","Doğa"],["uzay","Uzay"],["hayvanlar","Hayvanlar"],["kedi","Kedi"],["araba","Araba"],["diger","Diğer"]];
 const UC_KEY = "odak_kategoriler", UC_MAX = 12, UC_NAME = 24;
 let UC = (() => { try { const a = JSON.parse(LS.get(UC_KEY) || "[]"); return Array.isArray(a) ? a.filter(c => c && typeof c.id === "string" && typeof c.n === "string" && Array.isArray(c.items)).slice(0, UC_MAX) : []; } catch(e){ return []; } })();
 const ucSave = () => LS.set(UC_KEY, JSON.stringify(UC));
@@ -3050,7 +3050,7 @@ function renderBg(){
   $("tmBgGrid").innerHTML = grid;
   const empty = $("bgEmpty");
   empty.hidden = !!items.length || bgCat === "kendi" || user;
-  empty.textContent = bgCat === "kedi" || bgCat === "araba" ? "Bu kategoriye yakında fotoğraf eklenecek. Şimdilik kendi fotoğrafını yükleyebilir ya da kendi kategorini oluşturabilirsin." : "Bu kategoride fotoğraf yok.";
+  empty.textContent = ["kedi","araba","uzay","hayvanlar"].includes(bgCat) ? "Bu kategoriye yakında fotoğraf eklenecek. Şimdilik kendi fotoğrafını yükleyebilir ya da kendi kategorini oluşturabilirsin." : "Bu kategoride fotoğraf yok.";
   $("tmUpMsg").hidden = !$("tmUpMsg").textContent || (bgCat !== "kendi" && !user);
   // credit + dim
   const it = bgFind(S.bg);
