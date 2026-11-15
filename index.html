@@ -712,6 +712,9 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-np[data-play="1"] .np-eq{display:flex}
 @media (prefers-reduced-motion: reduce){.np-eq i{animation:none;height:9px}}
 .np-btns{flex:none;display:flex;align-items:center;gap:4px}
+.np-grip{display:none;flex:none;width:26px;height:38px;place-items:center;color:var(--muted);opacity:.85;cursor:grab;margin-left:-2px}
+body.tm-full #tmNp .np-grip,.np-prev .np-grip{display:grid}
+body.tm-photo .npd[data-sk="1"] .np-grip,body.tm-photo .npd[data-sk="3"] .np-grip,.npd[data-sk="4"] .np-grip{color:#fff}
 .np-btns button{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;padding:0;line-height:0;-webkit-tap-highlight-color:transparent}
 .np-btns button:active{background:color-mix(in srgb,var(--ink) 8%,transparent)}
 .np-btns .pp{background:var(--accent);color:#fff;width:40px;height:40px}
@@ -743,8 +746,9 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 /* mini player while the timer is enlarged: pinned under the clock */
 body.tm-full #tmNp:not([hidden]){position:fixed;left:var(--npx,50%);top:var(--npy,calc(max(12px,env(safe-area-inset-top)) + 58px));bottom:auto;transform:translateX(-50%) scale(var(--nps,1));transform-origin:50% 0;width:min(520px,calc((100vw - 24px)/var(--nps,1)));z-index:82;margin:0;box-shadow:var(--shadow);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:box-shadow .15s}
 body.tm-full #tmNp.np-drag{box-shadow:0 18px 40px rgba(0,0,0,.35),0 0 0 2px var(--accent);transition:none;cursor:grabbing}
-body.tm-full.np-on.np-top #tmCard{padding-top:calc(max(12px,env(safe-area-inset-top)) + 64px + 80px*var(--nps,1))}
-body.tm-full.np-on.np-top.np-vol-open #tmCard{padding-top:calc(max(12px,env(safe-area-inset-top)) + 64px + 118px*var(--nps,1))}
+body.tm-full.np-on.np-top #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 96px*var(--nps,1))}
+body.tm-full.np-on.np-top.np-vol-open #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 134px*var(--nps,1))}
+body.tm-full #tmCard .tm-hint{display:none}
 /* enlarged-screen player designs: 1 Şeffaf (no background), 2 Hap, 3 Cam, 4 Koyu */
 .npd[data-sk="1"]{background:transparent;border-color:transparent;box-shadow:none}
 .npd[data-sk="1"] .np-ic{background:transparent}
@@ -772,10 +776,10 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 .lk-pv > span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 /* Görünüm: preview of the enlarged screen (clock at its big-screen size + the mini player design) */
 .np-prev{display:none}
-body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,64px);width:360px;margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.62)));transform-origin:50% 0;box-shadow:var(--shadow)}
-.np-prev .np-cap{position:absolute;left:50%;bottom:-30px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line);text-shadow:none}
+body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:360px;margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.62)));transform-origin:50% 100%;box-shadow:var(--shadow)}
+.np-prev .np-cap{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line);text-shadow:none}
 .np-prev .np-btns button{pointer-events:none}
-body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npspace,60px)}
+body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--npspace,60px)}
 
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -1053,7 +1057,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npsp
             <button type="button" class="pp" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/><rect x="13.4" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/></svg></button>
             <button type="button" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 5.5v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 6v12l9-6z" fill="currentColor"/></svg></button>
             <button type="button" tabindex="-1"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-          </div>
+          </div><span class="np-grip" aria-hidden="true" title="Basılı tutup sürükle"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 7.5h14M5 12h14M5 16.5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
         </div>
       </div>
       <div class="tm-grip" id="tmGrip" role="slider" tabindex="0" aria-label="Önizleme boyutu" aria-orientation="vertical" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" title="Aşağı çekerek büyüt"><i></i></div>
@@ -1069,7 +1073,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npsp
           <button type="button" id="tmNpPlay" class="pp" aria-label="Sesi durdur" title="Durdur / oynat"><span class="pa"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><rect x="7" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/><rect x="13.4" y="5.5" width="3.6" height="13" rx="1" fill="currentColor"/></svg></span><span class="pl"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 5.5v13l10-6.5z" fill="currentColor"/></svg></span></button>
           <button type="button" id="tmNpNext" aria-label="Sonraki ses" title="Sonraki ses"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M17.5 5.5v13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 6v12l9-6z" fill="currentColor"/></svg></button>
           <button type="button" id="tmNpVolBtn" aria-label="Ses seviyesi" aria-expanded="false" title="Ses seviyesi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>
-        </div>
+        </div><span class="np-grip" aria-hidden="true" title="Basılı tutup sürükle"><svg width="18" height="18" viewBox="0 0 24 24"><path d="M5 7.5h14M5 12h14M5 16.5h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
       </div>
       <div class="np-vol" id="tmNpVol" hidden><input type="range" id="tmNpVolIn" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><output id="tmNpVolO"></output></div>
     </div>
@@ -1127,7 +1131,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npsp
             <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span>Büyütülmüş ekran</div>
             <div class="set-box">
               <div class="set-row col"><span class="rl">Mini çalıcı tasarımı</span><div class="set-opts" id="tmNpSkins" role="group" aria-label="Büyük ekranda mini çalıcı tasarımı"></div></div>
-              <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt">Üstte (basılı tutup sürükleyerek taşıyabilirsin)</small></span><button type="button" class="secondary" id="tmNpPosReset">Üste al</button></div>
+              <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt">Başlat düğmesinin altında</small></span><button type="button" class="secondary" id="tmNpPosReset">Varsayılan yere al</button></div>
               <div class="set-row"><span class="rl">Mini çalıcı boyutu</span><div class="set-rng"><input type="range" id="tmNpSz" min="70" max="140" step="5" aria-label="Büyük ekranda mini çalıcı boyutu"><output id="tmNpSzO"></output></div></div>
             </div>
           </div>
@@ -2817,7 +2821,7 @@ function renderLook(){
   $("tmNpShow").checked = S.npShow;
   if (!$("tmNpSkins").firstChild) $("tmNpSkins").innerHTML = NP_SKINS.map(([n,d], i) => `<button type="button" class="set-o" data-nk="${i}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${n}<small class="sd">${d}</small></span></button>`).join("");
   $("tmNpSkins").querySelectorAll("[data-nk]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.nk === S.npSkin)));
-  $("tmNpPosTxt").textContent = S.npX >= 0 ? "Senin seçtiğin yerde · büyük ekranda basılı tutup sürükle" : "Üstte · büyük ekranda basılı tutup sürükleyerek taşıyabilirsin";
+  $("tmNpPosTxt").textContent = S.npX >= 0 ? "Senin seçtiğin yerde · büyük ekranda ≡ simgesinden basılı tutup sürükle" : "Başlat düğmesinin altında · büyük ekranda basılı tutup sürükleyerek taşıyabilirsin";
   $("tmNpPosReset").hidden = !(S.npX >= 0);
   $("tmNpSz").value = Math.round(S.npSz*100); $("tmNpSzO").textContent = "%" + Math.round(S.npSz*100);
   $("tmBgDimRow").hidden = !S.bg;
@@ -2939,7 +2943,7 @@ function pvApply(){
     const am = AMBS.find(a => a.id === S.amb) || AMBS[1];
     pp.dataset.sk = S.npSkin; $("tmNpPrevName").textContent = am.n; $("tmNpPrevIco").innerHTML = ambSvg(am.id, 22);
     const k = Math.min(.62, (card.clientWidth - 24)/(360*(S.npSz || 1)));
-    if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); } else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppy"); }
+    if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); card.style.setProperty("--ppb", "auto"); } else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppb"); card.style.removeProperty("--ppy"); }
     card.classList.toggle("pv-top", S.npX < 0);
     card.style.setProperty("--npk", k.toFixed(3)); card.style.setProperty("--npspace", space + "px");
   }
@@ -3029,17 +3033,31 @@ $("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-v
 
 /* --- now-playing mini player: visible on the timer page while the timer runs with a background sound --- */
 // Always on the timer page (unless switched off in Görünüm); on the enlarged screen only while the sound is on.
+let npFullKeep = false;
 const NP_SKINS = [["Kart","Dolu kart"],["Şeffaf","Arka planı kapatmaz"],["Hap","İnce, yuvarlak"],["Cam","Buzlu cam"],["Koyu","Koyu şerit"]];
+// default spot on the big screen: just below the Başlat/Duraklat button
+function npPlaceDefault(){
+  const np = $("tmNp");
+  if (!document.body.classList.contains("tm-full") || np.hidden || S.npX >= 0){ np.style.removeProperty("--npy"); return; }
+  requestAnimationFrame(() => {
+    if (S.npX >= 0 || !document.body.classList.contains("tm-full")) return;
+    const b = $("tmCard").querySelector(".tm-ctl").getBoundingClientRect(), h = np.getBoundingClientRect().height;
+    np.style.setProperty("--npy", Math.round(Math.min(b.bottom + 14, innerHeight - h - 8)) + "px");
+  });
+}
+window.addEventListener("resize", () => { if (document.body.classList.contains("tm-full")) npPlaceDefault(); });
 function renderNp(){
   const np = $("tmNp"); if (!np) return;
   const full = document.body.classList.contains("tm-full");
-  np.hidden = !S.npShow || (full && !(S.ambOn && S.amb));
+  if (!full) npFullKeep = false; else if (S.ambOn && S.amb) npFullKeep = true;   // stays after the sound is paused
+  np.hidden = !S.npShow || (full && !npFullKeep);
   np.dataset.sk = S.npSkin; np.classList.toggle("npd", full);
   document.body.style.setProperty("--nps", String(S.npSz || 1));
   const custom = S.npX >= 0;
   if (custom){ np.style.setProperty("--npx", (S.npX*100).toFixed(2) + "vw"); np.style.setProperty("--npy", (S.npY*100).toFixed(2) + "vh"); }
   else { np.style.removeProperty("--npx"); np.style.removeProperty("--npy"); }
   document.body.classList.toggle("np-top", !custom);
+  if (!custom) npPlaceDefault();
   document.body.classList.toggle("np-on", !np.hidden);
   document.body.classList.toggle("np-vol-open", !np.hidden && !$("tmNpVol").hidden);
   document.body.classList.toggle("tm-photo", !!$("tmCard").dataset.bg);
@@ -3063,7 +3081,7 @@ function npStep(d){
 $("tmNpPrev").addEventListener("click", () => npStep(-1));
 $("tmNpNext").addEventListener("click", () => npStep(1));
 $("tmNpPlay").addEventListener("click", () => { ensureAudio(); S.ambOn = !S.ambOn; saveS(); syncAmbient(); renderAudioUI(); });
-$("tmNpVolBtn").addEventListener("click", () => { const p = $("tmNpVol"), open = p.hidden; p.hidden = !open; $("tmNpVolBtn").setAttribute("aria-expanded", String(open)); document.body.classList.toggle("np-vol-open", open); });
+$("tmNpVolBtn").addEventListener("click", () => { const p = $("tmNpVol"), open = p.hidden; p.hidden = !open; $("tmNpVolBtn").setAttribute("aria-expanded", String(open)); document.body.classList.toggle("np-vol-open", open); npPlaceDefault(); });
 $("tmNpVolIn").addEventListener("input", e => setAmbVol(+e.target.value));
 
 // big screen: press and hold the mini player (~0.45 s), then drag it anywhere; the spot is remembered
