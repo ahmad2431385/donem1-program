@@ -729,6 +729,8 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 @media (prefers-reduced-motion: reduce){.np-eq i{animation:none;height:9px}}
 .np-btns{flex:none;display:flex;align-items:center;gap:4px}
 .np-btns button{width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:var(--ink);display:grid;place-items:center;padding:0;line-height:0;-webkit-tap-highlight-color:transparent}
+.tm-np,.tm-ctl,.tm-barrow,.tm-top{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button,.amb-play,.tm-sw{touch-action:manipulation}
 .np-btns button:active{background:color-mix(in srgb,var(--ink) 8%,transparent)}
 .np-btns .pp{background:var(--npc,var(--accent));color:var(--npi,#fff);width:40px;height:40px}
 .np-btns .pp .pl,.tm-np[data-on="0"] .pp .pa{display:none}
@@ -2498,7 +2500,26 @@ function ambWanted(){
   const r = runner(), timerOn = !!r && (r.phase === "focus" || r.phase === "count");
   return !!S.amb && S.ambOn && (S.ambMode === "always" || timerOn);
 }
-function syncAmbient(){ if (ambWanted()) ambStart(); else ambStop(false); }
+function syncAmbient(){ if (ambWanted()) ambStart(); else ambStop(false); mediaSync(); }
+// what the phone shows in its media controls (notification, lock screen): the current sound, with working buttons
+let msBound = false;
+function mediaSync(){
+  const ms = navigator.mediaSession; if (!ms || !window.MediaMetadata) return;
+  try {
+    const am = AMBS.find(a => a.id === S.amb) || AMBS[1], playing = !!ambNode;
+    ms.metadata = new MediaMetadata({title: playing ? am.n : "Odak sayacı", artist: playing ? "Arka plan sesi" : "Dönem 1 Programım", album: "Odak sayacı",
+      artwork: [{src:"icon-512.png", sizes:"512x512", type:"image/png"}, {src:"icon-180.png", sizes:"180x180", type:"image/png"}]});
+    ms.playbackState = playing ? "playing" : "paused";
+    if (!msBound){
+      msBound = true;
+      const set = (a, fn) => { try { ms.setActionHandler(a, fn); } catch(e){} };
+      set("play", () => { S.ambOn = true; saveS(); syncAmbient(); renderAudioUI(); });
+      set("pause", () => { S.ambOn = false; saveS(); syncAmbient(); renderAudioUI(); });
+      set("nexttrack", () => npStep(1));
+      set("previoustrack", () => npStep(-1));
+    }
+  } catch(e){}
+}
 // browsers only allow sound after a tap: resume on the first touch (e.g. after a page reload)
 document.addEventListener("pointerdown", () => { if (AC && AC.state === "suspended") AC.resume(); if (!AC && S.ambOn && ambWanted()) syncAmbient(); }, true);
 window.ODAK_DEBUG = { level(){ if (!AN) return -1; const b = new Float32Array(AN.fftSize); AN.getFloatTimeDomainData(b); let s = 0; for (const v of b) s += v*v; return Math.sqrt(s/b.length); }, ctx(){ return AC ? AC.state : "yok"; }, amb(){ return ambId; }, ringing(){ return alarmEnd > Date.now(); } };
