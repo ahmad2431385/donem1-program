@@ -542,6 +542,8 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-ctl{display:flex;align-items:center;gap:16px}
 .tm-main{min-width:164px;height:58px;border-radius:999px;border:none;background:linear-gradient(180deg,color-mix(in srgb,var(--ph) 88%,white),var(--ph));color:var(--ph-ink);font-weight:700;font-size:17px;padding:0 26px;display:inline-flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 20px color-mix(in srgb,var(--ph) 34%,transparent),inset 0 1px 0 rgba(255,255,255,.28)}
 .tm-main:active{transform:scale(.98)}
+/* on a photo (or dark panel) the main button is see-through glass tinted with the colour, not a solid white pill */
+.tm-card[data-bg] .tm-main{background:color-mix(in srgb,var(--ph) 24%,rgba(255,255,255,.05));color:#fff;border:1.5px solid color-mix(in srgb,var(--ph) 62%,transparent);-webkit-backdrop-filter:blur(12px) saturate(1.2);backdrop-filter:blur(12px) saturate(1.2);box-shadow:0 6px 18px rgba(0,0,0,.22);text-shadow:0 1px 6px rgba(0,0,0,.35)}
 .tm-round{width:50px;height:50px;border-radius:50%;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08)}
 .tm-round:hover{border-color:var(--ph)}
 .tm-round[hidden]{display:grid !important;visibility:hidden}
