@@ -764,6 +764,13 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 .npd[data-sk="4"] .np-tx small{color:#93a8a1}
 .npd[data-sk="4"] .np-btns button:not(.pp){color:#f2f7f5}
 .npd[data-sk="4"] .np-ic{background:#1d2724}
+/* 5 Renkli: filled with the chosen colour */
+.npd[data-sk="5"]{background:linear-gradient(135deg,color-mix(in srgb,var(--npc,var(--accent)) 80%,white),var(--npc,var(--accent)));border-color:transparent;color:var(--npi,#fff)}
+.npd[data-sk="5"] .np-tx small,.npd[data-sk="5"] .np-btns button:not(.pp){color:var(--npi,#fff)}
+.npd[data-sk="5"] .np-ic{background:rgba(255,255,255,.22);color:var(--npi,#fff)}
+.npd[data-sk="5"] .np-btns .pp{background:var(--npi,#fff);color:var(--npc,var(--accent))}
+.npd[data-sk="5"] .np-eq i{background:var(--npi,#fff)}
+.npd{opacity:var(--npo,1)}
 @media (orientation:landscape) and (max-height:520px){
   body.tm-full.np-on #tmCard{--rw:min(var(--fwr,62vh),calc(100vh - 245px))}
   body.tm-full.np-on #tmCard .tm-hint{display:none}
@@ -1136,6 +1143,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--n
               <div class="set-row col"><span class="rl">Mini çalıcı tasarımı</span><div class="set-opts" id="tmNpSkins" role="group" aria-label="Büyük ekranda mini çalıcı tasarımı"></div></div>
               <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt"></small></span><div class="tm-seg" id="tmNpAt" role="group" aria-label="Mini çalıcı yeri"><button type="button" data-at="ust" aria-pressed="false">Üstte</button><button type="button" data-at="alt" aria-pressed="true">Altta</button></div></div>
               <div class="set-row"><span class="rl">Mini çalıcı boyutu</span><div class="set-rng"><input type="range" id="tmNpSz" min="70" max="140" step="5" aria-label="Büyük ekranda mini çalıcı boyutu"><output id="tmNpSzO"></output></div></div>
+              <div class="set-row"><span class="rl">Mini çalıcı saydamlığı<small class="sd">Azaltınca çalıcı soluklaşır, arka plan görünür</small></span><div class="set-rng"><input type="range" id="tmNpOp" min="20" max="100" step="5" aria-label="Büyük ekranda mini çalıcı saydamlığı"><output id="tmNpOpO"></output></div></div>
             </div>
           </div>
           <div class="set-grp">
@@ -2209,11 +2217,11 @@ const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, npAt:"alt", rOp:1, dOp:1, szv:0, saved:[], color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, npAt:"alt", rOp:1, dOp:1, npOp:1, szv:0, saved:[], color:"auto",
   sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
-const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,4], npSz:[.7,1.4], rOp:[.2,1], dOp:[.2,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
+const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], fz:[0,1], npSkin:[0,5], npOp:[.2,1], npSz:[.7,1.4], rOp:[.2,1], dOp:[.2,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
 const PRESETS = [{n:"Klasik",f:25,s:5,l:15},{n:"Uzun",f:50,s:10,l:20},{n:"Derin",f:90,s:20,l:30}];
 const CD_PRESETS = [300,600,900,1800,2700,3600,5400,7200];
 let S, T, K, H;
@@ -2234,7 +2242,7 @@ function loadAll(){
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
   S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-COLOR_MAX);
-  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" || k === "rOp" || k === "dOp" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
+  for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" || k === "rOp" || k === "dOp" || k === "npOp" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.rz && S.rz < .4) S.rz = .4;
   if (S.dz && S.dz < .4) S.dz = .4;
   S.fz = 0;   // separate big-screen size was removed; the normal size settings apply there
@@ -2829,6 +2837,7 @@ function renderLook(){
   $("tmNpSkins").querySelectorAll("[data-nk]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.nk === S.npSkin)));
   $("tmNpPosTxt").textContent = S.npAt === "ust" ? "Üstteki çubuğun altında" : "Başlat düğmesinin altında";
   $("tmNpAt").querySelectorAll("[data-at]").forEach(b => b.setAttribute("aria-pressed", String(S.npX < 0 && b.dataset.at === S.npAt)));
+  $("tmNpOp").value = Math.round(S.npOp*100); $("tmNpOpO").textContent = "%" + Math.round(S.npOp*100);
   $("tmNpSz").value = Math.round(S.npSz*100); $("tmNpSzO").textContent = "%" + Math.round(S.npSz*100);
   $("tmBgDimRow").hidden = !S.bg;
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
@@ -3009,6 +3018,7 @@ $("lkType").addEventListener("click", e => { const b = e.target.closest("[data-l
 $("tmNpShow").addEventListener("change", e => { S.npShow = e.target.checked; saveS(); renderNp(); });
 $("tmNpAt").addEventListener("click", e => { const b = e.target.closest("[data-at]"); if (!b) return; S.npAt = b.dataset.at; S.npX = -1; S.npY = -1; saveS(); renderLook(); renderNp(); pvApply(); });
 $("tmNpSkins").addEventListener("click", e => { const b = e.target.closest("[data-nk]"); if (!b) return; S.npSkin = +b.dataset.nk; saveS(); renderLook(); renderNp(); pvApply(); });
+$("tmNpOp").addEventListener("input", e => { S.npOp = clamp((+e.target.value)/100, .2, 1); $("tmNpOpO").textContent = "%" + e.target.value; saveS(); renderNp(); });
 $("tmNpSz").addEventListener("input", e => { S.npSz = clamp((+e.target.value)/100, .7, 1.4); $("tmNpSzO").textContent = "%" + e.target.value; saveS(); renderNp(); pvApply(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
@@ -3058,7 +3068,7 @@ $("tmVibs").addEventListener("click", e => { const b = e.target.closest("[data-v
 /* --- now-playing mini player: visible on the timer page while the timer runs with a background sound --- */
 // Always on the timer page (unless switched off in Görünüm); on the enlarged screen only while the sound is on.
 let npFullKeep = false;
-const NP_SKINS = [["Kart","Dolu kart"],["Şeffaf","Arka planı kapatmaz"],["Hap","İnce, yuvarlak"],["Cam","Buzlu cam"],["Koyu","Koyu şerit"]];
+const NP_SKINS = [["Kart","Dolu kart"],["Şeffaf","Arka planı kapatmaz"],["Hap","İnce, yuvarlak"],["Cam","Buzlu cam"],["Koyu","Koyu şerit"],["Renkli","Seçtiğin renkte"]];
 // default spot on the big screen: just below the Başlat/Duraklat button
 function npPlaceDefault(){
   const np = $("tmNp");
@@ -3079,7 +3089,9 @@ function renderNp(){
   if (!full) npFullKeep = false; else if (S.ambOn && S.amb) npFullKeep = true;   // stays after the sound is paused
   np.hidden = !S.npShow || (full && !npFullKeep);
   np.dataset.sk = S.npSkin; np.classList.toggle("npd", full);
-  document.body.style.setProperty("--nps", String(S.npSz || 1));
+  document.body.style.setProperty("--nps", String(S.npSz || 1)); document.body.style.setProperty("--npo", String(S.npOp));
+  const nc = S.color !== "auto" && /^#[0-9a-f]{6}$/i.test(S.color) ? S.color : "";
+  if (nc){ document.body.style.setProperty("--npc", nc); document.body.style.setProperty("--npi", lum(nc) > .62 ? "#0b1512" : "#fff"); } else { document.body.style.removeProperty("--npc"); document.body.style.removeProperty("--npi"); }
   const custom = S.npX >= 0;
   if (custom){ np.style.setProperty("--npx", (S.npX*100).toFixed(2) + "vw"); np.style.setProperty("--npy", (S.npY*100).toFixed(2) + "vh"); }
   else { np.style.removeProperty("--npx"); np.style.removeProperty("--npy"); }
