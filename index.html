@@ -811,6 +811,50 @@ body[data-route="gorunum"] .tm-card:not([data-bg]) .pv-frame{background:linear-g
 body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:50%;top:var(--ppy,200px);bottom:auto;width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 0;box-shadow:var(--shadow)}
 .np-prev .np-btns button{pointer-events:none}
 
+/* --- photo categories (Görünüm › Fotoğraf) --- */
+.bgc-bar{display:flex;gap:6px;overflow-x:auto;padding:4px 2px 8px;margin:6px -2px 0;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.bgc-bar::-webkit-scrollbar{display:none}
+.bgc-bar button{flex:none;display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font-size:13.5px;font-weight:600;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.bgc-bar button i{font-style:normal;font-size:11.5px;font-weight:700;color:var(--muted);background:color-mix(in srgb,var(--ink) 7%,transparent);border-radius:999px;padding:1px 7px}
+.bgc-bar button[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:#fff}
+.bgc-bar button[aria-selected="true"] i{background:rgba(255,255,255,.22);color:#fff}
+.bgc-bar button.has::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--accent);margin-left:-2px}
+.bgc-bar button[aria-selected="true"].has::after{background:#fff}
+.bgc-bar .new{border-style:dashed;color:var(--accent);background:transparent}
+.bgc-head{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 2px 10px}
+.bgc-head .ti{flex:1;min-width:0;display:flex;flex-direction:column}
+.bgc-head .ti b{font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bgc-head .ti small{font-size:12.5px;color:var(--muted)}
+.bgc-head .acts{display:flex;gap:6px;flex-wrap:wrap}
+.bgc-head .acts button{padding:7px 11px;font-size:13px;border-radius:10px}
+.bgc-head .danger{color:#d64545}
+.bgc-form{display:flex;gap:8px;flex:1 1 100%;align-items:center}
+.bgc-form input{flex:1;min-width:0;font:600 15px var(--body);padding:9px 11px;border:1.5px solid var(--accent);border-radius:10px;background:var(--surface);color:var(--ink)}
+.bgc-form .ok{background:var(--accent);color:#fff;border:0;border-radius:10px;padding:9px 14px;font-weight:700}
+.bgc-empty{margin:4px 2px 0;padding:18px 14px;border:1.5px dashed var(--line);border-radius:14px;text-align:center;font-size:13.5px;color:var(--muted)}
+.tm-bgt.add .th span{display:block;font-size:12px;font-weight:600;margin-top:2px}
+.tm-bgt.add.alt .th{border-style:solid}
+.tm-bgw .tm-bgx{right:auto;left:7px}
+.tm-bgw .tm-bgx.rm{background:rgba(0,0,0,.62)}
+@media (max-width:520px){.bgc-head .ti{flex:1 1 100%}}
+/* picker sheet */
+.bgp-scrim{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center}
+.bgp-scrim[hidden]{display:none}
+.bgp{width:min(640px,100%);max-height:88vh;display:flex;flex-direction:column;background:var(--surface);border-radius:20px 20px 0 0;box-shadow:var(--shadow)}
+@media (min-width:700px){.bgp-scrim{align-items:center}.bgp{border-radius:20px;max-height:80vh}}
+.bgp-h{display:flex;align-items:center;gap:10px;padding:16px 16px 10px;border-bottom:1px solid var(--line)}
+.bgp-h > div{flex:1;min-width:0;display:flex;flex-direction:column}
+.bgp-h b{font-size:17px}.bgp-h small{font-size:12.5px;color:var(--muted)}
+.bgp-x{width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--bg);font-size:20px;line-height:1;color:var(--ink)}
+.bgp-body{overflow:auto;padding:4px 14px 14px}
+.bgp-body .lk-cap{margin-top:14px}
+.bgp-body .tm-bgs{margin-top:8px}
+.bgp-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+.bgp-ok{background:var(--accent);color:#fff;border:0;border-radius:12px;padding:10px 20px;font-weight:700;font-size:15px}
+.bgp .tm-bgt[aria-pressed="true"]::after{content:"";position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--accent) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='m6.5 12.5 3.5 3.5 7.5-8' fill='none' stroke='white' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/13px no-repeat;box-shadow:0 0 0 2px var(--surface)}
+.bgp .tm-bgt[aria-pressed="true"]{border-color:var(--accent)}
+body.bgp-open{overflow:hidden}
+
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -1188,12 +1232,12 @@ body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute
         </div>
         <div class="lk-pane" data-lp="bg" role="tabpanel" hidden>
           <div id="tmBgSec">
-            <p class="lk-cap">Kendi fotoğrafların</p>
-            <div class="tm-bgs" id="tmUpGrid" role="group" aria-label="Kendi fotoğrafların"></div>
+            <div class="bgc-bar" id="bgCats" role="tablist" aria-label="Fotoğraf kategorileri"></div>
+            <div class="bgc-head" id="bgHead"></div>
+            <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Fotoğraflar"></div>
+            <p class="bgc-empty" id="bgEmpty" hidden></p>
             <input type="file" id="tmUpIn" accept="image/*" hidden>
-          <p class="tm-note" id="tmUpMsg">Cihazından bir fotoğraf seç. Fotoğraf yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Son 10 fotoğraf kalır; 11.'yi eklersen en eskisi silinir.</p>
-            <p class="lk-cap" style="margin-top:16px">Hazır görseller · <span id="tmBgCount"></span></p>
-            <div class="tm-bgs" id="tmBgGrid" role="group" aria-label="Arka plan fotoğrafı"></div>
+            <p class="tm-note" id="tmUpMsg" hidden></p>
             <p class="tm-credit" id="tmBgCredit"></p>
             <div class="tm-range" id="tmBgDimRow"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
           </div>
@@ -1340,6 +1384,13 @@ body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle" id="sheet"></div>
 </div>
 <div class="toast" id="toast" role="status" hidden></div>
+<div class="bgp-scrim" id="bgPick" hidden>
+  <div class="bgp" role="dialog" aria-modal="true" aria-labelledby="bgpTitle">
+    <div class="bgp-h"><div><b id="bgpTitle">Fotoğraf ekle</b><small id="bgpSub">Eklemek istediklerine dokun</small></div><button type="button" class="bgp-x" id="bgpClose" aria-label="Kapat">×</button></div>
+    <div class="bgp-body" id="bgpBody"></div>
+    <div class="bgp-f"><button type="button" class="secondary" id="bgpUpload">Cihazdan yükle</button><button type="button" class="bgp-ok" id="bgpDone">Bitti</button></div>
+  </div>
+</div>
 
 <script>
 (async function(){
@@ -2236,7 +2287,7 @@ const VIBS = [
   {id:"uzun",n:"Uzun",p:[900]},{id:"kalp",n:"Kalp atışı",p:[90,70,180,420,90,70,180]},{id:"sos",n:"SOS",p:[100,80,100,80,100,200,300,80,300,80,300,200,100,80,100,80,100]}
 ];
 /* arka plan fotoğrafları: id, ad, konum, ek karartma (dx); isteğe bağlı: by, lic, lu, src */
-const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14}]/*ENDBGDATA*/;
+const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx": 0.13, "c": ["islami"]}, {"id": "k04", "n": "Kum saati", "pos": "50% 50%", "dx": 0.24, "c": ["diger"]}, {"id": "k05", "n": "Beyaz önlük", "pos": "50% 50%", "dx": 0.05, "c": ["saglik"]}, {"id": "k06", "n": "Tâhâ sayfası", "pos": "50% 50%", "dx": 0.12, "c": ["islami"]}, {"id": "k07", "n": "Anatomi ve amaç", "pos": "50% 50%", "dx": 0.24, "c": ["islami", "saglik"]}, {"id": "k08", "n": "Çiçekli asa", "pos": "50% 50%", "dx": 0.16, "c": ["saglik"]}, {"id": "k09", "n": "Kafatası", "pos": "50% 50%", "dx": 0.17, "c": ["saglik"]}, {"id": "k10", "n": "Tebeşir çizimi", "pos": "50% 50%", "dx": 0.0, "c": ["saglik"]}, {"id": "k11", "n": "Beyin", "pos": "50% 50%", "dx": 0.07, "c": ["saglik"]}, {"id": "k12", "n": "Satranç", "pos": "50% 50%", "dx": 0.15, "c": ["diger"]}, {"id": "k13", "n": "Kalp eller", "pos": "50% 50%", "dx": 0.03, "c": ["saglik"]}, {"id": "k14", "n": "Kalp atlası", "pos": "50% 50%", "dx": 0.21, "c": ["saglik"]}, {"id": "k15", "n": "Anatomi kolajı", "pos": "50% 50%", "dx": 0.21, "c": ["saglik"]}, {"id": "k16", "n": "Bordo asa", "pos": "50% 50%", "dx": 0.0, "c": ["saglik"]}, {"id": "k18", "n": "Çalışma masası", "pos": "50% 50%", "dx": 0.13, "c": ["saglik"]}, {"id": "k19", "n": "Sade asa", "pos": "50% 50%", "dx": 0.0, "c": ["saglik"]}, {"id": "k21", "n": "Çiçekli stetoskop", "pos": "50% 50%", "dx": 0.15, "c": ["saglik"]}, {"id": "k22", "n": "Kalp gravürü", "pos": "50% 50%", "dx": 0.27, "c": ["saglik"]}, {"id": "k23", "n": "Cerrahi eller", "pos": "50% 50%", "dx": 0.0, "c": ["saglik"]}, {"id": "k24", "n": "Eski anatomi", "pos": "50% 50%", "dx": 0.18, "c": ["saglik"]}, {"id": "k26", "n": "Mushaf ve ışık", "pos": "50% 50%", "dx": 0.1, "c": ["islami"]}, {"id": "k27", "n": "Kâbe örtüsü", "pos": "50% 50%", "dx": 0.1, "c": ["islami"]}, {"id": "k28", "n": "Kâbe köşesi", "pos": "50% 50%", "dx": 0.23, "c": ["islami"]}, {"id": "k29", "n": "Dağ evi tablosu", "pos": "50% 50%", "dx": 0.21, "c": ["islami", "doga"]}, {"id": "k30", "n": "Dolunay tablosu", "pos": "50% 50%", "dx": 0.15, "c": ["islami", "doga"]}, {"id": "k31", "n": "Kuşlar ve bulut", "pos": "50% 50%", "dx": 0.15, "c": ["islami", "doga"]}, {"id": "k32", "n": "Ay", "pos": "50% 50%", "dx": 0.1, "c": ["islami", "doga"]}, {"id": "k33", "n": "Kâbe, sakin gök", "pos": "50% 50%", "dx": 0.24, "c": ["islami"]}, {"id": "k34", "n": "Nasip", "pos": "50% 50%", "dx": 0.2, "c": ["islami"]}, {"id": "k35", "n": "Ümit", "pos": "50% 50%", "dx": 0.2, "c": ["islami"]}, {"id": "k36", "n": "Vardır bir hayr", "pos": "50% 50%", "dx": 0.23, "c": ["islami"]}, {"id": "k37", "n": "Besmele levhası", "pos": "50% 50%", "dx": 0.24, "c": ["islami"]}, {"id": "k38", "n": "Çiçekli çayır", "pos": "50% 50%", "dx": 0.22, "c": ["islami", "doga"]}, {"id": "k39", "n": "Yıldızlı gök", "pos": "50% 50%", "dx": 0.1, "c": ["islami", "doga"]}, {"id": "k40", "n": "Seccade ve ışık", "pos": "50% 50%", "dx": 0.23, "c": ["islami"]}, {"id": "k41", "n": "Yeşil dağlar", "pos": "50% 50%", "dx": 0.14, "c": ["islami", "doga"]}]/*ENDBGDATA*/;
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Duvar","Parçalı","Mekanik","Neon","Sıvı"];
 const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi","Segment","Matris"];
 const DSKIN_HIDDEN = [3, 4, 6];   // Segment, Matris (now font styles) and Şerit are no longer offered as digital designs
@@ -2936,43 +2987,134 @@ async function upAdd(file){
     const rec = {id:"u" + Date.now(), t:Date.now(), blob, dx};
     if (UP.ok) await upRun("readwrite", st => st.put(rec)).catch(() => { UP.ok = false; });
     UP.items.unshift(upItem(rec));
-    while (UP.items.length > UP_MAX){ const old = UP.items.pop(); URL.revokeObjectURL(old.url); if (UP.ok) upRun("readwrite", st => st.delete(old.id)).catch(() => {}); if (S.bg === old.id) S.bg = ""; }
-    S.bg = rec.id; saveS(); render();
+    while (UP.items.length > UP_MAX){ const old = UP.items.pop(); URL.revokeObjectURL(old.url); if (UP.ok) upRun("readwrite", st => st.delete(old.id)).catch(() => {}); if (S.bg === old.id) S.bg = ""; for (const c of UC) c.items = c.items.filter(x => x !== old.id); ucSave(); }
+    const tgt = upTarget || (isUserCat(bgCat) ? bgCat : ""); upTarget = "";
+    if (tgt){ const c = UC.find(c => c.id === tgt); if (c){ c.items.push(rec.id); ucSave(); } }
+    S.bg = rec.id; saveS(); render(); msg.hidden = false;
     msg.textContent = UP.ok ? `Fotoğraf eklendi. Son ${UP_MAX} fotoğraf bu cihazda kalır.` : "Fotoğraf eklendi, ama bu tarayıcı kalıcı saklamaya izin vermiyor; sayfayı kapatınca silinir.";
-  } catch(e){ msg.textContent = "Bu dosya okunamadı. JPG, PNG veya WebP bir fotoğraf dene."; }
+  } catch(e){ upTarget = ""; msg.hidden = false; msg.textContent = "Bu dosya okunamadı. JPG, PNG veya WebP bir fotoğraf dene."; }
 }
 function upDel(id){
   const i = UP.items.findIndex(b => b.id === id); if (i < 0) return;
   const [old] = UP.items.splice(i, 1); URL.revokeObjectURL(old.url);
   if (UP.ok) upRun("readwrite", st => st.delete(id)).catch(() => {});
   if (S.bg === id){ S.bg = ""; saveS(); }
+  let ch = false; for (const c of UC){ const n = c.items.length; c.items = c.items.filter(x => x !== id); ch = ch || n !== c.items.length; } if (ch) ucSave();
   render();
 }
-function renderUp(){
-  $("tmUpGrid").innerHTML = `<button type="button" class="tm-bgt add" data-add="1" aria-label="Fotoğraf yükle"><span class="th">+</span><small>Yükle</small></button>`
-    + UP.items.map((b, i) => `<div class="tm-bgw"><button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="${S.bg === b.id}" aria-label="Kendi fotoğrafım ${i + 1}"><span class="th"><img alt="" src="${b.url}"></span><small>Fotoğraf ${i + 1}</small></button><button type="button" class="tm-bgx" data-del="${b.id}" aria-label="Fotoğrafı sil">×</button></div>`).join("");
+/* --- photo categories: built-in ones, "Kendi fotoğrafların", and categories the user creates (saved on the device) --- */
+const BG_CATS = [["kendi","Kendi fotoğrafların"],["islami","İslami"],["saglik","Sağlık"],["doga","Doğa"],["kedi","Kedi"],["araba","Araba"],["diger","Diğer"]];
+const UC_KEY = "odak_kategoriler", UC_MAX = 12, UC_NAME = 24;
+let UC = (() => { try { const a = JSON.parse(LS.get(UC_KEY) || "[]"); return Array.isArray(a) ? a.filter(c => c && typeof c.id === "string" && typeof c.n === "string" && Array.isArray(c.items)).slice(0, UC_MAX) : []; } catch(e){ return []; } })();
+const ucSave = () => LS.set(UC_KEY, JSON.stringify(UC));
+let bgCat = LS.get("odak_bgkat") || "", bgEdit = "";   // bgEdit: "" | "new" | "rename" | "delete"
+const catItems = id => id === "kendi" ? UP.items : (UC.find(c => c.id === id) ? UC.find(c => c.id === id).items.map(bgFind).filter(Boolean) : BGS.filter(b => b.c && b.c.includes(id)));
+const catName = id => (BG_CATS.find(c => c[0] === id) || UC.find(c => c.id === id) && [0, UC.find(c => c.id === id).n] || [0, ""])[1];
+const isUserCat = id => UC.some(c => c.id === id);
+function catValid(id){ return BG_CATS.some(c => c[0] === id) || isUserCat(id); }
+function bgTile(b, opts = {}){
+  const src = b.url || `img/bg/${b.id}t.jpg`;
+  const tile = `<button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="${opts.pressed != null ? opts.pressed : S.bg === b.id}" aria-label="${esc(b.n)}"><span class="th"><img loading="lazy" decoding="async" alt="" src="${src}"></span><small>${esc(opts.label || b.n)}</small></button>`;
+  return opts.x ? `<div class="tm-bgw">${tile}<button type="button" class="tm-bgx${opts.x === "rm" ? " rm" : ""}" data-${opts.x === "rm" ? "rm" : "del"}="${b.id}" aria-label="${opts.x === "rm" ? "Kategoriden çıkar" : "Fotoğrafı sil"}">×</button></div>` : tile;
 }
 const bgDimOf = it => Math.min(.88, S.bgDim + ((it && it.dx) || 0));
-let bgBuilt = false;
+function renderUp(){ renderBg(); }
 function renderBg(){
-    if (!bgBuilt){
-    bgBuilt = true;
-    $("tmBgCount").textContent = BGS.length;
-    $("tmBgGrid").innerHTML = `<button type="button" class="tm-bgt" data-bg="" aria-pressed="false" aria-label="Fotoğraf yok"><span class="th">Yok</span><small>Düz renk</small></button>`
-      + BGS.map(b => `<button type="button" class="tm-bgt" data-bg="${b.id}" aria-pressed="false" aria-label="${esc(b.n)}"><span class="th"><img loading="lazy" decoding="async" alt="" src="img/bg/${b.id}t.jpg"></span><small>${esc(b.n)}</small></button>`).join("");
-  }
-  renderUp();
-  $("tmBgGrid").querySelectorAll("[data-bg]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.bg === S.bg)));
+  if (!catValid(bgCat)){ const own = S.bg && /^u\d/.test(S.bg); const b = bgFind(S.bg); bgCat = own ? "kendi" : b && b.c ? b.c[0] : "islami"; }
+  $("tmBgCount") && ($("tmBgCount").textContent = BGS.length);
+  // category chips
+  const chips = BG_CATS.filter(([id]) => id !== "diger" || catItems("diger").length).map(([id, n]) => [id, n, catItems(id).length]).concat(UC.map(c => [c.id, c.n, catItems(c.id).length]));
+  const bar = $("bgCats"), keep = bar.scrollLeft;
+  bar.innerHTML = chips.map(([id, n, k]) => `<button type="button" role="tab" data-cat="${id}" aria-selected="${id === bgCat}" class="${catItems(id).some(b => b.id === S.bg) ? "has" : ""}">${esc(n)}<i>${k}</i></button>`).join("")
+    + (UC.length < UC_MAX ? `<button type="button" class="new" data-cat="+">+ Yeni kategori</button>` : "");
+  // keep the selected chip in view without moving the page
+  bar.scrollLeft = keep; const on = bar.querySelector('[aria-selected="true"]');
+  if (on && (on.offsetLeft < bar.scrollLeft || on.offsetLeft + on.offsetWidth > bar.scrollLeft + bar.clientWidth)) bar.scrollLeft = Math.max(0, on.offsetLeft - 12);
+  // header
+  const user = isUserCat(bgCat), items = catItems(bgCat), sel = !!S.bg;
+  let head = `<div class="ti"><b>${esc(catName(bgCat))}</b><small>${items.length ? items.length + " fotoğraf" : "Henüz fotoğraf yok"}${user ? " · senin kategorin" : bgCat === "kendi" ? ` · en fazla ${UP_MAX}, bu cihazda saklanır` : ""}</small></div><div class="acts">`;
+  if (user) head += `<button type="button" class="secondary" data-act="rename">Adını değiştir</button><button type="button" class="secondary danger" data-act="delete">Sil</button>`;
+  if (sel) head += `<button type="button" class="secondary" data-act="none">Fotoğrafı kaldır</button>`;
+  head += `</div>`;
+  if (bgEdit === "new" || bgEdit === "rename") head = `<form class="bgc-form" id="bgForm"><input id="bgName" maxlength="${UC_NAME}" placeholder="Kategori adı (ör. Motivasyon)" value="${bgEdit === "rename" ? esc(catName(bgCat)) : ""}" autocomplete="off"><button type="submit" class="ok">${bgEdit === "new" ? "Oluştur" : "Kaydet"}</button><button type="button" class="secondary" data-act="cancel">Vazgeç</button></form>`;
+  if (bgEdit === "delete") head = `<div class="ti"><b>"${esc(catName(bgCat))}" silinsin mi?</b><small>Kategori silinir; fotoğrafların yerinde kalır.</small></div><div class="acts"><button type="button" class="secondary danger" data-act="delok">Evet, sil</button><button type="button" class="secondary" data-act="cancel">Vazgeç</button></div>`;
+  $("bgHead").innerHTML = head;
+  if (bgEdit === "new" || bgEdit === "rename"){ const i = $("bgName"); setTimeout(() => { try { i.focus(); i.select(); } catch(e){} }, 30); }
+  // grid
+  let grid = "";
+  if (bgCat === "kendi") grid = `<button type="button" class="tm-bgt add" data-add="1" aria-label="Cihazından fotoğraf yükle"><span class="th">+<span>Yükle</span></span><small>Cihazından</small></button>` + UP.items.map((b, i) => bgTile(b, {x:"del", label:"Fotoğraf " + (i + 1)})).join("");
+  else if (user) grid = `<button type="button" class="tm-bgt add" data-pick="1" aria-label="Kategoriye fotoğraf ekle"><span class="th">+<span>Ekle</span></span><small>Listeden seç</small></button><button type="button" class="tm-bgt add alt" data-add="1" aria-label="Cihazından yükleyip ekle"><span class="th">↑<span>Yükle</span></span><small>Cihazından</small></button>` + items.map(b => bgTile(b, {x:"rm", label: /^u\d/.test(b.id) ? "Kendi fotoğrafım" : b.n})).join("");
+  else grid = items.map(b => bgTile(b)).join("");
+  $("tmBgGrid").innerHTML = grid;
+  const empty = $("bgEmpty");
+  empty.hidden = !!items.length || bgCat === "kendi" || user;
+  empty.textContent = bgCat === "kedi" || bgCat === "araba" ? "Bu kategoriye yakında fotoğraf eklenecek. Şimdilik kendi fotoğrafını yükleyebilir ya da kendi kategorini oluşturabilirsin." : "Bu kategoride fotoğraf yok.";
+  $("tmUpMsg").hidden = !$("tmUpMsg").textContent || (bgCat !== "kendi" && !user);
+  // credit + dim
   const it = bgFind(S.bg);
   $("tmBgCredit").innerHTML = it ? `📷 ${esc(it.n)}${it.by ? " · " + esc(it.by) : ""}${it.lu ? ` · <a href="${esc(it.lu)}" target="_blank" rel="noopener">${esc(it.lic)}</a>` : ""}${it.src ? ` · <a href="${esc(it.src)}" target="_blank" rel="noopener">Kaynak</a>` : ""}` : "Bir fotoğraf seçersen sayacın arkasına gelir.";
   const dv = Math.round(S.bgDim*100); $("tmBgDim").value = dv; $("tmBgDimO").textContent = "%" + dv;
+  $("tmBgDimRow").hidden = !S.bg;
 }
-$("tmBgGrid").addEventListener("click", e => { const b = e.target.closest("[data-bg]"); if (!b) return; S.bg = b.dataset.bg; saveS(); render(); });
-$("tmUpGrid").addEventListener("click", e => {
-  if (e.target.closest("[data-add]")){ $("tmUpIn").click(); return; }
-  const x = e.target.closest("[data-del]"); if (x){ upDel(x.dataset.del); return; }
-  const b = e.target.closest("[data-bg]"); if (b){ S.bg = b.dataset.bg; saveS(); render(); }
+let upTarget = "";   // user category that receives the next upload
+$("bgCats").addEventListener("click", e => {
+  const b = e.target.closest("[data-cat]"); if (!b) return;
+  if (b.dataset.cat === "+"){ if (UC.length >= UC_MAX){ toast(`En fazla ${UC_MAX} kategori oluşturabilirsin`); return; } bgEdit = "new"; renderBg(); return; }
+  bgCat = b.dataset.cat; bgEdit = ""; LS.set("odak_bgkat", bgCat); renderBg();
 });
+$("bgHead").addEventListener("click", e => {
+  const b = e.target.closest("[data-act]"); if (!b) return;
+  const a = b.dataset.act;
+  if (a === "none"){ S.bg = ""; saveS(); render(); return; }
+  if (a === "rename" || a === "delete"){ bgEdit = a; renderBg(); return; }
+  if (a === "cancel"){ bgEdit = ""; renderBg(); return; }
+  if (a === "delok"){ UC = UC.filter(c => c.id !== bgCat); ucSave(); bgCat = "kendi"; LS.set("odak_bgkat", bgCat); bgEdit = ""; renderBg(); toast("Kategori silindi"); }
+});
+$("bgHead").addEventListener("submit", e => {
+  e.preventDefault();
+  const n = ($("bgName").value || "").replace(/\s+/g, " ").trim().slice(0, UC_NAME);
+  if (!n){ $("bgName").focus(); return; }
+  if (bgEdit === "new"){ const c = {id:"c" + Date.now(), n, items:[]}; UC.push(c); bgCat = c.id; LS.set("odak_bgkat", bgCat); }
+  else { const c = UC.find(c => c.id === bgCat); if (c) c.n = n; }
+  ucSave(); const wasNew = bgEdit === "new"; bgEdit = ""; renderBg();
+  if (wasNew) pickOpen();
+});
+$("tmBgGrid").addEventListener("click", e => {
+  if (e.target.closest("[data-add]")){ upTarget = isUserCat(bgCat) ? bgCat : ""; $("tmUpIn").click(); return; }
+  if (e.target.closest("[data-pick]")){ pickOpen(); return; }
+  const d = e.target.closest("[data-del]"); if (d){ upDel(d.dataset.del); return; }
+  const r = e.target.closest("[data-rm]"); if (r){ const c = UC.find(c => c.id === bgCat); if (c){ c.items = c.items.filter(x => x !== r.dataset.rm); ucSave(); renderBg(); } return; }
+  const b = e.target.closest("[data-bg]"); if (!b) return;
+  S.bg = b.dataset.bg; saveS(); render();
+});
+// picker: choose photos for a user category from every other category
+let pickSel = new Set();
+function pickOpen(){
+  const c = UC.find(c => c.id === bgCat); if (!c) return;
+  pickSel = new Set(c.items);
+  $("bgpTitle").textContent = `"${c.n}" kategorisine ekle`;
+  pickRender(); $("bgPick").hidden = false; document.body.classList.add("bgp-open");
+  setTimeout(() => $("bgpClose").focus(), 30);
+}
+function pickRender(){
+  const sec = (title, list) => list.length ? `<p class="lk-cap">${esc(title)} · ${list.length}</p><div class="tm-bgs">${list.map(b => bgTile(b, {pressed: pickSel.has(b.id), label: /^u\d/.test(b.id) ? "Kendi fotoğrafım" : b.n})).join("")}</div>` : "";
+  const seen = new Set();
+  const once = list => list.filter(b => !seen.has(b.id) && seen.add(b.id));
+  $("bgpBody").innerHTML = sec("Kendi fotoğrafların", UP.items) + BG_CATS.filter(([id]) => id !== "kendi").map(([id, n]) => sec(n, once(catItems(id)))).join("")
+    || `<p class="bgc-empty">Eklenecek fotoğraf yok. "Cihazdan yükle" ile ekleyebilirsin.</p>`;
+  $("bgpSub").textContent = pickSel.size ? `${pickSel.size} fotoğraf seçili` : "Eklemek istediklerine dokun";
+  $("bgpDone").textContent = pickSel.size ? `Bitti (${pickSel.size})` : "Bitti";
+}
+function pickClose(save){
+  if (save){ const c = UC.find(c => c.id === bgCat); if (c){ const keep = c.items.filter(x => pickSel.has(x)); for (const x of pickSel) if (!keep.includes(x)) keep.push(x); c.items = keep; ucSave(); } }
+  $("bgPick").hidden = true; document.body.classList.remove("bgp-open"); renderBg();
+}
+$("bgpBody").addEventListener("click", e => { const b = e.target.closest("[data-bg]"); if (!b) return; const id = b.dataset.bg; if (pickSel.has(id)) pickSel.delete(id); else pickSel.add(id); b.setAttribute("aria-pressed", String(pickSel.has(id))); $("bgpSub").textContent = pickSel.size ? `${pickSel.size} fotoğraf seçili` : "Eklemek istediklerine dokun"; $("bgpDone").textContent = pickSel.size ? `Bitti (${pickSel.size})` : "Bitti"; });
+$("bgpDone").addEventListener("click", () => pickClose(true));
+$("bgpClose").addEventListener("click", () => pickClose(false));
+$("bgPick").addEventListener("click", e => { if (e.target === $("bgPick")) pickClose(false); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("bgPick").hidden) pickClose(false); });
+$("bgpUpload").addEventListener("click", () => { pickClose(true); upTarget = bgCat; $("tmUpIn").click(); });
 // smallest preview window: 150px on phones, a little taller on big screens
 const pvMin = () => innerWidth >= 700 ? Math.round(Math.min(240, Math.max(150, innerHeight*.27))) : 150;
 const pvMax = () => Math.max(pvMin() + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
