@@ -629,6 +629,74 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 .tm-ambs{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
 .tm-opt .e{margin-right:5px}
 
+/* --- background sound page --- */
+.amb-hero{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px 14px;padding:16px;border-radius:18px;background:linear-gradient(135deg,var(--accent-soft),color-mix(in srgb,var(--accent-soft) 35%,var(--surface)));border:1px solid color-mix(in srgb,var(--accent) 22%,var(--line))}
+.amb-hico{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:var(--surface);color:var(--accent);box-shadow:0 2px 8px rgba(10,30,25,.08)}
+.amb-htx{min-width:0;display:flex;flex-direction:column;gap:1px}
+.amb-htx small{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.amb-htx b{font-family:var(--display);font-size:20px;line-height:1.15;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amb-htx span{font-size:13px;color:var(--muted)}
+.amb-play{position:relative;width:54px;height:54px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;cursor:pointer;box-shadow:0 6px 16px color-mix(in srgb,var(--accent) 40%,transparent);-webkit-tap-highlight-color:transparent;transition:transform .12s}
+.amb-play:active{transform:scale(.94)}
+.amb-play input{position:absolute;inset:0;opacity:0;margin:0;cursor:pointer;width:100%;height:100%}
+.amb-play .st,.amb-play input:checked ~ .pl{display:none}
+.amb-play input:checked ~ .st{display:block}
+.amb-play .pl,.amb-play .st{line-height:0;pointer-events:none}
+.amb-play .pl svg{margin-left:3px}
+.amb-play:has(input:focus-visible){outline:2px solid var(--ink);outline-offset:3px}
+.amb-vol{grid-column:1/-1;display:flex;align-items:center;gap:10px;color:var(--muted)}
+.amb-vol input{flex:1;min-width:0;accent-color:var(--accent);height:28px;margin:0}
+.amb-vol .vi{line-height:0}
+.amb-vol output{font:600 13px var(--mono);min-width:38px;text-align:right;color:var(--ink)}
+.amb-when{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:14px}
+.amb-when > span{font-size:13.5px;color:var(--muted);font-weight:600}
+.amb-g{margin-top:16px}
+.amb-g > p{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin:0 0 8px}
+.amb-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:8px}
+@media (max-width:520px){.amb-grid{grid-template-columns:1fr;gap:6px}}
+.amb-t{display:grid;grid-template-columns:38px 1fr auto;align-items:center;gap:10px;text-align:left;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:border-color .15s,background .15s}
+.amb-t .ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;background:var(--surface);color:var(--muted);border:1px solid var(--line)}
+.amb-t .tx{min-width:0;display:flex;flex-direction:column}
+.amb-t b{font-size:14px;font-weight:600;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amb-t small{font-size:12px;line-height:1.3;color:var(--muted);margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.amb-t[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.amb-t[aria-pressed="true"] .ic{background:var(--accent);color:#fff;border-color:var(--accent)}
+.amb-t .eq{display:none;align-items:flex-end;gap:2px;height:14px}
+.amb-t .eq i{width:3px;border-radius:2px;background:var(--accent);height:5px}
+#ambView[data-playing="1"] .amb-t[aria-pressed="true"] .eq{display:flex}
+#ambView[data-playing="1"] .amb-t[aria-pressed="true"] .eq i{animation:tmEq 1.2s ease-in-out infinite}
+#ambView[data-playing="1"] .amb-t[aria-pressed="true"] .eq i:nth-child(2){animation-delay:-.4s}
+#ambView[data-playing="1"] .amb-t[aria-pressed="true"] .eq i:nth-child(3){animation-delay:-.8s}
+@keyframes tmEq{0%,100%{height:4px}50%{height:14px}}
+@media (prefers-reduced-motion: reduce){#ambView .amb-t .eq i{animation:none !important;height:9px}}
+/* --- alarm & settings page --- */
+.set-grp{margin-top:14px}
+.set-grp:first-child{margin-top:4px}
+.set-h{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:0 2px 8px}
+.set-h .si{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:var(--accent-soft);color:var(--accent);line-height:0}
+.set-box{border:1px solid var(--line);border-radius:16px;background:var(--bg);padding:0 14px}
+.set-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);min-width:0}
+.set-box > .set-row:first-child{border-top:0}
+.set-row.col{flex-direction:column;align-items:stretch;gap:9px}
+.set-row .rl{font-size:14.5px;font-weight:500}
+.set-row.col .rl{font-size:12.5px;color:var(--muted);font-weight:600}
+.set-row.tm-sw{font-size:14.5px}
+.set-rng{display:flex;align-items:center;gap:10px;flex:1;max-width:260px}
+.set-rng input{flex:1;min-width:0;accent-color:var(--accent);height:28px;margin:0}
+.set-rng output{font:600 13px var(--mono);min-width:38px;text-align:right}
+.set-opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:7px}
+.set-o{display:flex;align-items:center;gap:8px;padding:9px 10px;border-radius:12px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font-size:13.5px;text-align:left;min-width:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.set-o .ck{flex:none;width:18px;height:18px;border-radius:50%;border:1.6px solid color-mix(in srgb,var(--ink) 30%,transparent);display:grid;place-items:center}
+.set-o span{line-height:1.25;overflow-wrap:anywhere}
+.set-o[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft);font-weight:600}
+.set-o[aria-pressed="true"] .ck{border-color:var(--accent);background:var(--accent)}
+.set-o[aria-pressed="true"] .ck::after{content:"";width:6px;height:6px;border-radius:50%;background:#fff}
+.set-act{justify-content:flex-start;flex-wrap:wrap;gap:8px}
+.set-act .secondary{display:inline-flex;align-items:center;gap:7px}
+#tmRepeat button{padding:7px 13px;white-space:nowrap}
+#tmRepeat{flex:none}
+@media (max-width:380px){.set-row:not(.col):not(.tm-sw){flex-wrap:wrap}.set-rng{max-width:none}}
+
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .tm-big div{background:var(--bg);border:1px solid var(--line);border-radius:12px;padding:10px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;min-width:0}
@@ -963,46 +1031,61 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
     </section>
   </section>
   <section class="tmpage" id="ambView" aria-label="Arka plan sesi">
-    <section class="card tmsec" id="tmAmbCard">
+    <section class="card tmsec amb-card" id="tmAmbCard">
       <div class="fhead"><h2>Arka plan sesi</h2><span class="hint" id="tmAmbHint">Yağmur, dalga, ateş ve daha fazlası</span></div>
       <div class="fbody">
-        <div class="tm-ambs" id="tmAmbs" role="group" aria-label="Arka plan sesi"></div>
-        <div class="tm-range"><span>Ses seviyesi</span><input type="range" id="tmAmbVol" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><output id="tmAmbVolO"></output></div>
-        <label class="tm-sw" style="margin-top:8px"><span>Sesi çal<small id="tmAmbState">Bir ses seç</small></span><input type="checkbox" id="tmAmbOn"></label>
-        <div class="tm-barrow" style="margin-top:6px"><span class="small muted">Ne zaman çalsın?</span>
+        <div class="amb-hero" id="tmAmbHero">
+          <span class="amb-hico" id="tmAmbIco" aria-hidden="true"></span>
+          <div class="amb-htx"><small>Seçili ses</small><b id="tmAmbName">Yağmur</b><span id="tmAmbState">Bir ses seç</span></div>
+          <label class="amb-play" title="Çal / durdur"><input type="checkbox" id="tmAmbOn" aria-label="Sesi çal"><span class="pl" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg></span><span class="st" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24"><rect x="6.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor"/><rect x="13.5" y="5.5" width="4" height="13" rx="1.2" fill="currentColor"/></svg></span></label>
+          <div class="amb-vol"><span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/></svg></span><input type="range" id="tmAmbVol" min="0" max="100" step="1" aria-label="Arka plan sesi seviyesi"><span class="vi"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11"/></svg></span><output id="tmAmbVolO"></output></div>
+        </div>
+        <div class="amb-when"><span>Ne zaman çalsın?</span>
           <div class="tm-seg" id="tmAmbMode" role="group" aria-label="Ne zaman çalsın">
             <button type="button" data-am="timer" aria-pressed="true">Sayaç çalışırken</button>
             <button type="button" data-am="always" aria-pressed="false">Sürekli</button>
           </div>
         </div>
+        <div id="tmAmbs" role="group" aria-label="Arka plan sesi"></div>
         <p class="tm-note">Sesler cihazında üretilir, internet gerekmez. Telefon kilitlenince ya da sayfa arka plana gidince ses durabilir; kesintisiz dinlemek için sayfayı açık bırak.</p>
       </div>
     </section>
   </section>
   <section class="tmpage" id="setView" aria-label="Alarm ve ayarlar">
-    <section class="card tmsec" id="tmSet">
+    <section class="card tmsec set-card" id="tmSet">
       <div class="fhead"><h2>Alarm ve ayarlar</h2><span class="hint" id="tmSetHint">Alarm sesi, titreşim, ekranı açık tutma</span></div>
       <div class="fbody">
-        <label class="tm-sw"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
-        <label class="tm-sw"><span>Titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
-        <label class="tm-sw"><span>Ekranı açık tut<small>Sayaç çalışırken ekran kararmasın, alarm kaçmasın</small></span><input type="checkbox" id="tmWake"></label>
-        <label class="tm-sw"><span>Sonraki bölüme otomatik geç<small>Pomodoro'da odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
-
-        <p class="tm-lbl">Alarm sesi</p>
-        <div class="tm-ambs" id="tmAlarms" role="group" aria-label="Alarm sesi"></div>
-        <div class="tm-range"><span>Alarm sesi seviyesi</span><input type="range" id="tmAlVol" min="10" max="100" step="1" aria-label="Alarm sesi seviyesi"><output id="tmAlVolO"></output></div>
-        <p class="tm-lbl">Alarm kaç kez çalsın?</p>
-        <div class="tm-ambs" id="tmRepeat" role="group" aria-label="Alarm tekrarı"></div>
-
-        <p class="tm-lbl">Titreşim türü</p>
-        <div class="tm-ambs" id="tmVibs" role="group" aria-label="Titreşim türü"></div>
-
-        <div class="tm-acts">
-          <button class="secondary" id="tmTest" type="button">Alarmı dene</button>
-          <button class="secondary" id="tmStopAlarm2" type="button" hidden>🔕 Alarmı durdur</button>
-          <button class="secondary" id="tmRound" type="button">Pomodoro döngüsünü baştan başlat</button>
+        <div class="set-grp">
+          <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15L6 16Z"/><path d="M10 20.5a2 2 0 0 0 4 0"/></svg></span>Alarm</div>
+          <div class="set-box">
+            <label class="tm-sw set-row"><span>Alarm sesi<small>Bölüm bitince çalar</small></span><input type="checkbox" id="tmSound"></label>
+            <div class="set-row col"><span class="rl">Ses</span><div class="set-opts" id="tmAlarms" role="group" aria-label="Alarm sesi"></div></div>
+            <div class="set-row"><span class="rl">Seviye</span><div class="set-rng"><input type="range" id="tmAlVol" min="10" max="100" step="1" aria-label="Alarm sesi seviyesi"><output id="tmAlVolO"></output></div></div>
+            <div class="set-row"><span class="rl">Kaç kez çalsın?</span><div class="tm-seg" id="tmRepeat" role="group" aria-label="Alarm tekrarı"></div></div>
+            <div class="set-row set-act">
+              <button class="secondary" id="tmTest" type="button"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9.5h3l4-3.5v12l-4-3.5H4z"/><path d="M15 9a4.5 4.5 0 0 1 0 6M17.5 6.5a8 8 0 0 1 0 11"/></svg> Alarmı dene</button>
+              <button class="secondary" id="tmStopAlarm2" type="button" hidden>🔕 Alarmı durdur</button>
+            </div>
+          </div>
         </div>
-        <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak. Titreşim bazı telefonlarda ve tarayıcılarda desteklenmez.</p>
+        <div class="set-grp">
+          <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="4" width="8" height="16" rx="2"/><path d="M4.5 9v6M19.5 9v6M2 11v2M22 11v2"/></svg></span>Titreşim</div>
+          <div class="set-box">
+            <label class="tm-sw set-row"><span>Bölüm bitince titreşim<small>Destekleyen telefonlarda</small></span><input type="checkbox" id="tmVib"></label>
+            <div class="set-row col"><span class="rl">Titreşim türü</span><div class="set-opts" id="tmVibs" role="group" aria-label="Titreşim türü"></div></div>
+            <label class="tm-sw set-row"><span>Odak başlarken titreşim<small>"Başlat"a basınca bir kısa titreşim</small></span><input type="checkbox" id="tmHapF"></label>
+            <label class="tm-sw set-row"><span>Mola başlarken titreşim<small>Molayı başlatınca iki hafif titreşim</small></span><input type="checkbox" id="tmHapB"></label>
+          </div>
+        </div>
+        <div class="set-grp">
+          <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.3 1.6M9.5 2.8h5"/></svg></span>Sayaç</div>
+          <div class="set-box">
+            <label class="tm-sw set-row"><span>Ekranı açık tut<small>Sayaç çalışırken ekran kararmasın, alarm kaçmasın</small></span><input type="checkbox" id="tmWake"></label>
+            <label class="tm-sw set-row"><span>Sonraki bölüme otomatik geç<small>Odak bitince mola, mola bitince odak kendiliğinden başlar</small></span><input type="checkbox" id="tmAuto"></label>
+            <div class="set-row set-act"><button class="secondary" id="tmRound" type="button">Pomodoro döngüsünü baştan başlat</button></div>
+          </div>
+        </div>
+        <p class="tm-note">Telefon kilitliyken ya da sayfa kapalıyken alarm çalmayabilir; sayfaya döndüğünde süre doğru gösterilir. Alarmı kaçırmamak için "ekranı açık tut"u açık bırak. Titreşim bazı telefonlarda ve tarayıcılarda (örneğin iPhone'da) desteklenmez.</p>
       </div>
     </section>
   </section>
@@ -1939,10 +2022,26 @@ function toast(msg){ const t = $("toast"); if (!t) return; t.textContent = msg; 
 
 /* ---------- catalogues ---------- */
 const AMBS = [
-  {id:"hafif",n:"Hafif yağmur",e:"💧"},{id:"yagmur",n:"Yağmur",e:"🌧️"},{id:"siddetli",n:"Şiddetli yağmur",e:"⛈️"},{id:"saganak",n:"Sağanak",e:"🌩️"},
-  {id:"dalga",n:"Dalga sesi",e:"🌊"},{id:"ates",n:"Ateş",e:"🔥"},{id:"ruzgar",n:"Rüzgâr",e:"🍃"},
-  {id:"beyaz",n:"Beyaz gürültü",e:"⚪"},{id:"pembe",n:"Pembe gürültü",e:"🌸"},{id:"kahve",n:"Kahverengi gürültü",e:"🟤"},{id:"gece",n:"Gece böcekleri",e:"🦗"}
+  {id:"hafif",n:"Hafif yağmur",d:"Seyrek, yumuşak damlalar",g:0},{id:"yagmur",n:"Yağmur",d:"Düzenli, sakin yağmur",g:0},{id:"siddetli",n:"Şiddetli yağmur",d:"Yoğun, kesintisiz",g:0},{id:"saganak",n:"Sağanak",d:"Uzaktan gök gürültüsü",g:0},
+  {id:"dalga",n:"Dalga sesi",d:"Yavaş kıyı dalgaları",g:1},{id:"ates",n:"Ateş",d:"Çıtırtılı şömine",g:1},{id:"ruzgar",n:"Rüzgâr",d:"Hafif esinti",g:1},{id:"gece",n:"Gece böcekleri",d:"Cırcır böcekleri",g:1},
+  {id:"beyaz",n:"Beyaz gürültü",d:"Dış sesleri örter",g:2},{id:"pembe",n:"Pembe gürültü",d:"Daha yumuşak, dengeli",g:2},{id:"kahve",n:"Kahverengi gürültü",d:"Derin, alçak uğultu",g:2}
 ];
+const AMB_GROUPS = ["Yağmur","Doğa","Gürültü"];
+const CLOUD = '<path d="M7 15.5a4 4 0 1 1 .9-7.9A5.2 5.2 0 0 1 17.6 8.3a3.6 3.6 0 0 1-.1 7.2H7Z"/>';
+const AMB_IC = {
+  hafif:'<path d="M12 3.5c3 4 5.2 6.7 5.2 9.6a5.2 5.2 0 0 1-10.4 0c0-2.9 2.2-5.6 5.2-9.6Z"/>',
+  yagmur:CLOUD + '<path d="M9 18.5l-.8 2M13 18.5l-.8 2M17 18.5l-.8 2"/>',
+  siddetli:CLOUD + '<path d="M8 18.3l-1.3 2.7M11.3 18.3 10 21M14.6 18.3 13.3 21M17.9 18.3l-1.3 2.7"/>',
+  saganak:CLOUD + '<path d="m12.6 16.8-2 3h3l-2 3"/>',
+  dalga:'<path d="M3 9.5c1.6 0 2.2-1.6 4.5-1.6S10.4 9.5 12 9.5s2.2-1.6 4.5-1.6S19.4 9.5 21 9.5M3 14.5c1.6 0 2.2-1.6 4.5-1.6s2.9 1.6 4.5 1.6 2.2-1.6 4.5-1.6 2.9 1.6 4.5 1.6M3 19.5c1.6 0 2.2-1.6 4.5-1.6s2.9 1.6 4.5 1.6 2.2-1.6 4.5-1.6 2.9 1.6 4.5 1.6"/>',
+  ates:'<path d="M12 21c-3.6 0-6-2.4-6-5.6 0-3.1 2.3-4.9 3.4-7.4.5 1.6 1.4 2.5 2.4 3 .1-3 1.4-5.6 3.6-7.5-.4 2.8.9 4.6 2 6.3.9 1.4 1.6 2.6 1.6 4.4C19 18.5 15.9 21 12 21Z"/><path d="M12 21c-1.4 0-2.4-1-2.4-2.4 0-1.5 1.2-2.3 2-3.5.8 1.2 2.8 2 2.8 3.5 0 1.4-1 2.4-2.4 2.4Z"/>',
+  ruzgar:'<path d="M3 9h10.5a2.8 2.8 0 1 0-2.8-2.8M3 13h15a3 3 0 1 1-3 3M3 17h6"/>',
+  gece:'<path d="M19.5 14.6A7.6 7.6 0 1 1 9.4 4.5a6.2 6.2 0 0 0 10.1 10.1Z"/><path d="M17 3.5v3M15.5 5h3"/>',
+  beyaz:'<path d="M3.5 12h1M6 8v8M8.5 10v4M11 5v14M13.5 9v6M16 6v12M18.5 10v4M20.5 11.5v1"/>',
+  pembe:'<path d="M4 12h1M7 9v6M10 7v10M13 10v4M16 8v8M19 11v2"/>',
+  kahve:'<path d="M3 12c2.2-5 4.3-5 6.5 0s4.3 5 6.5 0 3.6-3.4 5-1.5"/>'
+};
+const ambSvg = (id, w = 20) => `<svg width="${w}" height="${w}" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${AMB_IC[id] || ""}</svg>`;
 const ALARM_LIST = [{id:"can",n:"Çan"},{id:"zil",n:"Klasik zil"},{id:"bip",n:"Dijital bip"},{id:"melodi",n:"Yumuşak melodi"},{id:"gong",n:"Gong"},{id:"telefon",n:"Telefon zili"},{id:"sonar",n:"Sonar"}];
 const VIBS = [
   {id:"kisa",n:"Kısa",p:[250]},{id:"cift",n:"Çift",p:[200,100,200]},{id:"uclu",n:"Üçlü",p:[150,90,150,90,150]},
@@ -1959,7 +2058,7 @@ const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
 const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, szv:0, saved:[], color:"auto",
-  sound:true, vibrate:true, wake:true, auto:false, goal:240,
+  sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
 const LIM = {focus:[1,180], short:[1,60], long:[1,90], cycles:[2,8], cd:[5,36000], goal:[15,720], rskin:[0,9], dskin:[0,9], font:[0,4], fv:[0,3], rz:[0,1], dz:[0,1], szv:[0,2], alarmVol:[0.1,1], ambVol:[0,1], bgDim:[0.15,0.75]};
@@ -2224,7 +2323,13 @@ function startOrResume(silent){
   const x = cur(); if (!silent) unlockAudio();
   if (x.status === "idle"){ x.full = dur(x.phase); x.left = x.full; if (x.phase !== "short" && x.phase !== "long") x.sid = Date.now(); }
   x.endAt = Date.now() + x.left; x.status = "running";
-  if (!silent) { flashMsg = ""; stopAlarm(); } saveX(x); acquireWake(); render();
+  if (!silent) { flashMsg = ""; stopAlarm(); haptic(x.phase); } saveX(x); acquireWake(); render();
+}
+// feedback when "Başlat" is pressed: one short buzz for focus/countdown, two light ones for a break
+function haptic(phase){
+  const brk = phase === "short" || phase === "long";
+  if (!(brk ? S.hapB : S.hapF) || !navigator.vibrate) return;
+  try { navigator.vibrate(brk ? [25, 90, 25] : 45); } catch(e){}
 }
 function pause(){ const x = cur(); x.left = remaining(x); x.endAt = 0; x.status = "paused"; saveX(x); releaseWake(); render(); }
 function logStudy(x, ms, complete){
@@ -2704,10 +2809,10 @@ let audioUIBuilt = false;
 function renderAudioUI(){
   if (!audioUIBuilt){
     audioUIBuilt = true;
-    $("tmAmbs").innerHTML = AMBS.map(a => `<button type="button" class="tm-opt" data-a="${a.id}" aria-pressed="false"><span class="e">${a.e}</span>${a.n}</button>`).join("");
-    $("tmAlarms").innerHTML = ALARM_LIST.map(a => `<button type="button" class="tm-opt" data-al="${a.id}" aria-pressed="false"><span class="e">🔔</span>${a.n}</button>`).join("");
-    $("tmRepeat").innerHTML = [1,3,5].map(n => `<button type="button" class="tm-opt" data-rp="${n}" aria-pressed="false">${n === 1 ? "Bir kez" : n + " kez"}</button>`).join("");
-    $("tmVibs").innerHTML = VIBS.map(v => `<button type="button" class="tm-opt" data-vb="${v.id}" aria-pressed="false"><span class="e">📳</span>${v.n}</button>`).join("");
+    $("tmAmbs").innerHTML = AMB_GROUPS.map((g, gi) => `<div class="amb-g"><p>${g}</p><div class="amb-grid">${AMBS.filter(a => a.g === gi).map(a => `<button type="button" class="amb-t" data-a="${a.id}" aria-pressed="false"><span class="ic">${ambSvg(a.id)}</span><span class="tx"><b>${a.n}</b><small>${a.d}</small></span><span class="eq" aria-hidden="true"><i></i><i></i><i></i></span></button>`).join("")}</div></div>`).join("");
+    $("tmAlarms").innerHTML = ALARM_LIST.map(a => `<button type="button" class="set-o" data-al="${a.id}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${a.n}</span></button>`).join("");
+    $("tmRepeat").innerHTML = [1,3,5].map(n => `<button type="button" data-rp="${n}" aria-pressed="false">${n === 1 ? "1 kez" : n + " kez"}</button>`).join("");
+    $("tmVibs").innerHTML = VIBS.map(v => `<button type="button" class="set-o" data-vb="${v.id}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${v.n}</span></button>`).join("");
   }
   $("tmAmbs").querySelectorAll("[data-a]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.a === S.amb)));
   $("tmAlarms").querySelectorAll("[data-al]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.al === S.alarm)));
@@ -2717,8 +2822,10 @@ function renderAudioUI(){
   const av = Math.round(S.alarmVol*100); $("tmAlVol").value = av; $("tmAlVolO").textContent = "%" + av;
   $("tmAmbOn").checked = S.ambOn;
   for (const b of $("tmAmbMode").children) b.setAttribute("aria-pressed", String(b.dataset.am === S.ambMode));
-  const an = (AMBS.find(a => a.id === S.amb) || AMBS[1]).n;
-  $("tmAmbState").textContent = !S.ambOn ? `${an} · kapalı` : ambWanted() ? `${an} · çalıyor` : `${an} · sayaç başlayınca çalacak`;
+  const am = AMBS.find(a => a.id === S.amb) || AMBS[1], an = am.n;
+  $("tmAmbName").textContent = an; $("tmAmbIco").innerHTML = ambSvg(am.id, 28);
+  $("ambView").dataset.playing = S.ambOn && ambWanted() ? "1" : "0";
+  $("tmAmbState").textContent = !S.ambOn ? "Kapalı · çalmak için ▶ düğmesine bas" : ambWanted() ? "Çalıyor" : "Sayaç başlayınca çalacak";
   $("tmAmbHint").textContent = S.ambOn ? `${an}${ambWanted() ? " · çalıyor" : ""}` : "Yağmur, dalga, ateş ve daha fazlası";
   $("tmSetHint").textContent = `${ALARM_LIST.find(a => a.id === S.alarm).n} · ${VIBS.find(v => v.id === S.vib).n} titreşim`;
 }
@@ -2750,7 +2857,7 @@ function renderSteps(){
   }
   const parts = {h:Math.floor(S.cd/3600), m:Math.floor(S.cd%3600/60), s:S.cd%60};
   for (const k in parts){ const i = $("tmCd_"+k); if (document.activeElement !== i) i.value = parts[k]; }
-  $("tmSound").checked = S.sound; $("tmVib").checked = S.vibrate; $("tmWake").checked = S.wake; $("tmAuto").checked = S.auto;
+  $("tmSound").checked = S.sound; $("tmVib").checked = S.vibrate; $("tmHapF").checked = S.hapF; $("tmHapB").checked = S.hapB; $("tmWake").checked = S.wake; $("tmAuto").checked = S.auto;
 }
 
 /* ---------- study stats: today + weekly / monthly charts ---------- */
@@ -2901,12 +3008,14 @@ $("tmCdSteps").addEventListener("change", e => {
 });
 $("tmCdSteps").addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches("input")) e.target.blur(); });
 $("tmCdPresets").addEventListener("click", e => { const b = e.target.closest("button[data-cd]"); if (b) setVal("cd", +b.dataset.cd); });
-for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmWake","wake"],["tmAuto","auto"]]){
+for (const [id,key] of [["tmSound","sound"],["tmVib","vibrate"],["tmHapF","hapF"],["tmHapB","hapB"],["tmWake","wake"],["tmAuto","auto"]]){
   $(id).addEventListener("change", e => {
     S[key] = e.target.checked; saveS();
     if (key === "wake"){ if (S.wake) acquireWake(); else releaseWake(); }
     if (key === "sound" && S.sound) playAlarm(S.alarm, 1, false);
     if (key === "vibrate" && S.vibrate) vibrate(S.vib, 1);
+    if (key === "hapF" && S.hapF) haptic("focus");
+    if (key === "hapB" && S.hapB) haptic("short");
   });
 }
 $("tmTest").addEventListener("click", () => { playAlarm(S.alarm, S.repeat, S.vibrate); });
