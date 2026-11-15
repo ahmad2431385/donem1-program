@@ -486,6 +486,8 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
 [data-font="3"]{--tf:"Segoe Script","Bradley Hand","Chalkboard SE","Comic Sans MS",cursive;--tw:600}
 [data-font="4"]{--tf:var(--display);--tw:800}
 .tm-card[data-font] .tm-time,.tm-card[data-font] .dg-row,.tm-card[data-font] .dg-row .c,.tm-card[data-font] .dg-row .sep{font-family:var(--tf) !important;font-weight:var(--tw) !important;letter-spacing:var(--tl,0) !important;font-style:var(--ti,normal) !important}
+/* the chosen style also applies to every other text on the timer: buttons, phase line, topic, hints, mini player */
+.tm-card[data-font] :is(.tm-seg button,.tm-chip,.tm-label,.tm-show,.dg-show,.tm-main,.tm-hint),.tm-np[data-font] :is(.np-tx b,.np-tx small){font-family:var(--tf) !important;font-style:var(--ti,normal) !important}
 /* effect style: outline */
 [data-font="4"] .fp,.tm-card[data-font="4"] .tm-time,.tm-card[data-font="4"] .dg-row .c,.tm-card[data-font="4"] .dg-row .sep{color:transparent !important;-webkit-text-stroke:.035em var(--ph);text-shadow:none !important}
 .tm-skin .th .fp{font-family:var(--tf,var(--display));font-weight:var(--tw,600);letter-spacing:var(--tl,0);font-size:15px;font-variant-numeric:tabular-nums;white-space:nowrap}
@@ -3099,6 +3101,8 @@ function renderNp(){
   if (!full) npFullKeep = false; else if (S.ambOn && S.amb) npFullKeep = true;   // stays after the sound is paused
   np.hidden = !S.npShow || (full && !npFullKeep);
   np.dataset.sk = S.npSkin; np.classList.toggle("npd", full);
+  if (S.font) np.dataset.font = S.font; else delete np.dataset.font;
+  const npp = $("tmNpPrev"); if (npp){ if (S.font) npp.dataset.font = S.font; else delete npp.dataset.font; }
   document.body.style.setProperty("--nps", String(S.npSz || 1)); document.body.style.setProperty("--npo", String(S.npOp));
   const nc = S.color !== "auto" && /^#[0-9a-f]{6}$/i.test(S.color) ? S.color : "";
   if (nc){ document.body.style.setProperty("--npc", nc); document.body.style.setProperty("--npi", lum(nc) > .62 ? "#0b1512" : "#fff"); } else { document.body.style.removeProperty("--npc"); document.body.style.removeProperty("--npi"); }
