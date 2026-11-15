@@ -373,7 +373,8 @@ body[data-route="gorunum"] #lookView, body[data-route="ses"] #ambView, body[data
 body[data-route="gorunum"] #timerView{display:contents}
 body[data-route="gorunum"] #timerView > *:not(#tmCard){display:none !important}
 body[data-route="gorunum"] #tmCard{--ps:.5;--sh:150px;position:sticky;top:8px;z-index:5;padding-top:12px;padding-bottom:0;gap:10px;box-shadow:0 8px 24px rgba(0,0,0,.25);overflow-anchor:none}
-body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:relative;flex:none;width:100%;height:var(--sh);contain:layout style}
+body[data-route="gorunum"] #tmCard{height:var(--pch,320px)}
+body[data-route="gorunum"] #tmCard .tm-stage{display:block;position:absolute;left:0;right:0;top:var(--pst,80px);height:var(--sh);contain:layout style;z-index:1}
 body[data-route="gorunum"] #tmCard .tm-ring,body[data-route="gorunum"] #tmCard .tm-dig{position:absolute;left:50%;top:50%;width:300px;transform:translate(-50%,-50%) scale(var(--ps));transform-origin:50% 50%;will-change:transform}
 body[data-route="gorunum"] #tmCard .tm-time{font-size:60px}
 body[data-route="gorunum"] #tmCard .tm-time.long{font-size:44px}
@@ -388,7 +389,10 @@ body.pv-drag #tmCard *{transition:none !important}
 body[data-route="gorunum"] .tm-grip{display:flex;align-items:center;justify-content:center;width:100%;height:30px;margin-top:auto;cursor:ns-resize;touch-action:none;-webkit-tap-highlight-color:transparent;outline-offset:-3px}
 .tm-grip i{display:block;width:44px;height:5px;border-radius:3px;background:color-mix(in srgb,currentColor 35%,transparent)}
 body[data-route="gorunum"] #tmCard .tm-hint, body[data-route="gorunum"] #tmCard .tm-bar, body[data-route="gorunum"] #tmCard #tmStopAlarm{display:none}
-body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-ctl{zoom:var(--pz,.5);pointer-events:none;flex:none}
+body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-ctl{position:absolute;left:50%;margin:0;transform:translateX(-50%) scale(var(--pz,.5));transform-origin:50% 0;pointer-events:none;z-index:1;white-space:nowrap}
+body[data-route="gorunum"] #tmCard .tm-top{top:var(--ptp,60px)}
+body[data-route="gorunum"] #tmCard .tm-ctl{top:var(--pcl,200px);width:max-content;transform:translateX(-50%) scale(var(--pzc,var(--pz,.5)))}
+body[data-route="gorunum"] .tm-grip{position:absolute;left:0;right:0;bottom:2px}
 .tmsec .fhead{padding:2px 2px 4px}
 .tmsec .fhead h2{font-size:17px}
 .tmsec .fhead .hint{display:block;font-size:12.5px;color:var(--muted);font-weight:500}
@@ -794,14 +798,10 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 .pv-frame{display:none}
 body[data-route="gorunum"] .pv-frame{display:block;position:absolute;left:50%;top:var(--pft,58px);height:var(--pfh,100px);width:var(--pfw,100px);transform:translateX(-50%);border-radius:var(--pfr,14px);border:1.5px solid color-mix(in srgb,var(--ink) 28%,transparent);background:color-mix(in srgb,var(--ink) 4%,transparent);pointer-events:none;z-index:0}
 .tm-card[data-bg] .pv-frame{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.05)}
-body[data-route="gorunum"] #tmCard > :is(.tm-barrow,.tm-top,.tm-stage,.tm-ctl,.tm-grip){position:relative;z-index:1}
 /* Görünüm: preview of the enlarged screen (clock at its big-screen size + the mini player design) */
 .np-prev{display:none}
-body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 100%;box-shadow:var(--shadow)}
-body[data-route="gorunum"] #tmCard.pv-up .np-prev,body[data-route="gorunum"] #tmCard.pv-cust .np-prev{transform-origin:50% 0}
-body[data-route="gorunum"] #tmCard.pv-big.pv-up .tm-top{margin-top:calc(var(--npspace,60px)/var(--pz,.5))}
+body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:50%;top:var(--ppy,200px);bottom:auto;width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 0;box-shadow:var(--shadow)}
 .np-prev .np-btns button{pointer-events:none}
-body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-grip{margin-top:var(--npspace,60px)}
 
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -2966,63 +2966,60 @@ function autoPct(kind){
   return Math.min(100, Math.max(40, Math.round(px/inner*100)));
 }
 // draws the outline of the real card / screen around the preview, centred on the clock
-function pvFrame(w, h, r){
-  const card = $("tmCard");
-  requestAnimationFrame(() => {
-    const cr = card.getBoundingClientRect(), parts = [card.querySelector(".tm-top"), $("tmStage"), card.querySelector(".tm-ctl"), $("tmNpPrev")].filter(e => e && !e.hidden && e.offsetParent);
-    const top = Math.min(...parts.map(e => e.getBoundingClientRect().top)) - cr.top, bot = Math.max(...parts.map(e => e.getBoundingClientRect().bottom)) - cr.top;
-    const hh = Math.max(h, bot - top + 14), mid = (top + bot)/2;
-    const t = Math.max(52, Math.min(mid - hh/2, cr.height - 34 - hh));
-    card.style.setProperty("--pfw", Math.round(Math.min(w, cr.width - 12)) + "px");
-    card.style.setProperty("--pfh", Math.round(Math.min(hh, cr.height - 34 - t)) + "px");
-    card.style.setProperty("--pft", Math.round(t) + "px");
-    card.style.setProperty("--pfr", Math.round(r) + "px");
-  });
-}
 let pvBig = true;   // Görünüm preview shows the enlarged screen unless switched to "Normal ekran"
+// The Görünüm preview is a scaled copy of the real card (Normal ekran) or of the real screen (Büyük ekran):
+// every part gets its real size and real position, multiplied by one scale factor.
 function pvApply(){
-  const card = $("tmCard"), lcd = S.view === "lcd", kind = lcd ? "dz" : "rz";
+  const card = $("tmCard"), lcd = S.view === "lcd", pp = $("tmNpPrev"), showP = pvBig && S.npShow;
   const total = Math.round(pvMin() + pvT*(pvMax() - pvMin()));
-  const pp = $("tmNpPrev"), showP = pvBig && S.npShow;
-  let H = total, ps;
-  const chipH = 30, ctlH = 60, gaps = 20;   // the "Odak 1/4" line and the Başlat row, at their real size
+  const barB = card.querySelector(".tm-barrow").offsetTop + card.querySelector(".tm-barrow").offsetHeight;   // bottom of the (full size) top bar
+  const cw = card.clientWidth, W = innerWidth, VH = innerHeight, G = 14, CHIP = 28, CTL = 58;
+  const block = (lcdBlock, d) => lcd ? lcdBlock*1.12 + 34 : d;   // height of the clock part (digits + topic line, or the dial)
+  let f, frameW, frameH, stackTop, clockW, B, playerTop = 0, ctlK = 1, CTLB = CTL;
   if (!pvBig){
-    // normal page: the card is as wide as the real one, so only the height has to be scaled
-    const inner = Math.max(120, card.clientWidth - 28), W = innerWidth;
-    const real = lcd ? 3.5*(S.dz ? S.dz*inner/3.5 : Math.min(Math.max(56, W*.19), 86)) : (S.rz ? S.rz*inner : Math.min(W*.8, 300));
-    const maxH = lcd ? inner/3.5*1.25 : inner;
-    const g = Math.min(1, (total - gaps)/(chipH + maxH + ctlH));
-    H = Math.max(50, Math.round(total - gaps - (chipH + ctlH)*g)); ps = real*g/(lcd ? 301 : 300);
-    card.style.setProperty("--pz", g.toFixed(4));
-    pvFrame(card.clientWidth*g, 0, 14*g + 4);
+    const inner = Math.max(120, cw - 28);
+    const realW = lcd ? 3.5*(S.dz ? S.dz*inner/3.5 : Math.min(Math.max(56, W*.19), 86)) : (S.rz ? S.rz*inner : Math.min(W*.8, 300));
+    const maxB = block(inner/3.5, inner);
+    B = block(realW/3.5, realW); clockW = realW;
+    const regionMax = G + CHIP + G + maxB + G + CTL + G + 19 + 18;   // the card below its top bar, at the biggest clock
+    f = Math.min(1, total/regionMax);
+    const region = G + CHIP + G + B + G + CTL + G + 19 + 18;
+    frameW = cw*f; frameH = region*f; stackTop = G*f;
   } else {
-    // real size of the clock on the enlarged screen (same formulas as the CSS)
-    const W = innerWidth, VH = innerHeight;
-    const real = lcd ? 3.5*(S.dz ? S.dz*Math.min(W*.92/3.5, VH*.32) : Math.min(W*.30, VH*.26, 210))
-                     : (S.rz ? S.rz*Math.min(W*.92, VH*.72, 900) : Math.min(W*.86, VH*.62, 780));
-    // biggest the clock can get (size 100%): the scale is fixed by it, so size changes show at their true rate
-    const realMax = lcd ? Math.max(real, 3.5*Math.min(W*.92/3.5, VH*.32)) : Math.max(real, Math.min(W*.92, VH*.72, 900));
-    const maxH = lcd ? realMax/3.5*1.25 : realMax, playerH = showP ? 76 : 0;
-    // one scale for everything, so the clock, the buttons and the player keep the proportions of the real screen
-    const f = Math.min((card.clientWidth - 24)/Math.max(W, realMax, showP ? Math.min(520, W - 24) : 0), (total - gaps)/(chipH + maxH + ctlH + playerH + (showP ? 18 : 0)));
-    const space = showP && S.npX < 0 ? Math.round((playerH + 18)*f) : 0;
-    H = Math.max(50, Math.round(total - gaps - space - (chipH + ctlH)*f)); ps = real*f/(lcd ? 301 : 300);
-    card.style.setProperty("--pz", f.toFixed(4));
-    card.style.setProperty("--npk", f.toFixed(4)); card.style.setProperty("--npspace", space + "px");
-    card.style.setProperty("--ppw", Math.round(Math.min(520, (W - 24)/(S.npSz || 1))) + "px");
-    pvFrame(W*f, Math.min(VH*f, total + 8), 20*f + 4);
+    const realW = lcd ? 3.5*(S.dz ? S.dz*Math.min(W*.92/3.5, VH*.32) : Math.min(W*.30, VH*.26, 210))
+                      : (S.rz ? S.rz*Math.min(W*.92, VH*.72, 900) : Math.min(W*.86, VH*.62, 780));
+    B = block(realW/3.5, realW); clockW = realW;
+    const BAR = 68, up = showP && S.npAt === "ust", alt = showP && S.npAt !== "ust", nps = S.npSz || 1;
+    const padTop = up ? 66 + 80*nps : BAR, padBot = 14 + (alt ? 96*nps : 0);
+    const region = VH - BAR;   // the screen below its top bar
+    f = Math.min((cw - 24)/W, total/region);
+    frameW = W*f; frameH = region*f;
+    // the buttons are bigger on the enlarged screen (same formulas as the CSS)
+    const vmin = Math.min(W, VH)/100; ctlK = Math.min(84, Math.max(54, 9*vmin))/58; CTLB = 58*ctlK;
+    const stack = CHIP + G + B + G + CTLB;
+    stackTop = (padTop - BAR + Math.max(0, (VH - padTop - padBot - stack)/2))*f;
+    playerTop = up ? (66 - BAR)*f : stackTop + (stack + 14)*f;
+    card.style.setProperty("--npk", f.toFixed(4));
+    card.style.setProperty("--ppw", Math.round(Math.min(520, (W - 24)/nps)) + "px");
   }
-  card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", ps.toFixed(4));
+  const frameTop = barB + 6 + Math.max(0, (total - frameH)/2);
+  const top0 = frameTop + stackTop;
+  card.style.setProperty("--pch", Math.round(barB + 6 + total + 40) + "px");
+  card.style.setProperty("--pz", f.toFixed(4)); card.style.setProperty("--pzc", (f*ctlK).toFixed(4));
+  card.style.setProperty("--ptp", Math.round(top0) + "px");
+  card.style.setProperty("--pst", Math.round(top0 + (CHIP + G)*f) + "px");
+  card.style.setProperty("--sh", Math.round(B*f) + "px");
+  card.style.setProperty("--pcl", Math.round(top0 + (CHIP + G + B + G)*f) + "px");
+  card.style.setProperty("--ps", (clockW*f/(lcd ? 301 : 300)).toFixed(4));
+  card.style.setProperty("--pfw", Math.round(Math.min(frameW, cw - 8)) + "px"); card.style.setProperty("--pfh", Math.round(frameH) + "px");
+  card.style.setProperty("--pft", Math.round(frameTop) + "px"); card.style.setProperty("--pfr", Math.round((pvBig ? 22 : 16)*f + 3) + "px");
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
   if (!pp) return;
   pp.hidden = !showP; card.classList.toggle("pv-big", showP);
   if (showP){
     const am = AMBS.find(a => a.id === S.amb) || AMBS[1];
     pp.dataset.sk = S.npSkin; $("tmNpPrevName").textContent = am.n; $("tmNpPrevIco").innerHTML = ambSvg(am.id, 22);
-    if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); card.style.setProperty("--ppb", "auto"); }
-    else if (S.npAt === "ust"){ card.style.removeProperty("--ppx"); card.style.setProperty("--ppy", "60px"); card.style.setProperty("--ppb", "auto"); }
-    else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppy"); card.style.removeProperty("--ppb"); }
-    card.classList.toggle("pv-top", S.npX < 0 && S.npAt !== "ust"); card.classList.toggle("pv-cust", S.npX >= 0); card.classList.toggle("pv-up", S.npX < 0 && S.npAt === "ust");
+    card.style.setProperty("--ppy", Math.round(frameTop + playerTop) + "px");
   }
 }
 (() => {
