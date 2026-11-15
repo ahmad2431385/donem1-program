@@ -387,7 +387,8 @@ body.pv-drag #tmCard *{transition:none !important}
 .tm-grip{display:none}
 body[data-route="gorunum"] .tm-grip{display:flex;align-items:center;justify-content:center;width:100%;height:30px;margin-top:auto;cursor:ns-resize;touch-action:none;-webkit-tap-highlight-color:transparent;outline-offset:-3px}
 .tm-grip i{display:block;width:44px;height:5px;border-radius:3px;background:color-mix(in srgb,currentColor 35%,transparent)}
-body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .tm-hint, body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-bar, body[data-route="gorunum"] #tmCard #tmStopAlarm{display:none}
+body[data-route="gorunum"] #tmCard .tm-hint, body[data-route="gorunum"] #tmCard .tm-bar, body[data-route="gorunum"] #tmCard #tmStopAlarm{display:none}
+body[data-route="gorunum"] #tmCard .tm-top, body[data-route="gorunum"] #tmCard .tm-ctl{zoom:var(--pz,.5);pointer-events:none;flex:none}
 .tmsec .fhead{padding:2px 2px 4px}
 .tmsec .fhead h2{font-size:17px}
 .tmsec .fhead .hint{display:block;font-size:12.5px;color:var(--muted);font-weight:500}
@@ -427,6 +428,7 @@ body[data-route="gorunum"] #tmCard .tm-ctl, body[data-route="gorunum"] #tmCard .
 .tm-card{container-type:inline-size;--rw:var(--rwx,min(80vw,300px))}
 .tm-stage{display:contents}
 .tm-ring{position:relative;width:var(--rw);aspect-ratio:1;opacity:var(--rop,1);transition:opacity .15s}
+.tm-card .tm-top,.tm-card .tm-ctl{opacity:var(--cop,1);transition:opacity .15s}
 .tm-ring .dialbox{position:absolute;inset:0}
 .dial{width:100%;height:100%;display:block;overflow:visible}
 .dial .tk{stroke:var(--muted);opacity:.28;stroke-linecap:round;transition:opacity .2s,stroke .2s}
@@ -784,9 +786,9 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 .np-prev{display:none}
 body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 100%;box-shadow:var(--shadow)}
 body[data-route="gorunum"] #tmCard.pv-up .np-prev,body[data-route="gorunum"] #tmCard.pv-cust .np-prev{transform-origin:50% 0}
-body[data-route="gorunum"] #tmCard.pv-big.pv-up .tm-stage{margin-top:var(--npspace,60px)}
+body[data-route="gorunum"] #tmCard.pv-big.pv-up .tm-top{margin-top:calc(var(--npspace,60px)/var(--pz,.5))}
 .np-prev .np-btns button{pointer-events:none}
-body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--npspace,60px)}
+body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-grip{margin-top:var(--npspace,60px)}
 
 /* stats */
 .tm-big{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -2926,7 +2928,7 @@ const pvMin = () => innerWidth >= 700 ? Math.round(Math.min(240, Math.max(150, i
 const pvMax = () => Math.max(pvMin() + 40, Math.min(560, innerWidth - 56, Math.round(innerHeight*.5) - 112));
 const CQ = !!(window.CSS && CSS.supports && CSS.supports("width", "1cqw"));
 function sizeVars(card){
-  card.style.setProperty("--rop", String(S.rOp)); card.style.setProperty("--dop", String(S.dOp));
+  card.style.setProperty("--rop", String(S.rOp)); card.style.setProperty("--dop", String(S.dOp)); card.style.setProperty("--cop", String(S.view === "lcd" ? S.dOp : S.rOp));
   // card width: container units where supported (older Safari lacks them: estimate from the screen width instead)
   const W = CQ ? "100cqw" : "(min(100vw, 680px) - 64px)";
   if (S.rz) card.style.setProperty("--rwx", `min(calc(${W}*${S.rz}),640px)`); else card.style.removeProperty("--rwx");
@@ -2950,8 +2952,15 @@ function pvApply(){
   const total = Math.round(pvMin() + pvT*(pvMax() - pvMin()));
   const pp = $("tmNpPrev"), showP = pvBig && S.npShow;
   let H = total, ps;
+  const chipH = 30, ctlH = 60, gaps = 20;   // the "Odak 1/4" line and the Başlat row, at their real size
   if (!pvBig){
-    ps = H*(S[kind] ? S[kind]*100 : autoPct(kind))/100/300;
+    // normal page: the card is as wide as the real one, so only the height has to be scaled
+    const inner = Math.max(120, card.clientWidth - 28), W = innerWidth;
+    const real = lcd ? 3.5*(S.dz ? S.dz*inner/3.5 : Math.min(Math.max(56, W*.19), 86)) : (S.rz ? S.rz*inner : Math.min(W*.8, 300));
+    const maxH = lcd ? inner/3.5*1.25 : inner;
+    const g = Math.min(1, (total - gaps)/(chipH + maxH + ctlH));
+    H = Math.max(50, Math.round(total - gaps - (chipH + ctlH)*g)); ps = real*g/(lcd ? 301 : 300);
+    card.style.setProperty("--pz", g.toFixed(4));
   } else {
     // real size of the clock on the enlarged screen (same formulas as the CSS)
     const W = innerWidth, VH = innerHeight;
@@ -2960,10 +2969,11 @@ function pvApply(){
     // biggest the clock can get (size 100%): the scale is fixed by it, so size changes show at their true rate
     const realMax = lcd ? Math.max(real, 3.5*Math.min(W*.92/3.5, VH*.32)) : Math.max(real, Math.min(W*.92, VH*.72, 900));
     const maxH = lcd ? realMax/3.5*1.25 : realMax, playerH = showP ? 76 : 0;
-    // one scale for everything, so the clock and the player keep the proportions of the real screen
-    const f = Math.min((card.clientWidth - 24)/Math.max(W, realMax, showP ? Math.min(520, W - 24) : 0), total/(maxH + playerH + (showP ? 18 : 0)));
+    // one scale for everything, so the clock, the buttons and the player keep the proportions of the real screen
+    const f = Math.min((card.clientWidth - 24)/Math.max(W, realMax, showP ? Math.min(520, W - 24) : 0), (total - gaps)/(chipH + maxH + ctlH + playerH + (showP ? 18 : 0)));
     const space = showP && S.npX < 0 ? Math.round((playerH + 18)*f) : 0;
-    H = Math.max(60, total - space); ps = real*f/(lcd ? 301 : 300);
+    H = Math.max(50, Math.round(total - gaps - space - (chipH + ctlH)*f)); ps = real*f/(lcd ? 301 : 300);
+    card.style.setProperty("--pz", f.toFixed(4));
     card.style.setProperty("--npk", f.toFixed(4)); card.style.setProperty("--npspace", space + "px");
     card.style.setProperty("--ppw", Math.round(Math.min(520, (W - 24)/(S.npSz || 1))) + "px");
   }
