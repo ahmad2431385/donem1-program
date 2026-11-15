@@ -940,7 +940,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
           <p class="tm-lbl">Kendi fotoğrafın</p>
           <div class="tm-bgs" id="tmUpGrid" role="group" aria-label="Kendi fotoğrafların"></div>
           <input type="file" id="tmUpIn" accept="image/*" hidden>
-          <p class="tm-note" id="tmUpMsg">Cihazından bir fotoğraf seç. Fotoğraf yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Son 5 fotoğraf kalır; 6.'yı eklersen en eskisi silinir.</p>
+          <p class="tm-note" id="tmUpMsg">Cihazından bir fotoğraf seç. Fotoğraf yalnızca bu cihazda saklanır, hiçbir yere gönderilmez. Son 10 fotoğraf kalır; 11.'yi eklersen en eskisi silinir.</p>
           <p class="tm-credit" id="tmBgCredit"></p>
           <div class="tm-range"><span>Karartma</span><input type="range" id="tmBgDim" min="15" max="75" step="1" aria-label="Fotoğraf karartma"><output id="tmBgDimO"></output></div>
         </div>
@@ -956,7 +956,7 @@ body.tm-full #tmCard .tm-hint{font-size:clamp(13px,2.2vmin,20px)}
           </div>
           <p class="tm-lbl" style="margin-top:4px">Hazır tonlar</p>
           <div class="cp-pre" id="cpPre" role="group" aria-label="Hazır tonlar"></div>
-          <p class="tm-note" id="cpMsg">Renk karesinde ve ton çubuğunda parmağını gezdir ya da kodu yaz. "Kaydet" dersen renk listeye eklenir; en fazla 3 özel renk saklanır.</p>
+          <p class="tm-note" id="cpMsg">Renk karesinde ve ton çubuğunda parmağını gezdir ya da kodu yaz. "Kaydet" dersen renk listeye eklenir; en fazla 5 özel renk saklanır.</p>
         </div>
         <p class="tm-note">"Otomatik" renk bölüme göre değişir: odak yeşil, mola mavi/mor, geri sayım turuncu. Fotoğraf arka planda renkler okunaklı olsun diye otomatik açılır.</p>
       </div>
@@ -1953,6 +1953,7 @@ const BGS = /*BGDATA*/[{"id": "k03", "n": "Yaşam yolu", "pos": "50% 50%", "dx":
 const RSKIN = ["Klasik","İnce","Dilim","Çift","Noktalı","Duvar","Parçalı","Mekanik","Neon","Sıvı"];
 const FONTN = ["Varsayılan","Klasik","İnce","El yazısı","Çizgi"];
 const DSKIN = ["Sade","Kart","Çevirmeli","Segment","Matris","Çizgi","Şerit","Neon","Cam","Blok"];
+const UP_MAX = 10, COLOR_MAX = 5;   // own photos kept on the device / saved custom colours
 const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4899","Pembe"],["#ef4444","Kırmızı"],["#f59e0b","Turuncu"],["#06b6d4","Turkuaz"],["#64748b","Grafit"],["#ffffff","Beyaz"]];
 
 /* ---------- state ---------- */
@@ -1981,7 +1982,7 @@ function loadAll(){
   if (S.fv < 2){ S.font = ({0:0,1:1,2:2,3:3,4:0,5:4,6:0,7:5,8:0,9:0})[S.font] || 0; S.fv = 2; }
   if (S.fv < 3){ S.font = ({0:0,1:1,2:0,3:0,4:2,5:3,6:4,7:0})[S.font] || 0; S.fv = 3; }
   if (S.szv < 2){ S.rz = 0; S.dz = 0; S.szv = 2; }
-  S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-3);
+  S.saved = (Array.isArray(s.saved) ? s.saved : []).filter(c => typeof c === "string" && /^#[0-9a-f]{6}$/i.test(c)).map(c => c.toLowerCase()).slice(-COLOR_MAX);
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.rz && S.rz < .4) S.rz = .4;
   if (S.dz && S.dz < .4) S.dz = .4;
@@ -2520,8 +2521,8 @@ function cpInit(){
     const c = hsv2hex(CP.h, CP.s, CP.v), msg = $("cpMsg");
     if (COLORS.some(x => x[0] === c) ){ msg.textContent = "Bu renk zaten listede."; return; }
     if (S.saved.includes(c)){ msg.textContent = "Bu renk zaten kayıtlı."; return; }
-    S.saved.push(c); const dropped = S.saved.length > 3; S.saved = S.saved.slice(-3); S.color = c; saveS(); render();
-    msg.textContent = dropped ? "Renk eklendi. 3 renk dolu olduğu için en eski özel renk silindi." : "Renk listeye eklendi.";
+    S.saved.push(c); const dropped = S.saved.length > COLOR_MAX; S.saved = S.saved.slice(-COLOR_MAX); S.color = c; saveS(); render();
+    msg.textContent = dropped ? `Renk eklendi. ${COLOR_MAX} renk dolu olduğu için en eski özel renk silindi.` : "Renk listeye eklendi.";
   });
   cpInit = () => {};
 }
@@ -2571,8 +2572,8 @@ async function upInit(){
     UP.db = await upDB();
     const all = (await upRun("readonly", st => st.getAll())) || [];
     all.sort((a, b) => b.t - a.t);
-    UP.items = all.slice(0, 5).map(upItem);
-    for (const r of all.slice(5)) upRun("readwrite", st => st.delete(r.id)).catch(() => {});
+    UP.items = all.slice(0, UP_MAX).map(upItem);
+    for (const r of all.slice(UP_MAX)) upRun("readwrite", st => st.delete(r.id)).catch(() => {});
   } catch(e){ UP.ok = false; }
   if (S.bg && /^u\d/.test(S.bg) && !bgFind(S.bg)){ S.bg = ""; saveS(); }
   render();
@@ -2597,9 +2598,9 @@ async function upAdd(file){
     const rec = {id:"u" + Date.now(), t:Date.now(), blob, dx};
     if (UP.ok) await upRun("readwrite", st => st.put(rec)).catch(() => { UP.ok = false; });
     UP.items.unshift(upItem(rec));
-    while (UP.items.length > 5){ const old = UP.items.pop(); URL.revokeObjectURL(old.url); if (UP.ok) upRun("readwrite", st => st.delete(old.id)).catch(() => {}); if (S.bg === old.id) S.bg = ""; }
+    while (UP.items.length > UP_MAX){ const old = UP.items.pop(); URL.revokeObjectURL(old.url); if (UP.ok) upRun("readwrite", st => st.delete(old.id)).catch(() => {}); if (S.bg === old.id) S.bg = ""; }
     S.bg = rec.id; saveS(); render();
-    msg.textContent = UP.ok ? "Fotoğraf eklendi. Son 5 fotoğraf bu cihazda kalır." : "Fotoğraf eklendi, ama bu tarayıcı kalıcı saklamaya izin vermiyor; sayfayı kapatınca silinir.";
+    msg.textContent = UP.ok ? `Fotoğraf eklendi. Son ${UP_MAX} fotoğraf bu cihazda kalır.` : "Fotoğraf eklendi, ama bu tarayıcı kalıcı saklamaya izin vermiyor; sayfayı kapatınca silinir.";
   } catch(e){ msg.textContent = "Bu dosya okunamadı. JPG, PNG veya WebP bir fotoğraf dene."; }
 }
 function upDel(id){
