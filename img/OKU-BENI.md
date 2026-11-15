@@ -4,5 +4,5 @@ Yeni fotoğrafları kategorisini düşünmeden **bu klasöre (img)** yükleyebil
 (GitHub'da: *Add file → Upload files*). Claude hepsine bakar, uygun kategoriye ayırır,
 düzenler ve `bg/<kategori>/` klasörüne taşır.
 
-Kategoriler: İslami, Sağlık, Doğa, Şehir, Uzay, Hayvanlar, Kedi, Araba, Diğer.
+Kategoriler: İslami, Sağlık, Doğa, Şehir, Türkiye, Uzay, Hayvanlar, Araba, Diğer.
 İstersen doğrudan `bg/<kategori>/` klasörüne de yükleyebilirsin.
