@@ -746,9 +746,12 @@ body.tm-photo .npd[data-sk="1"] .np-grip,body.tm-photo .npd[data-sk="3"] .np-gri
 /* mini player while the timer is enlarged: pinned under the clock */
 body.tm-full #tmNp:not([hidden]){position:fixed;left:var(--npx,50%);top:var(--npy,calc(max(12px,env(safe-area-inset-top)) + 58px));bottom:auto;transform:translateX(-50%) scale(var(--nps,1));transform-origin:50% 0;width:min(520px,calc((100vw - 24px)/var(--nps,1)));z-index:82;margin:0;box-shadow:var(--shadow);-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:box-shadow .15s}
 body.tm-full #tmNp.np-drag{box-shadow:0 18px 40px rgba(0,0,0,.35),0 0 0 2px var(--accent);transition:none;cursor:grabbing}
-body.tm-full.np-on.np-top #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 96px*var(--nps,1))}
-body.tm-full.np-on.np-top.np-vol-open #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 134px*var(--nps,1))}
-body.tm-full #tmCard .tm-hint{display:none}
+body.tm-full.np-on.np-top.np-bot #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 96px*var(--nps,1))}
+body.tm-full.np-on.np-top.np-bot.np-vol-open #tmCard{padding-bottom:calc(max(14px,env(safe-area-inset-bottom)) + 134px*var(--nps,1))}
+body.tm-full.np-on.np-top.np-up #tmCard{padding-top:calc(max(12px,env(safe-area-inset-top)) + 66px + 80px*var(--nps,1))}
+body.tm-full.np-on.np-top.np-up.np-vol-open #tmCard{padding-top:calc(max(12px,env(safe-area-inset-top)) + 66px + 118px*var(--nps,1))}
+body.tm-full #tmCard .tm-hint:not(.flash){display:none}
+body.tm-full #tmCard .tm-hint.flash{font-size:clamp(15px,2.6vmin,22px);font-weight:700}
 /* enlarged-screen player designs: 1 Şeffaf (no background), 2 Hap, 3 Cam, 4 Koyu */
 .npd[data-sk="1"]{background:transparent;border-color:transparent;box-shadow:none}
 .npd[data-sk="1"] .np-ic{background:transparent}
@@ -776,7 +779,10 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
 .lk-pv > span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 /* Görünüm: preview of the enlarged screen (clock at its big-screen size + the mini player design) */
 .np-prev{display:none}
-body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:360px;margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.62)));transform-origin:50% 100%;box-shadow:var(--shadow)}
+body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,auto);bottom:var(--ppb,34px);width:var(--ppw,366px);margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.5)));transform-origin:50% 100%;box-shadow:var(--shadow)}
+body[data-route="gorunum"] #tmCard.pv-up .np-prev,body[data-route="gorunum"] #tmCard.pv-cust .np-prev{transform-origin:50% 0}
+body[data-route="gorunum"] #tmCard.pv-up .np-prev .np-cap{top:auto;bottom:-30px}
+body[data-route="gorunum"] #tmCard.pv-big.pv-up .tm-stage{margin-top:var(--npspace,60px)}
 .np-prev .np-cap{position:absolute;left:50%;top:-30px;transform:translateX(-50%);white-space:nowrap;font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--surface);color:var(--muted);border:1px solid var(--line);text-shadow:none}
 .np-prev .np-btns button{pointer-events:none}
 body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--npspace,60px)}
@@ -1131,7 +1137,7 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-bottom:var(--n
             <div class="set-h"><span class="si"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></span>Büyütülmüş ekran</div>
             <div class="set-box">
               <div class="set-row col"><span class="rl">Mini çalıcı tasarımı</span><div class="set-opts" id="tmNpSkins" role="group" aria-label="Büyük ekranda mini çalıcı tasarımı"></div></div>
-              <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt">Başlat düğmesinin altında</small></span><button type="button" class="secondary" id="tmNpPosReset">Varsayılan yere al</button></div>
+              <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt"></small></span><div class="tm-seg" id="tmNpAt" role="group" aria-label="Mini çalıcı yeri"><button type="button" data-at="ust" aria-pressed="false">Üstte</button><button type="button" data-at="alt" aria-pressed="true">Altta</button></div></div>
               <div class="set-row"><span class="rl">Mini çalıcı boyutu</span><div class="set-rng"><input type="range" id="tmNpSz" min="70" max="140" step="5" aria-label="Büyük ekranda mini çalıcı boyutu"><output id="tmNpSzO"></output></div></div>
             </div>
           </div>
@@ -2206,7 +2212,7 @@ const COLORS = [["#10a37f","Yeşil"],["#3b82f6","Mavi"],["#8b5cf6","Mor"],["#ec4
 
 /* ---------- state ---------- */
 const KS = "odak_ayar", KT = "odak_durum", KK = "odak_geri", KH = "odak_gecmis";
-const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, szv:0, saved:[], color:"auto",
+const DEF = {focus:25, short:5, long:15, cycles:4, cd:1800, mode:"pomo", view:"ring", rskin:0, dskin:0, font:0, fv:0, rz:0, dz:0, fz:0, npShow:true, npSkin:0, npSz:1, npX:-1, npY:-1, npAt:"alt", szv:0, saved:[], color:"auto",
   sound:true, vibrate:true, hapF:true, hapB:true, wake:true, auto:false, goal:240,
   alarm:"can", alarmVol:0.8, repeat:1, vib:"cift",
   amb:"yagmur", ambVol:0.5, ambOn:false, ambMode:"timer", bg:"", bgDim:0.42};
@@ -2236,6 +2242,7 @@ function loadAll(){
   if (S.dz && S.dz < .4) S.dz = .4;
   S.fz = 0;   // separate big-screen size was removed; the normal size settings apply there
   if (!(S.npX >= 0 && S.npX <= 1 && S.npY >= 0 && S.npY <= 1)){ S.npX = -1; S.npY = -1; }
+  if (S.npAt !== "ust") S.npAt = "alt";
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
   if (S.color !== "auto" && !/^#[0-9a-f]{6}$/i.test(S.color)) S.color = "auto";
@@ -2720,7 +2727,8 @@ function hint(){
   else if (x.status === "running") h = x.phase === "focus" ? "Şu an sadece bu işe odaklan. Telefonu bırak 📵" : "Kalk, su iç, gözlerini dinlendir 💧";
   else if (x.status === "paused") h = "Duraklatıldı. Hazır olunca devam et.";
   else h = x.phase === "focus" ? `${S.focus} dk odaklan, sonra ${T.done + 1 >= S.cycles ? S.long + " dk uzun" : S.short + " dk"} mola.` : `${Math.round(dur(x.phase)/60000)} dk mola hazır.`;
-  $("tmHint").textContent = h;
+  const fl = !!(flashMsg && Date.now() < flashUntil); $("tmHint").textContent = h;
+  if ($("tmHint").classList.contains("flash") !== fl){ $("tmHint").classList.toggle("flash", fl); if (typeof npPlaceDefault === "function") npPlaceDefault(); }
   refreshStopBtn();
 }
 function renderChips(){
@@ -2821,8 +2829,8 @@ function renderLook(){
   $("tmNpShow").checked = S.npShow;
   if (!$("tmNpSkins").firstChild) $("tmNpSkins").innerHTML = NP_SKINS.map(([n,d], i) => `<button type="button" class="set-o" data-nk="${i}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${n}<small class="sd">${d}</small></span></button>`).join("");
   $("tmNpSkins").querySelectorAll("[data-nk]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.nk === S.npSkin)));
-  $("tmNpPosTxt").textContent = S.npX >= 0 ? "Senin seçtiğin yerde · büyük ekranda ≡ simgesinden basılı tutup sürükle" : "Başlat düğmesinin altında · büyük ekranda basılı tutup sürükleyerek taşıyabilirsin";
-  $("tmNpPosReset").hidden = !(S.npX >= 0);
+  $("tmNpPosTxt").textContent = S.npX >= 0 ? "Şu an senin taşıdığın yerde · Üstte ya da Altta'ya basınca oraya döner" : S.npAt === "ust" ? "Üstteki çubuğun altında · ≡ simgesinden basılı tutup taşıyabilirsin" : "Başlat düğmesinin altında · ≡ simgesinden basılı tutup taşıyabilirsin";
+  $("tmNpAt").querySelectorAll("[data-at]").forEach(b => b.setAttribute("aria-pressed", String(S.npX < 0 && b.dataset.at === S.npAt)));
   $("tmNpSz").value = Math.round(S.npSz*100); $("tmNpSzO").textContent = "%" + Math.round(S.npSz*100);
   $("tmBgDimRow").hidden = !S.bg;
   $("tmFonts").querySelectorAll("[data-fn]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.fn === S.font)));
@@ -2930,22 +2938,38 @@ function autoPct(kind){
 }
 let pvBig = true;   // Görünüm preview shows the enlarged screen unless switched to "Normal ekran"
 function pvApply(){
-  const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = (S[kind] ? S[kind]*100 : autoPct(pvBig ? "fz" : kind))/100 * (pvBig ? .78 : 1);
-  // the window height only follows the drag handle; in the big-screen preview part of it is kept for the mini player
-  const big = pvBig && S.npShow && S.npX < 0, space = big ? Math.round(80*Math.min(.62, (card.clientWidth - 24)/360) + 30) : 0;
-  const H = Math.max(90, Math.round(pvMin() + pvT*(pvMax() - pvMin())) - space);
-  card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", (H*z/300).toFixed(4));
+  const card = $("tmCard"), lcd = S.view === "lcd", kind = lcd ? "dz" : "rz";
+  const total = Math.round(pvMin() + pvT*(pvMax() - pvMin()));
+  const pp = $("tmNpPrev"), showP = pvBig && S.npShow;
+  let H = total, ps;
+  if (!pvBig){
+    ps = H*(S[kind] ? S[kind]*100 : autoPct(kind))/100/300;
+  } else {
+    // real size of the clock on the enlarged screen (same formulas as the CSS)
+    const W = innerWidth, VH = innerHeight;
+    const real = lcd ? 3.5*(S.dz ? S.dz*Math.min(W*.92/3.5, VH*.32) : Math.min(W*.30, VH*.26, 210))
+                     : (S.rz ? S.rz*Math.min(W*.92, VH*.72, 900) : Math.min(W*.86, VH*.62, 780));
+    // biggest the clock can get (size 100%): the scale is fixed by it, so size changes show at their true rate
+    const realMax = lcd ? Math.max(real, 3.5*Math.min(W*.92/3.5, VH*.32)) : Math.max(real, Math.min(W*.92, VH*.72, 900));
+    const maxH = lcd ? realMax/3.5*1.25 : realMax, playerH = showP ? 76 : 0;
+    // one scale for everything, so the clock and the player keep the proportions of the real screen
+    const f = Math.min((card.clientWidth - 24)/Math.max(W, realMax, showP ? Math.min(520, W - 24) : 0), total/(maxH + playerH + (showP ? 18 : 0)));
+    const space = showP && S.npX < 0 ? Math.round((playerH + 18)*f) : 0;
+    H = Math.max(60, total - space); ps = real*f/(lcd ? 301 : 300);
+    card.style.setProperty("--npk", f.toFixed(4)); card.style.setProperty("--npspace", space + "px");
+    card.style.setProperty("--ppw", Math.round(Math.min(520, (W - 24)/(S.npSz || 1))) + "px");
+  }
+  card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", ps.toFixed(4));
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
-  // big-screen preview: show the player copy under the clock with the chosen design and size
-  const pp = $("tmNpPrev"); if (!pp) return;
-  pp.hidden = !pvBig || !S.npShow; card.classList.toggle("pv-big", !pp.hidden);
-  if (!pp.hidden){
+  if (!pp) return;
+  pp.hidden = !showP; card.classList.toggle("pv-big", showP);
+  if (showP){
     const am = AMBS.find(a => a.id === S.amb) || AMBS[1];
     pp.dataset.sk = S.npSkin; $("tmNpPrevName").textContent = am.n; $("tmNpPrevIco").innerHTML = ambSvg(am.id, 22);
-    const k = Math.min(.62, (card.clientWidth - 24)/(360*(S.npSz || 1)));
-    if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); card.style.setProperty("--ppb", "auto"); } else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppb"); card.style.removeProperty("--ppy"); }
-    card.classList.toggle("pv-top", S.npX < 0);
-    card.style.setProperty("--npk", k.toFixed(3)); card.style.setProperty("--npspace", space + "px");
+    if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); card.style.setProperty("--ppb", "auto"); }
+    else if (S.npAt === "ust"){ card.style.removeProperty("--ppx"); card.style.setProperty("--ppy", "60px"); card.style.setProperty("--ppb", "auto"); }
+    else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppy"); card.style.removeProperty("--ppb"); }
+    card.classList.toggle("pv-top", S.npX < 0 && S.npAt !== "ust"); card.classList.toggle("pv-cust", S.npX >= 0); card.classList.toggle("pv-up", S.npX < 0 && S.npAt === "ust");
   }
 }
 (() => {
@@ -2983,7 +3007,7 @@ $("lkTabs").addEventListener("click", e => { const b = e.target.closest("[data-l
 $("lkTabs").addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const t = [...$("lkTabs").children], i = t.indexOf(document.activeElement); if (i < 0) return; const n = t[(i + (e.key === "ArrowRight" ? 1 : t.length - 1)) % t.length]; n.focus(); n.click(); });
 $("lkType").addEventListener("click", e => { const b = e.target.closest("[data-lv]"); if (!b) return; S.view = b.dataset.lv; saveS(); render(); });
 $("tmNpShow").addEventListener("change", e => { S.npShow = e.target.checked; saveS(); renderNp(); });
-$("tmNpPosReset").addEventListener("click", () => { S.npX = -1; S.npY = -1; saveS(); renderLook(); renderNp(); pvApply(); });
+$("tmNpAt").addEventListener("click", e => { const b = e.target.closest("[data-at]"); if (!b) return; S.npAt = b.dataset.at; S.npX = -1; S.npY = -1; saveS(); renderLook(); renderNp(); pvApply(); });
 $("tmNpSkins").addEventListener("click", e => { const b = e.target.closest("[data-nk]"); if (!b) return; S.npSkin = +b.dataset.nk; saveS(); renderLook(); renderNp(); pvApply(); });
 $("tmNpSz").addEventListener("input", e => { S.npSz = clamp((+e.target.value)/100, .7, 1.4); $("tmNpSzO").textContent = "%" + e.target.value; saveS(); renderNp(); pvApply(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
@@ -3041,8 +3065,11 @@ function npPlaceDefault(){
   if (!document.body.classList.contains("tm-full") || np.hidden || S.npX >= 0){ np.style.removeProperty("--npy"); return; }
   requestAnimationFrame(() => {
     if (S.npX >= 0 || !document.body.classList.contains("tm-full")) return;
-    const b = $("tmCard").querySelector(".tm-ctl").getBoundingClientRect(), h = np.getBoundingClientRect().height;
-    np.style.setProperty("--npy", Math.round(Math.min(b.bottom + 14, innerHeight - h - 8)) + "px");
+    const card = $("tmCard"), h = np.getBoundingClientRect().height;
+    if (S.npAt === "ust"){ const bar = card.querySelector(".tm-barrow").getBoundingClientRect(); np.style.setProperty("--npy", Math.round(bar.bottom + 10) + "px"); return; }
+    let bottom = card.querySelector(".tm-ctl").getBoundingClientRect().bottom;
+    const hi = $("tmHint"); if (hi.classList.contains("flash") && hi.offsetParent) bottom = Math.max(bottom, hi.getBoundingClientRect().bottom);
+    np.style.setProperty("--npy", Math.round(Math.min(bottom + 14, innerHeight - h - 8)) + "px");
   });
 }
 window.addEventListener("resize", () => { if (document.body.classList.contains("tm-full")) npPlaceDefault(); });
@@ -3057,6 +3084,7 @@ function renderNp(){
   if (custom){ np.style.setProperty("--npx", (S.npX*100).toFixed(2) + "vw"); np.style.setProperty("--npy", (S.npY*100).toFixed(2) + "vh"); }
   else { np.style.removeProperty("--npx"); np.style.removeProperty("--npy"); }
   document.body.classList.toggle("np-top", !custom);
+  document.body.classList.toggle("np-up", !custom && S.npAt === "ust"); document.body.classList.toggle("np-bot", !custom && S.npAt !== "ust");
   if (!custom) npPlaceDefault();
   document.body.classList.toggle("np-on", !np.hidden);
   document.body.classList.toggle("np-vol-open", !np.hidden && !$("tmNpVol").hidden);
