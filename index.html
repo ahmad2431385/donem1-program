@@ -768,6 +768,8 @@ body.tm-photo .npd[data-sk="3"] .np-tx small,body.tm-photo .npd[data-sk="3"] .np
   body.tm-full.np-on #tmCard .tm-dig{--ds:min(var(--fdsx,26vh),calc((100vh - 250px)/1.25))}
 }
 
+.lk-pv{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:2px 0 10px}
+.lk-pv > span{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.06em}
 /* Görünüm: preview of the enlarged screen (clock at its big-screen size + the mini player design) */
 .np-prev{display:none}
 body[data-route="gorunum"] .np-prev:not([hidden]){display:flex;position:absolute;left:var(--ppx,50%);top:var(--ppy,64px);width:360px;margin:0;z-index:3;pointer-events:none;transform:translateX(-50%) scale(calc(var(--nps,1)*var(--npk,.62)));transform-origin:50% 0;box-shadow:var(--shadow)}
@@ -1097,6 +1099,9 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npsp
   <section class="tmpage" id="lookView" aria-label="Görünüm">
     <section class="card tm-look tmsec look-card" id="tmLook">
       <div class="fhead"><h2>Görünüm</h2><span class="hint" id="tmLookHint">Saat tasarımı ve renk</span></div>
+      <div class="lk-pv"><span>Önizleme</span>
+        <div class="tm-seg" id="lkPv" role="group" aria-label="Önizleme türü"><button type="button" data-pv="big" aria-pressed="true">Büyük ekran</button><button type="button" data-pv="small" aria-pressed="false">Normal ekran</button></div>
+      </div>
       <div class="lk-tabs" id="lkTabs" role="tablist" aria-label="Görünüm bölümleri">
         <button type="button" role="tab" data-lt="saat" aria-selected="true"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v4l2.5 1.5"/></svg><span>Saat</span></button>
         <button type="button" role="tab" data-lt="yazi" aria-selected="false"><svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7V5h14v2M12 5v14M9 19h6"/></svg><span>Yazı</span></button>
@@ -1124,7 +1129,6 @@ body[data-route="gorunum"] #tmCard.pv-big.pv-top .tm-stage{margin-top:var(--npsp
               <div class="set-row col"><span class="rl">Mini çalıcı tasarımı</span><div class="set-opts" id="tmNpSkins" role="group" aria-label="Büyük ekranda mini çalıcı tasarımı"></div></div>
               <div class="set-row"><span class="rl">Mini çalıcı yeri<small class="sd" id="tmNpPosTxt">Üstte (basılı tutup sürükleyerek taşıyabilirsin)</small></span><button type="button" class="secondary" id="tmNpPosReset">Üste al</button></div>
               <div class="set-row"><span class="rl">Mini çalıcı boyutu</span><div class="set-rng"><input type="range" id="tmNpSz" min="70" max="140" step="5" aria-label="Büyük ekranda mini çalıcı boyutu"><output id="tmNpSzO"></output></div></div>
-              <div class="set-row"><span class="rl">Saat boyutu</span><div class="set-rng"><input type="range" id="tmFz" min="40" max="100" step="2" aria-label="Büyütülmüş ekranda saat boyutu"><output id="tmFzO"></output><button type="button" class="tm-rst" data-rst="fz" aria-label="Varsayılan boyuta dön" title="Varsayılan boyut">↺</button></div></div>
             </div>
           </div>
           <div class="set-grp">
@@ -2226,7 +2230,7 @@ function loadAll(){
   for (const k in LIM) S[k] = clamp(k === "alarmVol" || k === "ambVol" || k === "bgDim" || k === "rz" || k === "dz" || k === "fz" || k === "npSz" ? S[k] : (Math.round(S[k]) || (k === "rskin" || k === "dskin" || k === "fv" ? 0 : DEF[k])), LIM[k][0], LIM[k][1]);
   if (S.rz && S.rz < .4) S.rz = .4;
   if (S.dz && S.dz < .4) S.dz = .4;
-  if (S.fz && S.fz < .4) S.fz = .4;
+  S.fz = 0;   // separate big-screen size was removed; the normal size settings apply there
   if (!(S.npX >= 0 && S.npX <= 1 && S.npY >= 0 && S.npY <= 1)){ S.npX = -1; S.npY = -1; }
   if (!["pomo","count"].includes(S.mode)) S.mode = "pomo";
   if (!["ring","lcd"].includes(S.view)) S.view = "ring";
@@ -2801,13 +2805,15 @@ function renderLook(){
   }
   $("tmSkinsR").querySelectorAll("[data-rs]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "ring" && +b.dataset.rs === S.rskin)));
   $("tmSkinsD").querySelectorAll("[data-ds]").forEach(b => b.setAttribute("aria-pressed", String(S.view === "lcd" && +b.dataset.ds === S.dskin)));
-  for (const k of ["rz", "dz", "fz"]){ const id = {rz:"tmRz", dz:"tmDz", fz:"tmFz"}[k], pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(id).value = pct; $(id + "O").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
+  for (const k of ["rz", "dz"]){ const id = {rz:"tmRz", dz:"tmDz"}[k], pct = S[k] ? Math.round(S[k]*100) : autoPct(k); $(id).value = pct; $(id + "O").textContent = "%" + pct; document.querySelector(`[data-rst="${k}"]`).hidden = !S[k]; }
   // tabs, clock type and sections
   const tab = ["saat","yazi","bg","renk"].includes(LS.get("odak_gorunum_sekme")) ? LS.get("odak_gorunum_sekme") : "saat";
   $("lkTabs").querySelectorAll("[data-lt]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.lt === tab)));
   document.querySelectorAll("#tmLook .lk-pane").forEach(p => p.hidden = p.dataset.lp !== tab);
   $("lkType").querySelectorAll("[data-lv]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lv === S.view)));
   document.querySelectorAll("#tmLook .lk-sub").forEach(p => p.hidden = p.dataset.lvs !== S.view);
+  pvBig = LS.get("odak_onizleme_tur") !== "small";
+  $("lkPv").querySelectorAll("[data-pv]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.pv === "big") === pvBig)));
   $("tmNpShow").checked = S.npShow;
   if (!$("tmNpSkins").firstChild) $("tmNpSkins").innerHTML = NP_SKINS.map(([n,d], i) => `<button type="button" class="set-o" data-nk="${i}" aria-pressed="false"><i class="ck" aria-hidden="true"></i><span>${n}<small class="sd">${d}</small></span></button>`).join("");
   $("tmNpSkins").querySelectorAll("[data-nk]").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.nk === S.npSkin)));
@@ -2907,7 +2913,7 @@ function sizeVars(card){
   if (S.dz) card.style.setProperty("--dsx", `calc(min(calc(${W}*${S.dz}),640px)/3.5)`); else card.style.removeProperty("--dsx");
   // enlarged (full-screen) mode: the same percentages, measured against the screen
   // the enlarged screen has its own size setting; without it, the normal size settings are used there too
-  const fr = S.fz || S.rz, fd = S.fz || S.dz;
+  const fr = S.rz, fd = S.dz;
   if (fr) card.style.setProperty("--fwr", `calc(${fr}*min(92vw,72vh,900px))`); else card.style.removeProperty("--fwr");
   if (fd) card.style.setProperty("--fdsx", `calc(${fd}*min(calc(92vw/3.5),32vh))`); else card.style.removeProperty("--fdsx");
 }
@@ -2918,10 +2924,12 @@ function autoPct(kind){
   const px = kind === "dz" ? Math.min(Math.max(56, innerWidth*.19), 86)*3.5 : Math.min(innerWidth*.8, 300);
   return Math.min(100, Math.max(40, Math.round(px/inner*100)));
 }
-let pvBig = false;   // true while the user is changing the "Büyütülmüş ekran" settings
+let pvBig = true;   // Görünüm preview shows the enlarged screen unless switched to "Normal ekran"
 function pvApply(){
-  const card = $("tmCard"), kind = pvBig ? "fz" : S.view === "lcd" ? "dz" : "rz", z = (S[kind] ? S[kind]*100 : autoPct(kind))/100 * (pvBig ? .78 : 1);
-  const H = Math.round(pvMin() + pvT*(pvMax() - pvMin()));
+  const card = $("tmCard"), kind = S.view === "lcd" ? "dz" : "rz", z = (S[kind] ? S[kind]*100 : autoPct(pvBig ? "fz" : kind))/100 * (pvBig ? .78 : 1);
+  // the window height only follows the drag handle; in the big-screen preview part of it is kept for the mini player
+  const big = pvBig && S.npShow && S.npX < 0, space = big ? Math.round(80*Math.min(.62, (card.clientWidth - 24)/360) + 30) : 0;
+  const H = Math.max(90, Math.round(pvMin() + pvT*(pvMax() - pvMin())) - space);
   card.style.setProperty("--sh", H + "px"); card.style.setProperty("--ps", (H*z/300).toFixed(4));
   $("tmGrip").setAttribute("aria-valuenow", String(Math.round(pvT*100)));
   // big-screen preview: show the player copy under the clock with the chosen design and size
@@ -2933,7 +2941,7 @@ function pvApply(){
     const k = Math.min(.62, (card.clientWidth - 24)/(360*(S.npSz || 1)));
     if (S.npX >= 0){ card.style.setProperty("--ppx", (S.npX*100).toFixed(1) + "%"); card.style.setProperty("--ppy", (S.npY*100).toFixed(1) + "%"); } else { card.style.removeProperty("--ppx"); card.style.removeProperty("--ppy"); }
     card.classList.toggle("pv-top", S.npX < 0);
-    card.style.setProperty("--npk", k.toFixed(3)); card.style.setProperty("--npspace", Math.round(80*k*(S.npSz || 1) + 34) + "px");
+    card.style.setProperty("--npk", k.toFixed(3)); card.style.setProperty("--npspace", space + "px");
   }
 }
 (() => {
@@ -2964,22 +2972,16 @@ $("tmUpIn").addEventListener("change", e => { const f = e.target.files && e.targ
 upInit();
 $("tmBgDim").addEventListener("input", e => { S.bgDim = clamp((+e.target.value)/100, .15, .75); $("tmBgDimO").textContent = "%" + e.target.value; saveS(); $("tmCard").style.setProperty("--bgdim", String(bgDimOf(bgFind(S.bg)))); });
 $("tmSkinsR").addEventListener("click", e => { const b = e.target.closest("[data-rs]"); if (!b) return; S.rskin = +b.dataset.rs; S.view = "ring"; saveS(); render(); });
-for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"], ["tmFz", "fz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
+for (const [id, key] of [["tmRz", "rz"], ["tmDz", "dz"]]) $(id).addEventListener("input", e => { S[key] = clamp((+e.target.value)/100, .4, 1); $(id + "O").textContent = "%" + e.target.value; document.querySelector(`[data-rst="${key}"]`).hidden = false; saveS(); sizeVars($("tmCard")); pvApply(); });
 document.querySelectorAll("[data-rst]").forEach(b => b.addEventListener("click", () => { S[b.dataset.rst] = 0; saveS(); render(); }));
-(() => {
-  const big = document.querySelector("#tmFz").closest(".set-grp");
-  const on = v => { if (pvBig !== v){ pvBig = v; pvApply(); } };
-  $("tmLook").addEventListener("pointerdown", e => on(!!e.target.closest(".set-grp") && e.target.closest(".set-grp") === big), true);
-  $("tmLook").addEventListener("focusin", e => on(big.contains(e.target)));
-  big.addEventListener("input", () => on(true)); big.addEventListener("click", () => on(true));
-})();
+$("lkPv").addEventListener("click", e => { const b = e.target.closest("[data-pv]"); if (!b) return; LS.set("odak_onizleme_tur", b.dataset.pv); pvBig = b.dataset.pv !== "small"; renderLook(); pvApply(); });
 $("lkTabs").addEventListener("click", e => { const b = e.target.closest("[data-lt]"); if (!b) return; LS.set("odak_gorunum_sekme", b.dataset.lt); renderLook(); });
 $("lkTabs").addEventListener("keydown", e => { if (e.key !== "ArrowRight" && e.key !== "ArrowLeft") return; const t = [...$("lkTabs").children], i = t.indexOf(document.activeElement); if (i < 0) return; const n = t[(i + (e.key === "ArrowRight" ? 1 : t.length - 1)) % t.length]; n.focus(); n.click(); });
 $("lkType").addEventListener("click", e => { const b = e.target.closest("[data-lv]"); if (!b) return; S.view = b.dataset.lv; saveS(); render(); });
 $("tmNpShow").addEventListener("change", e => { S.npShow = e.target.checked; saveS(); renderNp(); });
-$("tmNpPosReset").addEventListener("click", () => { S.npX = -1; S.npY = -1; saveS(); renderLook(); renderNp(); pvBig = true; pvApply(); });
-$("tmNpSkins").addEventListener("click", e => { const b = e.target.closest("[data-nk]"); if (!b) return; S.npSkin = +b.dataset.nk; saveS(); renderLook(); renderNp(); pvBig = true; pvApply(); });
-$("tmNpSz").addEventListener("input", e => { S.npSz = clamp((+e.target.value)/100, .7, 1.4); $("tmNpSzO").textContent = "%" + e.target.value; saveS(); renderNp(); pvBig = true; pvApply(); });
+$("tmNpPosReset").addEventListener("click", () => { S.npX = -1; S.npY = -1; saveS(); renderLook(); renderNp(); pvApply(); });
+$("tmNpSkins").addEventListener("click", e => { const b = e.target.closest("[data-nk]"); if (!b) return; S.npSkin = +b.dataset.nk; saveS(); renderLook(); renderNp(); pvApply(); });
+$("tmNpSz").addEventListener("input", e => { S.npSz = clamp((+e.target.value)/100, .7, 1.4); $("tmNpSzO").textContent = "%" + e.target.value; saveS(); renderNp(); pvApply(); });
 $("tmFonts").addEventListener("click", e => { const b = e.target.closest("[data-fn]"); if (!b) return; S.font = +b.dataset.fn; saveS(); render(); });
 $("tmSkinsD").addEventListener("click", e => { const b = e.target.closest("[data-ds]"); if (!b) return; S.dskin = +b.dataset.ds; S.view = "lcd"; saveS(); render(); });
 $("tmSwatches").addEventListener("click", e => {
@@ -3337,7 +3339,6 @@ function route(){
   const changed = r !== curRoute; curRoute = r;
   document.body.dataset.route = r;
   if (r !== "sayac" && document.body.classList.contains("tm-full")) setFull(false);
-  if (r !== "gorunum" && typeof pvBig !== "undefined") pvBig = false;
   $("brandSmall").textContent = r === "program" ? "İstanbul Tıp · Dönem 1 Türkçe" : "Çalışma";
   const RT = {sayac:"Odak sayacı", grafik:"Çalışma grafiği", gorunum:"Görünüm", ses:"Arka plan sesi", ayar:"Alarm ve ayarlar"};
   $("brandTitle").textContent = RT[r] || "Programım";
