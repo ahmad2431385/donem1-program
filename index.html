@@ -2783,11 +2783,11 @@ function dayDetail(){
   const D = W.daily, i = D.time.indexOf(sel), box = $("hvDay"); if (i < 0){ box.innerHTML = ""; return; }
   const n = istNow(), isToday = sel === n.date, hrs = hoursOf(sel);
   const [e, t] = info(D.weather_code[i]), adv = advice(hrs);
-  // default: the next 8 hours (today: from now on, running into tomorrow if needed; other days: from 08:00)
+  // default: at most 8 hours (today: from now on, never past midnight; other days: from 08:00)
   const N = 8;
   let list;
   if (allHours) list = hrs;
-  else if (isToday) list = hrs.filter(x => x.h >= n.h).concat(hoursOf(addD(sel, 1)).map(x => ({...x, tm:true}))).slice(0, N);
+  else if (isToday) list = hrs.filter(x => x.h >= n.h).slice(0, N);
   else list = hrs.filter(x => x.h >= 8).slice(0, N);
   const rows = list.map(x => {
     const [he, ht] = info(x.c, x.d);
@@ -2797,7 +2797,7 @@ function dayDetail(){
   box.innerHTML = `<div class="hv-dh"><span class="e" aria-hidden="true">${e}</span><div class="m"><b>${isToday ? "Bugün · " : ""}${nice(sel)}</b><span>${t}</span></div><div class="t">${r0(D.temperature_2m_max[i])}° <span>/ ${r0(D.temperature_2m_min[i])}°</span></div></div>
     <div class="hv-g"><div><span>Yağış ihtimali</span><b>%${D.precipitation_probability_max[i] ?? 0}</b></div><div><span>Yağış miktarı</span><b>${(D.precipitation_sum[i] ?? 0).toFixed(1).replace(".", ",")} mm</b></div><div><span>En hızlı rüzgâr</span><b>${r0(D.wind_speed_10m_max[i])} km/sa</b></div><div><span>Güneş</span><b>${(D.sunrise[i] || "").slice(11, 16)}–${(D.sunset[i] || "").slice(11, 16)}</b></div></div>
     ${adv ? `<div class="hv-tip"><span class="i" aria-hidden="true">${adv.umb[0]}</span><span>${esc(adv.umb[1])}</span></div><div class="hv-tip"><span class="i" aria-hidden="true">🧥</span><span><b>Ne giymeli:</b> ${esc(adv.wear)}</span></div>` : ""}
-    ${hrs.length ? `<div class="hv-sub">Gün boyu sıcaklık ve yağış ihtimali</div>${chart(hrs)}<div class="hv-sub">${allHours ? "Saat saat · bütün gün" : isToday ? "Saat saat · önümüzdeki 8 saat" : "Saat saat · 08:00'den itibaren 8 saat"}</div>
+    ${hrs.length ? `<div class="hv-sub">Gün boyu sıcaklık ve yağış ihtimali</div>${chart(hrs)}<div class="hv-sub">${allHours ? "Saat saat · bütün gün" : isToday ? `Saat saat · önümüzdeki ${list.length} saat` : "Saat saat · 08:00'den itibaren 8 saat"}</div>
     <div class="hv-hrs"><div class="hv-hr hv-hhd"><span class="h">Saat</span><span></span><span class="d">Durum</span><span class="t">°C</span><span class="p">Yağış</span><span class="w">Rüzgâr</span></div>${rows}</div>
     ${hidden > 0 || allHours ? `<button type="button" class="hv-more" id="hvMore">${allHours ? "Yalnızca 8 saati göster" : "Günün bütün saatlerini göster"}</button>` : ""}` : `<p class="muted small" style="margin:0">Bu gün için saatlik tahmin henüz yok.</p>`}`;
 }
