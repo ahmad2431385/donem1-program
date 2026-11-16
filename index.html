@@ -1047,6 +1047,43 @@ body[data-route="notlar"] #who{display:none !important}
   .nt-tg b{font-size:14px}
 }
 @media (prefers-reduced-motion: reduce){.nt-c .chev{transition:none}}
+
+/* ============ ortak gezinme, bilgi satırı, uyumlu kartlar ============ */
+.tabbar{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;align-self:center}
+.tabbar button,.tabbar a{display:flex;align-items:center;gap:7px;border:none;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:8px 14px;border-radius:10px;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.tabbar button:hover,.tabbar a:hover{color:var(--ink)}
+.tabbar [aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.top{grid-template-columns:1fr auto auto}
+@media (max-width:699px){
+  .top{grid-template-columns:1fr auto}
+  .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:25;border-radius:0;border:none;border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;gap:0;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+  .tabbar button,.tabbar a{flex:1;flex-direction:column;gap:2px;font-size:11.5px;padding:6px 4px;border-radius:12px}
+  .wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  .toast{bottom:calc(84px + env(safe-area-inset-bottom))}
+}
+.infoline{background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:13px;overflow:hidden}
+.infoline > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:8px 10px 8px 12px;-webkit-tap-highlight-color:transparent}
+.infoline > summary::-webkit-details-marker{display:none}
+.infoline .dot{width:8px;height:8px;border-radius:50%;background:var(--uyg);flex:none}
+.infoline .il-t{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.infoline .il-r{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.infoline .chev{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--bg);transition:transform .2s ease}
+.infoline[open] .chev{transform:rotate(180deg)}
+.infoline .il-b{padding:0 10px 10px;display:flex;flex-direction:column;gap:8px}
+.infoline .sync{border:none;padding:2px 2px 0;background:none}
+@media (max-width:420px){.infoline .il-r{font-size:0}.infoline .il-r::after{content:"Resmi değildir";font-size:12px}}
+#progView{display:flex;flex-direction:column;gap:12px}
+body[data-route="notlar"] .wrap.wide{max-width:680px}
+.nt-c{border-left:4px solid var(--c,var(--line));border-radius:12px}
+.nt-c[data-st="ok"]{--c:var(--accent)}
+.nt-c[data-st="mid"]{--c:var(--pdo)}
+.nt-c[data-st="bad"]{--c:var(--exam)}
+.nt-c[data-st="wip"]{--c:var(--amfi)}
+.nt-pr{grid-column:1/-1;display:flex;flex-direction:column;gap:5px;margin-top:8px;font-size:12.5px;color:var(--muted)}
+.nt-pr > div{height:6px;border-radius:99px;background:var(--free-soft);overflow:hidden}
+.nt-pr i{display:block;height:100%;border-radius:99px;background:var(--accent);transition:width .3s ease}
+.nt-pr b{color:var(--ink)}
+@media (prefers-reduced-motion: reduce){.infoline .chev,.nt-pr i{transition:none}}
 </style>
 </head>
 <body data-route="program">
@@ -1057,22 +1094,32 @@ body[data-route="notlar"] #who{display:none !important}
       <small id="brandSmall">İstanbul Tıp · Dönem 1 Türkçe</small>
       <h1 id="brandTitle">Programım</h1>
     </div>
+    <nav class="tabbar" id="tabbar" aria-label="Bölümler">
+      <button type="button" data-go="program" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Program</span></button>
+      <button type="button" data-go="notlar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg><span>Notlar</span></button>
+      <a href="https://ahmad2431385.github.io/studydoro/"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg><span>Sayaç</span></a>
+    </nav>
     <button class="menubtn" id="menuBtn" type="button" aria-label="Menüyü aç" aria-haspopup="true" aria-expanded="false" aria-controls="drawer"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     <div class="chips" id="who" hidden></div>
   </header>
 
   <div id="progView">
-  <div class="sync" id="sync" hidden></div>
+  <details class="infoline" id="infoLine">
+    <summary><span class="dot" aria-hidden="true"></span><span class="il-t" id="infoSum">Otomatik güncelleniyor</span><span class="il-r">Resmi değildir · ayrıntı</span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+    <div class="il-b" id="infoBody">
+      <div class="sync" id="sync" hidden></div>
+      <div class="warn" role="note">
+        <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
+        <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları gün içinde altı kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
+      </div>
+    </div>
+  </details>
 
   <div class="warn stale" id="staleBox" role="alert" hidden>
     <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
     <div id="staleTxt"></div>
   </div>
 
-  <div class="warn" role="note">
-    <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
-    <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları gün içinde altı kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
-  </div>
 
   <div class="loading" id="loading">Program yükleniyor…</div>
 
@@ -1090,12 +1137,12 @@ body[data-route="notlar"] #who{display:none !important}
 
   <!-- main -->
   <main id="mainView" class="stack" hidden style="gap:14px">
+    <section class="now" id="nowBox"></section>
+
     <details class="changes fold" id="chgBox" hidden>
       <summary><span class="ft"><h2>Programında son değişiklikler</h2><span class="hint">Görmek için dokun</span></span><span class="badge" id="chgCount"></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody" id="chgBody" aria-live="polite"></div>
     </details>
-
-    <section class="now" id="nowBox"></section>
 
     <section class="card wx-today" id="wxToday" hidden aria-live="polite"></section>
 
@@ -1493,6 +1540,7 @@ function renderWho(){
 }
 function renderSync(){
   const s = $("sync"); s.hidden = false;
+  $("infoSum").textContent = `Güncel · son kontrol ${fmtStamp(D.lastCheck)}`;
   const when = `her gün ${(D.schedule||[]).join(", ")}`;
   s.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px"><span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> ${when}</span></span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
 }
@@ -2377,6 +2425,7 @@ function update(c){
   else if (r.have.length) sub.push(`Şimdilik ${f1(r.part)} puan topladın (%${r.wDone} üzerinden)`);
   else sub.push((c.k ? c.k + " AKTS · " : "") + (c.h || "Notlarını gir"));
   o("sub").textContent = sub.join(" · ");
+  el.dataset.st = r.st || (r.have.length ? "wip" : "");
   const gr = o("gr"); gr.className = "gr" + (r.st ? " " + r.st : "");
   gr.querySelector("b").textContent = r.L || (r.have.length ? "…" : "—");
   gr.querySelector("small").textContent = r.done && !c.fd ? f1(r.P) : "";
@@ -2433,8 +2482,10 @@ function summary(){
   const pill = (k, t) => n[k] ? `<span class="nt-pill ${k === "wait" ? "" : k}">${n[k]} ${t}</span>` : "";
   if (dons > 1 && ks > 0) line = "Bütün dönemlerin kredili not ortalaması (genel AGNO). " + line.replace("Kredili notlarına göre ağırlıklı not ortalaman.", "").trim();
   const dAg = cur.ks > 0 ? f2(Math.round(cur.kc/cur.ks*100)/100) : cur.nG ? f2(Math.round(cur.sum/cur.nG*100)/100) : "";
+  const totK = S.c.reduce((a, c) => { const k = num(c.k, 60); return a + (ok(k) ? k : 0); }, 0);
+  const prog = totK > 0 ? `<div class="nt-pr" role="img" aria-label="Notu belli olan ${f1(cur.ks)} / ${f1(totK)} AKTS"><div><i style="width:${Math.min(100, cur.ks/totK*100)}%"></i></div><span>Notu belli olan <b>${f1(cur.ks)}</b> / ${f1(totK)} AKTS</span></div>` : "";
   const dPill = dons > 1 && dAg ? `<span class="nt-pill ok">Dönem ${S.n} ortalaması ${dAg}</span>` : "";
-  $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Dönem ${S.n} notları</h2><p>${esc(line)}</p><div class="nt-cnt">${dPill}${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>`;
+  $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Dönem ${S.n} notları</h2><p>${esc(line)}</p><div class="nt-cnt">${dPill}${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>${prog}`;
   const L = TY.L, parts = [["v", L.v], ["u", L.u], ["f", L.f]].filter(([k]) => S.w[k] > 0).map(([k, l]) => `${l} %${S.w[k]}`);
   $("ntSetHint").textContent = parts.join(" · ") || "Oran yok";
 }
@@ -2541,7 +2592,7 @@ const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
 const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textContent, brandS.textContent];
 function setRoute(r){
   document.body.dataset.route = r;
-  drawer.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   if (r === "notlar"){ brandT.textContent = "Notlarım"; brandS.textContent = "İstanbul Tıp · Not hesaplama"; document.title = "Not hesaplama · İstanbul Tıp"; }
   else { brandT.textContent = T0[0]; brandS.textContent = T0[1]; document.title = DOC_T; }
 }
@@ -2562,13 +2613,14 @@ menuBtn.addEventListener("click", () => drawer.classList.contains("open") ? clos
 scrim.addEventListener("click", () => closeDrawer(true));
 $("drawerClose").addEventListener("click", () => closeDrawer(true));
 document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer(true); });
-drawer.addEventListener("click", e => {
+const onGo = e => {
   const b = e.target.closest("[data-go]"); if (!b) return;
-  closeDrawer(false);
+  if (drawer.classList.contains("open")) closeDrawer(false);
   if (b.dataset.go === "notlar"){ if (location.hash !== "#notlar") history.pushState(null, "", "#notlar"); setRoute("notlar"); }
   else { if (location.hash) history.pushState(null, "", location.pathname); setRoute("program"); }
   window.scrollTo(0, 0);
-});
+};
+drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo);
 window.addEventListener("popstate", routeFromHash);
 })();
 </script>
