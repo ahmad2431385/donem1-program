@@ -954,6 +954,12 @@ body[data-route="notlar"] #who{display:none !important}
 .nt-pill.mid{background:var(--pdo-soft);color:var(--pdo)}
 .nt-pill.bad{background:var(--exam-soft);color:var(--exam)}
 .nt-list{display:flex;flex-direction:column;gap:10px}
+.nt-dsel{display:flex;width:100%}
+.nt-dsel button{flex:1 1 0;padding:8px 4px;min-width:0;white-space:nowrap;font-variant-numeric:tabular-nums}
+.nt-dw{display:flex;align-items:center;gap:10px}
+.nt-dw > span{font-size:13px;font-weight:700;color:var(--muted)}
+.nt-dw .nt-dsel{flex:1;min-width:0}
+.nt-dsel button{font-size:15px}
 .nt-gh{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:8px 4px -2px}
 .nt-gh:first-child{margin-top:0}
 .nt-c{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
@@ -1195,6 +1201,9 @@ body[data-route="notlar"] #who{display:none !important}
 
   <!-- ============ Not hesaplama ============ -->
   <div id="notView">
+    <div class="nt-dw"><span>Dönem</span><div class="seg nt-dsel" id="ntDsel" role="group" aria-label="Dönem seç">
+      <button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button><button type="button" data-d="4">4</button><button type="button" data-d="5">5</button><button type="button" data-d="6">6</button>
+    </div></div>
     <section class="card nt-sum" id="ntSum" aria-live="polite"></section>
 
     <div class="nt-list" id="ntList"></div>
@@ -1203,17 +1212,17 @@ body[data-route="notlar"] #who{display:none !important}
     <details class="card fold" id="ntSet">
       <summary><span class="ft"><h2>Not oranları</h2><span class="hint" id="ntSetHint">Vize %40 · Uygulama %30 · Final %30</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
-        <p class="small muted" style="margin:0">Bütün dilimlerde kullanılan oranlar. Bir dersin oranları farklıysa o dersin kartında "Ayrıntılı gir" bölümünden ayrıca değiştirebilirsin.</p>
+        <p class="small muted" style="margin:0">Bu dönemin bütün derslerinde kullanılan oranlar. Varsayılanlar tahminidir; kendi dönemine göre değiştir. Oranı 0 olan not kutusu kartlarda gizlenir. Bir dersin oranları farklıysa o dersin kartında "Ayrıntılı gir" bölümünden ayrıca değiştirebilirsin.</p>
         <div class="nt-w">
-          <label class="nt-f"><span>Vize <i>%</i></span><input class="nt-in" id="ntWv" inputmode="decimal" autocomplete="off"></label>
-          <label class="nt-f"><span>Uygulama <i>%</i></span><input class="nt-in" id="ntWu" inputmode="decimal" autocomplete="off"></label>
-          <label class="nt-f"><span>Final <i>%</i></span><input class="nt-in" id="ntWf" inputmode="decimal" autocomplete="off"></label>
+          <label class="nt-f"><span><span id="ntLv">Vize</span> <i>%</i></span><input class="nt-in" id="ntWv" inputmode="decimal" autocomplete="off"></label>
+          <label class="nt-f"><span><span id="ntLu">Uygulama</span> <i>%</i></span><input class="nt-in" id="ntWu" inputmode="decimal" autocomplete="off"></label>
+          <label class="nt-f"><span><span id="ntLf">Final</span> <i>%</i></span><input class="nt-in" id="ntWf" inputmode="decimal" autocomplete="off"></label>
         </div>
         <div class="nt-msg" id="ntWMsg"></div>
         <div class="nt-act">
           <button type="button" class="secondary" id="ntWReset">Oranları sıfırla (40 · 30 · 30)</button>
           <button type="button" class="secondary" id="ntRestore">Silinen dersleri geri getir</button>
-          <button type="button" class="secondary nt-del" id="ntClear">Bütün notları sil</button>
+          <button type="button" class="secondary nt-del" id="ntClear">Bu dönemin bütün notlarını sil</button>
         </div>
       </div>
     </details>
@@ -1221,7 +1230,9 @@ body[data-route="notlar"] #who{display:none !important}
     <details class="card fold nt-info">
       <summary><span class="ft"><h2>Nasıl hesaplanıyor?</h2><span class="hint">Harf notları, baraj, bütünleme, AGNO</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
-        <p><b>Başarı notu</b> = Vize × %40 + Uygulama × %30 + Final × %30. Vize dilim sınavı, final dönem (bitirme) sınavıdır. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p>
+        <div id="ntInfoD"><p><b>Dönem 1–3 · Başarı notu</b> = Vize × %40 + Uygulama × %30 + Final × %30. Vize dilim sınavı, final dönem (bitirme) sınavıdır. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p></div>
+        <div id="ntInfoK" hidden><p><b>Dönem 4–5 · Klinik dersler.</b> Her dersin sonunda yazılı ve/veya sözlü bitirme sınavı yapılır. Varsayılan oran yazılı %50, sözlü %50; anabilim dalına göre değişir, kartlardan ayarla. Bitirme notu 50'nin altındaysa bütünlemeye girersin; bütünleme notu bitirme notunun yerine geçer. 5. dönemde FF, DC, DD aldığın derslerde başka bir grubun bitirme sınavına erken bütünleme olarak girebilirsin. 6. döneme geçerken en fazla 3 FF dersin kaldıysa ya da AGNO yetmiyorsa üç ders sınavı hakkın olur.</p></div>
+        <div id="ntInfoS" hidden><p><b>Dönem 6 · Stajlar.</b> Her stajın notunu staj sorumlusu verir; burada yalnızca notu girersin. Stajlarda %80 devam zorunludur ve mazeret kabul edilmez. Başarısız ya da devamsız staj, sonraki gruplarla tekrarlanır.</p></div>
         <ul>
           <li><b>60 (CC) ve üstü:</b> başarılı.</li>
           <li><b>50–59 (DD, DC):</b> koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin.</li>
@@ -2113,7 +2124,7 @@ const $ = id => document.getElementById(id);
 const KEY = "itf_notlar_v1";
 const W0 = {v:40, u:30, f:30};
 const OW = {v:40, u:0, f:60};
-const DEF = [
+const DEF1 = [
   {id:"tm",  g:"d", k:"4", n:"Tıbba Merhaba Dilimi", h:"Vize 19 Eki · Final 22 Oca", ul:["Yaralı taşıma","Kırık-çıkıkta ilk yardım","Temel yaşam desteği","Mikroskop kullanma"]},
   {id:"ymt", g:"d", k:"8", n:"Yaşamın Moleküler Temelleri", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Fizyoloji","Biyofizik"]},
   {id:"huc", g:"d", k:"8", n:"Hücre Dilimi", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Tıbbi mikrobiyoloji","Biyofizik"]},
@@ -2128,30 +2139,66 @@ const DEF = [
   {id:"ai2", g:"o", k:"2", n:"Atatürk İlkeleri ve İnkılap Tarihi II", h:"Uzaktan · Vize 20 Nis · Final 4 Haz", ul:[], ow:true, w:OW},
   {id:"yd2", g:"o", k:"2", n:"Yabancı Dil II", h:"Uzaktan · Vize 20 Nis · Final 4 Haz", ul:[], ow:true, w:OW}
 ];
+const DEFS = {1: DEF1};
+// Dönem 2–6: zorunlu dersler ve AKTS, İTF 2026–2027 müfredat ders listesinden (kod, ad, AKTS)
+const mk = (g, list) => list.map(([code, n, k]) => ({id:"c" + code, g, k:String(k), n, ul:[]}));
+DEFS[2] = mk("d", [[2115,"Kan Lenfoid",5],[2116,"Dolaşım I",7],[2117,"Solunum I",5],[2118,"Metabolizma",4],[2119,"Sindirim I",5],[2120,"Endokrin I",4],[2121,"Ürogenital ve Üreme",6],[2122,"Sinir Duyu I",11],[2123,"Patolojilere ve Kliniğe Giriş",7],[2124,"Dikey Koridor II",4]]);
+DEFS[3] = mk("d", [[3246,"Semiyoloji",6],[3247,"Kan-Lenfoid II",6],[3248,"Hareket II",6],[3249,"Dolaşım II",6],[3250,"Solunum II",6],[3251,"Endokrin - Metabolizma II",6],[3252,"Sindirim II",6],[3253,"Ürogenital ve Üreme II",6],[3254,"Sinir Duyu II",6],[3256,"Bilimsel Araştırma",2],[3255,"Dikey Koridor III (A)",2],[3275,"Dikey Koridor III (B)",2]]);
+DEFS[4] = mk("d", [[4076,"İç Hastalıkları",13],[4075,"Çocuk Sağlığı ve Hastalıkları",15],[4074,"Genel Cerrahi",7],[4077,"Kadın Hastalıkları ve Doğum",9],[4083,"Kardiyoloji",4],[4073,"Klinik Farmakoloji",4],[4084,"Biyoistatistik ve Tıp Bilişimi",2],[4287,"Kalp Damar Cerrahisi",1],[4087,"Klinik Akıl Yürütme",1],[4086,"Onkoloji",1],[4081,"Radiodiagnostik",1],[4085,"Tıbbi Genetik",1]]);
+DEFS[5] = mk("d", [[5109,"Göğüs Hastalıkları",5],[5327,"Ortopedi ve Travmatoloji",5],[5116,"Semptomdan Teşhise, Teşhisten Tedaviye",5],[5090,"Dermatoloji",4],[5326,"Halk Sağlığı",4],[5086,"Adli Tıp",3],[5096,"Kulak Burun Boğaz Hastalıkları",3],[5097,"Nöroloji",3],[5101,"Psikiyatri",3],[5115,"Tıbbi Farmakoloji (Klinik Toksikoloji)",3],[5113,"Aile Hekimliği",2],[5087,"Anesteziyoloji ve Reanimasyon",2],[5092,"Fizik Tedavi ve Rehabilitasyon",2],[5329,"Göğüs Cerrahisi",2],[5093,"Göz Hastalıkları",2],[5095,"Klinik Bakteriyoloji ve İnfeksiyon Hastalıkları",2],[5100,"Plastik ve Rekonstrüktif Cerrahi",2],[5328,"Radyasyon Onkolojisi",2],[5104,"Üroloji",2],[5266,"Beyin ve Sinir Cerrahisi",1],[5107,"Çocuk Ruh Sağlığı ve Hastalıkları",1],[5114,"Tıbbi Etik Vaka Tartışmaları",1]]);
+DEFS[6] = mk("d", [[6118,"İç Hastalıkları",9],[6216,"Acil Cerrahi ve Genel Cerrahi",8],[6116,"Çocuk Sağlığı ve Hastalıkları",8],[6119,"Kadın Hastalıkları ve Doğum",8],[6117,"Kırsal Hekimlik ve Toplum Hekimliği",6],[6123,"Ortopedi ve Travmatoloji",5],[6120,"Psikiyatri",5],[6220,"Acil Dahiliye",3],[6122,"Göğüs Hastalıkları",2],[6139,"Kardiyoloji",2],[6121,"Hekimliğe Doğru ve Hekimliğe Merhaba",2]]);
+// three kinds of grading: dilim (Dönem 1–3), klinik (4–5), staj (6)
+const TYPES = {
+  dilim: {L:{v:"Vize", u:"Uygulama", f:"Final"}, acc:"Vizeyi", w:{v:40, u:30, f:30}, nw:{v:40, u:0, f:60}, fb:true, gl:"Dilimler",
+          dev:"Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.", fd:"Dilimi tekrar alman gerekir."},
+  klinik:{L:{v:"Yazılı", u:"Uygulama", f:"Sözlü"}, acc:"Yazılıyı", w:{v:50, u:0, f:50}, nw:{v:50, u:0, f:50}, fb:false, gl:"Klinik dersler",
+          dev:"Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.", fd:"Dersi tekrar alman gerekir."},
+  staj:  {L:{v:"Staj notu", u:"Uygulama", f:"Sınav"}, acc:"Staj notunu", w:{v:100, u:0, f:0}, nw:{v:100, u:0, f:0}, fb:false, gl:"Stajlar",
+          dev:"Stajlarda %80 devam zorunlu, mazeret kabul edilmez.", fd:"Stajı sonraki gruplarla tekrarlarsın."}
+};
+const TYP = {1:"dilim", 2:"dilim", 3:"dilim", 4:"klinik", 5:"klinik", 6:"staj"};
+const tyOf = n => TYPES[TYP[n] || "dilim"];
 const GROUPS = {d:"Dilimler", o:"Ortak zorunlu dersler", u:"Eklediğin dersler"};
 const GR = [[88,"AA",4],[80,"BA",3.5],[73,"BB",3],[66,"CB",2.5],[60,"CC",2],[55,"DC",1.5],[50,"DD",1],[0,"FF",0]];
 const TG = [[60,"CC"],[73,"BB"],[80,"BA"],[88,"AA"]];
 
-const blank = d => ({id:d.id, g:d.g||"u", n:d.n, h:d.h||"", def:!!d.def, k:d.k||"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:!!d.ow, w:{...(d.w||W0)}});
-function load(){
-  let s = null;
-  try { s = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
-  if (!s || !Array.isArray(s.c)) s = {v:2, w:{...W0}, rm:[], c:DEF.map(d => blank({...d, def:true}))};
-  if (!s.w) s.w = {...W0};
+const blank = (d, w0 = W0) => ({id:d.id, g:d.g||"u", n:d.n, h:d.h||"", def:!!d.def, k:d.k||"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:!!d.ow, w:{...(d.w||w0)}});
+const fresh = n => ({n, v:3, w:{...tyOf(n).w}, rm:[], c:DEFS[n].map(d => blank({...d, def:true}, tyOf(n).w))});
+function loadAll(){
+  let a = null;
+  try { a = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
+  if (a && Array.isArray(a.c)) a = {v:3, d:1, y:{1:a}};          // v1/v2: a single Dönem 1
+  if (!a || !a.y) a = {v:3, d:1, y:{}};
+  if (!(a.d >= 1 && a.d <= 6)) a.d = 1;
+  for (const n of Object.keys(a.y)) a.y[n] = initY(+n, a.y[n]);
+  return a;
+}
+function initY(n, s){
+  if (!s || !Array.isArray(s.c)) return fresh(n);
+  s.n = n;
+  const DEF = DEFS[n];
+  if (!s.w) s.w = {...tyOf(n).w};
   if (!Array.isArray(s.rm)) s.rm = [];
   // v2: AKTS from the university's curriculum, one Dikey Koridor course, the common compulsory courses
-  if ((s.v || 1) < 2){
+  if (n === 1 && (s.v || 1) < 2){
     const empty = c => c && !c.v && !c.vd && !c.u && !c.f && !c.b && !c.fd && !c.ul.some(x => x.s) && !c.bar.length;
     const d1 = s.c.find(c => c.id === "dk1"), d2 = s.c.find(c => c.id === "dk2");
     if (empty(d1) && empty(d2)) s.c = s.c.filter(c => c !== d1 && c !== d2); else s.rm.push("dk");
     for (const c of s.c){ const d = DEF.find(x => x.id === c.id); if (d){ c.g = d.g; if (!c.k) c.k = d.k; } else if (!c.g) c.g = /^dk[12]$/.test(c.id) ? "d" : "u"; }
-    s.v = 2;
   }
-  DEF.forEach((d, i) => { if (!s.c.some(c => c.id === d.id) && !s.rm.includes(d.id)){ const at = s.c.findIndex(c => DEF.findIndex(x => x.id === c.id) > i); s.c.splice(at < 0 ? s.c.length : at, 0, blank({...d, def:true})); } });
+  s.v = 3;
+  DEF.forEach((d, i) => { if (!s.c.some(c => c.id === d.id) && !s.rm.includes(d.id)){ const at = s.c.findIndex(c => DEF.findIndex(x => x.id === c.id) > i); s.c.splice(at < 0 ? s.c.length : at, 0, blank({...d, def:true}, tyOf(n).w)); } });
   return s;
 }
-let S = load();
-const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+let ALL = loadAll(), S, DEF, TY;
+function useDonem(n){
+  ALL.d = n;
+  if (!ALL.y[n]) ALL.y[n] = fresh(n);
+  S = ALL.y[n]; DEF = DEFS[n]; TY = tyOf(n);
+  GROUPS.d = TY.gl;
+}
+useDonem(ALL.d);
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(ALL)); } catch(e){} };
 
 const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const num = (s, max = 100) => { if (s === "" || s == null) return null; const x = parseFloat(String(s).replace(",", ".")); return isFinite(x) && x >= 0 && x <= max ? x : NaN; };
@@ -2159,11 +2206,11 @@ const ok = x => x !== null && !Number.isNaN(x);
 const f1 = x => (Math.round(x*10)/10).toLocaleString("tr-TR", {maximumFractionDigits:1});
 const f2 = x => x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2});
 const grade = p => GR.find(g => p >= g[0] - 1e-9);
-const wOf = c => c.ow ? c.w : S.w;
+const wOf = (c, st = S) => c.ow ? c.w : st.w;
 
 /* ---------- one course: every number the card shows ---------- */
-function calc(c){
-  const w = wOf(c), r = {w, bad:[]};
+function calc(c, st = S){
+  const w = wOf(c, st), ty = tyOf(st.n), r = {w, bad:[]};
   // vize: from correct answers if given, then the baraj deduction
   const vd = num(c.vd, 9999), vt = num(c.vt, 9999);
   let vRaw = null;
@@ -2188,7 +2235,9 @@ function calc(c){
   const f = num(c.f), b = num(c.b);
   if (Number.isNaN(f)) r.bad.push("f"); if (Number.isNaN(b)) r.bad.push("b");
   r.F0 = ok(f) ? f : null; r.B = ok(b) ? b : null;
-  r.F = r.B !== null ? r.B : r.F0;
+  // dilim: bütünleme replaces the final; klinik: it replaces the whole bitirme notu; staj: none
+  if (TYP[st.n] === "staj") r.B = null;
+  r.F = ty.fb && r.B !== null ? r.B : r.F0;
   r.useBut = r.B !== null;
   const parts = [["v", r.V], ["u", r.U], ["f", r.F]].filter(p => w[p[0]] > 0);
   r.have = parts.filter(p => p[1] !== null);
@@ -2197,25 +2246,28 @@ function calc(c){
   r.part = r.have.reduce((a,p) => a + w[p[0]]*p[1], 0)/100;
   r.wDone = r.have.reduce((a,p) => a + w[p[0]], 0);
   // status
-  if (c.fd){ r.st = "bad"; r.L = "FD"; r.coef = 0; r.msg = "Devamsızlıktan başarısız (FD). Dilimi tekrar alman gerekir."; return r; }
+  if (c.fd){ r.st = "bad"; r.L = "FD"; r.coef = 0; r.msg = "Devamsızlıktan başarısız (FD). " + ty.fd; return r; }
+  if (!ty.fb && r.useBut && r.done){ r.P0 = r.part; r.part = r.B; }
   if (r.done){
     r.P = r.part;
     const g = grade(r.P); r.L = g[1]; r.coef = g[2];
-    if (w.f > 0 && r.F < 50 && !r.useBut){ r.st = "bad"; r.L = "BÜT"; r.coef = null; r.msg = "Final 50'nin altında: bütünlemeye girersin. Bütünleme notunu girince sonuç güncellenir."; }
-    else if (w.f > 0 && r.F < 50 && r.useBut){ r.st = "bad"; r.L = "FF"; r.coef = 0; r.msg = "Bütünleme notu da 50'nin altında: dönem sınavı barajı geçilemedi, başarısız sayılırsın."; }
+    const staj = TYP[st.n] === "staj";
+    if (ty.fb && w.f > 0 && r.F < 50 && !r.useBut){ r.st = "bad"; r.L = "BÜT"; r.coef = null; r.msg = "Final 50'nin altında: bütünlemeye girersin. Bütünleme notunu girince sonuç güncellenir."; }
+    else if (ty.fb && w.f > 0 && r.F < 50 && r.useBut){ r.st = "bad"; r.L = "FF"; r.coef = 0; r.msg = "Bütünleme notu da 50'nin altında: dönem sınavı barajı geçilemedi, başarısız sayılırsın."; }
     else if (r.P >= 60){ r.st = "ok"; r.msg = "Başarılısın."; }
-    else if (r.P >= 50){ r.st = "mid"; r.msg = "Koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin."; }
-    else { r.st = "bad"; r.msg = r.useBut ? "Bütünlemeden sonra da 50'nin altında: başarısız (FF)." : "50'nin altında: bütünlemeye girersin."; }
+    else if (r.P >= 50){ r.st = "mid"; r.msg = staj ? "Koşullu başarılı." : "Koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin."; }
+    else { r.st = "bad"; r.msg = staj ? "50'nin altında: başarısız, stajı tekrarlarsın." : r.useBut ? "Bütünlemeden sonra da 50'nin altında: başarısız (FF)." : "50'nin altında: bütünlemeye girersin."; }
+    if (st.n === 5 && !r.useBut && r.P < 60) r.erken = true;
   } else r.st = "";
   // what the final (or bütünleme) has to be for each grade
-  if (w.f > 0 && !c.fd){
+  if (w.f > 0 && !c.fd && !(r.useBut && !ty.fb)){
     const others = [["v", r.V], ["u", r.U]].filter(p => w[p[0]] > 0);
     if (others.every(p => p[1] !== null)){
       const base = others.reduce((a,p) => a + w[p[0]]*p[1], 0)/100;
-      const forBut = r.F0 !== null && r.B === null && (r.F0 < 50 || (r.done && r.P < 60));
+      const forBut = ty.fb && r.F0 !== null && r.B === null && (r.F0 < 50 || (r.done && r.P < 60));
       if (r.F0 === null || forBut){
         r.tgFor = r.F0 === null ? "final" : "bütünleme";
-        r.tg = TG.map(([t, L]) => { const need = Math.max(50, (t - base)*100/w.f); return {L, need: need > 100 + 1e-9 ? null : Math.ceil(need*10 - 1e-6)/10, ach: r.done && !forBut && r.P >= t}; });
+        r.tg = TG.map(([t, L]) => { const need = Math.max(ty.fb ? 50 : 0, (t - base)*100/w.f); return {L, need: need > 100 + 1e-9 ? null : Math.ceil(need*10 - 1e-6)/10, ach: r.done && !forBut && r.P >= t}; });
       }
     }
   }
@@ -2227,20 +2279,20 @@ const chev = `<span class="chev" aria-hidden="true"><svg width="14" height="14" 
 const inp = (c, k, val, extra = "") => `<input class="nt-in" data-k="${k}" value="${esc(val)}" inputmode="decimal" autocomplete="off" ${extra}>`;
 const xBtn = (k, i) => `<button type="button" class="nt-x" data-del="${k}" data-i="${i}" aria-label="Satırı sil"><svg width="10" height="10" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`;
 function cardHTML(c){
-  const w = wOf(c);
+  const w = wOf(c), L = TY.L, isD = TYP[S.n] === "dilim", isS = TYP[S.n] === "staj";
   return `<details class="nt-c" id="nt_${c.id}" data-id="${c.id}"${OPEN.has(c.id) ? " open" : ""}>
   <summary><span class="nm"><b>${esc(c.n)}</b><small data-o="sub"></small></span><span class="gr" data-o="gr"><b>—</b><small></small></span>${chev}</summary>
   <div class="nt-b">
     <div class="nt-g">
-      <label class="nt-f"><span>Vize <i data-o="wv">%${w.v}</i></span>${inp(c, "v", c.v, 'placeholder="0–100"')}</label>
-      <label class="nt-f"><span>Uygulama <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
-      <label class="nt-f"><span>Final <i data-o="wf">%${w.f}</i></span>${inp(c, "f", c.f, 'placeholder="0–100"')}</label>
+      <label class="nt-f"><span>${L.v} <i data-o="wv">%${w.v}</i></span>${inp(c, "v", c.v, 'placeholder="0–100"')}</label>
+      <label class="nt-f"><span>${L.u} <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
+      <label class="nt-f"><span>${L.f} <i data-o="wf">%${w.f}</i></span>${inp(c, "f", c.f, 'placeholder="0–100"')}</label>
     </div>
-    <label class="nt-f" data-o="butw" hidden><span>Bütünleme notu <i>finalin yerine geçer</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
+    <label class="nt-f" data-o="butw" hidden><span>Bütünleme notu <i>${isD ? "finalin" : "bitirme notunun"} yerine geçer</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
     <div class="nt-res" data-o="res"></div>
-    <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.</small></span></label>
+    <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>${TY.dev}</small></span></label>
     <details class="nt-more"${MORE.has(c.id) ? " open" : ""}>
-      <summary>Ayrıntılı gir: uygulama sınavları, doğru sayısı, baraj, AKTS</summary>
+      <summary>${isD ? "Ayrıntılı gir: uygulama sınavları, doğru sayısı, baraj, AKTS" : "Ayrıntılı gir: AKTS, oranlar, dersin adı"}</summary>
       <div class="nt-sub">
         <h4>Uygulama sınavları</h4>
         <p>Birden fazla uygulama sınavı varsa ayrı ayrı yaz; ortalaması uygulama notu olur.</p>
@@ -2248,15 +2300,15 @@ function cardHTML(c){
         <div class="nt-rows">${c.ul.map((x, i) => `<div class="nt-row two"><input type="text" data-k="ul.${i}.n" value="${esc(x.n)}" placeholder="Sınav adı" aria-label="Uygulama sınavı adı">${inp(c, `ul.${i}.s`, x.s, 'placeholder="—" aria-label="Puan"').replace('class="nt-in"', 'class="nt-in sm"')}${xBtn("ul", i)}</div>`).join("")}</div>
         <button type="button" class="nt-add" data-add="ul">+ Uygulama sınavı ekle</button>
       </div>
-      <div class="nt-sub">
-        <h4>Vizeyi doğru sayısıyla hesapla</h4>
-        <p>Doğru ve toplam soru sayısını yazarsan vize puanı kendiliğinden hesaplanır.</p>
+      <div class="nt-sub"${isS ? " hidden" : ""}>
+        <h4>${TY.acc} doğru sayısıyla hesapla</h4>
+        <p>Doğru ve toplam soru sayısını yazarsan ${L.v.toLocaleLowerCase("tr")} puanı kendiliğinden hesaplanır.</p>
         <div class="nt-g" style="grid-template-columns:repeat(2,minmax(0,1fr))">
           <label class="nt-f"><span>Doğru</span>${inp(c, "vd", c.vd, 'placeholder="—" inputmode="numeric"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
           <label class="nt-f"><span>Toplam soru</span>${inp(c, "vt", c.vt, 'placeholder="—" inputmode="numeric"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
         </div>
       </div>
-      <div class="nt-sub">
+      <div class="nt-sub"${isD ? "" : " hidden"}>
         <h4>Baraj</h4>
         <p>Barajlı anabilim dalının sorularının en az yarısını doğru yapmalısın; eksik her soru vizeden düşülür. Hesap için yukarıya toplam soru sayısını da yaz.</p>
         <div class="nt-hd"${c.bar.length ? "" : " hidden"}><span>Anabilim dalı</span><span>Soru</span><span>Doğru</span><span></span></div>
@@ -2266,15 +2318,15 @@ function cardHTML(c){
       </div>
       <div class="nt-sub">
         <h4>AKTS kredisi</h4>
-        <p>AGNO hesabı için. Dönem 1 dersleri üniversitenin güncel ders planından (EBS) hazır yazıldı.</p>
+        <p>AGNO hesabı için. Dersler ve kredileri İTF 2026–2027 müfredat ders listesinden hazır yazıldı; sende farklıysa değiştir.</p>
         <label class="nt-f" style="max-width:140px"><span>AKTS</span>${inp(c, "k", c.k, 'placeholder="—"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
       </div>
       <div class="nt-sub">
-        <label class="nt-sw"><input type="checkbox" data-k="ow"${c.ow ? " checked" : ""}><span>Bu dersin oranları farklı<small>Örneğin vize %40, final %60 olan bir ders için.</small></span></label>
+        <label class="nt-sw"><input type="checkbox" data-k="ow"${c.ow ? " checked" : ""}><span>Bu dersin oranları farklı<small>Bu ders için ${L.v.toLocaleLowerCase("tr")}, ${L.u.toLocaleLowerCase("tr")} ve ${L.f.toLocaleLowerCase("tr")} oranını ayrıca ayarla.</small></span></label>
         <div class="nt-g" data-o="oww"${c.ow ? "" : " hidden"}>
-          <label class="nt-f"><span>Vize %</span>${inp(c, "w.v", c.w.v).replace('class="nt-in"', 'class="nt-in sm"')}</label>
-          <label class="nt-f"><span>Uygulama %</span>${inp(c, "w.u", c.w.u).replace('class="nt-in"', 'class="nt-in sm"')}</label>
-          <label class="nt-f"><span>Final %</span>${inp(c, "w.f", c.w.f).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>${L.v} %</span>${inp(c, "w.v", c.w.v).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>${L.u} %</span>${inp(c, "w.u", c.w.u).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>${L.f} %</span>${inp(c, "w.f", c.w.f).replace('class="nt-in"', 'class="nt-in sm"')}</label>
         </div>
         <div class="nt-msg" data-o="owmsg"></div>
       </div>
@@ -2312,15 +2364,18 @@ function update(c){
   vIn.disabled = !!r.vFromQ; if (vIn.disabled) vIn.value = r.V !== null ? f1(r.V) : "";
   else if (document.activeElement !== vIn) vIn.value = c.v;
   uIn.disabled = !!r.uFromList; if (uIn.disabled) uIn.value = f1(r.U); else if (document.activeElement !== uIn) uIn.value = c.u;
-  const uf = uIn.closest(".nt-f"); uf.style.display = w.u > 0 ? "" : "none"; uf.parentElement.style.gridTemplateColumns = w.u > 0 ? "" : "repeat(2,minmax(0,1fr))";
+  const L = TY.L, fIn = el.querySelector('[data-k="f"]');
+  const uf = uIn.closest(".nt-f"), ff = fIn.closest(".nt-f"), nVis = 1 + (w.u > 0) + (w.f > 0);
+  uf.style.display = w.u > 0 ? "" : "none"; ff.style.display = w.f > 0 ? "" : "none";
+  uf.parentElement.style.gridTemplateColumns = nVis === 3 ? "" : nVis === 2 ? "repeat(2,minmax(0,1fr))" : "minmax(0,1fr)";
   el.querySelector('[data-add="ul"]').parentElement.style.display = w.u > 0 ? "" : "none";
   o("wv").textContent = "%" + w.v; o("wu").textContent = "%" + w.u; o("wf").textContent = "%" + w.f;
-  o("butw").hidden = !(r.F0 !== null && (r.F0 < 50 || (r.done && r.P < 60)) || c.b !== "");
+  o("butw").hidden = TYP[S.n] === "staj" || !(TY.fb ? (r.F0 !== null && (r.F0 < 50 || (r.done && r.P < 60))) : (r.done && (r.P0 ?? r.P) < 60)) && c.b === "";
   // header
   const sub = [];
   if (r.done || c.fd) sub.push(c.fd ? "Devamsız" : r.msg.split(":")[0].replace(/\.$/, ""));
   else if (r.have.length) sub.push(`Şimdilik ${f1(r.part)} puan topladın (%${r.wDone} üzerinden)`);
-  else sub.push(c.h || "Notlarını gir");
+  else sub.push((c.k ? c.k + " AKTS · " : "") + (c.h || "Notlarını gir"));
   o("sub").textContent = sub.join(" · ");
   const gr = o("gr"); gr.className = "gr" + (r.st ? " " + r.st : "");
   gr.querySelector("b").textContent = r.L || (r.have.length ? "…" : "—");
@@ -2331,17 +2386,21 @@ function update(c){
   if (c.fd) h = `<div class="st">${esc(r.msg)}</div>`;
   else if (r.done){
     h = `<div class="rl"><span>Başarı notu</span><b>${f1(r.P)} · ${esc(r.L === "BÜT" ? grade(r.P)[1] : r.L)}</b></div><div class="st">${esc(r.msg)}</div>`;
-    if (r.useBut) h += `<div class="why">Finalin yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+    if (r.useBut) h += `<div class="why">${TY.fb ? "Finalin" : "Bitirme notunun"} yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+    if (r.erken) h += `<div class="why">5. dönemde FF, DC ya da DD aldığın derslerde erken bütünleme hakkın var: başka bir grubun bitirme sınavına bütünleme yerine girebilirsin.</div>`;
   } else if (r.have.length){
     h = `<div class="rl"><span>Şu ana kadar</span><b>${f1(r.part)} / ${r.wDone}</b></div>`;
-  } else h = `<div class="why">Notlarını girdikçe başarı notun, harf notun ve finalde kaç alman gerektiği burada görünür.</div>`;
+  } else h = `<div class="why">Notlarını girdikçe başarı notun ve harf notun${w.f > 0 && w.v + w.u > 0 ? `, ${L.f.toLocaleLowerCase("tr")}de kaç alman gerektiği` : ""} burada görünür.</div>`;
   if (r.ded > 0) h += `<div class="why">Baraj: ${r.miss} soru eksik, vizeden −${f1(r.ded)} puan düşüldü.</div>`;
-  if (r.vFromQ && !c.fd) h += `<div class="why">Vize doğru sayısından hesaplandı: ${esc(c.vd)}/${esc(c.vt)} doğru.</div>`;
+  if (r.vFromQ && !c.fd) h += `<div class="why">${L.v} doğru sayısından hesaplandı: ${esc(c.vd)}/${esc(c.vt)} doğru.</div>`;
   if (r.uFromList && !c.fd) h += `<div class="why">Uygulama: ${r.uFromList} sınavın ortalaması.</div>`;
   if (r.tg){
-    h += `<div class="why" style="margin-top:2px"><b>${r.tgFor === "final" ? "Finalde" : "Bütünlemede"} en az kaç almalısın?</b></div><div class="nt-tg">${r.tg.map(t => `<div class="${t.need === null ? "no" : t.ach ? "done" : ""}"><small>${t.L}</small><b>${t.need === null ? "olmaz" : f1(t.need)}</b></div>`).join("")}</div>`;
-    if (r.tg[0].need === 50) h += `<div class="why">Finalde 50'nin altı bütünlemeye kalır, bu yüzden en az 50 gerekir.</div>`;
-  } else if (!r.done && !c.fd && w.f > 0 && r.F0 === null) h += `<div class="why">Vize ve uygulama notunu girince finalde kaç alman gerektiğini gösteririm.</div>`;
+    h += `<div class="why" style="margin-top:2px"><b>${r.tgFor === "final" ? L.f + "de" : "Bütünlemede"} en az kaç almalısın?</b></div><div class="nt-tg">${r.tg.map(t => `<div class="${t.need === null ? "no" : t.ach ? "done" : ""}"><small>${t.L}</small><b>${t.need === null ? "olmaz" : f1(t.need)}</b></div>`).join("")}</div>`;
+    if (TY.fb && r.tg[0].need === 50) h += `<div class="why">Finalde 50'nin altı bütünlemeye kalır, bu yüzden en az 50 gerekir.</div>`;
+  } else if (!r.done && !c.fd && w.f > 0 && r.F0 === null && w.v + w.u > 0){
+    const oth = [w.v > 0 ? L.v.toLocaleLowerCase("tr") : "", w.u > 0 ? L.u.toLocaleLowerCase("tr") : ""].filter(Boolean).join(" ve ");
+    h += `<div class="why">${oth.charAt(0).toLocaleUpperCase("tr") + oth.slice(1)} notunu girince ${L.f.toLocaleLowerCase("tr")}de kaç alman gerektiğini gösteririm.</div>`;
+  }
   res.innerHTML = h;
   const bm = o("barmsg");
   bm.className = "nt-msg" + (r.barNeedT ? " bad" : "");
@@ -2350,24 +2409,34 @@ function update(c){
   om.className = "nt-msg" + (c.ow && Math.abs(ws - 100) > 1e-9 ? " bad" : "");
   om.textContent = c.ow && Math.abs(ws - 100) > 1e-9 ? `Oranların toplamı ${f1(ws)}; 100 olmalı.` : "";
 }
-function summary(){
-  let ks = 0, kc = 0, nG = 0, sumCoef = 0, noK = 0;
-  const n = {ok:0, mid:0, bad:0, wait:0};
-  for (const c of S.c){
-    const r = calc(c);
-    if (r.st === "ok") n.ok++; else if (r.st === "mid") n.mid++; else if (r.st === "bad") n.bad++; else n.wait++;
+function tally(st, n){
+  const t = {ks:0, kc:0, nG:0, sum:0, noK:0};
+  for (const c of st.c){
+    const r = calc(c, st);
+    if (n){ if (r.st === "ok") n.ok++; else if (r.st === "mid") n.mid++; else if (r.st === "bad") n.bad++; else n.wait++; }
     if (r.coef === null || r.coef === undefined) continue;
-    nG++; sumCoef += r.coef;
+    t.nG++; t.sum += r.coef;
     const k = num(c.k, 60);
-    if (ok(k) && k > 0){ ks += k; kc += k*r.coef; } else noK++;
+    if (ok(k) && k > 0){ t.ks += k; t.kc += k*r.coef; } else t.noK++;
   }
+  return t;
+}
+function summary(){
+  const n = {ok:0, mid:0, bad:0, wait:0};
+  const cur = tally(S, n), all = {ks:0, kc:0, nG:0, sum:0, noK:0}; let dons = 0;
+  for (const k of Object.keys(ALL.y)){ const t = k == S.n ? cur : tally(ALL.y[k]); if (t.nG) dons++; for (const x in all) all[x] += t[x]; }
+  let {ks, kc, nG, noK} = all, sumCoef = all.sum;
   let big, cls = "", lbl = "AGNO", line;
   if (ks > 0){ const a = Math.round(kc/ks*100)/100; big = f2(a); if (a < 2) cls = " low"; line = a < 2 ? "AGNO 2,00'nin altında: sınamalı öğrenci sayılırsın." : "Kredili notlarına göre ağırlıklı not ortalaman."; if (noK) line += ` ${noK} dersin AKTS'si girilmedi, hesaba katılmadı.`; }
   else if (nG){ const a = Math.round(sumCoef/nG*100)/100; big = f2(a); lbl = "Ortalama"; if (a < 2) cls = " low"; line = "AKTS girilmediği için kredisiz ortalama. Kartlarda “Ayrıntılı gir” bölümünden AKTS'yi yazarsan gerçek AGNO hesaplanır."; }
   else { big = "—"; cls = " none"; line = "Bir dersin bütün notlarını girince ortalaman burada görünür."; }
   const pill = (k, t) => n[k] ? `<span class="nt-pill ${k === "wait" ? "" : k}">${n[k]} ${t}</span>` : "";
-  $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Not hesaplama</h2><p>${esc(line)}</p><div class="nt-cnt">${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>`;
-  $("ntSetHint").textContent = `Vize %${S.w.v} · Uygulama %${S.w.u} · Final %${S.w.f}`;
+  if (dons > 1 && ks > 0) line = "Bütün dönemlerin kredili not ortalaması (genel AGNO). " + line.replace("Kredili notlarına göre ağırlıklı not ortalaman.", "").trim();
+  const dAg = cur.ks > 0 ? f2(Math.round(cur.kc/cur.ks*100)/100) : cur.nG ? f2(Math.round(cur.sum/cur.nG*100)/100) : "";
+  const dPill = dons > 1 && dAg ? `<span class="nt-pill ok">Dönem ${S.n} ortalaması ${dAg}</span>` : "";
+  $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Dönem ${S.n} notları</h2><p>${esc(line)}</p><div class="nt-cnt">${dPill}${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>`;
+  const L = TY.L, parts = [["v", L.v], ["u", L.u], ["f", L.f]].filter(([k]) => S.w[k] > 0).map(([k, l]) => `${l} %${S.w[k]}`);
+  $("ntSetHint").textContent = parts.join(" · ") || "Oran yok";
 }
 
 /* ---------- editing ---------- */
@@ -2419,30 +2488,43 @@ $("ntList").addEventListener("click", e => {
 });
 $("ntAddCourse").addEventListener("click", () => {
   const id = "u" + Date.now().toString(36);
-  const c = blank({id, g:"u", n:"Yeni ders"}); c.ow = true; c.w = {v:40, u:0, f:60};
+  const c = blank({id, g:"u", n:"Yeni ders"}); c.ow = true; c.w = {...TY.nw};
   S.c.push(c); OPEN.add(id); MORE.add(id); save(); renderList();
   const el = $("nt_" + id); el.scrollIntoView({block:"start", behavior:"smooth"});
   const nm = el.querySelector('[data-k="n"]'); nm.focus(); nm.select();
 });
-function wInputs(){ $("ntWv").value = S.w.v; $("ntWu").value = S.w.u; $("ntWf").value = S.w.f; wMsg(); }
+function wInputs(){
+  $("ntWv").value = S.w.v; $("ntWu").value = S.w.u; $("ntWf").value = S.w.f;
+  $("ntLv").textContent = TY.L.v; $("ntLu").textContent = TY.L.u; $("ntLf").textContent = TY.L.f;
+  $("ntWReset").textContent = `Oranları sıfırla (${TY.w.v} · ${TY.w.u} · ${TY.w.f})`;
+  wMsg();
+}
 function wMsg(){ const s = S.w.v + S.w.u + S.w.f, m = $("ntWMsg"); const bad = Math.abs(s - 100) > 1e-9; m.className = "nt-msg" + (bad ? " bad" : ""); m.textContent = bad ? `Oranların toplamı ${f1(s)}; 100 olmalı.` : "Toplam %100."; }
 for (const [id, k] of [["ntWv","v"],["ntWu","u"],["ntWf","f"]]) $(id).addEventListener("input", e => {
   const x = num(e.target.value.trim()); e.target.classList.toggle("bad", Number.isNaN(x));
   S.w[k] = ok(x) ? x : 0; save(); wMsg(); S.c.forEach(update); summary();
 });
-$("ntWReset").addEventListener("click", () => { S.w = {...W0}; save(); wInputs(); S.c.forEach(update); summary(); });
+$("ntWReset").addEventListener("click", () => { S.w = {...TY.w}; save(); wInputs(); S.c.forEach(update); summary(); });
 $("ntRestore").addEventListener("click", () => {
   let n = 0;
-  DEF.forEach(d => { if (!byId(d.id)){ S.c.push(blank({...d, def:true})); n++; } }); S.rm = [];
+  DEF.forEach(d => { if (!byId(d.id)){ S.c.push(blank({...d, def:true}, TY.w)); n++; } }); S.rm = [];
   save(); renderList(); alert(n ? `${n} ders geri getirildi.` : "Eksik ders yok.");
 });
 $("ntClear").addEventListener("click", () => {
-  if (!confirm("Bütün derslerin notları silinsin mi? Bu geri alınamaz.")) return;
-  S = {v:2, w:{...S.w}, rm:[], c:DEF.map(d => blank({...d, def:true}))}; save(); renderList();
+  if (!confirm(`Dönem ${S.n}: bütün derslerin notları silinsin mi? Bu geri alınamaz.`)) return;
+  const w = {...S.w}; ALL.y[S.n] = fresh(S.n); ALL.y[S.n].w = w; useDonem(S.n); save(); renderList();
 });
 
-wInputs(); renderList();
-window.ntRefresh = () => { S = load(); wInputs(); renderList(); };
+function renderDsel(){
+  $("ntDsel").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === S.n)));
+  $("ntInfoD").hidden = TYP[S.n] !== "dilim"; $("ntInfoK").hidden = TYP[S.n] !== "klinik"; $("ntInfoS").hidden = TYP[S.n] !== "staj";
+}
+$("ntDsel").addEventListener("click", e => {
+  const b = e.target.closest("button[data-d]"); if (!b || +b.dataset.d === S.n) return;
+  OPEN.clear(); MORE.clear(); useDonem(+b.dataset.d); save(); renderDsel(); wInputs(); renderList();
+});
+renderDsel(); wInputs(); renderList();
+window.ntRefresh = () => { ALL = loadAll(); useDonem(ALL.d); renderDsel(); wInputs(); renderList(); };
 })();
 </script>
 <script>
@@ -2460,7 +2542,7 @@ const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textConte
 function setRoute(r){
   document.body.dataset.route = r;
   drawer.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  if (r === "notlar"){ brandT.textContent = "Notlarım"; brandS.textContent = "İstanbul Tıp · Dönem 1 · Not hesaplama"; document.title = "Not hesaplama · Dönem 1"; }
+  if (r === "notlar"){ brandT.textContent = "Notlarım"; brandS.textContent = "İstanbul Tıp · Not hesaplama"; document.title = "Not hesaplama · İstanbul Tıp"; }
   else { brandT.textContent = T0[0]; brandS.textContent = T0[1]; document.title = DOC_T; }
 }
 const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : "program");
