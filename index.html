@@ -954,6 +954,8 @@ body[data-route="notlar"] #who{display:none !important}
 .nt-pill.mid{background:var(--pdo-soft);color:var(--pdo)}
 .nt-pill.bad{background:var(--exam-soft);color:var(--exam)}
 .nt-list{display:flex;flex-direction:column;gap:10px}
+.nt-gh{font-size:12.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:8px 4px -2px}
+.nt-gh:first-child{margin-top:0}
 .nt-c{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
 .nt-c > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px 12px 16px;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
 .nt-c > summary::-webkit-details-marker{display:none}
@@ -1196,7 +1198,7 @@ body[data-route="notlar"] #who{display:none !important}
     <section class="card nt-sum" id="ntSum" aria-live="polite"></section>
 
     <div class="nt-list" id="ntList"></div>
-    <button type="button" class="nt-add" id="ntAddCourse" style="align-self:stretch;padding:10px 12px">+ Ders ekle (Türk Dili, Yabancı Dil, seçmeli…)</button>
+    <button type="button" class="nt-add" id="ntAddCourse" style="align-self:stretch;padding:10px 12px">+ Ders ekle (seçmeli ders ve diğerleri)</button>
 
     <details class="card fold" id="ntSet">
       <summary><span class="ft"><h2>Not oranları</h2><span class="hint" id="ntSetHint">Vize %40 · Uygulama %30 · Final %30</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
@@ -1210,7 +1212,7 @@ body[data-route="notlar"] #who{display:none !important}
         <div class="nt-msg" id="ntWMsg"></div>
         <div class="nt-act">
           <button type="button" class="secondary" id="ntWReset">Oranları sıfırla (40 · 30 · 30)</button>
-          <button type="button" class="secondary" id="ntRestore">Silinen dilimleri geri getir</button>
+          <button type="button" class="secondary" id="ntRestore">Silinen dersleri geri getir</button>
           <button type="button" class="secondary nt-del" id="ntClear">Bütün notları sil</button>
         </div>
       </div>
@@ -2110,25 +2112,42 @@ window.dispatchEvent(new Event("prog-ready"));
 const $ = id => document.getElementById(id);
 const KEY = "itf_notlar_v1";
 const W0 = {v:40, u:30, f:30};
+const OW = {v:40, u:0, f:60};
 const DEF = [
-  {id:"tm",  n:"Tıbba Merhaba Dilimi", h:"Vize 19 Eki · Final 22 Oca", ul:["Yaralı taşıma","Kırık-çıkıkta ilk yardım","Temel yaşam desteği","Mikroskop kullanma"]},
-  {id:"ymt", n:"Yaşamın Moleküler Temelleri", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Fizyoloji","Biyofizik"]},
-  {id:"huc", n:"Hücre Dilimi", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Tıbbi mikrobiyoloji","Biyofizik"]},
-  {id:"dk1", n:"Dikey Koridor I · İletişim I", h:"Vize 13 Oca · Final 22 Oca", ul:[]},
-  {id:"dok", n:"Doku Dilimi", h:"Vize 13 May · Final 22 Haz", ul:["Tıbbi biyoloji","Histoloji","Fizyoloji","Biyofizik"]},
-  {id:"hev", n:"Hayatın Evreleri Dilimi", h:"Vize 13 May · Final 22 Haz", ul:[]},
-  {id:"har", n:"Hareket-1 Dilimi", h:"Vize 7 Haz · Final 22 Haz", ul:["Histoloji","Fizyoloji","Anatomi"]},
-  {id:"dk2", n:"Dikey Koridor II · İletişim II, Tıp Tarihi", h:"Vize 13 May · Final 22 Haz", ul:[]}
+  {id:"tm",  g:"d", k:"4", n:"Tıbba Merhaba Dilimi", h:"Vize 19 Eki · Final 22 Oca", ul:["Yaralı taşıma","Kırık-çıkıkta ilk yardım","Temel yaşam desteği","Mikroskop kullanma"]},
+  {id:"ymt", g:"d", k:"8", n:"Yaşamın Moleküler Temelleri", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Fizyoloji","Biyofizik"]},
+  {id:"huc", g:"d", k:"8", n:"Hücre Dilimi", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Tıbbi mikrobiyoloji","Biyofizik"]},
+  {id:"dok", g:"d", k:"8", n:"Doku Dilimi", h:"Vize 13 May · Final 22 Haz", ul:["Tıbbi biyoloji","Histoloji","Fizyoloji","Biyofizik"]},
+  {id:"hev", g:"d", k:"5", n:"Hayatın Evreleri Dilimi", h:"Vize 13 May · Final 22 Haz", ul:[]},
+  {id:"har", g:"d", k:"4", n:"Hareket-1 Dilimi", h:"Vize 7 Haz · Final 22 Haz", ul:["Histoloji","Fizyoloji","Anatomi"]},
+  {id:"dk",  g:"d", k:"5", n:"Dikey Koridor", h:"Bütün yıl · İletişim I, İletişim II, Tıp Tarihi", ul:[]},
+  {id:"td1", g:"o", k:"2", n:"Türk Dili I", h:"Uzaktan · Vize 24 Ara · Final 11 Oca", ul:[], ow:true, w:OW},
+  {id:"ai1", g:"o", k:"2", n:"Atatürk İlkeleri ve İnkılap Tarihi I", h:"Uzaktan · Vize 24 Ara · Final 11 Oca", ul:[], ow:true, w:OW},
+  {id:"yd1", g:"o", k:"2", n:"Yabancı Dil I", h:"Uzaktan · Vize 24 Ara · Final 11 Oca", ul:[], ow:true, w:OW},
+  {id:"td2", g:"o", k:"2", n:"Türk Dili II", h:"Uzaktan · Vize 20 Nis · Final 4 Haz", ul:[], ow:true, w:OW},
+  {id:"ai2", g:"o", k:"2", n:"Atatürk İlkeleri ve İnkılap Tarihi II", h:"Uzaktan · Vize 20 Nis · Final 4 Haz", ul:[], ow:true, w:OW},
+  {id:"yd2", g:"o", k:"2", n:"Yabancı Dil II", h:"Uzaktan · Vize 20 Nis · Final 4 Haz", ul:[], ow:true, w:OW}
 ];
+const GROUPS = {d:"Dilimler", o:"Ortak zorunlu dersler", u:"Eklediğin dersler"};
 const GR = [[88,"AA",4],[80,"BA",3.5],[73,"BB",3],[66,"CB",2.5],[60,"CC",2],[55,"DC",1.5],[50,"DD",1],[0,"FF",0]];
 const TG = [[60,"CC"],[73,"BB"],[80,"BA"],[88,"AA"]];
 
-const blank = d => ({id:d.id, n:d.n, h:d.h||"", def:!!d.def, k:"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:false, w:{...W0}});
+const blank = d => ({id:d.id, g:d.g||"u", n:d.n, h:d.h||"", def:!!d.def, k:d.k||"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:!!d.ow, w:{...(d.w||W0)}});
 function load(){
   let s = null;
   try { s = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
-  if (!s || !Array.isArray(s.c)) s = {w:{...W0}, c:DEF.map(d => blank({...d, def:true}))};
+  if (!s || !Array.isArray(s.c)) s = {v:2, w:{...W0}, rm:[], c:DEF.map(d => blank({...d, def:true}))};
   if (!s.w) s.w = {...W0};
+  if (!Array.isArray(s.rm)) s.rm = [];
+  // v2: AKTS from the university's curriculum, one Dikey Koridor course, the common compulsory courses
+  if ((s.v || 1) < 2){
+    const empty = c => c && !c.v && !c.vd && !c.u && !c.f && !c.b && !c.fd && !c.ul.some(x => x.s) && !c.bar.length;
+    const d1 = s.c.find(c => c.id === "dk1"), d2 = s.c.find(c => c.id === "dk2");
+    if (empty(d1) && empty(d2)) s.c = s.c.filter(c => c !== d1 && c !== d2); else s.rm.push("dk");
+    for (const c of s.c){ const d = DEF.find(x => x.id === c.id); if (d){ c.g = d.g; if (!c.k) c.k = d.k; } else if (!c.g) c.g = /^dk[12]$/.test(c.id) ? "d" : "u"; }
+    s.v = 2;
+  }
+  DEF.forEach((d, i) => { if (!s.c.some(c => c.id === d.id) && !s.rm.includes(d.id)){ const at = s.c.findIndex(c => DEF.findIndex(x => x.id === c.id) > i); s.c.splice(at < 0 ? s.c.length : at, 0, blank({...d, def:true})); } });
   return s;
 }
 let S = load();
@@ -2247,7 +2266,7 @@ function cardHTML(c){
       </div>
       <div class="nt-sub">
         <h4>AKTS kredisi</h4>
-        <p>AGNO hesabı için. Öğrenci bilgi sisteminde ders kaydı ya da not durum belgesinde yazar.</p>
+        <p>AGNO hesabı için. Dönem 1 dersleri üniversitenin güncel ders planından (EBS) hazır yazıldı.</p>
         <label class="nt-f" style="max-width:140px"><span>AKTS</span>${inp(c, "k", c.k, 'placeholder="—"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
       </div>
       <div class="nt-sub">
@@ -2269,7 +2288,10 @@ function cardHTML(c){
 }
 const OPEN = new Set(), MORE = new Set();
 function renderList(){
-  $("ntList").innerHTML = S.c.map(cardHTML).join("");
+  const ord = c => ({d:0, o:1, u:2}[c.g || "u"] ?? 2);
+  S.c.sort((a, b) => ord(a) - ord(b));
+  let last = "";
+  $("ntList").innerHTML = S.c.map(c => { const g = c.g || "u", hd = g !== last ? `<h3 class="nt-gh">${GROUPS[g]}</h3>` : ""; last = g; return hd + cardHTML(c); }).join("");
   S.c.forEach(update);
   summary();
 }
@@ -2290,6 +2312,8 @@ function update(c){
   vIn.disabled = !!r.vFromQ; if (vIn.disabled) vIn.value = r.V !== null ? f1(r.V) : "";
   else if (document.activeElement !== vIn) vIn.value = c.v;
   uIn.disabled = !!r.uFromList; if (uIn.disabled) uIn.value = f1(r.U); else if (document.activeElement !== uIn) uIn.value = c.u;
+  const uf = uIn.closest(".nt-f"); uf.style.display = w.u > 0 ? "" : "none"; uf.parentElement.style.gridTemplateColumns = w.u > 0 ? "" : "repeat(2,minmax(0,1fr))";
+  el.querySelector('[data-add="ul"]').parentElement.style.display = w.u > 0 ? "" : "none";
   o("wv").textContent = "%" + w.v; o("wu").textContent = "%" + w.u; o("wf").textContent = "%" + w.f;
   o("butw").hidden = !(r.F0 !== null && (r.F0 < 50 || (r.done && r.P < 60)) || c.b !== "");
   // header
@@ -2390,12 +2414,12 @@ $("ntList").addEventListener("click", e => {
     save(); rerenderCard(c);
   } else if (b.dataset.act === "remove"){
     if (!confirm(`${c.n} listeden kaldırılsın mı? Notları da silinir.`)) return;
-    S.c = S.c.filter(x => x !== c); save(); renderList();
+    S.c = S.c.filter(x => x !== c); if (DEF.some(d => d.id === c.id) && !S.rm.includes(c.id)) S.rm.push(c.id); save(); renderList();
   }
 });
 $("ntAddCourse").addEventListener("click", () => {
   const id = "u" + Date.now().toString(36);
-  const c = blank({id, n:"Yeni ders"}); c.ow = true; c.w = {v:40, u:0, f:60};
+  const c = blank({id, g:"u", n:"Yeni ders"}); c.ow = true; c.w = {v:40, u:0, f:60};
   S.c.push(c); OPEN.add(id); MORE.add(id); save(); renderList();
   const el = $("nt_" + id); el.scrollIntoView({block:"start", behavior:"smooth"});
   const nm = el.querySelector('[data-k="n"]'); nm.focus(); nm.select();
@@ -2409,12 +2433,12 @@ for (const [id, k] of [["ntWv","v"],["ntWu","u"],["ntWf","f"]]) $(id).addEventLi
 $("ntWReset").addEventListener("click", () => { S.w = {...W0}; save(); wInputs(); S.c.forEach(update); summary(); });
 $("ntRestore").addEventListener("click", () => {
   let n = 0;
-  DEF.forEach((d, i) => { if (!byId(d.id)){ S.c.splice(Math.min(i, S.c.length), 0, blank({...d, def:true})); n++; } });
-  save(); renderList(); alert(n ? `${n} dilim geri getirildi.` : "Eksik dilim yok.");
+  DEF.forEach(d => { if (!byId(d.id)){ S.c.push(blank({...d, def:true})); n++; } }); S.rm = [];
+  save(); renderList(); alert(n ? `${n} ders geri getirildi.` : "Eksik ders yok.");
 });
 $("ntClear").addEventListener("click", () => {
   if (!confirm("Bütün derslerin notları silinsin mi? Bu geri alınamaz.")) return;
-  S = {w:{...S.w}, c:DEF.map(d => blank({...d, def:true}))}; save(); renderList();
+  S = {v:2, w:{...S.w}, rm:[], c:DEF.map(d => blank({...d, def:true}))}; save(); renderList();
 });
 
 wInputs(); renderList();
