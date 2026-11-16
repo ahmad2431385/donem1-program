@@ -1169,32 +1169,15 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
 .hv-more{align-self:center;background:none;border:1px dashed var(--line);color:var(--accent);font-weight:600;font-size:13px;border-radius:9px;padding:6px 14px}
 .hv-tip{display:flex;gap:8px;align-items:flex-start;font-size:13.5px;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
 .hv-tip .i{flex:none;font-size:16px;line-height:1.3}
-.hv-cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px}
-.hv-cal .wd{font-size:11px;font-weight:700;color:var(--muted);text-align:center;padding-bottom:2px}
-.hv-cal button,.hv-cal .c{display:flex;flex-direction:column;align-items:center;gap:0;padding:5px 1px;border-radius:9px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-width:0;font:inherit;line-height:1.25}
-.hv-cal .c.n{border-style:dashed;background:transparent}
-.hv-cal .c.x{visibility:hidden}
-.hv-cal .c.sel{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
-.hv-cal .c.today .dd{color:var(--accent);font-weight:700}
-.hv-cal .dd{font-family:var(--mono);font-size:11px;color:var(--muted)}
-.hv-cal .e{font-size:18px;line-height:1.35}
-.hv-cal .hi{font-size:12.5px;font-weight:700}
-.hv-cal .lo{font-size:11px;color:var(--muted)}
-.hv-cal .c.n .hi{font-weight:600}
-.hv-leg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--muted)}
-.hv-leg span{display:inline-flex;align-items:center;gap:6px}
-.hv-leg i{width:14px;height:12px;border-radius:4px;border:1px solid var(--muted);display:inline-block}
-.hv-leg i.n{border-style:dashed}
-.hv-mon{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.hv-mon div{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:7px 6px;text-align:center;display:flex;flex-direction:column;gap:1px;min-width:0}
-.hv-mon span{font-size:10.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.hv-mon b{font-size:14px}
+.hv-list .row{width:100%;background:none;border:none;border-top:1px solid var(--line);color:inherit;font:inherit;text-align:left;border-radius:0;-webkit-tap-highlight-color:transparent}
+.hv-list .row:first-child{border-top:none}
+.hv-list .row.sel{background:var(--accent-soft);border-radius:8px;border-top-color:transparent;padding-left:6px;padding-right:6px}
+.hv-list .dn small{white-space:nowrap}
 @media (max-width:420px){
   .hv-ht .t{font-size:46px}.hv-ht .e{font-size:48px}
-  .hv-st,.hv-g,.hv-mon{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .hv-st,.hv-g{grid-template-columns:repeat(2,minmax(0,1fr))}
   .hv-hr{grid-template-columns:42px 24px minmax(0,1fr) 38px 40px;font-size:13px}
   .hv-hr .w{display:none}
-  .hv-cal .e{font-size:16px}.hv-cal .hi{font-size:12px}
 }
 @media (min-width:700px) and (max-width:860px){.tabbar button,.tabbar a{padding:8px 9px;gap:5px;font-size:13px}}
 @media (prefers-reduced-motion: reduce){.hv-ref.spin svg{animation:none}}
@@ -1356,13 +1339,15 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
         <div class="hv-days" id="hvDays" role="tablist" aria-label="Gün seç"></div>
       </section>
       <section class="card hv-sec" id="hvDay" aria-live="polite"></section>
-      <section class="card hv-sec">
-        <div class="hv-sh"><h2>30 günlük görünüm</h2><span class="hint" id="hvMonHint"></span></div>
-        <div class="hv-cal" id="hvCal"></div>
-        <div class="hv-leg"><span><i class="f"></i>Tahmin (16 gün)</span><span><i class="n"></i>Mevsim normali (geçmiş 5 yılın ortalaması)</span></div>
-        <div class="hv-mon" id="hvMon"></div>
-      </section>
-      <p class="wx-src">Kaynak: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · <span id="hvUpd"></span>. 16 günden sonrası tahmin değil, o tarihlerin geçmiş yıllardaki ortalamasıdır.</p>
+      <details class="card fold" id="hvW7">
+        <summary><span class="ft"><h2>Haftalık tahmin</h2><span class="hint" id="hvW7Hint">7 gün · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody"><div class="wx-week hv-list" id="hvW7Body"></div></div>
+      </details>
+      <details class="card fold" id="hvW14">
+        <summary><span class="ft"><h2>14 günlük tahmin</h2><span class="hint" id="hvW14Hint">14 gün · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody"><div class="wx-week hv-list" id="hvW14Body"></div></div>
+      </details>
+      <p class="wx-src">Kaynak: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · <span id="hvUpd"></span>. İleri günlerin tahmini daha az kesindir.</p>
     </div>
   </div>
 
@@ -1442,7 +1427,7 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
   <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
   <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span></button>
-  <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>İlçe ilçe: saatlik, 16 günlük, 30 günlük</small></span></button>
+  <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>İlçe ilçe: saatlik, haftalık, 14 günlük</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
   <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
@@ -2699,15 +2684,13 @@ function info(code, day = 1){
 const mood = (code, day) => !day ? "night" : code >= 51 ? "rain" : code >= 3 ? "grey" : "";
 
 let loc = ALL.find(l => l[0] === LS.get("hava_ilce")) || ALL.find(l => l[0] === "Fatih");
-let W = null, NORM = null, sel = null, allHours = false, loadedFor = "", busy = false;
+let W = null, sel = null, allHours = false, loadedFor = "", busy = false;
 
 const fcURL = l => `https://api.open-meteo.com/v1/forecast?latitude=${l[1]}&longitude=${l[2]}`
   + "&current=temperature_2m,apparent_temperature,relative_humidity_2m,weather_code,is_day,wind_speed_10m"
   + "&hourly=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation_probability,precipitation,weather_code,is_day,wind_speed_10m"
   + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,precipitation_sum,wind_speed_10m_max,sunrise,sunset,uv_index_max"
-  + "&timezone=Europe%2FIstanbul&forecast_days=16";
-const arURL = (l, a, b) => `https://archive-api.open-meteo.com/v1/archive?latitude=${l[1]}&longitude=${l[2]}&start_date=${a}&end_date=${b}`
-  + "&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&timezone=Europe%2FIstanbul";
+  + "&timezone=Europe%2FIstanbul&forecast_days=14";
 const cache = {
   get(k, maxAge){ try { const c = JSON.parse(LS.get(k) || "null"); return c && Date.now() - c.t < maxAge ? c.d : null; } catch(e){ return null; } },
   set(k, d){ LS.set(k, JSON.stringify({t:Date.now(), d})); }
@@ -2734,35 +2717,7 @@ async function load(force){
   msg(W._old ? "İnternete ulaşılamadı; en son kaydedilen tahmin gösteriliyor." : "");
   const today = istNow().date;
   if (!sel || !W.daily.time.includes(sel)) sel = W.daily.time.includes(today) ? today : W.daily.time[0];
-  NORM = null; render(); loadNorm(l);
-}
-// days 17–30: the same calendar dates in the last 5 years, averaged
-async function loadNorm(l){
-  const D = W.daily.time, last = D[D.length - 1], start = D[0];
-  const need = []; for (let s = addD(last, 1); s <= addD(start, 29); s = addD(s, 1)) need.push(s);
-  if (!need.length) return;
-  const key = `hava_nm_${l[0]}_${need[0]}`;
-  let n = cache.get(key, 7*24*3600e3);
-  if (!n){
-    try {
-      const y0 = +need[0].slice(0, 4);
-      const shift = (s, k) => { const y = +s.slice(0, 4) - k, md = s.slice(4); return (md === "-02-29" ? `${y}-02-28` : y + md); };
-      const res = await Promise.all([1,2,3,4,5].map(k => getJSON(arURL(l, shift(need[0], k), shift(need[need.length - 1], k))).catch(() => null)));
-      const ok = res.filter(r => r && r.daily && r.daily.time && r.daily.time.length);
-      if (!ok.length) throw new Error("none");
-      n = need.map((s, i) => {
-        const v = ok.map(r => ({hi:r.daily.temperature_2m_max[i], lo:r.daily.temperature_2m_min[i], mm:r.daily.precipitation_sum[i], c:r.daily.weather_code[i]})).filter(x => x.hi != null && x.lo != null);
-        if (!v.length) return null;
-        const avg = k => v.reduce((a, x) => a + x[k], 0)/v.length;
-        const wet = v.filter(x => (x.mm || 0) >= 1).length/v.length, snow = v.filter(x => (x.c >= 71 && x.c <= 77) || x.c === 85 || x.c === 86).length/v.length;
-        const clear = v.filter(x => x.c <= 1).length/v.length;
-        return {d:s, hi:avg("hi"), lo:avg("lo"), wet, e: snow >= .4 ? "🌨️" : wet >= .6 ? "🌧️" : wet >= .3 ? "🌦️" : clear >= .5 ? "☀️" : "⛅", yrs:v.length};
-      }).filter(Boolean);
-      void y0; cache.set(key, n);
-    } catch(e){ n = null; }
-  }
-  if (l !== loc) return;
-  NORM = n || []; renderMonth();
+  render();
 }
 function msg(t){ const m = $("hvMsg"); m.hidden = !t; m.innerHTML = t ? `<p class="muted small" style="margin:0">${esc(t)}</p>` : ""; }
 
@@ -2836,29 +2791,26 @@ function dayDetail(){
     <div class="hv-hrs"><div class="hv-hr hv-hhd"><span class="h">Saat</span><span></span><span class="d">Durum</span><span class="t">°C</span><span class="p">Yağış</span><span class="w">Rüzgâr</span></div>${rows}</div>
     ${hidden > 0 || allHours ? `<button type="button" class="hv-more" id="hvMore">${allHours ? "Daha az göster" : `Günün bütün saatlerini göster (+${hidden})`}</button>` : ""}` : `<p class="muted small" style="margin:0">Bu gün için saatlik tahmin henüz yok.</p>`}`;
 }
-function renderMonth(){
-  const D = W.daily, today = istNow().date, start = D.time[0];
-  const cells = [];
-  D.time.forEach((s, i) => cells.push({d:s, f:true, e:info(D.weather_code[i])[0], hi:D.temperature_2m_max[i], lo:D.temperature_2m_min[i], wet:(D.precipitation_probability_max[i] ?? 0) >= 50}));
-  for (const n of (NORM || [])) cells.push({d:n.d, f:false, e:n.e, hi:n.hi, lo:n.lo, wet:n.wet >= .5});
-  const lead = (dow(start) + 6) % 7;
-  let h = ["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(x => `<span class="wd">${x}</span>`).join("") + `<span class="c x"></span>`.repeat(lead);
-  h += cells.map(c => c.f
-    ? `<button type="button" class="c${c.d === sel ? " sel" : ""}${c.d === today ? " today" : ""}" data-d="${c.d}" aria-label="${nice(c.d)}, ${r0(c.hi)} derece"><span class="dd">${+c.d.slice(8)}${+c.d.slice(8) === 1 ? " " + MN[+c.d.slice(5, 7) - 1].slice(0, 3) : ""}</span><span class="e" aria-hidden="true">${c.e}</span><span class="hi">${r0(c.hi)}°</span><span class="lo">${r0(c.lo)}°</span></button>`
-    : `<span class="c n" title="Mevsim normali"><span class="dd">${+c.d.slice(8)}${+c.d.slice(8) === 1 ? " " + MN[+c.d.slice(5, 7) - 1].slice(0, 3) : ""}</span><span class="e" aria-hidden="true">${c.e}</span><span class="hi">≈${r0(c.hi)}°</span><span class="lo">${r0(c.lo)}°</span></span>`).join("");
-  $("hvCal").innerHTML = h;
-  const avg = k => cells.reduce((a, c) => a + c[k], 0)/cells.length;
-  $("hvMonHint").textContent = `${+start.slice(8)} ${MN[+start.slice(5, 7) - 1]} – ${+cells[cells.length - 1].d.slice(8)} ${MN[+cells[cells.length - 1].d.slice(5, 7) - 1]}` + (NORM === null ? " · normaller yükleniyor…" : NORM.length ? "" : " · mevsim normalleri alınamadı");
-  $("hvMon").innerHTML = `<div><span>Ort. en yüksek</span><b>${r0(avg("hi"))}°</b></div><div><span>Ort. en düşük</span><b>${r0(avg("lo"))}°</b></div><div><span>Yağışlı gün</span><b>${cells.filter(c => c.wet).length} / ${cells.length}</b></div><div><span>En sıcak gün</span><b>${r0(Math.max(...cells.map(c => c.hi)))}°</b></div>`;
+function renderLists(){
+  const D = W.daily, today = istNow().date, n = D.time.length;
+  const lo = Math.min(...D.temperature_2m_min), hi = Math.max(...D.temperature_2m_max), rg = Math.max(1, hi - lo);
+  const row = i => {
+    const s = D.time[i], [e, t] = info(D.weather_code[i]), p = D.precipitation_probability_max[i] ?? 0, a = D.temperature_2m_min[i], b = D.temperature_2m_max[i];
+    return `<button type="button" class="row${s === sel ? " sel" : ""}" data-d="${s}" aria-label="${nice(s)}: ${t}, en yüksek ${r0(b)}, en düşük ${r0(a)} derece"><span class="dn">${s === today ? "Bugün" : DN[dow(s)]}<small>${+s.slice(8)} ${MN[+s.slice(5, 7) - 1].slice(0, 3)}</small></span><span class="e" aria-hidden="true">${e}</span><span class="mid"><span class="wd-txt">${t}</span><span class="bar"><i style="left:${((a - lo)/rg*100).toFixed(1)}%;right:${((hi - b)/rg*100).toFixed(1)}%"></i></span></span><span class="tt"><span class="tm">${r0(b)}° <span>/ ${r0(a)}°</span></span><span class="rp${p < 20 ? " lo" : ""}">%${p}</span></span></button>`;
+  };
+  const sum = k => { const m = Math.min(k, n), idx = [...Array(m).keys()]; return `${r0(Math.min(...idx.map(i => D.temperature_2m_min[i])))}°–${r0(Math.max(...idx.map(i => D.temperature_2m_max[i])))}° · ${idx.filter(i => (D.precipitation_probability_max[i] ?? 0) >= 50).length} yağışlı gün`; };
+  $("hvW7Body").innerHTML = [...Array(Math.min(7, n)).keys()].map(row).join("");
+  $("hvW14Body").innerHTML = [...Array(Math.min(14, n)).keys()].map(row).join("");
+  $("hvW7Hint").textContent = sum(7); $("hvW14Hint").textContent = sum(14);
 }
 function render(){
   $("hvMain").hidden = false;
-  hero(); days(); dayDetail(); renderMonth();
+  hero(); days(); dayDetail(); renderLists();
   $("hvUpd").textContent = `${loc[0]}, İstanbul · güncellendi ${W._at || ""}`;
 }
 function pick(d, scroll){
   if (!W || !W.daily.time.includes(d)) return;
-  sel = d; allHours = false; days(); dayDetail(); renderMonth();
+  sel = d; allHours = false; days(); dayDetail(); renderLists();
   const b = $("hvDays").querySelector('[aria-selected="true"]'); if (b) b.scrollIntoView({block:"nearest", inline:"center"});
   if (scroll) $("hvDay").scrollIntoView({block:"start", behavior:"smooth"});
 }
@@ -2868,7 +2820,11 @@ $("hvLoc").innerHTML = LOCS.map(g => `<optgroup label="${g[0]}">${g[1].map(l => 
 $("hvLoc").addEventListener("change", e => { loc = ALL.find(l => l[0] === e.target.value) || loc; LS.set("hava_ilce", loc[0]); sel = null; allHours = false; load(false); });
 $("hvRef").addEventListener("click", () => load(true));
 $("hvDays").addEventListener("click", e => { const b = e.target.closest("[data-d]"); if (b) pick(b.dataset.d, false); });
-$("hvCal").addEventListener("click", e => { const b = e.target.closest("[data-d]"); if (b) pick(b.dataset.d, true); });
+for (const id of ["hvW7", "hvW14"]){
+  const el = $(id); el.open = LS.get("open_" + id) === "1";
+  el.addEventListener("toggle", () => LS.set("open_" + id, el.open ? "1" : "0"));
+  el.addEventListener("click", e => { const b = e.target.closest("[data-d]"); if (b) pick(b.dataset.d, true); });
+}
 $("hvDay").addEventListener("click", e => { if (e.target.closest("#hvMore")){ allHours = !allHours; dayDetail(); } });
 const active = () => document.body.dataset.route === "hava";
 const ensure = () => { if (active() && (loadedFor !== loc[0] || !W || !W.daily.time.includes(istNow().date))) load(false); };
