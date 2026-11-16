@@ -1094,6 +1094,17 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
 .outbtn:hover{border-color:var(--exam);color:var(--exam)}
 .acct-note{font-size:12.5px;color:var(--muted);margin:6px 4px 0}
 @media (min-width:700px){.acct{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"av who grp out"}.acct .grp{border-top:none;padding-top:0;justify-content:flex-end}}
+#wxView{display:none;flex-direction:column;gap:12px}
+body[data-route="hava"] #wxView{display:flex}
+body[data-route="hava"] #who{display:none !important}
+body[data-route="hava"] .wrap.wide{max-width:680px}
+.wx-page{display:flex;flex-direction:column;gap:10px}
+.wx-page .wx-card{padding:0}
+.wx-ph{display:flex;flex-direction:column;gap:2px}
+.wx-ph h2{font-size:17px}
+.wx-ph .hint{font-size:13px;color:var(--muted)}
+#wxToday{cursor:pointer}
+@media (min-width:700px) and (max-width:860px){.tabbar button,.tabbar a{padding:8px 9px;gap:5px;font-size:13px}}
 </style>
 </head>
 <body data-route="program">
@@ -1106,7 +1117,8 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
     </div>
     <nav class="tabbar" id="tabbar" aria-label="Bölümler">
       <button type="button" data-go="program" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Program</span></button>
-      <button type="button" data-go="notlar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg><span>Notlar</span></button>
+      <button type="button" data-go="notlar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg><span>Sınav·Not</span></button>
+      <button type="button" data-go="hava"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.500 8h1M4.100 4.100l.7.7M11.900 4.100l-.7.7"/><path d="M9.500 19.500h7.500a3.500 3.500 0 0 0 .4-7 5 5 0 0 0-9.600 1.300A3 3 0 0 0 9.500 19.500z"/></svg><span>Hava</span></button>
       <a href="https://ahmad2431385.github.io/studydoro/"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg><span>Sayaç</span></a>
     </nav>
     <button class="menubtn" id="menuBtn" type="button" aria-label="Menüyü aç" aria-haspopup="true" aria-expanded="false" aria-controls="drawer"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
@@ -1199,20 +1211,6 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
 
     <p class="small muted panels-tip" id="panelsTip">💡 Bir bölümün başlığına <b>basılı tut</b>, sonra yukarı/aşağı sürükleyerek sırasını değiştir. <button type="button" class="linkbtn" id="panelsReset" hidden>Varsayılan sıraya dön</button></p>
     <div class="panels" id="panels">
-      <details class="card fold" id="wxCard" hidden>
-        <summary><span class="ft"><h2 id="wxH"><span id="wxEmo">🌤️</span> Fatih hava durumu</h2><span class="hint" id="wxHint">Bugün, yarın ve bu hafta · görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
-        <div class="fbody wx-card">
-        <div class="wx-head">
-          <div class="wx-tabs" role="tablist" aria-label="Gün seç">
-            <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
-            <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
-            <button type="button" role="tab" data-wx="w" aria-selected="false">Bu hafta</button>
-          </div>
-        </div>
-        <div id="wxBody"></div>
-        <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
-        </div>
-      </details>
       <details class="card fold" id="secCard">
         <summary><span class="ft"><h2>Seçmeli derslerim</h2><span class="hint" id="secHint">Dersini seçmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
         <div class="fbody" id="secBody"><p class="muted small">Seçmeli ders amfi listesi henüz eklenmedi. Eklenince burada dersini seçip amfisini programında görebileceksin.</p></div>
@@ -1244,20 +1242,39 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
         </div>
         </div>
       </details>
-      <details class="card fold examw" id="examBox" hidden>
-        <summary><span class="ft"><h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2><span class="hint" id="examHint">Sınav tarihlerini görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
-        <div class="fbody">
-          <div class="exams" id="examList"></div>
-        </div>
-      </details>
     </div>
   </main>
 
   <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
   </div>
 
-  <!-- ============ Not hesaplama ============ -->
+  <!-- ============ Hava durumu ============ -->
+  <div id="wxView">
+      <section class="card wx-page" id="wxCard" hidden>
+        <div class="wx-ph"><h2 id="wxH"><span id="wxEmo">🌤️</span> Fatih hava durumu</h2><span class="hint" id="wxHint"></span></div>
+        <div class="fbody wx-card">
+        <div class="wx-head">
+          <div class="wx-tabs" role="tablist" aria-label="Gün seç">
+            <button type="button" role="tab" data-wx="0" aria-selected="true">Bugün</button>
+            <button type="button" role="tab" data-wx="1" aria-selected="false">Yarın</button>
+            <button type="button" role="tab" data-wx="w" aria-selected="false">Bu hafta</button>
+          </div>
+        </div>
+        <div id="wxBody"></div>
+        <p class="wx-src">Tahmin: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> · Fatih, İstanbul · <span id="wxUpd"></span></p>
+        </div>
+      </section>
+    <div class="card" id="wxNone"><p class="muted small" style="margin:0">Hava durumu yüklenemedi. İnternet bağlantını kontrol edip sayfayı yenile.</p></div>
+  </div>
+
+  <!-- ============ Sınavlar ve notlar ============ -->
   <div id="notView">
+      <details class="card fold examw" id="examBox" hidden>
+        <summary><span class="ft"><h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2><span class="hint" id="examHint">Sınav tarihlerini görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <div class="fbody">
+          <div class="exams" id="examList"></div>
+        </div>
+      </details>
     <div class="nt-dw"><span>Dönem</span><div class="seg nt-dsel" id="ntDsel" role="group" aria-label="Dönem seç">
       <button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button><button type="button" data-d="4">4</button><button type="button" data-d="5">5</button><button type="button" data-d="6">6</button>
     </div></div>
@@ -1325,7 +1342,8 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
 <nav class="drawer" id="drawer" aria-label="Ana menü" inert>
   <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
-  <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Not hesaplama</b><small>Başarı notu, finalde kaç lazım, AGNO</small></span></button>
+  <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span></button>
+  <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>Fatih: bugün, yarın ve bu hafta</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
   <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
@@ -1961,6 +1979,7 @@ function wxWeekView(){
 }
 function renderWxCard(){
   const box = $("wxCard");
+  $("wxNone").hidden = !!WX;
   if (!WX){ box.hidden = true; return; }
   box.hidden = false;
   try {
@@ -1968,7 +1987,7 @@ function renderWxCard(){
     if (i >= 0){
       const [e, t] = wxInfo(D0.weather_code[i]);
       $("wxEmo").textContent = e;
-      $("wxHint").textContent = `Bugün ${t.toLocaleLowerCase("tr")} · ${r0(D0.temperature_2m_min[i])}°–${r0(D0.temperature_2m_max[i])}° · yarın ve bu hafta için dokun`;
+      $("wxHint").textContent = `Bugün ${t.toLocaleLowerCase("tr")} · ${r0(D0.temperature_2m_min[i])}°–${r0(D0.temperature_2m_max[i])}° `;
     }
   } catch(e){}
   box.querySelectorAll("[data-wx]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.wx===wxTab)));
@@ -1990,10 +2009,12 @@ async function loadWx(force=false){
   renderWx();
 }
 document.querySelectorAll("#wxCard [data-wx]").forEach(b => b.onclick = () => { wxTab = b.dataset.wx; renderWxCard(); });
-setInterval(() => { if (me) loadWx(); }, 30*60e3);
+setInterval(() => loadWx(), 30*60e3);
+$("wxToday").addEventListener("click", () => { location.hash = "#hava"; window.scrollTo(0, 0); });
 
 /* ---------- panels: remembered open state + long-press reordering ---------- */
-const PANEL_IDS = ["examBox","wxCard","linksCard","secCard","homeCard"];
+const PANEL_IDS = ["linksCard","secCard","homeCard"];
+{ const el = $("examBox"); el.open = store.get("open_examBox") === "1"; el.addEventListener("toggle", () => store.set("open_examBox", el.open ? "1" : "0")); }
 (function initPanels(){
   const box = $("panels");
   // open/closed state: closed by default, remembered per panel on this device
@@ -2114,7 +2135,7 @@ setInterval(() => { if (!document.hidden) refreshData(); }, 5*60e3);
 function show(){
   dayCache.clear(); _myCh = null;
   if (!me){
-    $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true; $("examBox").hidden = true;
+    $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true; renderExams(); loadWx();
     setTimeout(()=> $("noInput").focus(), 50);
     return;
   }
@@ -2607,10 +2628,11 @@ const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textConte
 function setRoute(r){
   document.body.dataset.route = r;
   document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  if (r === "notlar"){ brandT.textContent = "Notlarım"; brandS.textContent = "İstanbul Tıp · Not hesaplama"; document.title = "Not hesaplama · İstanbul Tıp"; }
+  if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = "İstanbul Tıp · Dönem 1 Türkçe"; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
+  else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Fatih · İstanbul"; document.title = "Hava durumu · Fatih"; }
   else { brandT.textContent = T0[0]; brandS.textContent = T0[1]; document.title = DOC_T; }
 }
-const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : "program");
+const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : "program");
 window.addEventListener("hashchange", routeFromHash);
 routeFromHash();
 function openDrawer(){
@@ -2630,7 +2652,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.cla
 const onGo = e => {
   const b = e.target.closest("[data-go]"); if (!b) return;
   if (drawer.classList.contains("open")) closeDrawer(false);
-  if (b.dataset.go === "notlar"){ if (location.hash !== "#notlar") history.pushState(null, "", "#notlar"); setRoute("notlar"); }
+  if (b.dataset.go !== "program"){ const h = "#" + b.dataset.go; if (location.hash !== h) history.pushState(null, "", h); setRoute(b.dataset.go); }
   else { if (location.hash) history.pushState(null, "", location.pathname); setRoute("program"); }
   window.scrollTo(0, 0);
 };
