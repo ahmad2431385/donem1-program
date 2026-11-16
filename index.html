@@ -935,6 +935,110 @@ body.bgp-open{overflow:hidden}
 .tm-pill b{font-family:var(--mono);font-size:15px}
 .tm-pill .pd{width:9px;height:9px;border-radius:50%;background:var(--accent)}
 .tm-pill[data-paused="1"] .pd{background:var(--pdo)}
+/* ============ Not hesaplama ============ */
+#notView{display:none}
+body[data-route="notlar"] #notView{display:flex}
+body[data-route="notlar"] #who{display:none !important}
+#notView{flex-direction:column;gap:12px}
+.nt-sum{display:grid;grid-template-columns:auto 1fr;gap:4px 16px;align-items:center}
+.nt-sum .ag{grid-row:span 2;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:96px;padding:10px 12px;border-radius:12px;background:var(--accent-soft);color:var(--accent)}
+.nt-sum .ag b{font-family:var(--display);font-size:32px;line-height:1.05;font-variant-numeric:tabular-nums}
+.nt-sum .ag small{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.nt-sum .ag.low{background:var(--exam-soft);color:var(--exam)}
+.nt-sum .ag.none{background:var(--free-soft);color:var(--muted)}
+.nt-sum h2{font-size:16px}
+.nt-sum p{font-size:13px;color:var(--muted);margin:0}
+.nt-cnt{display:flex;flex-wrap:wrap;gap:6px;grid-column:1/-1;margin-top:6px}
+.nt-pill{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:700;border-radius:999px;padding:3px 10px;background:var(--free-soft);color:var(--muted);white-space:nowrap}
+.nt-pill.ok{background:var(--accent-soft);color:var(--accent)}
+.nt-pill.mid{background:var(--pdo-soft);color:var(--pdo)}
+.nt-pill.bad{background:var(--exam-soft);color:var(--exam)}
+.nt-list{display:flex;flex-direction:column;gap:10px}
+.nt-c{border:1px solid var(--line);border-radius:14px;background:var(--surface);overflow:hidden}
+.nt-c > summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:12px 14px 12px 16px;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none}
+.nt-c > summary::-webkit-details-marker{display:none}
+.nt-c > summary:hover{background:color-mix(in srgb,currentColor 4%,transparent)}
+.nt-c .nm{flex:1;min-width:0;display:flex;flex-direction:column}
+.nt-c .nm b{font-size:15.5px;line-height:1.25}
+.nt-c .nm small{font-size:12.5px;color:var(--muted);overflow-wrap:anywhere}
+.nt-c .gr{flex:none;min-width:52px;text-align:center;border-radius:10px;padding:4px 8px;background:var(--free-soft);color:var(--muted);display:flex;flex-direction:column;line-height:1.15}
+.nt-c .gr b{font-family:var(--display);font-size:19px}
+.nt-c .gr small{font-family:var(--mono);font-size:11px}
+.nt-c .gr.ok{background:var(--accent-soft);color:var(--accent)}
+.nt-c .gr.mid{background:var(--pdo-soft);color:var(--pdo)}
+.nt-c .gr.bad{background:var(--exam-soft);color:var(--exam)}
+.nt-c .chev{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--bg);transition:transform .2s ease}
+.nt-c[open] .chev{transform:rotate(180deg)}
+.nt-b{padding:2px 16px 16px;display:flex;flex-direction:column;gap:12px}
+.nt-g{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.nt-f{display:flex;flex-direction:column;gap:4px;min-width:0}
+.nt-f > span{font-size:12.5px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between;gap:4px}
+.nt-f > span i{font-style:normal;font-family:var(--mono);font-weight:500;font-size:11.5px}
+.nt-in{width:100%;min-width:0;font-family:var(--mono);font-size:18px;padding:9px 10px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink);text-align:center;-webkit-appearance:none;appearance:none}
+.nt-in:focus{border-color:var(--accent);outline:none}
+.nt-in.bad{border-color:var(--exam)}
+.nt-in:disabled{opacity:.55}
+.nt-in.sm{font-size:15px;padding:7px 8px}
+.nt-res{border-radius:12px;padding:10px 12px;background:var(--bg);border:1px solid var(--line);display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.nt-res .rl{display:flex;align-items:baseline;justify-content:space-between;gap:10px}
+.nt-res .rl b{font-family:var(--mono);font-size:16px}
+.nt-res .st{font-weight:700}
+.nt-res.ok{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
+.nt-res.ok .st{color:var(--accent)}
+.nt-res.mid{background:var(--pdo-soft);border-color:color-mix(in srgb,var(--pdo) 35%,transparent)}
+.nt-res.mid .st{color:var(--pdo)}
+.nt-res.bad{background:var(--exam-soft);border-color:color-mix(in srgb,var(--exam) 35%,transparent)}
+.nt-res.bad .st{color:var(--exam)}
+.nt-res .why{font-size:12.5px;color:var(--muted)}
+.nt-tg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.nt-tg div{border-radius:9px;background:var(--surface);border:1px solid var(--line);padding:5px 4px;text-align:center;display:flex;flex-direction:column;line-height:1.2}
+.nt-tg div small{font-size:11px;color:var(--muted);font-weight:600}
+.nt-tg div b{font-family:var(--mono);font-size:15px}
+.nt-tg div.no b{color:var(--muted);font-size:12px;font-weight:600;padding-top:2px}
+.nt-tg div.done{border-color:var(--accent);}
+.nt-tg div.done b{color:var(--accent)}
+.nt-sw{display:flex;align-items:flex-start;gap:10px;font-size:13.5px;cursor:pointer}
+.nt-sw input{width:18px;height:18px;margin:1px 0 0;accent-color:var(--accent);flex:none}
+.nt-sw small{display:block;color:var(--muted);font-size:12px}
+.nt-more{border-top:1px dashed var(--line);padding-top:10px;display:flex;flex-direction:column;gap:10px}
+.nt-more > summary{cursor:pointer;font-size:13px;font-weight:600;color:var(--accent);list-style:none;display:flex;align-items:center;gap:6px}
+.nt-more > summary::-webkit-details-marker{display:none}
+.nt-more > summary::before{content:"+";font-family:var(--mono);width:14px}
+.nt-more[open] > summary::before{content:"−"}
+.nt-sub{display:flex;flex-direction:column;gap:8px;padding-left:2px}
+.nt-sub + .nt-sub{border-top:1px solid var(--line);padding-top:12px}
+.nt-sub h4{font-size:13px;margin:0}
+.nt-sub p{margin:0;font-size:12.5px;color:var(--muted)}
+.nt-rows{display:flex;flex-direction:column;gap:6px}
+.nt-row{display:grid;grid-template-columns:minmax(0,1fr) 74px 74px 30px;gap:6px;align-items:center}
+.nt-row.two{grid-template-columns:minmax(0,1fr) 84px 30px}
+.nt-row input[type=text]{min-width:0;font-size:14px;padding:7px 9px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+.nt-row input[type=text]:focus{border-color:var(--accent);outline:none}
+.nt-x{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:var(--bg);color:var(--muted);display:grid;place-items:center;padding:0}
+.nt-add{align-self:flex-start;background:none;border:1px dashed var(--line);color:var(--accent);font-weight:600;font-size:13px;border-radius:9px;padding:6px 12px}
+.nt-hd{display:grid;grid-template-columns:minmax(0,1fr) 74px 74px 30px;gap:6px;font-size:11px;color:var(--muted);font-weight:600}
+.nt-hd.two{grid-template-columns:minmax(0,1fr) 84px 30px}
+.nt-act{display:flex;flex-wrap:wrap;gap:8px}
+.nt-act .secondary{font-size:13px;padding:7px 12px}
+.nt-del{color:var(--exam) !important}
+.nt-w{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.nt-msg{font-size:12.5px;color:var(--muted)}
+.nt-msg.bad{color:var(--exam);font-weight:600}
+.nt-tbl{width:100%;border-collapse:collapse;font-size:13px}
+.nt-tbl th,.nt-tbl td{padding:5px 6px;border-bottom:1px solid var(--line);text-align:left}
+.nt-tbl td:first-child,.nt-tbl td:nth-child(3){font-family:var(--mono)}
+.nt-info p{margin:0 0 8px;font-size:13.5px}
+.nt-info ul{margin:0 0 8px;padding-left:18px;font-size:13.5px}
+.nt-info li{margin:3px 0}
+@media (max-width:420px){
+  .nt-g{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .nt-in{font-size:16px;padding:8px 4px}
+  .nt-f > span{font-size:12px}
+  .nt-row{grid-template-columns:minmax(0,1fr) 58px 58px 30px}
+  .nt-hd{grid-template-columns:minmax(0,1fr) 58px 58px 30px}
+  .nt-tg b{font-size:14px}
+}
+@media (prefers-reduced-motion: reduce){.nt-c .chev{transition:none}}
 </style>
 </head>
 <body data-route="program">
@@ -1087,12 +1191,71 @@ body.bgp-open{overflow:hidden}
   <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
   </div>
 
+  <!-- ============ Not hesaplama ============ -->
+  <div id="notView">
+    <section class="card nt-sum" id="ntSum" aria-live="polite"></section>
+
+    <div class="nt-list" id="ntList"></div>
+    <button type="button" class="nt-add" id="ntAddCourse" style="align-self:stretch;padding:10px 12px">+ Ders ekle (Türk Dili, Yabancı Dil, seçmeli…)</button>
+
+    <details class="card fold" id="ntSet">
+      <summary><span class="ft"><h2>Not oranları</h2><span class="hint" id="ntSetHint">Vize %40 · Uygulama %30 · Final %30</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+        <p class="small muted" style="margin:0">Bütün dilimlerde kullanılan oranlar. Bir dersin oranları farklıysa o dersin kartında "Ayrıntılı gir" bölümünden ayrıca değiştirebilirsin.</p>
+        <div class="nt-w">
+          <label class="nt-f"><span>Vize <i>%</i></span><input class="nt-in" id="ntWv" inputmode="decimal" autocomplete="off"></label>
+          <label class="nt-f"><span>Uygulama <i>%</i></span><input class="nt-in" id="ntWu" inputmode="decimal" autocomplete="off"></label>
+          <label class="nt-f"><span>Final <i>%</i></span><input class="nt-in" id="ntWf" inputmode="decimal" autocomplete="off"></label>
+        </div>
+        <div class="nt-msg" id="ntWMsg"></div>
+        <div class="nt-act">
+          <button type="button" class="secondary" id="ntWReset">Oranları sıfırla (40 · 30 · 30)</button>
+          <button type="button" class="secondary" id="ntRestore">Silinen dilimleri geri getir</button>
+          <button type="button" class="secondary nt-del" id="ntClear">Bütün notları sil</button>
+        </div>
+      </div>
+    </details>
+
+    <details class="card fold nt-info">
+      <summary><span class="ft"><h2>Nasıl hesaplanıyor?</h2><span class="hint">Harf notları, baraj, bütünleme, AGNO</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <div class="fbody">
+        <p><b>Başarı notu</b> = Vize × %40 + Uygulama × %30 + Final × %30. Vize dilim sınavı, final dönem (bitirme) sınavıdır. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p>
+        <ul>
+          <li><b>60 (CC) ve üstü:</b> başarılı.</li>
+          <li><b>50–59 (DD, DC):</b> koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin.</li>
+          <li><b>50'nin altı (FF):</b> bütünlemeye girersin.</li>
+          <li><b>Final 50'nin altındaysa</b> başarı notun ne olursa olsun bütünlemeye girersin. Bütünleme notu finalin yerine geçer.</li>
+          <li><b>Devam:</b> teorik derslerin %70'ine, uygulamaların %80'ine devam zorunlu. Sağlanmazsa not FD olur.</li>
+          <li><b>Baraj:</b> barajlı anabilim dallarının sorularının en az yarısını doğru yapmalısın. Eksik kalan her sorunun puanı vize notundan düşülür.</li>
+          <li><b>AGNO</b> = Σ(AKTS × katsayı) ÷ Σ AKTS. 2,00'nin altı sınamalı öğrenci sayılır.</li>
+        </ul>
+        <table class="nt-tbl">
+          <thead><tr><th>Puan</th><th>Harf</th><th>Katsayı</th><th>Anlamı</th></tr></thead>
+          <tbody>
+            <tr><td>88–100</td><td>AA</td><td>4,00</td><td>Mükemmel</td></tr>
+            <tr><td>80–87</td><td>BA</td><td>3,50</td><td>Çok iyi</td></tr>
+            <tr><td>73–79</td><td>BB</td><td>3,00</td><td>İyi</td></tr>
+            <tr><td>66–72</td><td>CB</td><td>2,50</td><td>Orta</td></tr>
+            <tr><td>60–65</td><td>CC</td><td>2,00</td><td>Yeterli</td></tr>
+            <tr><td>55–59</td><td>DC</td><td>1,50</td><td>Koşullu başarılı</td></tr>
+            <tr><td>50–54</td><td>DD</td><td>1,00</td><td>Koşullu başarılı</td></tr>
+            <tr><td>0–49</td><td>FF</td><td>0,00</td><td>Başarısız</td></tr>
+            <tr><td>—</td><td>FD</td><td>0,00</td><td>Devamsız başarısız</td></tr>
+          </tbody>
+        </table>
+        <p class="small muted" style="margin:6px 0 0">Kaynak: İTF Lisans Programları Eğitim ve Sınav Yönergesi (Madde 17, 42–44). Sayfa notları yuvarlamadan hesaplar; fakülte yuvarlama yapabilir. Kesin notun her zaman öğrenci bilgi sistemindeki nottur. Notların yalnızca bu cihazda saklanır.</p>
+      </div>
+    </details>
+    <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir hesaplayıcıdır, fakülteyle resmi bağı yoktur.</p>
+  </div>
+
 </div>
 
 <div class="drawer-scrim" id="drawerScrim" hidden></div>
 <nav class="drawer" id="drawer" aria-label="Ana menü" inert>
   <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
   <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
+  <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Not hesaplama</b><small>Başarı notu, finalde kaç lazım, AGNO</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
   <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
@@ -1941,6 +2104,324 @@ window.dispatchEvent(new Event("prog-ready"));
 })();
 </script>
 <script>
+/* ============ Not hesaplama (yalnızca bu cihazda saklanır) ============ */
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const KEY = "itf_notlar_v1";
+const W0 = {v:40, u:30, f:30};
+const DEF = [
+  {id:"tm",  n:"Tıbba Merhaba Dilimi", h:"Vize 19 Eki · Final 22 Oca", ul:["Yaralı taşıma","Kırık-çıkıkta ilk yardım","Temel yaşam desteği","Mikroskop kullanma"]},
+  {id:"ymt", n:"Yaşamın Moleküler Temelleri", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Fizyoloji","Biyofizik"]},
+  {id:"huc", n:"Hücre Dilimi", h:"Vize 13 Oca · Final 22 Oca", ul:["Tıbbi biyoloji","Tıbbi biyokimya","Tıbbi mikrobiyoloji","Biyofizik"]},
+  {id:"dk1", n:"Dikey Koridor I · İletişim I", h:"Vize 13 Oca · Final 22 Oca", ul:[]},
+  {id:"dok", n:"Doku Dilimi", h:"Vize 13 May · Final 22 Haz", ul:["Tıbbi biyoloji","Histoloji","Fizyoloji","Biyofizik"]},
+  {id:"hev", n:"Hayatın Evreleri Dilimi", h:"Vize 13 May · Final 22 Haz", ul:[]},
+  {id:"har", n:"Hareket-1 Dilimi", h:"Vize 7 Haz · Final 22 Haz", ul:["Histoloji","Fizyoloji","Anatomi"]},
+  {id:"dk2", n:"Dikey Koridor II · İletişim II, Tıp Tarihi", h:"Vize 13 May · Final 22 Haz", ul:[]}
+];
+const GR = [[88,"AA",4],[80,"BA",3.5],[73,"BB",3],[66,"CB",2.5],[60,"CC",2],[55,"DC",1.5],[50,"DD",1],[0,"FF",0]];
+const TG = [[60,"CC"],[73,"BB"],[80,"BA"],[88,"AA"]];
+
+const blank = d => ({id:d.id, n:d.n, h:d.h||"", def:!!d.def, k:"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:false, w:{...W0}});
+function load(){
+  let s = null;
+  try { s = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
+  if (!s || !Array.isArray(s.c)) s = {w:{...W0}, c:DEF.map(d => blank({...d, def:true}))};
+  if (!s.w) s.w = {...W0};
+  return s;
+}
+let S = load();
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch(e){} };
+
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const num = (s, max = 100) => { if (s === "" || s == null) return null; const x = parseFloat(String(s).replace(",", ".")); return isFinite(x) && x >= 0 && x <= max ? x : NaN; };
+const ok = x => x !== null && !Number.isNaN(x);
+const f1 = x => (Math.round(x*10)/10).toLocaleString("tr-TR", {maximumFractionDigits:1});
+const f2 = x => x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2});
+const grade = p => GR.find(g => p >= g[0] - 1e-9);
+const wOf = c => c.ow ? c.w : S.w;
+
+/* ---------- one course: every number the card shows ---------- */
+function calc(c){
+  const w = wOf(c), r = {w, bad:[]};
+  // vize: from correct answers if given, then the baraj deduction
+  const vd = num(c.vd, 9999), vt = num(c.vt, 9999);
+  let vRaw = null;
+  if (ok(vd) && ok(vt) && vt > 0 && vd <= vt){ vRaw = vd/vt*100; r.vFromQ = true; }
+  else { vRaw = num(c.v); if (Number.isNaN(vRaw)) r.bad.push("v"); }
+  const T = ok(vt) && vt > 0 ? vt : null;
+  let ded = 0, miss = 0, barNeedT = false;
+  for (const g of c.bar){
+    const q = num(g.q, 9999), k = num(g.c, 9999);
+    if (!ok(q) || !ok(k) || q <= 0) continue;
+    const m = Math.max(0, Math.ceil(q/2) - k);
+    if (!m) continue;
+    if (!T){ barNeedT = true; continue; }
+    miss += m; ded += m*100/T;
+  }
+  r.miss = miss; r.ded = ded; r.barNeedT = barNeedT;
+  r.V = ok(vRaw) ? Math.max(0, vRaw - ded) : null;
+  // uygulama: average of the separate exams if any, else the single score
+  const us = c.ul.map(x => num(x.s)).filter(ok);
+  if (us.length){ r.U = us.reduce((a,b) => a+b, 0)/us.length; r.uFromList = us.length; }
+  else { const u = num(c.u); if (Number.isNaN(u)) r.bad.push("u"); r.U = ok(u) ? u : null; }
+  const f = num(c.f), b = num(c.b);
+  if (Number.isNaN(f)) r.bad.push("f"); if (Number.isNaN(b)) r.bad.push("b");
+  r.F0 = ok(f) ? f : null; r.B = ok(b) ? b : null;
+  r.F = r.B !== null ? r.B : r.F0;
+  r.useBut = r.B !== null;
+  const parts = [["v", r.V], ["u", r.U], ["f", r.F]].filter(p => w[p[0]] > 0);
+  r.have = parts.filter(p => p[1] !== null);
+  r.done = r.have.length === parts.length;
+  r.sumW = parts.reduce((a,p) => a + w[p[0]], 0);
+  r.part = r.have.reduce((a,p) => a + w[p[0]]*p[1], 0)/100;
+  r.wDone = r.have.reduce((a,p) => a + w[p[0]], 0);
+  // status
+  if (c.fd){ r.st = "bad"; r.L = "FD"; r.coef = 0; r.msg = "Devamsızlıktan başarısız (FD). Dilimi tekrar alman gerekir."; return r; }
+  if (r.done){
+    r.P = r.part;
+    const g = grade(r.P); r.L = g[1]; r.coef = g[2];
+    if (w.f > 0 && r.F < 50 && !r.useBut){ r.st = "bad"; r.L = "BÜT"; r.coef = null; r.msg = "Final 50'nin altında: bütünlemeye girersin. Bütünleme notunu girince sonuç güncellenir."; }
+    else if (w.f > 0 && r.F < 50 && r.useBut){ r.st = "bad"; r.L = "FF"; r.coef = 0; r.msg = "Bütünleme notu da 50'nin altında: dönem sınavı barajı geçilemedi, başarısız sayılırsın."; }
+    else if (r.P >= 60){ r.st = "ok"; r.msg = "Başarılısın."; }
+    else if (r.P >= 50){ r.st = "mid"; r.msg = "Koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin."; }
+    else { r.st = "bad"; r.msg = r.useBut ? "Bütünlemeden sonra da 50'nin altında: başarısız (FF)." : "50'nin altında: bütünlemeye girersin."; }
+  } else r.st = "";
+  // what the final (or bütünleme) has to be for each grade
+  if (w.f > 0 && !c.fd){
+    const others = [["v", r.V], ["u", r.U]].filter(p => w[p[0]] > 0);
+    if (others.every(p => p[1] !== null)){
+      const base = others.reduce((a,p) => a + w[p[0]]*p[1], 0)/100;
+      const forBut = r.F0 !== null && r.B === null && (r.F0 < 50 || (r.done && r.P < 60));
+      if (r.F0 === null || forBut){
+        r.tgFor = r.F0 === null ? "final" : "bütünleme";
+        r.tg = TG.map(([t, L]) => { const need = Math.max(50, (t - base)*100/w.f); return {L, need: need > 100 + 1e-9 ? null : Math.ceil(need*10 - 1e-6)/10, ach: r.done && !forBut && r.P >= t}; });
+      }
+    }
+  }
+  return r;
+}
+
+/* ---------- rendering ---------- */
+const chev = `<span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>`;
+const inp = (c, k, val, extra = "") => `<input class="nt-in" data-k="${k}" value="${esc(val)}" inputmode="decimal" autocomplete="off" ${extra}>`;
+const xBtn = (k, i) => `<button type="button" class="nt-x" data-del="${k}" data-i="${i}" aria-label="Satırı sil"><svg width="10" height="10" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`;
+function cardHTML(c){
+  const w = wOf(c);
+  return `<details class="nt-c" id="nt_${c.id}" data-id="${c.id}"${OPEN.has(c.id) ? " open" : ""}>
+  <summary><span class="nm"><b>${esc(c.n)}</b><small data-o="sub"></small></span><span class="gr" data-o="gr"><b>—</b><small></small></span>${chev}</summary>
+  <div class="nt-b">
+    <div class="nt-g">
+      <label class="nt-f"><span>Vize <i data-o="wv">%${w.v}</i></span>${inp(c, "v", c.v, 'placeholder="0–100"')}</label>
+      <label class="nt-f"><span>Uygulama <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
+      <label class="nt-f"><span>Final <i data-o="wf">%${w.f}</i></span>${inp(c, "f", c.f, 'placeholder="0–100"')}</label>
+    </div>
+    <label class="nt-f" data-o="butw" hidden><span>Bütünleme notu <i>finalin yerine geçer</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
+    <div class="nt-res" data-o="res"></div>
+    <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.</small></span></label>
+    <details class="nt-more"${MORE.has(c.id) ? " open" : ""}>
+      <summary>Ayrıntılı gir: uygulama sınavları, doğru sayısı, baraj, AKTS</summary>
+      <div class="nt-sub">
+        <h4>Uygulama sınavları</h4>
+        <p>Birden fazla uygulama sınavı varsa ayrı ayrı yaz; ortalaması uygulama notu olur.</p>
+        <div class="nt-hd two"><span>Sınav</span><span>Puan</span><span></span></div>
+        <div class="nt-rows">${c.ul.map((x, i) => `<div class="nt-row two"><input type="text" data-k="ul.${i}.n" value="${esc(x.n)}" placeholder="Sınav adı" aria-label="Uygulama sınavı adı">${inp(c, `ul.${i}.s`, x.s, 'placeholder="—" aria-label="Puan"').replace('class="nt-in"', 'class="nt-in sm"')}${xBtn("ul", i)}</div>`).join("")}</div>
+        <button type="button" class="nt-add" data-add="ul">+ Uygulama sınavı ekle</button>
+      </div>
+      <div class="nt-sub">
+        <h4>Vizeyi doğru sayısıyla hesapla</h4>
+        <p>Doğru ve toplam soru sayısını yazarsan vize puanı kendiliğinden hesaplanır.</p>
+        <div class="nt-g" style="grid-template-columns:repeat(2,minmax(0,1fr))">
+          <label class="nt-f"><span>Doğru</span>${inp(c, "vd", c.vd, 'placeholder="—" inputmode="numeric"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>Toplam soru</span>${inp(c, "vt", c.vt, 'placeholder="—" inputmode="numeric"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
+        </div>
+      </div>
+      <div class="nt-sub">
+        <h4>Baraj</h4>
+        <p>Barajlı anabilim dalının sorularının en az yarısını doğru yapmalısın; eksik her soru vizeden düşülür. Hesap için yukarıya toplam soru sayısını da yaz.</p>
+        <div class="nt-hd"${c.bar.length ? "" : " hidden"}><span>Anabilim dalı</span><span>Soru</span><span>Doğru</span><span></span></div>
+        <div class="nt-rows">${c.bar.map((g, i) => `<div class="nt-row"><input type="text" data-k="bar.${i}.n" value="${esc(g.n)}" placeholder="Örn. Biyofizik" aria-label="Anabilim dalı">${inp(c, `bar.${i}.q`, g.q, 'placeholder="—" inputmode="numeric" aria-label="Soru sayısı"').replace('class="nt-in"', 'class="nt-in sm"')}${inp(c, `bar.${i}.c`, g.c, 'placeholder="—" inputmode="numeric" aria-label="Doğru sayısı"').replace('class="nt-in"', 'class="nt-in sm"')}${xBtn("bar", i)}</div>`).join("")}</div>
+        <div class="nt-msg" data-o="barmsg"></div>
+        <button type="button" class="nt-add" data-add="bar">+ Barajlı ders ekle</button>
+      </div>
+      <div class="nt-sub">
+        <h4>AKTS kredisi</h4>
+        <p>AGNO hesabı için. Öğrenci bilgi sisteminde ders kaydı ya da not durum belgesinde yazar.</p>
+        <label class="nt-f" style="max-width:140px"><span>AKTS</span>${inp(c, "k", c.k, 'placeholder="—"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
+      </div>
+      <div class="nt-sub">
+        <label class="nt-sw"><input type="checkbox" data-k="ow"${c.ow ? " checked" : ""}><span>Bu dersin oranları farklı<small>Örneğin vize %40, final %60 olan bir ders için.</small></span></label>
+        <div class="nt-g" data-o="oww"${c.ow ? "" : " hidden"}>
+          <label class="nt-f"><span>Vize %</span>${inp(c, "w.v", c.w.v).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>Uygulama %</span>${inp(c, "w.u", c.w.u).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+          <label class="nt-f"><span>Final %</span>${inp(c, "w.f", c.w.f).replace('class="nt-in"', 'class="nt-in sm"')}</label>
+        </div>
+        <div class="nt-msg" data-o="owmsg"></div>
+      </div>
+      <div class="nt-sub">
+        <label class="nt-f"><span>Dersin adı</span><input type="text" data-k="n" value="${esc(c.n)}" style="min-width:0;font-size:14px;padding:8px 10px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)"></label>
+        <div class="nt-act"><button type="button" class="secondary" data-act="clear">Bu dersin notlarını temizle</button><button type="button" class="secondary nt-del" data-act="remove">Dersi listeden kaldır</button></div>
+      </div>
+    </details>
+  </div>
+</details>`;
+}
+const OPEN = new Set(), MORE = new Set();
+function renderList(){
+  $("ntList").innerHTML = S.c.map(cardHTML).join("");
+  S.c.forEach(update);
+  summary();
+}
+function rerenderCard(c){
+  const el = $("nt_" + c.id); if (!el) return renderList();
+  el.outerHTML = cardHTML(c); update(c); summary();
+}
+function update(c){
+  const el = $("nt_" + c.id); if (!el) return;
+  const r = calc(c), o = k => el.querySelector(`[data-o="${k}"]`), w = r.w;
+  // invalid inputs
+  el.querySelectorAll(".nt-in[data-k]").forEach(i => {
+    const k = i.dataset.k, v = i.value.trim();
+    const max = /^(vd|vt|bar\.)/.test(k) ? 9999 : 100;
+    i.classList.toggle("bad", v !== "" && Number.isNaN(num(v, max)));
+  });
+  const vIn = el.querySelector('[data-k="v"]'), uIn = el.querySelector('[data-k="u"]');
+  vIn.disabled = !!r.vFromQ; if (vIn.disabled) vIn.value = r.V !== null ? f1(r.V) : "";
+  else if (document.activeElement !== vIn) vIn.value = c.v;
+  uIn.disabled = !!r.uFromList; if (uIn.disabled) uIn.value = f1(r.U); else if (document.activeElement !== uIn) uIn.value = c.u;
+  o("wv").textContent = "%" + w.v; o("wu").textContent = "%" + w.u; o("wf").textContent = "%" + w.f;
+  o("butw").hidden = !(r.F0 !== null && (r.F0 < 50 || (r.done && r.P < 60)) || c.b !== "");
+  // header
+  const sub = [];
+  if (r.done || c.fd) sub.push(c.fd ? "Devamsız" : r.msg.split(":")[0].replace(/\.$/, ""));
+  else if (r.have.length) sub.push(`Şimdilik ${f1(r.part)} puan topladın (%${r.wDone} üzerinden)`);
+  else sub.push(c.h || "Notlarını gir");
+  o("sub").textContent = sub.join(" · ");
+  const gr = o("gr"); gr.className = "gr" + (r.st ? " " + r.st : "");
+  gr.querySelector("b").textContent = r.L || (r.have.length ? "…" : "—");
+  gr.querySelector("small").textContent = r.done && !c.fd ? f1(r.P) : "";
+  // result box
+  const res = o("res"); res.className = "nt-res" + (r.st ? " " + r.st : "");
+  let h = "";
+  if (c.fd) h = `<div class="st">${esc(r.msg)}</div>`;
+  else if (r.done){
+    h = `<div class="rl"><span>Başarı notu</span><b>${f1(r.P)} · ${esc(r.L === "BÜT" ? grade(r.P)[1] : r.L)}</b></div><div class="st">${esc(r.msg)}</div>`;
+    if (r.useBut) h += `<div class="why">Finalin yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+  } else if (r.have.length){
+    h = `<div class="rl"><span>Şu ana kadar</span><b>${f1(r.part)} / ${r.wDone}</b></div>`;
+  } else h = `<div class="why">Notlarını girdikçe başarı notun, harf notun ve finalde kaç alman gerektiği burada görünür.</div>`;
+  if (r.ded > 0) h += `<div class="why">Baraj: ${r.miss} soru eksik, vizeden −${f1(r.ded)} puan düşüldü.</div>`;
+  if (r.vFromQ && !c.fd) h += `<div class="why">Vize doğru sayısından hesaplandı: ${esc(c.vd)}/${esc(c.vt)} doğru.</div>`;
+  if (r.uFromList && !c.fd) h += `<div class="why">Uygulama: ${r.uFromList} sınavın ortalaması.</div>`;
+  if (r.tg){
+    h += `<div class="why" style="margin-top:2px"><b>${r.tgFor === "final" ? "Finalde" : "Bütünlemede"} en az kaç almalısın?</b></div><div class="nt-tg">${r.tg.map(t => `<div class="${t.need === null ? "no" : t.ach ? "done" : ""}"><small>${t.L}</small><b>${t.need === null ? "olmaz" : f1(t.need)}</b></div>`).join("")}</div>`;
+    if (r.tg[0].need === 50) h += `<div class="why">Finalde 50'nin altı bütünlemeye kalır, bu yüzden en az 50 gerekir.</div>`;
+  } else if (!r.done && !c.fd && w.f > 0 && r.F0 === null) h += `<div class="why">Vize ve uygulama notunu girince finalde kaç alman gerektiğini gösteririm.</div>`;
+  res.innerHTML = h;
+  const bm = o("barmsg");
+  bm.className = "nt-msg" + (r.barNeedT ? " bad" : "");
+  bm.textContent = r.barNeedT ? "Barajı hesaplamak için yukarıya toplam soru sayısını yaz." : (c.bar.length && !r.miss ? "Baraj geçildi, puan düşülmedi." : "");
+  const om = o("owmsg"); const ws = c.w.v + c.w.u + c.w.f;
+  om.className = "nt-msg" + (c.ow && Math.abs(ws - 100) > 1e-9 ? " bad" : "");
+  om.textContent = c.ow && Math.abs(ws - 100) > 1e-9 ? `Oranların toplamı ${f1(ws)}; 100 olmalı.` : "";
+}
+function summary(){
+  let ks = 0, kc = 0, nG = 0, sumCoef = 0, noK = 0;
+  const n = {ok:0, mid:0, bad:0, wait:0};
+  for (const c of S.c){
+    const r = calc(c);
+    if (r.st === "ok") n.ok++; else if (r.st === "mid") n.mid++; else if (r.st === "bad") n.bad++; else n.wait++;
+    if (r.coef === null || r.coef === undefined) continue;
+    nG++; sumCoef += r.coef;
+    const k = num(c.k, 60);
+    if (ok(k) && k > 0){ ks += k; kc += k*r.coef; } else noK++;
+  }
+  let big, cls = "", lbl = "AGNO", line;
+  if (ks > 0){ const a = Math.round(kc/ks*100)/100; big = f2(a); if (a < 2) cls = " low"; line = a < 2 ? "AGNO 2,00'nin altında: sınamalı öğrenci sayılırsın." : "Kredili notlarına göre ağırlıklı not ortalaman."; if (noK) line += ` ${noK} dersin AKTS'si girilmedi, hesaba katılmadı.`; }
+  else if (nG){ const a = Math.round(sumCoef/nG*100)/100; big = f2(a); lbl = "Ortalama"; if (a < 2) cls = " low"; line = "AKTS girilmediği için kredisiz ortalama. Kartlarda “Ayrıntılı gir” bölümünden AKTS'yi yazarsan gerçek AGNO hesaplanır."; }
+  else { big = "—"; cls = " none"; line = "Bir dersin bütün notlarını girince ortalaman burada görünür."; }
+  const pill = (k, t) => n[k] ? `<span class="nt-pill ${k === "wait" ? "" : k}">${n[k]} ${t}</span>` : "";
+  $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Not hesaplama</h2><p>${esc(line)}</p><div class="nt-cnt">${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>`;
+  $("ntSetHint").textContent = `Vize %${S.w.v} · Uygulama %${S.w.u} · Final %${S.w.f}`;
+}
+
+/* ---------- editing ---------- */
+const byId = id => S.c.find(c => c.id === id);
+function setPath(c, k, val){
+  const p = k.split(".");
+  if (p.length === 1){ c[k] = val; return; }
+  if (p[0] === "w"){ const x = num(val, 100); c.w[p[1]] = ok(x) ? x : 0; return; }
+  c[p[0]][+p[1]][p[2]] = val;
+}
+$("ntList").addEventListener("input", e => {
+  const t = e.target, k = t.dataset.k; if (!k) return;
+  const card = t.closest(".nt-c"), c = byId(card.dataset.id);
+  if (t.type === "checkbox") return;
+  setPath(c, k, t.value.trim());
+  if (k === "n") card.querySelector(".nm b").textContent = c.n || "Ders";
+  save(); update(c); summary();
+});
+$("ntList").addEventListener("change", e => {
+  const t = e.target, k = t.dataset.k; if (!k || t.type !== "checkbox") return;
+  const card = t.closest(".nt-c"), c = byId(card.dataset.id);
+  c[k] = t.checked; save();
+  if (k === "ow") card.querySelector('[data-o="oww"]').hidden = !t.checked;
+  update(c); summary();
+});
+$("ntList").addEventListener("toggle", e => {
+  const d = e.target; if (!d.matches || !d.matches("details")) return;
+  const card = d.closest(".nt-c"); if (!card) return;
+  const set = d.classList.contains("nt-c") ? OPEN : MORE;
+  d.open ? set.add(card.dataset.id) : set.delete(card.dataset.id);
+}, true);
+$("ntList").addEventListener("click", e => {
+  const b = e.target.closest("button"); if (!b) return;
+  const card = b.closest(".nt-c"), c = byId(card.dataset.id);
+  if (b.dataset.add){
+    c[b.dataset.add].push(b.dataset.add === "ul" ? {n:"", s:""} : {n:"", q:"", c:""});
+    save(); rerenderCard(c);
+    const rows = $("nt_" + c.id).querySelectorAll(`[data-k^="${b.dataset.add}."][type="text"]`); if (rows.length) rows[rows.length - 1].focus();
+  } else if (b.dataset.del){
+    c[b.dataset.del].splice(+b.dataset.i, 1); save(); rerenderCard(c);
+  } else if (b.dataset.act === "clear"){
+    if (!confirm(`${c.n}: bütün notlar silinsin mi?`)) return;
+    Object.assign(c, {k:"", v:"", vd:"", vt:"", u:"", f:"", b:"", fd:false, bar:[]}); c.ul.forEach(x => x.s = "");
+    save(); rerenderCard(c);
+  } else if (b.dataset.act === "remove"){
+    if (!confirm(`${c.n} listeden kaldırılsın mı? Notları da silinir.`)) return;
+    S.c = S.c.filter(x => x !== c); save(); renderList();
+  }
+});
+$("ntAddCourse").addEventListener("click", () => {
+  const id = "u" + Date.now().toString(36);
+  const c = blank({id, n:"Yeni ders"}); c.ow = true; c.w = {v:40, u:0, f:60};
+  S.c.push(c); OPEN.add(id); MORE.add(id); save(); renderList();
+  const el = $("nt_" + id); el.scrollIntoView({block:"start", behavior:"smooth"});
+  const nm = el.querySelector('[data-k="n"]'); nm.focus(); nm.select();
+});
+function wInputs(){ $("ntWv").value = S.w.v; $("ntWu").value = S.w.u; $("ntWf").value = S.w.f; wMsg(); }
+function wMsg(){ const s = S.w.v + S.w.u + S.w.f, m = $("ntWMsg"); const bad = Math.abs(s - 100) > 1e-9; m.className = "nt-msg" + (bad ? " bad" : ""); m.textContent = bad ? `Oranların toplamı ${f1(s)}; 100 olmalı.` : "Toplam %100."; }
+for (const [id, k] of [["ntWv","v"],["ntWu","u"],["ntWf","f"]]) $(id).addEventListener("input", e => {
+  const x = num(e.target.value.trim()); e.target.classList.toggle("bad", Number.isNaN(x));
+  S.w[k] = ok(x) ? x : 0; save(); wMsg(); S.c.forEach(update); summary();
+});
+$("ntWReset").addEventListener("click", () => { S.w = {...W0}; save(); wInputs(); S.c.forEach(update); summary(); });
+$("ntRestore").addEventListener("click", () => {
+  let n = 0;
+  DEF.forEach((d, i) => { if (!byId(d.id)){ S.c.splice(Math.min(i, S.c.length), 0, blank({...d, def:true})); n++; } });
+  save(); renderList(); alert(n ? `${n} dilim geri getirildi.` : "Eksik dilim yok.");
+});
+$("ntClear").addEventListener("click", () => {
+  if (!confirm("Bütün derslerin notları silinsin mi? Bu geri alınamaz.")) return;
+  S = {w:{...S.w}, c:DEF.map(d => blank({...d, def:true}))}; save(); renderList();
+});
+
+wInputs(); renderList();
+window.ntRefresh = () => { S = load(); wInputs(); renderList(); };
+})();
+</script>
+<script>
 /* ============ Menü (odak sayacı artık ayrı sitede: Studydoro) ============ */
 (function(){
 "use strict";
@@ -1948,9 +2429,19 @@ window.dispatchEvent(new Event("prog-ready"));
 const toTimer = () => { if (location.hash.startsWith("#sayac")){ location.replace("https://ahmad2431385.github.io/studydoro/" + location.hash); return true; } return false; };
 if (toTimer()) return;
 window.addEventListener("hashchange", toTimer);
-document.body.dataset.route = "program";
+const DOC_T = document.title;
 const $ = id => document.getElementById(id);
 const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
+const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textContent, brandS.textContent];
+function setRoute(r){
+  document.body.dataset.route = r;
+  drawer.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  if (r === "notlar"){ brandT.textContent = "Notlarım"; brandS.textContent = "İstanbul Tıp · Dönem 1 · Not hesaplama"; document.title = "Not hesaplama · Dönem 1"; }
+  else { brandT.textContent = T0[0]; brandS.textContent = T0[1]; document.title = DOC_T; }
+}
+const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : "program");
+window.addEventListener("hashchange", routeFromHash);
+routeFromHash();
 function openDrawer(){
   scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add("show"));
   drawer.classList.add("open"); drawer.removeAttribute("inert"); menuBtn.setAttribute("aria-expanded", "true");
@@ -1965,7 +2456,14 @@ menuBtn.addEventListener("click", () => drawer.classList.contains("open") ? clos
 scrim.addEventListener("click", () => closeDrawer(true));
 $("drawerClose").addEventListener("click", () => closeDrawer(true));
 document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer(true); });
-drawer.addEventListener("click", e => { if (e.target.closest('[data-go="program"]')){ closeDrawer(false); if (location.hash) history.replaceState(null, "", location.pathname); window.scrollTo(0, 0); } });
+drawer.addEventListener("click", e => {
+  const b = e.target.closest("[data-go]"); if (!b) return;
+  closeDrawer(false);
+  if (b.dataset.go === "notlar"){ if (location.hash !== "#notlar") history.pushState(null, "", "#notlar"); setRoute("notlar"); }
+  else { if (location.hash) history.pushState(null, "", location.pathname); setRoute("program"); }
+  window.scrollTo(0, 0);
+});
+window.addEventListener("popstate", routeFromHash);
 })();
 </script>
 </body>
