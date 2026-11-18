@@ -2319,7 +2319,7 @@ $("loginForm").addEventListener("submit", async ev => {
   const r = await login(v);
   if (r && r.choose){ askDonem(r.no, r.choose); return; }
   if (r && r.error){ $("loginErr").textContent = r.error; return; }
-  if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et (ör. 0101260001)."; return; }
+  if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
   $("loginErr").textContent = ""; view = istNow().date; show();
 });
 $("foreignChk").checked = foreign;

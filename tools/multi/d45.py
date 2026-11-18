@@ -4,6 +4,7 @@ Tablo düzeni: dilim başlığı · 'N. Hafta' satırı (Pazartesi–Cuma tarihl
 2. sütun hangi alt grubun satırı olduğu: 'B', 'B1', 'B2-1' …; boşsa bütün grup) · hücrelerde ders/uygulama.
 Dönem 5'te 'B1' gibi etiketler o haftada 'B3' de geçiyorsa üçlü, geçmiyorsa ikili grubu gösterir.
 """
+import json
 import re
 from .common import clean, up, parse_date, time_range, norm_no, amfi_rows, tr_title
 
@@ -18,6 +19,18 @@ def _title(r):
     if re.search(r"\d{1,2}[.:]\d{2}", t) or re.match(r"^\d+\.\s*HAFTA", up(t)) or up(t) in ("SAAT",):
         return None
     return t
+
+
+def _date(v):
+    """Hücre bir tarihse tarih (Excel tarihi ya da '14.06.2027' / '14 Haziran 2027' gibi yazı); değilse None."""
+    if v is None:
+        return None
+    if isinstance(v, str) and not re.search(r"\d{1,2}[./]\d{1,2}[./]\d{2,4}|\d{4}-\d\d-\d\d|\d{1,2}\s+[A-Za-zÇĞİÖŞÜçğıöşü]+\s+\d{4}", v):
+        return None
+    try:
+        return parse_date(v)
+    except Exception:  # noqa: BLE001
+        return None
 
 
 def weekly(grid, letter, donem, warn, sheet):
@@ -57,12 +70,11 @@ def weekly(grid, letter, donem, warn, sheet):
             flush()
             title = tr_title(re.sub(r"\s*DİLİMİ\s*$", " Dilimi", t))
             continue
-        if re.match(r"^\d+\s*\.\s*HAFTA", up(a)):
+        # hafta satırı: 'N. Hafta' + Pazartesi–Cuma tarihleri; bütünleme haftalarında ilk hücre boş, yalnız tarihler var
+        dates = [_date(r[j]) if j < len(r) else None for j in range(2, 7)]
+        if re.match(r"^\d+\s*\.\s*HAFTA", up(a)) or (not a and sum(1 for d in dates if d) >= 3):
             flush()
-            days = []
-            for j in range(2, 7):
-                d = parse_date(r[j]) if j < len(r) else None
-                days.append(d.isoformat() if d else None)
+            days = [d.isoformat() if d else None for d in dates]
             continue
         if not days or SKIP.match(up(a)):
             continue
@@ -126,6 +138,14 @@ def build_common(donem, src, students):
         for k in ("h", "ad", "y", "dl"):
             if not e.get(k):
                 e.pop(k, None)
+    # kaynakta aynı satır bazen iki kez yazılmış (ör. bütünleme haftası, bayram): birebir aynıları bir kez tutulur
+    seen, uniq = set(), []
+    for e in ev:
+        k = json.dumps(e, sort_keys=True, ensure_ascii=False)
+        if k not in seen:
+            seen.add(k)
+            uniq.append(e)
+    ev = uniq
     st = students(src["ogrenci"])
     data = {"v": 1, "donem": donem, "amfiWeek": week, "events": ev, "uyg": [], "amfi": am}
     groups = sorted({g for e in ev for g in e["g"] if len(g) == 1})
