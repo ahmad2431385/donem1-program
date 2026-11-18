@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="copyright" content="© 2026 Ahmad. Tüm hakları saklıdır.">
+<meta name="copyright" content="© 2026 Ahmad Omar Mukhtar. Tüm hakları saklıdır.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dönem 1 Programım</title>
 <meta name="theme-color" content="#0b6b55">
@@ -1182,6 +1182,8 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
 }
 @media (min-width:700px) and (max-width:860px){.tabbar button,.tabbar a{padding:8px 9px;gap:5px;font-size:13px}}
 @media (prefers-reduced-motion: reduce){.hv-ref.spin svg{animation:none}}
+body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-staj #ntWReset,body.nt-staj #ntSet > .fbody > p:first-child{display:none !important}
+.nt-sw[hidden]{display:none}
 </style>
 </head>
 <body data-route="program">
@@ -1369,7 +1371,7 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
     <button type="button" class="nt-add" id="ntAddCourse" style="align-self:stretch;padding:10px 12px">+ Ders ekle (seçmeli ders ve diğerleri)</button>
 
     <details class="card fold" id="ntSet">
-      <summary><span class="ft"><h2>Not oranları</h2><span class="hint" id="ntSetHint">Vize %40 · Uygulama %30 · Final %30</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+      <summary><span class="ft"><h2 id="ntSetH">Not oranları</h2><span class="hint" id="ntSetHint">Vize %40 · Uygulama %30 · Final %30</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
         <p class="small muted" style="margin:0">Bu dönemin bütün derslerinde kullanılan oranlar. Varsayılanlar tahminidir; kendi dönemine göre değiştir. Oranı 0 olan not kutusu kartlarda gizlenir. Bir dersin oranları farklıysa o dersin kartında "Ayrıntılı gir" bölümünden ayrıca değiştirebilirsin.</p>
         <div class="nt-w">
@@ -1431,7 +1433,7 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
   <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
-  <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
+  <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad Omar Mukhtar · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
 </nav>
 
 <div class="scrim" id="scrim" hidden>
@@ -2401,7 +2403,7 @@ function cardHTML(c){
     <div class="nt-res" data-o="res"></div>
     <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>${TY.dev}</small></span></label>
     <details class="nt-more"${MORE.has(c.id) ? " open" : ""}>
-      <summary>${isD ? "Ayrıntılı gir: uygulama sınavları, doğru sayısı, baraj, AKTS" : "Ayrıntılı gir: AKTS, oranlar, dersin adı"}</summary>
+      <summary>${isD ? "Ayrıntılı gir: uygulama sınavları, doğru sayısı, baraj, AKTS" : isS ? "Ayrıntılı gir: AKTS, dersin adı" : "Ayrıntılı gir: AKTS, oranlar, dersin adı"}</summary>
       <div class="nt-sub">
         <h4>Uygulama sınavları</h4>
         <p>Birden fazla uygulama sınavı varsa ayrı ayrı yaz; ortalaması uygulama notu olur.</p>
@@ -2431,7 +2433,7 @@ function cardHTML(c){
         <label class="nt-f" style="max-width:140px"><span>AKTS</span>${inp(c, "k", c.k, 'placeholder="—"').replace('class="nt-in"', 'class="nt-in sm"')}</label>
       </div>
       <div class="nt-sub">
-        <label class="nt-sw"><input type="checkbox" data-k="ow"${c.ow ? " checked" : ""}><span>Bu dersin oranları farklı<small>Bu ders için ${L.v.toLocaleLowerCase("tr")}, ${L.u.toLocaleLowerCase("tr")} ve ${L.f.toLocaleLowerCase("tr")} oranını ayrıca ayarla.</small></span></label>
+        <label class="nt-sw"${isS ? " hidden" : ""}><input type="checkbox" data-k="ow"${c.ow ? " checked" : ""}><span>Bu dersin oranları farklı<small>Bu ders için ${L.v.toLocaleLowerCase("tr")}, ${L.u.toLocaleLowerCase("tr")} ve ${L.f.toLocaleLowerCase("tr")} oranını ayrıca ayarla.</small></span></label>
         <div class="nt-g" data-o="oww"${c.ow ? "" : " hidden"}>
           <label class="nt-f"><span>${L.v} %</span>${inp(c, "w.v", c.w.v).replace('class="nt-in"', 'class="nt-in sm"')}</label>
           <label class="nt-f"><span>${L.u} %</span>${inp(c, "w.u", c.w.u).replace('class="nt-in"', 'class="nt-in sm"')}</label>
@@ -2548,7 +2550,9 @@ function summary(){
   const dPill = dons > 1 && dAg ? `<span class="nt-pill ok">Dönem ${S.n} ortalaması ${dAg}</span>` : "";
   $("ntSum").innerHTML = `<div class="ag${cls}"><small>${lbl}</small><b>${big}</b></div><h2>Dönem ${S.n} notları</h2><p>${esc(line)}</p><div class="nt-cnt">${dPill}${pill("ok","başarılı")}${pill("mid","koşullu")}${pill("bad","bütünleme / kaldı")}${pill("wait","eksik not")}</div>${prog}`;
   const L = TY.L, parts = [["v", L.v], ["u", L.u], ["f", L.f]].filter(([k]) => S.w[k] > 0).map(([k, l]) => `${l} %${S.w[k]}`);
-  $("ntSetHint").textContent = parts.join(" · ") || "Oran yok";
+  const staj = TYP[S.n] === "staj";
+  $("ntSetH").textContent = staj ? "Ayarlar" : "Not oranları";
+  $("ntSetHint").textContent = staj ? "Silinen stajları geri getir, notları sil" : parts.join(" · ") || "Oran yok";
 }
 
 /* ---------- editing ---------- */
@@ -2608,7 +2612,7 @@ $("ntAddCourse").addEventListener("click", () => {
 function wInputs(){
   $("ntWv").value = S.w.v; $("ntWu").value = S.w.u; $("ntWf").value = S.w.f;
   $("ntLv").textContent = TY.L.v; $("ntLu").textContent = TY.L.u; $("ntLf").textContent = TY.L.f;
-  $("ntWReset").textContent = `Oranları sıfırla (${TY.w.v} · ${TY.w.u} · ${TY.w.f})`;
+  $("ntWReset").textContent = TYP[S.n] === "staj" ? "Oranları sıfırla" : `Oranları sıfırla (${TY.w.v} · ${TY.w.u} · ${TY.w.f})`;
   wMsg();
 }
 function wMsg(){ const s = S.w.v + S.w.u + S.w.f, m = $("ntWMsg"); const bad = Math.abs(s - 100) > 1e-9; m.className = "nt-msg" + (bad ? " bad" : ""); m.textContent = bad ? `Oranların toplamı ${f1(s)}; 100 olmalı.` : "Toplam %100."; }
@@ -2630,6 +2634,8 @@ $("ntClear").addEventListener("click", () => {
 function renderDsel(){
   $("ntDsel").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === S.n)));
   $("ntInfoD").hidden = TYP[S.n] !== "dilim"; $("ntInfoK").hidden = TYP[S.n] !== "klinik"; $("ntInfoS").hidden = TYP[S.n] !== "staj";
+  // Dönem 6'da sınav yok: yaklaşan sınavlar ve sınav oranları gizlenir
+  document.body.classList.toggle("nt-staj", TYP[S.n] === "staj");
 }
 $("ntDsel").addEventListener("click", e => {
   const b = e.target.closest("button[data-d]"); if (!b || +b.dataset.d === S.n) return;
