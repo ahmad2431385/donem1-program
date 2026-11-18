@@ -23,6 +23,13 @@ get "https://docs.google.com/spreadsheets/d/1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu2
 if head -c 200 "$D/amfi.csv" | grep -qi "<html"; then echo "HATA: amfi.csv yerine HTML geldi"; exit 1; fi
 echo "indirildi: $D/amfi.csv"
 
+# İsteğe bağlı: Yaşamın Moleküler Temelleri PDÖ grupları. İndirilemezse önceki gruplar korunur.
+if get "https://drive.google.com/uc?export=download&id=1i7xq3uRfMV_bgHqYH7MH3KKuIxLug3ki" "$D/pdo.xlsx" && is_xlsx "$D/pdo.xlsx"; then
+  echo "indirildi: $D/pdo.xlsx"
+else
+  rm -f "$D/pdo.xlsx"; echo "uyarı: pdo.xlsx indirilemedi, önceki PDÖ grupları korunacak"
+fi
+
 # İsteğe bağlı: seçmeli ders amfi programı. İndirilemezse önceki liste korunur.
 if get "https://drive.google.com/uc?export=download&id=16zVYCUzAEBcb897bYcXpxYXmK9AD_BXX" "$D/secmeli.xlsx" && is_xlsx "$D/secmeli.xlsx"; then
   echo "indirildi: $D/secmeli.xlsx"

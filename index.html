@@ -1184,6 +1184,8 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
 @media (prefers-reduced-motion: reduce){.hv-ref.spin svg{animation:none}}
 body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-staj #ntWReset,body.nt-staj #ntSet > .fbody > p:first-child{display:none !important}
 .nt-sw[hidden]{display:none}
+.dpick{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip.dsw{cursor:pointer;font:inherit;font-size:13px}
 </style>
 </head>
 <body data-route="program">
@@ -1391,14 +1393,15 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
     <details class="card fold nt-info">
       <summary><span class="ft"><h2>Nasıl hesaplanıyor?</h2><span class="hint">Harf notları, baraj, bütünleme, AGNO</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
-        <div id="ntInfoD"><p><b>Dönem 1–3 · Başarı notu</b> = Vize × %40 + Uygulama × %30 + Final × %30. Vize dilim sınavı, final dönem (bitirme) sınavıdır. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p></div>
+        <div id="ntInfoD"><p><b>Dönem 1–3 · Dilim başarı notu</b> = dilim sonu sınavı (vize) %40 + dönem sınavı %60. Dönem sınavı da kuramsal sınav (final) %50 ve uygulama %50'den oluşur; yani vize × %40 + uygulama × %30 + final × %30. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır. Kaynak: Dönem 1, 2 ve 3 ölçme-değerlendirme kuralları.</p></div>
         <div id="ntInfoK" hidden><p><b>Dönem 4–5 · Klinik dersler.</b> Her dersin sonunda yazılı ve/veya sözlü bitirme sınavı yapılır. Varsayılan oran yazılı %50, sözlü %50; anabilim dalına göre değişir, kartlardan ayarla. Bitirme notu 50'nin altındaysa bütünlemeye girersin; bütünleme notu bitirme notunun yerine geçer. 5. dönemde FF, DC, DD aldığın derslerde başka bir grubun bitirme sınavına erken bütünleme olarak girebilirsin. 6. döneme geçerken en fazla 3 FF dersin kaldıysa ya da AGNO yetmiyorsa üç ders sınavı hakkın olur.</p></div>
         <div id="ntInfoS" hidden><p><b>Dönem 6 · Stajlar.</b> Her stajın notunu staj sorumlusu verir; burada yalnızca notu girersin. Stajlarda %80 devam zorunludur ve mazeret kabul edilmez. Başarısız ya da devamsız staj, sonraki gruplarla tekrarlanır.</p></div>
         <ul>
           <li><b>60 (CC) ve üstü:</b> başarılı.</li>
           <li><b>50–59 (DD, DC):</b> koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin.</li>
           <li><b>50'nin altı (FF):</b> bütünlemeye girersin.</li>
-          <li><b>Final 50'nin altındaysa</b> başarı notun ne olursa olsun bütünlemeye girersin. Bütünleme notu finalin yerine geçer.</li>
+          <li><b>Dönem sınavı notu</b> (kuramsal ve uygulamanın ortalaması) 50'nin altındaysa başarı notun ne olursa olsun bütünlemeye girersin; 50'nin altında kalan kuramsal ya da uygulama bütünlemesine girmek zorunludur.</li>
+          <li><b>Bütünleme</b> kuramsal ve uygulama için ayrı yapılır, ilgili notun yerine geçer. Bütünleme sonucu bitirmedekinden düşükse bitirme sonucundaki başarı notu geçerli olur. Başarı notu 60 ve üstüyse bütünlemeye girilemez.</li>
           <li><b>Devam:</b> teorik derslerin %70'ine, uygulamaların %80'ine devam zorunlu. Sağlanmazsa not FD olur.</li>
           <li><b>Baraj:</b> barajlı anabilim dallarının sorularının en az yarısını doğru yapmalısın. Eksik kalan her sorunun puanı vize notundan düşülür.</li>
           <li><b>AGNO</b> = Σ(AKTS × katsayı) ÷ Σ AKTS. 2,00'nin altı sınamalı öğrenci sayılır.</li>
@@ -1450,12 +1453,15 @@ const store = {
   set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
   del(k){ try{ localStorage.removeItem(k); }catch(e){} }
 };
-let D, DESC = {};
+let D, DESC = {}, IDX = null, D1;
+const DFILE = n => n === 1 ? "data.json" : `d${n}.json`;
 try{
   const bust = "?t=" + Date.now();
-  const [a,b] = await Promise.all([fetch("data.json"+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null)]);
-  D = await a.json();
+  const [a,b,c] = await Promise.all([fetch("data.json"+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null),
+    fetch("ogr.json"+bust,{cache:"no-store"}).catch(()=>null)]);
+  D = D1 = await a.json();
   if (b && b.ok) DESC = await b.json();
+  if (c && c.ok) IDX = await c.json().catch(() => null);
 }catch(e){
   $("loading").textContent = "Program yüklenemedi. Sayfayı yenile; sorun sürerse asıl programlara bak.";
   return;
@@ -1493,6 +1499,14 @@ function matches(cell, me){
   if (/^[A-H]{2,}$/.test(c)) return c.includes(me.g);
   return false;
 }
+
+// Dönem 2–5: her kayıt bir etiket listesi taşır (["A"], ["A","a1"], ["*"] …); öğrencinin etiketlerinden biri tutarsa onundur.
+function hit(g){
+  if (g == null) return true;
+  if (Array.isArray(g)) return g.includes("*") || !!(me && me.tags && g.some(t => me.tags.includes(t)));
+  return !!me && matches(g, me);
+}
+const hitTag = t => t === "*" || (me && me.tags ? me.tags.includes(t) : matches(t, me));
 
 /* ---------- build a student's day ---------- */
 const byDate = arr => { const m = {}; for (const x of arr) (m[x.d] ||= []).push(x); return m; };
@@ -1536,9 +1550,9 @@ const dayCache = new Map();
 function buildDay(date){
   if (dayCache.has(date)) return dayCache.get(date);
   const out = [];
-  const lectures = EV[date] || [];
+  const lectures = (EV[date] || []).filter(e => !e.g || hit(e.g));
   const PG = me.p && D.pdoGroups[me.p];
-  const prac = (UY[date] || []).filter(u => !(PG && /PDÖ/i.test(u.n)) && matches(u.g, me));
+  const prac = (UY[date] || []).filter(u => !(PG && /PDÖ/i.test(u.n)) && hit(u.g));
   if (PG) for (const ss of PG.ses) if (ss.d === date)
     prac.push({d:date, s:ss.s, e:ss.e, n:"PDÖ", hoca:PG.tutor, g:me.p, y:PG.room, dl:"Yaşamın Moleküler Temelleri Dilimi", pdoSub:true});
   const anySec = mySecIds().length > 0;
@@ -1567,12 +1581,12 @@ function buildDay(date){
     const isPdo = /PDÖ/i.test(u.n);
     const note = /TELAF/i.test(u.g) ? "Telafi" : (/TÜM|\*/i.test(u.g) ? "Tüm gruplar" : null);
     out.push({kind: isPdo? "pdo":"uyg", s:u.s, e:u.e,
-      title: isPdo ? (u.pdoSub ? `PDÖ oturumu · ${u.g} grubu` : `PDÖ oturumu (grup ${u.g})`) : u.n + " uygulaması",
-      raw:u.n, hoca:u.hoca, dilim:u.dl, where: isPdo && !u.pdoSub ? "PDÖ salonu – amfi programına bak" : u.y,
+      title: isPdo ? (u.pdoSub ? `PDÖ oturumu · ${u.g} grubu` : `PDÖ oturumu (grup ${u.g})`) : (/uygulama|sınav/i.test(u.n) ? u.n : u.n + " uygulaması"),
+      raw:u.n, hoca:u.hoca, dilim:u.dl, where: isPdo && !u.pdoSub ? "PDÖ salonu – amfi programına bak" : (u.y || "Yeri fakülte sitesinde duyurulur"),
       note, grp:u.g, src: u.pdoSub ? "PDÖ grup listesi" : "Uygulama tablosu"});
   }
   for (const a of (AM[date]||[])){
-    if (!(a.g && a.g === me.g)) continue;
+    if (!(a.g && (Array.isArray(a.g) ? hit(a.g) : a.g === me.g))) continue;
     const m = a.t.match(/(\d{1,2})[.:](\d{2})\s*-\s*(\d{1,2})[.:](\d{2})/);
     const s = m ? `${m[1].padStart(2,"0")}:${m[2]}` : a.s, e = m ? `${m[3].padStart(2,"0")}:${m[4]}` : a.e;
     const U = a.t.toLocaleUpperCase("tr");
@@ -1584,7 +1598,7 @@ function buildDay(date){
   if (date >= TERM_START && date <= TERM_END){
     const wd = (wday(date)+6)%7;
     if (!lectures.some(e => kindOf(e.t)==="hol") && lectures.length)
-      for (const w of D.weekly.filter(w => w.wd === wd && (foreign || !/YABANCI UYRUKLU/.test(w.t))))
+      for (const w of (D.weekly||[]).filter(w => w.wd === wd && (foreign || !/YABANCI UYRUKLU/.test(w.t))))
         out.push({kind:"sec", online:true, s:w.s, e:w.e, title:w.t, raw:w.t, hoca:w.h, where:"Online", dilim:"Uzaktan eğitim", src:"Ders programı (her hafta)"});
   }
   out.sort((a,b) => (toMin(a.s)??0)-(toMin(b.s)??0) || (toMin(a.e)??0)-(toMin(b.e)??0));
@@ -1610,7 +1624,7 @@ function myChanges(){
   if (_myCh) return _myCh;
   const today = istNow().date;
   const mine = mySecIds();
-  _myCh = (D.changes||[]).filter(c => c.d >= today && c.g.some(g => g.startsWith("sec:") ? mine.includes(g.slice(4)) : (matches(g, me) || (me.p && g===me.p))));
+  _myCh = (D.changes||[]).filter(c => c.d >= today && c.g.some(g => g.startsWith("sec:") ? mine.includes(g.slice(4)) : (hitTag(g) || (me.p && g===me.p))));
   return _myCh;
 }
 function renderChanges(){
@@ -1630,7 +1644,7 @@ function renderChanges(){
     + (list.length > 4 ? `<span class="small">+${list.length-4} değişiklik daha; ilgili günlerde "Değişti" etiketiyle işaretli.</span>` : "");
 }
 
-function prettyT(t){ return String(t||"").replace(/^D[ÖO]NEM\s*1\s*-?\s*(TÜRKÇE\s*(\+\s*İNGİLİZCE)?)?\s*-?\s*/i,"").replace(/\s*-\s*/g," – ").trim(); }
+function prettyT(t){ return String(t||"").replace(/^D[ÖO]NEM\s*\d\s*-?\s*(TÜRKÇE\s*(\+\s*İNGİLİZCE)?)?\s*-?\s*/i,"").replace(/\s*-\s*/g," – ").trim(); }
 function chgText(c){
   const o = c.old, n = c.new;
   if (typeof o === "string" || typeof n === "string") return c.type==="mod" ? `<del>${esc(o)}</del> → <b>${esc(n)}</b>` : esc(n||o);
@@ -1649,13 +1663,15 @@ let me = null, view = istNow().date, mode = store.get("mode")==="week" ? "week" 
 
 function renderWho(){
   const w = $("who"); w.hidden = false;
-  const grp = [`Grup ${esc(me.g)}`, me.a ? `Uygulama ${esc(me.a)}` : "", `PDÖ ${esc(me.p || PDO_PAIR[me.g] || "–")}`].filter(Boolean);
+  const grp = me.d > 1 ? chipsOf(me.d, me.tags) : [`Grup ${esc(me.g)}`, me.a ? `Uygulama ${esc(me.a)}` : "", `PDÖ ${esc(me.p || PDO_PAIR[me.g] || "–")}`].filter(Boolean);
+  if (me.others && me.others.length) grp.push(`<button type="button" class="chip ghost dsw" id="dSwitch">Dönem ${me.d} · değiştir</button>`);
   w.innerHTML = `<div class="acct"><span class="av" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.8"/><path d="M4.5 20c.9-3.6 3.9-5.6 7.5-5.6s6.600 2 7.500 5.600"/></svg></span>
     <span class="who"><small>Öğrenci no</small><b>${esc(me.no)}</b></span>
     <span class="grp">${grp.map(g => `<span class="chip">${g}</span>`).join("")}</span>
     <button class="outbtn" id="logout" type="button" aria-label="Çıkış yap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg><span>Çıkış</span></button></div>`
    + (me.partial ? `<div class="acct-note">Uygulama listesinde yoksun; uygulamalar ${esc(me.g)} grubuna göre gösteriliyor.</div>` : "");
-  $("logout").onclick = () => { store.del("ogrNo"); me = null; show(); };
+  $("logout").onclick = () => { store.del("ogrNo"); store.del("ogrDonem"); me = null; setData(D1, 1); show(); };
+  if ($("dSwitch")) $("dSwitch").onclick = () => askDonem(me.no, [me.d, ...me.others]);
 }
 function renderSync(){
   const s = $("sync"); s.hidden = false;
@@ -1903,7 +1919,8 @@ function renderSec(){
 /* ---------- exams ---------- */
 function renderExams(){
   const now = istNow().date, seen = new Map(), ex = [];
-  for (const e of D.events){
+  const pool = D.events.filter(e => !e.g || !me || hit(e.g)).concat((D.uyg||[]).filter(u => /sınav/i.test(u.n) && (!me || hit(u.g))).map(u => ({d:u.d, s:u.s, e:u.e, t:u.n, y:u.y})));
+  for (const e of pool){
     if (e.d < now) continue;
     const u = e.t.toLocaleUpperCase("tr");
     if (!/SINAV/.test(u) || /^SERBEST/.test(u)) continue;
@@ -2138,17 +2155,16 @@ async function refreshData(){
   _refreshing = true;
   try {
     const bust = "?t=" + Date.now();
-    const [a,b] = await Promise.all([fetch("data.json"+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null)]);
+    const [a,b] = await Promise.all([fetch(DFILE(me.d||1)+bust,{cache:"no-store"}), fetch("desc.json"+bust,{cache:"no-store"}).catch(()=>null)]);
     if (!a.ok) return;
     const nd = await a.json();
     _lastRefresh = Date.now();
     if (!nd || !nd.events || !nd.lastCheck) return;
     if (nd.lastCheck === D.lastCheck && nd.hash === D.hash) return;
     const nodes = b && b.ok ? await b.json() : null;
-    D = nd; if (nodes) DESC = nodes;
-    EV = byDate(D.events); UY = byDate(D.uyg); AM = byDate(D.amfi); CH = byDate(D.changes||[]);
-    SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
-    dayCache.clear(); _myCh = null;
+    if (nodes) DESC = nodes;
+    if ((me.d||1) === 1) D1 = nd;
+    setData(nd, me.d||1);
     renderSync(); renderStale(); renderWho(); renderChanges(); renderNow(); renderMain(); renderExams();
     if (!document.querySelector("#secBody select:focus")) renderSec();
   } catch(e){ /* ağ yok: bir sonraki denemede */ }
@@ -2171,31 +2187,83 @@ function show(){
   renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec(); loadWx();
 }
 // Student numbers are not in the data file; only salted PBKDF2 hashes are. Derive the same hash here.
-async function hashNo(no){
+async function hashNo(no, kdf){
   const enc = new TextEncoder();
-  const salt = new Uint8Array(D.kdf.salt.match(/../g).map(h => parseInt(h,16)));
+  const salt = new Uint8Array(kdf.salt.match(/../g).map(h => parseInt(h,16)));
   const key = await crypto.subtle.importKey("raw", enc.encode(no), "PBKDF2", false, ["deriveBits"]);
-  const bits = await crypto.subtle.deriveBits({name:"PBKDF2", hash:"SHA-256", salt, iterations:D.kdf.iter}, key, 256);
+  const bits = await crypto.subtle.deriveBits({name:"PBKDF2", hash:"SHA-256", salt, iterations:kdf.iter}, key, 256);
   return [...new Uint8Array(bits)].map(b => b.toString(16).padStart(2,"0")).join("").slice(0,24);
 }
-async function login(no){
-  no = String(no||"").replace(/\D/g,"");
+// Excel'de sayı olarak tutulan listelerde baştaki 0 düşer: numaralar 10 haneye tamamlanır
+const canon = no => { no = String(no||"").replace(/\D/g,""); return no.length >= 8 && no.length < 10 ? no.padStart(10,"0") : no; };
+function setData(nd, n){
+  D = nd; EV = byDate(D.events); UY = byDate(D.uyg||[]); AM = byDate(D.amfi||[]); CH = byDate(D.changes||[]);
+  SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
+  dayCache.clear(); _myCh = null;
+  const bs = $("brandSmall"); bs.dataset.prog = `İstanbul Tıp · Dönem ${n} Türkçe`;
+  if (document.body.dataset.route === "program") bs.textContent = bs.dataset.prog;
+}
+async function loadDonem(n){
+  if (n === 1){ if (D !== D1) setData(D1, 1); return; }
+  if (D && D.donem === n) return;
+  const r = await fetch(DFILE(n) + "?t=" + Date.now(), {cache:"no-store"});
+  if (!r.ok) throw new Error("yok");
+  setData(await r.json(), n);
+}
+let pendingNo = null;
+async function login(no, pick){
+  no = canon(no);
   if (no.length < 8) return false;
-  let rec;
-  if (D.sk) rec = D.sk[await hashNo(no)];
-  else if (D.students) { const s = D.students[no], p = D.pdo[no]; rec = s ? [s[0], s[1], p||null] : p ? [p[0], null, p, 1] : null; }
-  if (!rec) return false;
-  me = {no, g:rec[0], a:rec[1], p:rec[2]||null, partial: !!rec[3]};
-  store.set("ogrNo", no);
+  const h = await hashNo(no, (IDX && IDX.kdf) || D1.kdf);
+  let recs = IDX && IDX.sk ? IDX.sk[h] : null;
+  if (!recs && D1.sk && D1.sk[h]) recs = {"1": D1.sk[h]};
+  if (!recs) return false;
+  const ds = Object.keys(recs).map(Number).sort((a,b) => a-b);
+  let n = pick || +store.get("ogrDonem");
+  if (!ds.includes(n)) n = ds.length === 1 ? ds[0] : 0;
+  if (!n) return {choose: ds, no};
+  try { await loadDonem(n); }
+  catch(e){ return {error: `Dönem ${n} programı şu an yüklenemedi. Sayfayı yenile.`}; }
+  const rec = recs[String(n)];
+  me = n === 1 ? {no, d:1, g:rec[0], a:rec[1], p:rec[2]||null, partial: !!rec[3]} : {no, d:n, tags:rec, g:rec[0]};
+  me.others = ds.filter(x => x !== n);
+  store.set("ogrNo", no); store.set("ogrDonem", String(n));
+  window.dispatchEvent(new CustomEvent("prog-donem", {detail:n}));
   return true;
 }
+// Dönem 2–5 etiketlerinden okunur grup adları
+function chipsOf(n, tags){
+  const t = tags || [], out = [];
+  for (const x of t){
+    if (n === 3 && /^mp:/.test(x)) out.push(`Mikro-Pato ${esc(x.slice(3))}`);
+    else if (n === 5 && /^[23]:/.test(x)) out.push(`${x[0]==="2"?"İkili":"Üçlü"} ${esc(x.slice(2))}`);
+    else if (/^[A-H]$/.test(x)) out.push(`Grup ${esc(x)}`);
+    else out.push(esc(n === 4 ? x : (n === 2 ? "Alt grup " : n === 3 ? "Alt grup " : "") + x));
+  }
+  return out;
+}
+function askDonem(no, ds){
+  pendingNo = no;
+  me = null; $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true;
+  $("loginErr").innerHTML = `Bu numara birden fazla dönemin listesinde var. Hangisini görmek istiyorsun?<span class="dpick">${ds.map(d => `<button type="button" class="secondary" data-pd="${d}">Dönem ${d}</button>`).join("")}</span>`;
+}
+$("loginErr").addEventListener("click", async e => {
+  const b = e.target.closest("[data-pd]"); if (!b || !pendingNo) return;
+  const r = await login(pendingNo, +b.dataset.pd);
+  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; show(); }
+  else if (r && r.error) $("loginErr").textContent = r.error;
+});
 renderSync(); renderStale();
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
   const v = $("noInput").value;
   if (!v.replace(/\D/g,"")){ $("loginErr").textContent = "Öğrenci numaranı yaz."; return; }
   $("loginErr").textContent = "Kontrol ediliyor…";
-  if (!(await login(v))){ $("loginErr").textContent = "Bu numara Dönem 1 Türkçe listelerinde bulunamadı. Rakamları kontrol et (ör. 0101260001)."; return; }
+  store.del("ogrDonem");
+  const r = await login(v);
+  if (r && r.choose){ askDonem(r.no, r.choose); return; }
+  if (r && r.error){ $("loginErr").textContent = r.error; return; }
+  if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et (ör. 0101260001)."; return; }
   $("loginErr").textContent = ""; view = istNow().date; show();
 });
 $("foreignChk").checked = foreign;
@@ -2209,8 +2277,8 @@ $("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
 setInterval(() => { renderStale(); if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
 
 const saved = store.get("ogrNo");
-if (saved) await login(saved);
-show();
+if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else show(); }
+else show();
 
 // odak sayacı sayfası için: bugünkü dersler ve sıradaki sınav
 window.PROG = {
@@ -2343,13 +2411,16 @@ function calc(c, st = S){
   const us = c.ul.map(x => num(x.s)).filter(ok);
   if (us.length){ r.U = us.reduce((a,b) => a+b, 0)/us.length; r.uFromList = us.length; }
   else { const u = num(c.u); if (Number.isNaN(u)) r.bad.push("u"); r.U = ok(u) ? u : null; }
-  const f = num(c.f), b = num(c.b);
-  if (Number.isNaN(f)) r.bad.push("f"); if (Number.isNaN(b)) r.bad.push("b");
-  r.F0 = ok(f) ? f : null; r.B = ok(b) ? b : null;
-  // dilim: bütünleme replaces the final; klinik: it replaces the whole bitirme notu; staj: none
-  if (TYP[st.n] === "staj") r.B = null;
+  const f = num(c.f), b = num(c.b), bu = num(c.bu);
+  if (Number.isNaN(f)) r.bad.push("f"); if (Number.isNaN(b)) r.bad.push("b"); if (Number.isNaN(bu)) r.bad.push("bu");
+  r.F0 = ok(f) ? f : null; r.B = ok(b) ? b : null; r.BU = ok(bu) ? bu : null; r.U0 = r.U;
+  // dilim (Dönem 1–3): kuramsal ve uygulama bütünlemesi ayrı ayrı yapılır, ilgili notun yerine geçer;
+  // klinik: bütünleme bitirme notunun yerine geçer; staj: bütünleme yok
+  if (TYP[st.n] === "staj"){ r.B = null; r.BU = null; }
+  if (!ty.fb || !(w.u > 0)) r.BU = null;
   r.F = ty.fb && r.B !== null ? r.B : r.F0;
-  r.useBut = r.B !== null;
+  if (r.BU !== null) r.U = r.BU;
+  r.useBut = r.B !== null || r.BU !== null;
   const parts = [["v", r.V], ["u", r.U], ["f", r.F]].filter(p => w[p[0]] > 0);
   r.have = parts.filter(p => p[1] !== null);
   r.done = r.have.length === parts.length;
@@ -2359,15 +2430,25 @@ function calc(c, st = S){
   // status
   if (c.fd){ r.st = "bad"; r.L = "FD"; r.coef = 0; r.msg = "Devamsızlıktan başarısız (FD). " + ty.fd; return r; }
   if (!ty.fb && r.useBut && r.done){ r.P0 = r.part; r.part = r.B; }
+  // dönem sınavı notu = kuramsal (final) ve uygulamanın ağırlıklı ortalaması; 50'nin altı bütünlemeye kalır
+  const dsOf = (U, F) => { const a = w.u > 0 ? w.u : 0, b2 = w.f > 0 ? w.f : 0; if (!(a + b2) || (a && U === null) || (b2 && F === null)) return null; return (a*(U||0) + b2*(F||0))/(a + b2); };
+  if (ty.fb){ r.DS0 = dsOf(r.U0, r.F0); r.DS = dsOf(r.U, r.F); }
   if (r.done){
     r.P = r.part;
+    if (ty.fb && r.useBut && r.V !== null && r.DS0 !== null && r.DS0 >= 50){
+      // bütünleme notu bitirmedekinden düşükse bitirme sonucundaki başarı notu esas alınır
+      const P0 = (w.v*(r.V||0) + w.u*(r.U0||0) + w.f*(r.F0||0))/100;
+      if (P0 > r.P){ r.P = P0; r.keptOld = true; }
+    }
     const g = grade(r.P); r.L = g[1]; r.coef = g[2];
     const staj = TYP[st.n] === "staj";
-    if (ty.fb && w.f > 0 && r.F < 50 && !r.useBut){ r.st = "bad"; r.L = "BÜT"; r.coef = null; r.msg = "Final 50'nin altında: bütünlemeye girersin. Bütünleme notunu girince sonuç güncellenir."; }
-    else if (ty.fb && w.f > 0 && r.F < 50 && r.useBut){ r.st = "bad"; r.L = "FF"; r.coef = 0; r.msg = "Bütünleme notu da 50'nin altında: dönem sınavı barajı geçilemedi, başarısız sayılırsın."; }
+    const below = () => [w.f > 0 && r.F0 !== null && r.F0 < 50 ? "kuramsal" : "", w.u > 0 && r.U0 !== null && r.U0 < 50 ? "uygulama" : ""].filter(Boolean);
+    const zor = () => { const b3 = below(); return b3.length ? ` ${b3.join(" ve ")} bütünlemesine zorunlu girersin.` : ""; };
+    if (ty.fb && r.DS !== null && r.DS < 50 && !r.useBut){ r.st = "bad"; r.L = "BÜT"; r.coef = null; r.msg = `Dönem sınavı notun ${f1(r.DS)}: 50'nin altında olduğu için bütünlemeye girersin.${zor()} Bütünleme notunu girince sonuç güncellenir.`; }
+    else if (ty.fb && r.DS !== null && r.DS < 50 && r.useBut){ r.st = "bad"; r.L = "FF"; r.coef = 0; r.msg = "Bütünlemeden sonra da dönem sınavı notun 50'nin altında: başarısız (FF)."; }
     else if (r.P >= 60){ r.st = "ok"; r.msg = "Başarılısın."; }
-    else if (r.P >= 50){ r.st = "mid"; r.msg = staj ? "Koşullu başarılı." : "Koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin."; }
-    else { r.st = "bad"; r.msg = staj ? "50'nin altında: başarısız, stajı tekrarlarsın." : r.useBut ? "Bütünlemeden sonra da 50'nin altında: başarısız (FF)." : "50'nin altında: bütünlemeye girersin."; }
+    else if (r.P >= 50){ r.st = "mid"; r.msg = staj ? "Koşullu başarılı." : ty.fb ? "Koşullu başarılı. İstersen kuramsal ya da uygulama bütünlemesine girip notunu yükseltebilirsin." : "Koşullu başarılı. İstersen bütünlemeye girip notunu yükseltebilirsin."; }
+    else { r.st = "bad"; r.msg = staj ? "50'nin altında: başarısız, stajı tekrarlarsın." : r.useBut ? "Bütünlemeden sonra da 50'nin altında: başarısız (FF)." : `Başarı notu 50'nin altında: bütünlemeye girersin.${ty.fb ? zor() : ""}`; }
     if (st.n === 5 && !r.useBut && r.P < 60) r.erken = true;
   } else r.st = "";
   // what the final (or bütünleme) has to be for each grade
@@ -2375,10 +2456,13 @@ function calc(c, st = S){
     const others = [["v", r.V], ["u", r.U]].filter(p => w[p[0]] > 0);
     if (others.every(p => p[1] !== null)){
       const base = others.reduce((a,p) => a + w[p[0]]*p[1], 0)/100;
-      const forBut = ty.fb && r.F0 !== null && r.B === null && (r.F0 < 50 || (r.done && r.P < 60));
+      const forBut = ty.fb && r.F0 !== null && r.B === null && r.BU === null && ((r.DS0 !== null && r.DS0 < 50) || (r.done && r.P < 60));
+      // kuramsal notu, dönem sınavı notunu (kuramsal + uygulama ortalaması) 50'ye çıkaracak kadar olmalı
+      const uNow = w.u > 0 ? r.U : 0, fds = w.u > 0 && uNow !== null ? (50*(w.u + w.f) - w.u*uNow)/w.f : 50;
+      r.fds = Math.max(0, fds);
       if (r.F0 === null || forBut){
         r.tgFor = r.F0 === null ? "final" : "bütünleme";
-        r.tg = TG.map(([t, L]) => { const need = Math.max(ty.fb ? 50 : 0, (t - base)*100/w.f); return {L, need: need > 100 + 1e-9 ? null : Math.ceil(need*10 - 1e-6)/10, ach: r.done && !forBut && r.P >= t}; });
+        r.tg = TG.map(([t, L]) => { const need = Math.max(ty.fb ? r.fds : 0, (t - base)*100/w.f); return {L, need: need > 100 + 1e-9 ? null : Math.ceil(need*10 - 1e-6)/10, ach: r.done && !forBut && r.P >= t}; });
       }
     }
   }
@@ -2399,7 +2483,10 @@ function cardHTML(c){
       <label class="nt-f"><span>${L.u} <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
       <label class="nt-f"><span>${L.f} <i data-o="wf">%${w.f}</i></span>${inp(c, "f", c.f, 'placeholder="0–100"')}</label>
     </div>
-    <label class="nt-f" data-o="butw" hidden><span>Bütünleme notu <i>${isD ? "finalin" : "bitirme notunun"} yerine geçer</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
+    <div class="nt-g" data-o="butw" hidden style="grid-template-columns:repeat(${isD && w.u > 0 ? 2 : 1},minmax(0,1fr))">
+      <label class="nt-f"><span>${isD ? "Kuramsal bütünleme" : "Bütünleme notu"} <i>${isD ? "finalin yerine" : "bitirme notunun yerine"}</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
+      ${isD && w.u > 0 ? `<label class="nt-f"><span>Uygulama bütünleme <i>uygulamanın yerine</i></span>${inp(c, "bu", c.bu || "", 'placeholder="0–100"')}</label>` : ""}
+    </div>
     <div class="nt-res" data-o="res"></div>
     <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>${TY.dev}</small></span></label>
     <details class="nt-more"${MORE.has(c.id) ? " open" : ""}>
@@ -2481,7 +2568,7 @@ function update(c){
   uf.parentElement.style.gridTemplateColumns = nVis === 3 ? "" : nVis === 2 ? "repeat(2,minmax(0,1fr))" : "minmax(0,1fr)";
   el.querySelector('[data-add="ul"]').parentElement.style.display = w.u > 0 ? "" : "none";
   o("wv").textContent = "%" + w.v; o("wu").textContent = "%" + w.u; o("wf").textContent = "%" + w.f;
-  o("butw").hidden = TYP[S.n] === "staj" || !(TY.fb ? (r.F0 !== null && (r.F0 < 50 || (r.done && r.P < 60))) : (r.done && (r.P0 ?? r.P) < 60)) && c.b === "";
+  o("butw").hidden = TYP[S.n] === "staj" || !(TY.fb ? ((r.DS0 !== null && r.DS0 < 50) || (r.done && r.P < 60) || (r.F0 !== null && r.F0 < 50)) : (r.done && (r.P0 ?? r.P) < 60)) && c.b === "" && !c.bu;
   // header
   const sub = [];
   if (r.done || c.fd) sub.push(c.fd ? "Devamsız" : r.msg.split(":")[0].replace(/\.$/, ""));
@@ -2498,7 +2585,11 @@ function update(c){
   if (c.fd) h = `<div class="st">${esc(r.msg)}</div>`;
   else if (r.done){
     h = `<div class="rl"><span>Başarı notu</span><b>${f1(r.P)} · ${esc(r.L === "BÜT" ? grade(r.P)[1] : r.L)}</b></div><div class="st">${esc(r.msg)}</div>`;
-    if (r.useBut) h += `<div class="why">${TY.fb ? "Finalin" : "Bitirme notunun"} yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+    if (r.useBut && TY.fb){
+      const used = [r.B !== null ? `kuramsal ${f1(r.B)}` : "", r.BU !== null ? `uygulama ${f1(r.BU)}` : ""].filter(Boolean).join(", ");
+      h += `<div class="why">Bütünleme notları kullanıldı (${used}).${r.keptOld ? " Bütünleme sonucu bitirmedekinden düşük olduğu için bitirme sonucundaki başarı notun geçerli." : ""}</div>`;
+    } else if (r.useBut) h += `<div class="why">Bitirme notunun yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+    if (TY.fb && r.DS !== null && !c.fd) h += `<div class="why">Dönem sınavı notu (kuramsal ve uygulamanın ortalaması): ${f1(r.DS)}</div>`;
     if (r.erken) h += `<div class="why">5. dönemde FF, DC ya da DD aldığın derslerde erken bütünleme hakkın var: başka bir grubun bitirme sınavına bütünleme yerine girebilirsin.</div>`;
   } else if (r.have.length){
     h = `<div class="rl"><span>Şu ana kadar</span><b>${f1(r.part)} / ${r.wDone}</b></div>`;
@@ -2508,7 +2599,7 @@ function update(c){
   if (r.uFromList && !c.fd) h += `<div class="why">Uygulama: ${r.uFromList} sınavın ortalaması.</div>`;
   if (r.tg){
     h += `<div class="why" style="margin-top:2px"><b>${r.tgFor === "final" ? L.f + "de" : "Bütünlemede"} en az kaç almalısın?</b></div><div class="nt-tg">${r.tg.map(t => `<div class="${t.need === null ? "no" : t.ach ? "done" : ""}"><small>${t.L}</small><b>${t.need === null ? "olmaz" : f1(t.need)}</b></div>`).join("")}</div>`;
-    if (TY.fb && r.tg[0].need === 50) h += `<div class="why">Finalde 50'nin altı bütünlemeye kalır, bu yüzden en az 50 gerekir.</div>`;
+    if (TY.fb && r.tg[0].need !== null && Math.abs(r.tg[0].need - Math.ceil(r.fds*10 - 1e-6)/10) < 1e-6) h += `<div class="why">Dönem sınavı notunun (kuramsal ve uygulamanın ortalaması) 50'yi geçmesi için en az bu kadar gerekir; altı bütünlemeye kalır.</div>`;
   } else if (!r.done && !c.fd && w.f > 0 && r.F0 === null && w.v + w.u > 0){
     const oth = [w.v > 0 ? L.v.toLocaleLowerCase("tr") : "", w.u > 0 ? L.u.toLocaleLowerCase("tr") : ""].filter(Boolean).join(" ve ");
     h += `<div class="why">${oth.charAt(0).toLocaleUpperCase("tr") + oth.slice(1)} notunu girince ${L.f.toLocaleLowerCase("tr")}de kaç alman gerektiğini gösteririm.</div>`;
@@ -2595,7 +2686,7 @@ $("ntList").addEventListener("click", e => {
     c[b.dataset.del].splice(+b.dataset.i, 1); save(); rerenderCard(c);
   } else if (b.dataset.act === "clear"){
     if (!confirm(`${c.n}: bütün notlar silinsin mi?`)) return;
-    Object.assign(c, {k:"", v:"", vd:"", vt:"", u:"", f:"", b:"", fd:false, bar:[]}); c.ul.forEach(x => x.s = "");
+    Object.assign(c, {k:"", v:"", vd:"", vt:"", u:"", f:"", b:"", bu:"", fd:false, bar:[]}); c.ul.forEach(x => x.s = "");
     save(); rerenderCard(c);
   } else if (b.dataset.act === "remove"){
     if (!confirm(`${c.n} listeden kaldırılsın mı? Notları da silinir.`)) return;
@@ -2872,7 +2963,7 @@ function setRoute(r){
   document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = "İstanbul Tıp · Dönem 1 Türkçe"; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
-  else { brandT.textContent = T0[0]; brandS.textContent = T0[1]; document.title = DOC_T; }
+  else { brandT.textContent = T0[0]; brandS.textContent = brandS.dataset.prog || T0[1]; document.title = DOC_T; }
 }
 const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : "program");
 window.addEventListener("hashchange", routeFromHash);

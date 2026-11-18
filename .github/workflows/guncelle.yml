@@ -30,8 +30,17 @@ jobs:
       - name: Kaynakları Drive'dan indir
         run: tools/fetch.sh data
 
-      - name: Derle ve kontrol et
+      - name: Derle ve kontrol et (Dönem 1)
         run: tools/update.sh data data.json out/data.json
+
+      # Dönem 2–5: her dönem bağımsız derlenir. Biri başarısız olursa o dönemin önceki dosyası korunur,
+      # diğerleri yine yayınlanır; iş en sonda "başarısız" olarak biter ve GitHub depo sahibine e-posta atar.
+      - name: Derle ve kontrol et (Dönem 2–5)
+        id: multi
+        run: |
+          set +e
+          python3 tools/multi/build_all.py --d1 out/data.json --prev . --out out
+          echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Veriyi depoya kaydet
         run: |
@@ -41,17 +50,26 @@ jobs:
             git fetch -q origin main
             git reset -q --hard origin/main
             cp out/data.json data.json
-            git add data.json
+            cp out/ogr.json out/d[2-5].json . 2>/dev/null || true
+            git add data.json ogr.json d[2-5].json 2>/dev/null || git add data.json
             git commit -q -m "Program verisi güncellendi (otomatik kontrol)" || { echo "Değişiklik yok"; exit 0; }
-            git push -q origin HEAD:main && exit 0
+            git push -q origin HEAD:main && break
+            [ "$i" = 3 ] && exit 1
             echo "push reddedildi, yeniden deneniyor ($i)"; sleep 5
           done
+
+      - name: Dönem 2–5 sonucu
+        if: steps.multi.outputs.code != '0'
+        run: |
+          echo "Bazı dönemler güncellenemedi (yukarıdaki 'Derle ve kontrol et (Dönem 2–5)' adımına bak). Önceki hâlleri korundu."
           exit 1
 
   # Verinin kaydedildiği hâliyle siteyi GitHub Pages'te yayınla.
   # (GITHUB_TOKEN ile yapılan push başka iş akışlarını tetiklemediği için burada açıkça çağrılır.)
+  # Bazı dönemler güncellenemese bile (iş "başarısız" görünür) kaydedilen veri yine yayınlanır.
   yayinla:
     needs: guncelle
+    if: ${{ !cancelled() }}
     uses: ./.github/workflows/pages.yml
     permissions:
       contents: read
