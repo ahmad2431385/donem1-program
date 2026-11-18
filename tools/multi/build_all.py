@@ -23,6 +23,15 @@ SOURCES = {
     2: {"ogrenci": ("sheet", "1JKQHtNaOixMEVFfWKdo1vh2MKISbMaXMWQjDMl_gAAM"),
         "ders": ("sheet", "1JMxqm8dnckDKS_EVS6GFut2BDjS63khIjQEzVhAOrj8"),
         "uyg": ("sheet", "1SezCE6ZoHcNScL7Z1epqJQ9Q8B6GMFeO0ykp16Jr0rw")},
+    3: {"ogrenci": ("sheet", "1qL-nbVICZHUK6mKP1xSuYIZiUOD3V_YeKUxNNxYsn-g"),
+        "ders_A": ("sheet", "1Wk9h1Z3duYvQRX-krrDQ2xHXbmWk0j-VPNPU5y5Aj7A"),
+        "ders_B": ("sheet", "1wlquiW3pDRiHzNp8mfFdGGzudfwF_3nyvkkygmHG-nU"),
+        "hastabasi_A": ("docx", "1rpk7f6_PMCEVoc-XJgkrBd-iniCHa6DR"),
+        "hastabasi_B": ("docx", "16aPxVb1MpfZTb0VwQKhlcoIWGEdhblDe"),
+        "mikpat_liste": ("xlsx", "1GMjvjXkkgFKl7hh3yzzEqJXE6VLuLKJY"),
+        "mikpat_prog": ("docx", "1IOx-_LE8ESpTCT8qH09DI66TPtyQW9es"),
+        "ogruye_A": ("xlsx", "1YluyIWyOjjoL7JGpQXTUiGOROGaSpMIw"),
+        "ogruye_B": ("xlsx", "1jlkhFvrStcKAsyO_cGb8Lk5xhDgk0hNh")},
 }
 AMFI = ("sheet", "1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw")
 

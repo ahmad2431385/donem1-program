@@ -1393,7 +1393,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
     <details class="card fold nt-info">
       <summary><span class="ft"><h2>Nasıl hesaplanıyor?</h2><span class="hint">Harf notları, baraj, bütünleme, AGNO</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
-        <div id="ntInfoD"><p><b>Dönem 1–3 · Dilim başarı notu</b> = dilim sonu sınavı (vize) %40 + dönem sınavı %60. Dönem sınavı da kuramsal sınav (final) %50 ve uygulama %50'den oluşur; yani vize × %40 + uygulama × %30 + final × %30. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır. Kaynak: Dönem 1, 2 ve 3 ölçme-değerlendirme kuralları.</p></div>
+        <div id="ntInfoD"><p><b>Dönem 1–3 · Dilim başarı notu</b> = dilim sonu sınavı (vize) %40 + dönem sınavı %60. Dönem sınavı da kuramsal sınav (final) %50 ve uygulama %50'den oluşur; yani vize × %40 + uygulama × %30 + final × %30. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p><p><b>Dönem 3'te</b> uygulama notu = Tıbbi Mikrobiyoloji ve Tıbbi Patoloji %40 + Klinik bilimler sözlüsü %60 (Semiyolojide yalnızca sözlü); simüle hasta uygulamasından yeterli olmak baraj. Kaynak: Dönem 1, 2 ve 3 ölçme-değerlendirme kuralları.</p></div>
         <div id="ntInfoK" hidden><p><b>Dönem 4–5 · Klinik dersler.</b> Her dersin sonunda yazılı ve/veya sözlü bitirme sınavı yapılır. Varsayılan oran yazılı %50, sözlü %50; anabilim dalına göre değişir, kartlardan ayarla. Bitirme notu 50'nin altındaysa bütünlemeye girersin; bütünleme notu bitirme notunun yerine geçer. 5. dönemde FF, DC, DD aldığın derslerde başka bir grubun bitirme sınavına erken bütünleme olarak girebilirsin. 6. döneme geçerken en fazla 3 FF dersin kaldıysa ya da AGNO yetmiyorsa üç ders sınavı hakkın olur.</p></div>
         <div id="ntInfoS" hidden><p><b>Dönem 6 · Stajlar.</b> Her stajın notunu staj sorumlusu verir; burada yalnızca notu girersin. Stajlarda %80 devam zorunludur ve mazeret kabul edilmez. Başarısız ya da devamsız staj, sonraki gruplarla tekrarlanır.</p></div>
         <ul>
@@ -1522,10 +1522,11 @@ function kindOf(t){
   if (/TATİL|BAYRAM/.test(u)) return "hol";
   if (/PDÖ/.test(u)) return "pdo";
   if (u.startsWith("UYGULAMA")) return "slot";
+  if (u.startsWith("HASTA BAŞI")) return "uyg";
   return "amfi";
 }
 function roomFor(date, s, e){
-  const r = (AM[date]||[]).find(a => !a.g && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
+  const r = (AM[date]||[]).find(a => !a.g && !a.sub && (!a.lg || hit(a.lg)) && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
   return r ? r.r : null;
 }
 function niceYer(y){
