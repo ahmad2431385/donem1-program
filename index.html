@@ -236,6 +236,12 @@ details.card[open] summary::after{content:"–"}
 .exams{display:flex;flex-direction:column;gap:0;margin-top:8px}
 .exams .ex{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:13px;line-height:1.35;padding:6px 0;border-top:1px solid var(--line)}
 .exams .ex:first-child{border-top:none;padding-top:0}
+.exams .ex-none{margin:0;font-size:13px;color:var(--muted)}
+.ex-grp{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:8px;font-size:13px;font-weight:600}
+.ex-grp select{font:inherit;font-weight:600;padding:5px 8px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
+.ex-grp small{flex-basis:100%;font-weight:400;color:var(--muted);font-size:12px}
+.nt-dsel button.mine{position:relative}
+.nt-dsel button.mine::after{content:"";position:absolute;left:50%;bottom:2px;width:4px;height:4px;margin-left:-2px;border-radius:50%;background:var(--accent)}
 .exams .ex:last-child{padding-bottom:0}
 .exams .ei{min-width:0;display:flex;flex-direction:column;gap:0}
 .exams .ei b{font-weight:600;overflow-wrap:anywhere}
@@ -1359,8 +1365,9 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <!-- ============ Sınavlar ve notlar ============ -->
   <div id="notView">
       <details class="card fold examw" id="examBox" hidden>
-        <summary><span class="ft"><h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar</h2><span class="hint" id="examHint">Sınav tarihlerini görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+        <summary><span class="ft"><h2 id="examH"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>Yaklaşan sınavlar<span id="examHN"></span></h2><span class="hint" id="examHint">Sınav tarihlerini görmek için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
         <div class="fbody">
+          <div class="ex-grp" id="exGrpW" hidden><label for="exGrp">Grup</label><select id="exGrp"></select><small id="exGrpNote"></small></div>
           <div class="exams" id="examList"></div>
         </div>
       </details>
@@ -1394,7 +1401,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <summary><span class="ft"><h2>Nasıl hesaplanıyor?</h2><span class="hint">Harf notları, baraj, bütünleme, AGNO</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
       <div class="fbody">
         <div id="ntInfoD"><p><b>Dönem 1–3 · Dilim başarı notu</b> = dilim sonu sınavı (vize) %40 + dönem sınavı %60. Dönem sınavı da kuramsal sınav (final) %50 ve uygulama %50'den oluşur; yani vize × %40 + uygulama × %30 + final × %30. Uygulama sınavlarını ayrı ayrı girersen ortalamaları alınır.</p><p><b>Dönem 3'te</b> uygulama notu = Tıbbi Mikrobiyoloji ve Tıbbi Patoloji %40 + Klinik bilimler sözlüsü %60 (Semiyolojide yalnızca sözlü); simüle hasta uygulamasından yeterli olmak baraj. Kaynak: Dönem 1, 2 ve 3 ölçme-değerlendirme kuralları.</p></div>
-        <div id="ntInfoK" hidden><p><b>Dönem 4–5 · Klinik dersler.</b> Her dersin sonunda yazılı ve/veya sözlü bitirme sınavı yapılır. Varsayılan oran yazılı %50, sözlü %50; anabilim dalına göre değişir, kartlardan ayarla. Bitirme notu 50'nin altındaysa bütünlemeye girersin; bütünleme notu bitirme notunun yerine geçer. 5. dönemde FF, DC, DD aldığın derslerde başka bir grubun bitirme sınavına erken bütünleme olarak girebilirsin. 6. döneme geçerken en fazla 3 FF dersin kaldıysa ya da AGNO yetmiyorsa üç ders sınavı hakkın olur.</p></div>
+        <div id="ntInfoK" hidden><p><b>Dönem 4–5 · Klinik dersler.</b> Başarı notu yalnızca dersin bitirme sınavından oluşur: anabilim dalına göre ya kuramsal %100 ya da kuramsal + sözlü (çoğunda %50 + %50; Göz, Dermatoloji, Halk Sağlığı %60 + %40). Her dersin oranı fakültenin sınav kurallarındaki tablolardan hazır yazıldı; sende farklıysa kartından değiştir. 49,5 olan başarı notu 50 sayılır.</p><p><b>Bütünleme.</b> Bitirme notu 50'nin altındaysa bütünlemeye zorunlu, 50–59 arasındaysa isteğe bağlı (sınavdan en geç 3 gün önce dilekçeyle) girersin, 60 ve üstündeysen giremezsin. Bütünleme bitirme sınavı gibi yapılır: sözlüsü olan derste kuramsal ve sözlünün ikisine de girersin. 4. dönemde bütünleme sonucu bitirmedekinden düşükse bitirme notun geçerli kalır; 5. dönemde en son girdiğin sınavın notu geçerlidir. 5. dönemde FF, DC, DD aldığın derslerde başka bir grubun bitirme sınavına erken bütünleme olarak girebilirsin. 6. döneme geçerken en fazla 3 FF dersin kaldıysa ya da AGNO yetmiyorsa üç ders sınavı hakkın olur.</p></div>
         <div id="ntInfoS" hidden><p><b>Dönem 6 · Stajlar.</b> Her stajın notunu staj sorumlusu verir; burada yalnızca notu girersin. Stajlarda %80 devam zorunludur ve mazeret kabul edilmez. Başarısız ya da devamsız staj, sonraki gruplarla tekrarlanır.</p></div>
         <ul>
           <li><b>60 (CC) ve üstü:</b> başarılı.</li>
@@ -1671,7 +1678,7 @@ function renderWho(){
     <span class="grp">${grp.map(g => `<span class="chip">${g}</span>`).join("")}</span>
     <button class="outbtn" id="logout" type="button" aria-label="Çıkış yap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg><span>Çıkış</span></button></div>`
    + (me.partial ? `<div class="acct-note">Uygulama listesinde yoksun; uygulamalar ${esc(me.g)} grubuna göre gösteriliyor.</div>` : "");
-  $("logout").onclick = () => { store.del("ogrNo"); store.del("ogrDonem"); me = null; setData(D1, 1); show(); };
+  $("logout").onclick = () => { store.del("ogrNo"); store.del("ogrDonem"); me = null; setData(D1, 1); window.PROG_DONEM = 0; window.dispatchEvent(new CustomEvent("prog-donem", {detail:0})); show(); };
   if ($("dSwitch")) $("dSwitch").onclick = () => askDonem(me.no, [me.d, ...me.others]);
 }
 function renderSync(){
@@ -1918,9 +1925,43 @@ function renderSec(){
 }
 
 /* ---------- exams ---------- */
-function renderExams(){
+/* yaklaşan sınavlar: not sayfasında seçili dönemin sınavları.
+   Kendi dönemin: kendi grubun. Başka dönem: o dönemin dosyası yüklenir, seçtiğin grubun ve bütün sınıfın sınavları. */
+const EXD = {};
+let exN = +window.NT_DONEM || 0;
+const myD = () => me ? me.d : 1;
+const tagL = t => String(t).replace(/^(\d|mp):/, "").charAt(0).toLocaleUpperCase("tr");
+function groupsOf(data){
+  const s = new Set();
+  for (const x of data.events.concat(data.uyg || [])){
+    const g = x.g;
+    if (Array.isArray(g)) g.forEach(t => { const L = tagL(t); if (/^[A-H]$/.test(L)) s.add(L); });
+    else if (typeof g === "string" && /^[A-H]$/.test(g.trim().toUpperCase())) s.add(g.trim().toUpperCase());
+  }
+  return [...s].sort();
+}
+const inGrp = (g, L) => g == null || (Array.isArray(g) ? g.includes("*") || (!!L && g.some(t => tagL(t) === L)) : (L ? matches(g, {g:L, a:null}) : /^\*$|TÜM/.test(String(g).toLocaleUpperCase("tr"))));
+function roomIn(data, L, date, s, e){
+  const r = (data.amfi || []).find(a => a.d === date && !a.g && !a.sub && (!a.lg || (!!L && a.lg.some(t => tagL(t) === L))) && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
+  return r ? r.r : null;
+}
+async function renderExams(){
+  if (!D) return;
+  const n = exN || myD(), own = n === myD();
+  let data = D, L = "";
+  if (!own){
+    data = n === 1 ? D1 : EXD[n];
+    if (!data){
+      try { const r = await fetch(DFILE(n) + "?t=" + Date.now(), {cache:"no-store"}); if (r.ok) EXD[n] = await r.json(); } catch(e){}
+      if ((exN || myD()) !== n) return;
+      if (!EXD[n]){ $("examBox").hidden = true; return; }
+      return renderExams();
+    }
+    L = store.get("exGrp_" + n) || "";
+  }
   const now = istNow().date, seen = new Map(), ex = [];
-  const pool = D.events.filter(e => !e.g || !me || hit(e.g)).concat((D.uyg||[]).filter(u => /sınav/i.test(u.n) && (!me || hit(u.g))).map(u => ({d:u.d, s:u.s, e:u.e, t:u.n, y:u.y})));
+  const test = own ? (g => !g || !me || hit(g)) : (g => inGrp(g, L));
+  const pool = data.events.filter(e => test(e.g)).concat((data.uyg||[]).filter(u => /sınav/i.test(u.n) && test(u.g)).map(u => ({d:u.d, s:u.s, e:u.e, t:u.n, y:u.y})));
   for (const e of pool){
     if (e.d < now) continue;
     const u = e.t.toLocaleUpperCase("tr");
@@ -1934,12 +1975,23 @@ function renderExams(){
   const top = ex.slice(0,4);
   const when = e => e.s ? `${esc(e.s)}${e.e? "–"+esc(e.e):""}` : "Saat henüz duyurulmadı";
   const where = e => {
-    const r = roomFor(e.d, e.s, e.e); if (r) return esc(r);
+    const r = own ? roomFor(e.d, e.s, e.e) : roomIn(data, L, e.d, e.s, e.e); if (r) return esc(r);
     const y = niceYer(e.y);
     return esc(!y || y === "Amfi programına bak" ? "Sınav yeri amfi programına daha işlenmemiş" : y);
   };
-  $("examBox").hidden = !top.length;
-  if (!top.length){ $("examList").innerHTML = ""; $("examHint").textContent = ""; return; }
+  $("examHN").textContent = own ? "" : ` · Dönem ${n}`;
+  $("exGrpW").hidden = own;
+  if (!own){
+    const gs = groupsOf(data);
+    $("exGrp").innerHTML = `<option value="">Grup seç</option>` + gs.map(g => `<option value="${g}"${g === L ? " selected" : ""}>Grup ${g}</option>`).join("");
+    $("exGrpNote").textContent = `Dönem ${n} senin dönemin değil: sınavları seçtiğin grup için gösteriyorum.`;
+  }
+  $("examBox").hidden = !top.length && own;
+  if (!top.length){
+    $("examList").innerHTML = own ? "" : `<p class="ex-none">${L ? `Grup ${esc(L)} için yaklaşan sınav yok.` : "Bütün sınıfın ortak yaklaşan sınavı yok. Grubunu seçersen o grubun sınavlarını gösteririm."}</p>`;
+    $("examHint").textContent = own ? "" : L ? "Yaklaşan sınav yok" : "Grubunu seç";
+    return;
+  }
   const daysTo = d => Math.round((new Date(d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
   { const n = top[0], dn = daysTo(n.d);
     $("examHint").textContent = `Sıradaki: ${n.t.toLocaleLowerCase("tr").replace(/(^|\s)\S/g, m => m.toLocaleUpperCase("tr"))} · ${dn===0? "bugün" : dn+" gün kaldı"}`; }
@@ -1948,6 +2000,8 @@ function renderExams(){
     return `<div class="ex"><div class="ei"><b>${esc(e.t)}</b><span>${fmtDate(e.d)} · ${when(e)}</span><span>${where(e)}</span></div><span class="d">${days===0?"bugün":days+" gün"}</span></div>`;
   }).join("");
 }
+window.addEventListener("nt-donem", e => { exN = +e.detail || 0; renderExams(); });
+$("exGrp").addEventListener("change", e => { store.set("exGrp_" + (exN || myD()), e.target.value); renderExams(); });
 
 /* ---------- weather (Fatih, Open-Meteo) ---------- */
 const WX_URL = "https://api.open-meteo.com/v1/forecast?latitude=41.0186&longitude=28.9497"
@@ -2229,7 +2283,7 @@ async function login(no, pick){
   me = n === 1 ? {no, d:1, g:rec[0], a:rec[1], p:rec[2]||null, partial: !!rec[3]} : {no, d:n, tags:rec, g:rec[0]};
   me.others = ds.filter(x => x !== n);
   store.set("ogrNo", no); store.set("ogrDonem", String(n));
-  window.dispatchEvent(new CustomEvent("prog-donem", {detail:n}));
+  window.PROG_DONEM = n; window.dispatchEvent(new CustomEvent("prog-donem", {detail:n}));
   return true;
 }
 // Dönem 2–5 etiketlerinden okunur grup adları
@@ -2322,17 +2376,24 @@ const DEF1 = [
 ];
 const DEFS = {1: DEF1};
 // Dönem 2–6: zorunlu dersler ve AKTS, İTF 2026–2027 müfredat ders listesinden (kod, ad, AKTS)
-const mk = (g, list) => list.map(([code, n, k]) => ({id:"c" + code, g, k:String(k), n, ul:[]}));
+const mk = (g, list) => list.map(([code, n, k, x]) => {
+  const d = {id:"c" + code, g, k:String(k), n, ul:[]};
+  // x: kuramsal sınavın yüzdesi (kalanı sözlü) ya da {w, lb, h} — İTF Dönem 4/5 sınav kuralları, etki oranı tabloları
+  if (typeof x === "number"){ d.w = {v:x, u:0, f:100 - x}; d.h = x === 100 ? "Kuramsal %100 · sözlü sınav yok" : `Kuramsal %${x} + sözlü %${100 - x}`; }
+  else if (x){ Object.assign(d, x); }
+  if (d.w) d.ow = !(d.w.v === 50 && d.w.u === 0 && d.w.f === 50);
+  return d;
+});
 DEFS[2] = mk("d", [[2115,"Kan Lenfoid",5],[2116,"Dolaşım I",7],[2117,"Solunum I",5],[2118,"Metabolizma",4],[2119,"Sindirim I",5],[2120,"Endokrin I",4],[2121,"Ürogenital ve Üreme",6],[2122,"Sinir Duyu I",11],[2123,"Patolojilere ve Kliniğe Giriş",7],[2124,"Dikey Koridor II",4]]);
 DEFS[3] = mk("d", [[3246,"Semiyoloji",6],[3247,"Kan-Lenfoid II",6],[3248,"Hareket II",6],[3249,"Dolaşım II",6],[3250,"Solunum II",6],[3251,"Endokrin - Metabolizma II",6],[3252,"Sindirim II",6],[3253,"Ürogenital ve Üreme II",6],[3254,"Sinir Duyu II",6],[3256,"Bilimsel Araştırma",2],[3255,"Dikey Koridor III (A)",2],[3275,"Dikey Koridor III (B)",2]]);
-DEFS[4] = mk("d", [[4076,"İç Hastalıkları",13],[4075,"Çocuk Sağlığı ve Hastalıkları",15],[4074,"Genel Cerrahi",7],[4077,"Kadın Hastalıkları ve Doğum",9],[4083,"Kardiyoloji",4],[4073,"Klinik Farmakoloji",4],[4084,"Biyoistatistik ve Tıp Bilişimi",2],[4287,"Kalp Damar Cerrahisi",1],[4087,"Klinik Akıl Yürütme",1],[4086,"Onkoloji",1],[4081,"Radiodiagnostik",1],[4085,"Tıbbi Genetik",1]]);
-DEFS[5] = mk("d", [[5109,"Göğüs Hastalıkları",5],[5327,"Ortopedi ve Travmatoloji",5],[5116,"Semptomdan Teşhise, Teşhisten Tedaviye",5],[5090,"Dermatoloji",4],[5326,"Halk Sağlığı",4],[5086,"Adli Tıp",3],[5096,"Kulak Burun Boğaz Hastalıkları",3],[5097,"Nöroloji",3],[5101,"Psikiyatri",3],[5115,"Tıbbi Farmakoloji (Klinik Toksikoloji)",3],[5113,"Aile Hekimliği",2],[5087,"Anesteziyoloji ve Reanimasyon",2],[5092,"Fizik Tedavi ve Rehabilitasyon",2],[5329,"Göğüs Cerrahisi",2],[5093,"Göz Hastalıkları",2],[5095,"Klinik Bakteriyoloji ve İnfeksiyon Hastalıkları",2],[5100,"Plastik ve Rekonstrüktif Cerrahi",2],[5328,"Radyasyon Onkolojisi",2],[5104,"Üroloji",2],[5266,"Beyin ve Sinir Cerrahisi",1],[5107,"Çocuk Ruh Sağlığı ve Hastalıkları",1],[5114,"Tıbbi Etik Vaka Tartışmaları",1]]);
+DEFS[4] = mk("d", [[4076,"İç Hastalıkları",13,50],[4075,"Çocuk Sağlığı ve Hastalıkları",15,{w:{v:50,u:0,f:50}, h:"Kuramsal %50 + sözlü %50 (hasta formu %20, kanıta dayalı %20, sözlü %60)"}],[4074,"Genel Cerrahi",7,50],[4077,"Kadın Hastalıkları ve Doğum",9,50],[4083,"Kardiyoloji",4,50],[4073,"Klinik Farmakoloji",4,100],[4084,"Biyoistatistik ve Tıp Bilişimi",2,100],[4287,"Kalp Damar Cerrahisi",1,50],[4087,"Klinik Akıl Yürütme",1],[4086,"Onkoloji",1,100],[4081,"Radiodiagnostik",1,100],[4085,"Tıbbi Genetik",1,100]]);
+DEFS[5] = mk("d", [[5109,"Göğüs Hastalıkları",5,50],[5327,"Ortopedi ve Travmatoloji",5,50],[5116,"Semptomdan Teşhise, Teşhisten Tedaviye",5,{w:{v:60,u:20,f:20}, lb:{v:"İç Hastalıkları", u:"Çocuk Sağlığı", f:"Tıbbi Farmakoloji"}, h:"İç H. %60 (kuramsal %80 + hasta başı %20) · Çocuk %20 (kuramsal %80 + uygulama %20) · Farmakoloji %20 (sözlü/olgu)"}],[5090,"Dermatoloji",4,60],[5326,"Halk Sağlığı",4,60],[5086,"Adli Tıp",3,100],[5096,"Kulak Burun Boğaz Hastalıkları",3,50],[5097,"Nöroloji",3,50],[5101,"Psikiyatri",3,50],[5115,"Tıbbi Farmakoloji (Klinik Toksikoloji)",3,100],[5113,"Aile Hekimliği",2,100],[5087,"Anesteziyoloji ve Reanimasyon",2,100],[5092,"Fizik Tedavi ve Rehabilitasyon",2,50],[5329,"Göğüs Cerrahisi",2,100],[5093,"Göz Hastalıkları",2,60],[5095,"Klinik Bakteriyoloji ve İnfeksiyon Hastalıkları",2,100],[5100,"Plastik ve Rekonstrüktif Cerrahi",2,100],[5328,"Radyasyon Onkolojisi",2,100],[5104,"Üroloji",2,50],[5266,"Beyin ve Sinir Cerrahisi",1,50],[5107,"Çocuk Ruh Sağlığı ve Hastalıkları",1,100],[5114,"Tıbbi Etik Vaka Tartışmaları",1,100]]);
 DEFS[6] = mk("d", [[6118,"İç Hastalıkları",9],[6216,"Acil Cerrahi ve Genel Cerrahi",8],[6116,"Çocuk Sağlığı ve Hastalıkları",8],[6119,"Kadın Hastalıkları ve Doğum",8],[6117,"Kırsal Hekimlik ve Toplum Hekimliği",6],[6123,"Ortopedi ve Travmatoloji",5],[6120,"Psikiyatri",5],[6220,"Acil Dahiliye",3],[6122,"Göğüs Hastalıkları",2],[6139,"Kardiyoloji",2],[6121,"Hekimliğe Doğru ve Hekimliğe Merhaba",2]]);
 // three kinds of grading: dilim (Dönem 1–3), klinik (4–5), staj (6)
 const TYPES = {
   dilim: {L:{v:"Vize", u:"Uygulama", f:"Final"}, acc:"Vizeyi", w:{v:40, u:30, f:30}, nw:{v:40, u:0, f:60}, fb:true, gl:"Dilimler",
           dev:"Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.", fd:"Dilimi tekrar alman gerekir."},
-  klinik:{L:{v:"Yazılı", u:"Uygulama", f:"Sözlü"}, acc:"Yazılıyı", w:{v:50, u:0, f:50}, nw:{v:50, u:0, f:50}, fb:false, gl:"Klinik dersler",
+  klinik:{L:{v:"Kuramsal", u:"Uygulama", f:"Sözlü"}, acc:"Kuramsal sınavı", w:{v:50, u:0, f:50}, nw:{v:50, u:0, f:50}, fb:false, gl:"Klinik dersler",
           dev:"Teorik derslere %70, uygulamalara %80 devam zorunlu. Sağlanmazsa not FD olur.", fd:"Dersi tekrar alman gerekir."},
   staj:  {L:{v:"Staj notu", u:"Uygulama", f:"Sınav"}, acc:"Staj notunu", w:{v:100, u:0, f:0}, nw:{v:100, u:0, f:0}, fb:false, gl:"Stajlar",
           dev:"Stajlarda %80 devam zorunlu, mazeret kabul edilmez.", fd:"Stajı sonraki gruplarla tekrarlarsın."}
@@ -2344,7 +2405,7 @@ const GR = [[88,"AA",4],[80,"BA",3.5],[73,"BB",3],[66,"CB",2.5],[60,"CC",2],[55,
 const TG = [[60,"CC"],[73,"BB"],[80,"BA"],[88,"AA"]];
 
 const blank = (d, w0 = W0) => ({id:d.id, g:d.g||"u", n:d.n, h:d.h||"", def:!!d.def, k:d.k||"", v:"", vd:"", vt:"", bar:[], u:"", ul:(d.ul||[]).map(n => ({n, s:""})), f:"", b:"", fd:false, ow:!!d.ow, w:{...(d.w||w0)}});
-const fresh = n => ({n, v:3, w:{...tyOf(n).w}, rm:[], c:DEFS[n].map(d => blank({...d, def:true}, tyOf(n).w))});
+const fresh = n => ({n, v:4, w:{...tyOf(n).w}, rm:[], c:DEFS[n].map(d => blank({...d, def:true}, tyOf(n).w))});
 function loadAll(){
   let a = null;
   try { a = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
@@ -2367,7 +2428,11 @@ function initY(n, s){
     if (empty(d1) && empty(d2)) s.c = s.c.filter(c => c !== d1 && c !== d2); else s.rm.push("dk");
     for (const c of s.c){ const d = DEF.find(x => x.id === c.id); if (d){ c.g = d.g; if (!c.k) c.k = d.k; } else if (!c.g) c.g = /^dk[12]$/.test(c.id) ? "d" : "u"; }
   }
-  s.v = 3;
+  // v4: Dönem 4–5 derslerinin kuramsal/sözlü oranları sınav kurallarından; kendi ayarladığın oranlara dokunulmaz
+  if ((n === 4 || n === 5) && (s.v || 1) < 4){
+    for (const c of s.c){ const d = DEF.find(x => x.id === c.id); if (d && d.w && !c.ow){ c.ow = d.ow; c.w = {...d.w}; if (!c.h && d.h) c.h = d.h; } }
+  }
+  s.v = 4;
   DEF.forEach((d, i) => { if (!s.c.some(c => c.id === d.id) && !s.rm.includes(d.id)){ const at = s.c.findIndex(c => DEF.findIndex(x => x.id === c.id) > i); s.c.splice(at < 0 ? s.c.length : at, 0, blank({...d, def:true}, tyOf(n).w)); } });
   return s;
 }
@@ -2388,6 +2453,11 @@ const f1 = x => (Math.round(x*10)/10).toLocaleString("tr-TR", {maximumFractionDi
 const f2 = x => x.toLocaleString("tr-TR", {minimumFractionDigits:2, maximumFractionDigits:2});
 const grade = p => GR.find(g => p >= g[0] - 1e-9);
 const wOf = (c, st = S) => c.ow ? c.w : st.w;
+// bazı derslerin bölümleri farklı adlandırılır (ör. Semptomdan Teşhise: İç H. / Çocuk / Farmakoloji)
+const lbOf = (c, n = S.n) => { const d = (DEFS[n] || []).find(x => x.id === c.id); return d && d.lb || null; };
+const labOf = c => ({...TY.L, ...(lbOf(c) || {})});
+// klinik derste kuramsal ve sözlü bütünlemesi ayrı girilir (ikisi birlikte yapılır)
+const twoBut = (w, n) => TYP[n] === "klinik" && w.v > 0 && w.f > 0 && !(w.u > 0);
 
 /* ---------- one course: every number the card shows ---------- */
 function calc(c, st = S){
@@ -2418,10 +2488,12 @@ function calc(c, st = S){
   r.F0 = ok(f) ? f : null; r.B = ok(b) ? b : null; r.BU = ok(bu) ? bu : null; r.U0 = r.U;
   // dilim (Dönem 1–3): kuramsal ve uygulama bütünlemesi ayrı ayrı yapılır, ilgili notun yerine geçer;
   // klinik: bütünleme bitirme notunun yerine geçer; staj: bütünleme yok
+  const klin = TYP[st.n] === "klinik", two = twoBut(w, st.n);
+  r.two = two;
   if (TYP[st.n] === "staj"){ r.B = null; r.BU = null; }
-  if (!ty.fb || !(w.u > 0)) r.BU = null;
+  if (ty.fb ? !(w.u > 0) : !two) r.BU = null;
   r.F = ty.fb && r.B !== null ? r.B : r.F0;
-  if (r.BU !== null) r.U = r.BU;
+  if (ty.fb && r.BU !== null) r.U = r.BU;
   r.useBut = r.B !== null || r.BU !== null;
   const parts = [["v", r.V], ["u", r.U], ["f", r.F]].filter(p => w[p[0]] > 0);
   r.have = parts.filter(p => p[1] !== null);
@@ -2431,12 +2503,23 @@ function calc(c, st = S){
   r.wDone = r.have.reduce((a,p) => a + w[p[0]], 0);
   // status
   if (c.fd){ r.st = "bad"; r.L = "FD"; r.coef = 0; r.msg = "Devamsızlıktan başarısız (FD). " + ty.fd; return r; }
-  if (!ty.fb && r.useBut && r.done){ r.P0 = r.part; r.part = r.B; }
+  // klinik: bütünleme, bitirme sınavı gibi yapılır (kuramsal + sözlü); sonucu bitirme notunun yerine geçer.
+  // Dönem 4: bütünleme sonucu düşükse bitirme notu kalır. Dönem 5: en son girilen sınavın notu geçerlidir.
+  if (klin && r.useBut && r.done){
+    const pb = two ? (r.B !== null && r.BU !== null ? (w.v*r.B + w.f*r.BU)/100 : null) : r.B;
+    if (pb === null){ r.useBut = false; r.butWait = true; }
+    else {
+      r.P0 = r.part; r.PB = pb; r.part = pb;
+      if (pb < r.P0){ if (st.n === 4){ r.part = r.P0; r.keptOld = true; } else r.lowerLatest = true; }
+    }
+  }
   // dönem sınavı notu = kuramsal (final) ve uygulamanın ağırlıklı ortalaması; 50'nin altı bütünlemeye kalır
   const dsOf = (U, F) => { const a = w.u > 0 ? w.u : 0, b2 = w.f > 0 ? w.f : 0; if (!(a + b2) || (a && U === null) || (b2 && F === null)) return null; return (a*(U||0) + b2*(F||0))/(a + b2); };
   if (ty.fb){ r.DS0 = dsOf(r.U0, r.F0); r.DS = dsOf(r.U, r.F); }
   if (r.done){
     r.P = r.part;
+    // Dönem 4–5: başarı notu yalnızca bitirme sınavından oluştuğu için 49,5 → 50
+    if (klin && r.P >= 49.5 && r.P < 50){ r.P = 50; r.rnd = true; }
     if (ty.fb && r.useBut && r.V !== null && r.DS0 !== null && r.DS0 >= 50){
       // bütünleme notu bitirmedekinden düşükse bitirme sonucundaki başarı notu esas alınır
       const P0 = (w.v*(r.V||0) + w.u*(r.U0||0) + w.f*(r.F0||0))/100;
@@ -2476,7 +2559,7 @@ const chev = `<span class="chev" aria-hidden="true"><svg width="14" height="14" 
 const inp = (c, k, val, extra = "") => `<input class="nt-in" data-k="${k}" value="${esc(val)}" inputmode="decimal" autocomplete="off" ${extra}>`;
 const xBtn = (k, i) => `<button type="button" class="nt-x" data-del="${k}" data-i="${i}" aria-label="Satırı sil"><svg width="10" height="10" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>`;
 function cardHTML(c){
-  const w = wOf(c), L = TY.L, isD = TYP[S.n] === "dilim", isS = TYP[S.n] === "staj";
+  const w = wOf(c), L = labOf(c), isD = TYP[S.n] === "dilim", isS = TYP[S.n] === "staj", isK = TYP[S.n] === "klinik";
   return `<details class="nt-c" id="nt_${c.id}" data-id="${c.id}"${OPEN.has(c.id) ? " open" : ""}>
   <summary><span class="nm"><b>${esc(c.n)}</b><small data-o="sub"></small></span><span class="gr" data-o="gr"><b>—</b><small></small></span>${chev}</summary>
   <div class="nt-b">
@@ -2485,9 +2568,9 @@ function cardHTML(c){
       <label class="nt-f"><span>${L.u} <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
       <label class="nt-f"><span>${L.f} <i data-o="wf">%${w.f}</i></span>${inp(c, "f", c.f, 'placeholder="0–100"')}</label>
     </div>
-    <div class="nt-g" data-o="butw" hidden style="grid-template-columns:repeat(${isD && w.u > 0 ? 2 : 1},minmax(0,1fr))">
-      <label class="nt-f"><span>${isD ? "Kuramsal bütünleme" : "Bütünleme notu"} <i>${isD ? "finalin yerine" : "bitirme notunun yerine"}</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
-      ${isD && w.u > 0 ? `<label class="nt-f"><span>Uygulama bütünleme <i>uygulamanın yerine</i></span>${inp(c, "bu", c.bu || "", 'placeholder="0–100"')}</label>` : ""}
+    <div class="nt-g" data-o="butw" hidden>
+      <label class="nt-f"><span><span data-o="b1l">${isD ? "Kuramsal bütünleme" : "Bütünleme notu"}</span> <i data-o="b1i">${isD ? "finalin yerine" : "bitirme notunun yerine"}</i></span>${inp(c, "b", c.b, 'placeholder="0–100"')}</label>
+      ${isD || isK ? `<label class="nt-f"><span>${isD ? "Uygulama bütünleme" : "Sözlü bütünleme"} <i>${isD ? "uygulamanın yerine" : "sözlünün yerine"}</i></span>${inp(c, "bu", c.bu || "", 'placeholder="0–100"')}</label>` : ""}
     </div>
     <div class="nt-res" data-o="res"></div>
     <label class="nt-sw"><input type="checkbox" data-k="fd"${c.fd ? " checked" : ""}><span>Devamsızlıktan kaldım<small>${TY.dev}</small></span></label>
@@ -2564,11 +2647,17 @@ function update(c){
   vIn.disabled = !!r.vFromQ; if (vIn.disabled) vIn.value = r.V !== null ? f1(r.V) : "";
   else if (document.activeElement !== vIn) vIn.value = c.v;
   uIn.disabled = !!r.uFromList; if (uIn.disabled) uIn.value = f1(r.U); else if (document.activeElement !== uIn) uIn.value = c.u;
-  const L = TY.L, fIn = el.querySelector('[data-k="f"]');
+  const L = labOf(c), fIn = el.querySelector('[data-k="f"]');
   const uf = uIn.closest(".nt-f"), ff = fIn.closest(".nt-f"), nVis = 1 + (w.u > 0) + (w.f > 0);
   uf.style.display = w.u > 0 ? "" : "none"; ff.style.display = w.f > 0 ? "" : "none";
   uf.parentElement.style.gridTemplateColumns = nVis === 3 ? "" : nVis === 2 ? "repeat(2,minmax(0,1fr))" : "minmax(0,1fr)";
-  el.querySelector('[data-add="ul"]').parentElement.style.display = w.u > 0 ? "" : "none";
+  el.querySelector('[data-add="ul"]').parentElement.style.display = w.u > 0 && !lbOf(c) ? "" : "none";
+  { // bütünleme alanları: dilimde uygulama varsa, klinikte kuramsal + sözlü varsa iki not
+    const bw = o("butw"), buIn = bw.querySelector('[data-k="bu"]'), n2 = TYP[S.n] === "dilim" ? w.u > 0 : r.two;
+    if (buIn) buIn.closest(".nt-f").style.display = n2 ? "" : "none";
+    bw.style.gridTemplateColumns = `repeat(${n2 ? 2 : 1},minmax(0,1fr))`;
+    if (TYP[S.n] === "klinik"){ o("b1l").textContent = r.two ? "Kuramsal bütünleme" : "Bütünleme notu"; o("b1i").textContent = r.two ? "kuramsalın yerine" : "bitirme notunun yerine"; }
+  }
   o("wv").textContent = "%" + w.v; o("wu").textContent = "%" + w.u; o("wf").textContent = "%" + w.f;
   o("butw").hidden = TYP[S.n] === "staj" || !(TY.fb ? ((r.DS0 !== null && r.DS0 < 50) || (r.done && r.P < 60) || (r.F0 !== null && r.F0 < 50)) : (r.done && (r.P0 ?? r.P) < 60)) && c.b === "" && !c.bu;
   // header
@@ -2590,7 +2679,12 @@ function update(c){
     if (r.useBut && TY.fb){
       const used = [r.B !== null ? `kuramsal ${f1(r.B)}` : "", r.BU !== null ? `uygulama ${f1(r.BU)}` : ""].filter(Boolean).join(", ");
       h += `<div class="why">Bütünleme notları kullanıldı (${used}).${r.keptOld ? " Bütünleme sonucu bitirmedekinden düşük olduğu için bitirme sonucundaki başarı notun geçerli." : ""}</div>`;
-    } else if (r.useBut) h += `<div class="why">Bitirme notunun yerine bütünleme notu (${f1(r.B)}) kullanıldı.</div>`;
+    } else if (r.useBut){
+      const det = r.two ? ` (kuramsal ${f1(r.B)}, sözlü ${f1(r.BU)})` : "";
+      h += `<div class="why">${r.keptOld ? `Bütünleme sonucu${det} ${f1(r.PB)}: bitirme notundan (${f1(r.P0)}) düşük olduğu için bitirme notun geçerli.` : `Bitirme notunun (${f1(r.P0)}) yerine bütünleme sonucu${det} ${f1(r.PB)} kullanıldı.`}${r.lowerLatest ? " 5. dönemde en son girdiğin sınavın notu geçerlidir; bütünleme bitirmedekinden düşük olsa da o sayılır." : ""}</div>`;
+    }
+    if (r.butWait) h += `<div class="why">Bütünleme kuramsal ve sözlü olarak birlikte yapılır: ikisinin notunu da girince sonuç güncellenir.</div>`;
+    if (r.rnd) h += `<div class="why">Dönem 4–5 kuralı: 49,5 olan başarı notu 50 sayılır.</div>`;
     if (TY.fb && r.DS !== null && !c.fd) h += `<div class="why">Dönem sınavı notu (kuramsal ve uygulamanın ortalaması): ${f1(r.DS)}</div>`;
     if (r.erken) h += `<div class="why">5. dönemde FF, DC ya da DD aldığın derslerde erken bütünleme hakkın var: başka bir grubun bitirme sınavına bütünleme yerine girebilirsin.</div>`;
   } else if (r.have.length){
@@ -2724,8 +2818,13 @@ $("ntClear").addEventListener("click", () => {
   const w = {...S.w}; ALL.y[S.n] = fresh(S.n); ALL.y[S.n].w = w; useDonem(S.n); save(); renderList();
 });
 
+let MINE = +window.PROG_DONEM || 0;
 function renderDsel(){
-  $("ntDsel").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.d === S.n)));
+  $("ntDsel").querySelectorAll("button").forEach(b => {
+    const d = +b.dataset.d; b.setAttribute("aria-pressed", String(d === S.n)); b.classList.toggle("mine", d === MINE);
+    b.title = d === MINE ? "Senin dönemin" : ""; b.setAttribute("aria-label", `Dönem ${d}` + (d === MINE ? " (senin dönemin)" : ""));
+  });
+  window.NT_DONEM = S.n; window.dispatchEvent(new CustomEvent("nt-donem", {detail:S.n}));
   $("ntInfoD").hidden = TYP[S.n] !== "dilim"; $("ntInfoK").hidden = TYP[S.n] !== "klinik"; $("ntInfoS").hidden = TYP[S.n] !== "staj";
   // Dönem 6'da sınav yok: yaklaşan sınavlar ve sınav oranları gizlenir
   document.body.classList.toggle("nt-staj", TYP[S.n] === "staj");
@@ -2735,6 +2834,18 @@ $("ntDsel").addEventListener("click", e => {
   OPEN.clear(); MORE.clear(); useDonem(+b.dataset.d); save(); renderDsel(); wInputs(); renderList();
 });
 renderDsel(); wInputs(); renderList();
+// giriş yapan öğrencinin dönemi: ilk girişte (ya da dönem değişince) not sayfası o dönemde açılır; sonra seçtiğin dönem korunur
+function onProg(n){
+  MINE = +n || 0;
+  let seen = null; try { seen = localStorage.getItem("nt_progSeen"); } catch(e){}
+  if (MINE && String(MINE) !== seen){
+    try { localStorage.setItem("nt_progSeen", String(MINE)); } catch(e){}
+    if (MINE !== S.n){ OPEN.clear(); MORE.clear(); useDonem(MINE); save(); renderDsel(); wInputs(); renderList(); return; }
+  }
+  renderDsel();
+}
+window.addEventListener("prog-donem", e => onProg(e.detail));
+if (MINE) onProg(MINE);
 window.ntRefresh = () => { ALL = loadAll(); useDonem(ALL.d); renderDsel(); wInputs(); renderList(); };
 })();
 </script>
@@ -2963,7 +3074,7 @@ const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textConte
 function setRoute(r){
   document.body.dataset.route = r;
   document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = "İstanbul Tıp · Dönem 1 Türkçe"; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
+  if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = "İstanbul Tıp · Dönem 1–6 Türkçe"; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
   else { brandT.textContent = T0[0]; brandS.textContent = brandS.dataset.prog || T0[1]; document.title = DOC_T; }
 }
