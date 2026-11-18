@@ -1558,7 +1558,7 @@ function buildDay(date){
     prac.push({d:date, s:ss.s, e:ss.e, n:"PDÖ", hoca:PG.tutor, g:me.p, y:PG.room, dl:"Yaşamın Moleküler Temelleri Dilimi", pdoSub:true});
   const anySec = mySecIds().length > 0;
   for (const ev of lectures){
-    const k = kindOf(ev.t);
+    const k = ev.k || kindOf(ev.t);
     if (k === "slot"){
       out.push({kind:"free", slot:true, s:ev.s, e:ev.e, title:"Uygulama saati – grubunun uygulaması yok", sub:"Tabloya göre bu saatte sana ait bir uygulama görünmüyor."});
       continue;
@@ -1939,7 +1939,7 @@ function renderExams(){
     return esc(!y || y === "Amfi programına bak" ? "Sınav yeri amfi programına daha işlenmemiş" : y);
   };
   $("examBox").hidden = !top.length;
-  if (!top.length) return;
+  if (!top.length){ $("examList").innerHTML = ""; $("examHint").textContent = ""; return; }
   const daysTo = d => Math.round((new Date(d+"T12:00:00Z") - new Date(now+"T12:00:00Z"))/864e5);
   { const n = top[0], dn = daysTo(n.d);
     $("examHint").textContent = `Sıradaki: ${n.t.toLocaleLowerCase("tr").replace(/(^|\s)\S/g, m => m.toLocaleUpperCase("tr"))} · ${dn===0? "bugün" : dn+" gün kaldı"}`; }
@@ -2239,7 +2239,8 @@ function chipsOf(n, tags){
     if (n === 3 && /^mp:/.test(x)) out.push(`Mikro-Pato ${esc(x.slice(3))}`);
     else if (n === 5 && /^[23]:/.test(x)) out.push(`${x[0]==="2"?"İkili":"Üçlü"} ${esc(x.slice(2))}`);
     else if (/^[A-H]$/.test(x)) out.push(`Grup ${esc(x)}`);
-    else out.push(esc(n === 4 ? x : (n === 2 ? "Alt grup " : n === 3 ? "Alt grup " : "") + x));
+    else if (n === 4) out.push(`${/-\d$/.test(x) ? "Dörtlü" : "İkili"} ${esc(x)}`);
+    else out.push(esc("Alt grup " + x));
   }
   return out;
 }

@@ -32,6 +32,10 @@ SOURCES = {
         "mikpat_prog": ("docx", "1IOx-_LE8ESpTCT8qH09DI66TPtyQW9es"),
         "ogruye_A": ("xlsx", "1YluyIWyOjjoL7JGpQXTUiGOROGaSpMIw"),
         "ogruye_B": ("xlsx", "1jlkhFvrStcKAsyO_cGb8Lk5xhDgk0hNh")},
+    4: {"ogrenci": ("xlsx", "16pF6yxO11f87vriYbFDamUzBTrUiqLlZ"),
+        "ders": ("xlsx", "17lGAfN665POtwtuIErHJytRt1cFxfJR3")},
+    5: {"ogrenci": ("xlsx", "1Y06yoK2BlShF3iy6T4ChVxQW4ijc1aky"),
+        "ders": ("xlsx", "1T8NTqJCRFF34HBvIS-DTHja2e15Bi4rf")},
 }
 AMFI = ("sheet", "1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw")
 
