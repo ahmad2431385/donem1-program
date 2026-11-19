@@ -78,6 +78,10 @@ def clean(s):
     return re.sub(r"\s+", " ", str(s or "")).strip()
 
 
+def up(s):
+    return clean(s).replace("i", "İ").replace("ı", "I").upper()
+
+
 # ---------------- Students (numbers -> group, subgroup; no names) ----------------
 def students():
     ws = openpyxl.load_workbook(f"{DATA}/ogrenci.xlsx").active
@@ -98,6 +102,17 @@ def students():
 
 # ---------------- Ders programı ----------------
 WEEKDAYS = {"PAZARTESİ": 0, "SALI": 1, "ÇARŞAMBA": 2, "PERŞEMBE": 3, "CUMA": 4}
+
+
+def mentioned_groups(title):
+    """Başlıkta belirli gruplar anılıyorsa D1 grup hücresi biçiminde döndürür: 'A-B GRUBU' -> 'AB', '(PDÖ-G2 Grubu)' -> 'pdo:G2'.
+    Tek harfli ve parantezsiz anmalar ('B grubu vitaminler' gibi) ders konusu olabileceği için sayılmaz."""
+    T = up(title)
+    m = re.search(r"PDÖ\s*-?\s*([A-H][1-9])\s+GRUBU", T)
+    if m:
+        return "pdo:" + m.group(1)
+    m = re.search(r"\(\s*([A-H](?:\s*[-,/]\s*[A-H])*)\s+GRUBU\s*\)", T) or re.search(r"(?<![A-ZÇĞİÖŞÜ])([A-H](?:\s*-\s*[A-H])+)\s+GRUBU\b", T)
+    return "".join(sorted(set(re.findall(r"[A-H]", m.group(1))))) if m else None
 
 
 def ders():
@@ -131,8 +146,11 @@ def ders():
         day = parse_date(b)
         if not day:
             continue
-        events.append({"d": day.isoformat(), "s": s, "e": t, "t": konu, "h": hoca,
-                       "dl": dilim, "ad": ad, "y": yer})
+        ev = {"d": day.isoformat(), "s": s, "e": t, "t": konu, "h": hoca, "dl": dilim, "ad": ad, "y": yer}
+        g = mentioned_groups(konu)
+        if g:  # yalnız anılan grubun öğrencileri görür
+            ev["g"] = g
+        events.append(ev)
     return events, weekly
 
 
@@ -342,7 +360,7 @@ def sig_sets(data, today):
     for e in data.get("events", []):
         if e["d"] < today or re.match(r"(ÖĞLE ARASI|SERBEST)", e["t"]):
             continue
-        out[("ders", e["d"], e["s"])] = {"txt": e["t"], "y": e.get("y", ""), "e": e["e"], "g": "*"}
+        out[("ders", e["d"], e["s"])] = {"txt": e["t"], "y": e.get("y", ""), "e": e["e"], "g": e.get("g") or "*"}
     for u in data.get("uyg", []):
         if u["d"] < today:
             continue
@@ -352,6 +370,12 @@ def sig_sets(data, today):
         for d, note in (x.get("ex") or {}).items():
             if d >= today:
                 out[("sec", d, x["s"], x["id"])] = {"txt": f'{x["ad"]}: {note}', "g": "sec:" + x["id"], "e": x["e"], "y": x["yer"]}
+    # PDÖ oturumları (Yaşamın Moleküler Temelleri): her PDÖ grubunun kendi gün/saat/salon/eğiticisi
+    for p, grp in (data.get("pdoGroups") or {}).items():
+        for ss in grp.get("ses", []):
+            if ss["d"] >= today:
+                out[("pdo", ss["d"], ss["s"], p)] = {"txt": f'PDÖ ({p} grubu) · {grp.get("tutor", "")}'.rstrip(" ·"),
+                                                     "g": "pdo:" + p, "e": ss["e"], "y": grp.get("room", "")}
     am_days = {a["d"] for a in data.get("amfi", [])}
     for a in data.get("amfi", []):
         if a["d"] < today:
@@ -372,6 +396,8 @@ def diff(prev, new, now):
         kind, d, s = k[0], k[1], k[2]
         if kind == "sec" and not prev.get("secmeli"):
             continue  # first time the elective list appears: nothing has "changed"
+        if kind == "pdo" and not prev.get("pdoGroups"):
+            continue  # PDÖ listesi ilk kez geliyorsa "değişiklik" sayılmaz
         if kind == "amfi" and d not in both_days:
             continue  # a new weekly amfi sheet is not a "change"
         a, b = A.get(k), B.get(k)
@@ -445,7 +471,7 @@ def main():
     pub.update({"kdf": kdf, "sk": sk})
     data = pub
     data.update({"hash": content_hash, "built": built, "lastCheck": now.strftime("%Y-%m-%d %H:%M"),
-                 "schedule": ["07:30", "10:30", "13:30", "16:30", "19:30", "22:30"], "changes": changes})
+                 "schedule": "saatte bir (günde 24 kez)", "changes": changes})
     json.dump(data, open(OUT, "w", encoding="utf-8"), ensure_ascii=False, separators=(",", ":"))
     print(json.dumps({"changed": bool(prev) and prev.get("hash") != content_hash, "new_changes": len(new_ch),
                       "students": len(st), "events": len(ev), "uyg": len(uy), "amfi": len(am), "amfiWeek": week,

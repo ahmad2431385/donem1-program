@@ -243,6 +243,14 @@ def cell(r, i):
 
 
 # ---------------- ortak okuyucular ----------------
+def mentioned_groups(title):
+    """Ders programı satırı başlığında belirli gruplar anılıyorsa onların harfleri: '(A-B Grubu)', '(H Grubu)', 'A-B GRUBU'.
+    Tek harfli ve parantezsiz anmalar ('B grubu vitaminler' gibi) ders konusu olabileceği için sayılmaz."""
+    T = up(title)
+    m = re.search(r"\(\s*([A-H](?:\s*[-,/]\s*[A-H])*)\s+GRUBU\s*\)", T) or re.search(r"(?<![A-ZÇĞİÖŞÜ])([A-H](?:\s*-\s*[A-H])+)\s+GRUBU\b", T)
+    return sorted(set(re.findall(r"[A-H]", m.group(1)))) if m else None
+
+
 def ders_rows(rows, group_tag=None):
     """'TARİH | Başlama | Bitiş | KONU | DİLİM ADI / ANABİLİM DALI | YER' düzenindeki ders programı."""
     events, hdr = [], None
@@ -266,6 +274,8 @@ def ders_rows(rows, group_tag=None):
               "dl": fp[0], "ad": fp[1] if len(fp) > 1 else "", "y": cell(r, hdr + 5)}
         if group_tag:
             ev["g"] = [group_tag]
+        elif mentioned_groups(konu):  # ör. 'UYGULAMA (A-B Grubu) - Histoloji' yalnız A ve B grubunundur
+            ev["g"] = mentioned_groups(konu)
         events.append(ev)
     return events
 
@@ -329,7 +339,15 @@ def _sig(data, today):
     for a in data.get("amfi", []):
         if a["d"] < today:
             continue
-        out[("amfi", a["d"], a["s"], a["t"][:60])] = {"txt": a["t"], "y": a["r"], "e": a["e"], "g": a.get("g") or ["*"]}
+        # amfi satırının kimi ilgilendirdiği: grup (g), ders grubu (lg, ör. 3A) ya da uygulama alt grupları (sub)
+        g = a.get("g") or a.get("lg") or a.get("sub") or ["*"]
+        k = ("amfi", a["d"], a["s"], a["t"][:60])
+        if k in out:  # aynı ders/sınav birden çok salonda: salonlar birlikte karşılaştırılır
+            o = out[k]
+            o["y"] = ", ".join(sorted(set(o["y"].split(", ")) | {a["r"]}))
+            o["g"] = sorted(set(o["g"]) | set(g))
+            continue
+        out[k] = {"txt": a["t"], "y": a["r"], "e": a["e"], "g": list(g)}
     return out, {a["d"] for a in data.get("amfi", [])}
 
 
@@ -351,7 +369,38 @@ def diff(prev, new, now):
         ch.append({"at": stamp, "src": k[0], "type": typ, "d": k[1], "s": k[2], "e": (b or a)["e"], "g": groups,
                    "old": a and {"t": a["txt"], "y": a.get("y", ""), "e": a["e"]},
                    "new": b and {"t": b["txt"], "y": b.get("y", ""), "e": b["e"]}})
-    return ch
+    return _net_groups(ch, new)
+
+
+def _net_groups(ch, data):
+    """Aynı ders/uygulamanın yalnız grupları değiştiyse (ör. 'B' yerine 'D'), 'kaldırıldı' ve 'eklendi' kayıtları
+    yalnız durumu gerçekten değişen gruplara gösterilir: kaldırılan = eski − yeni, eklenen = yeni − eski."""
+    letters = sorted({g for x in data.get("events", []) + data.get("uyg", []) for g in (x.get("g") or []) if len(g) == 1})
+    exp = lambda gs: set(letters) | (set(gs) - {"*"}) if "*" in gs else set(gs)  # noqa: E731
+    sig = lambda c, side: (c["src"], c["d"], c["s"], c[side]["t"], c[side]["y"], c[side]["e"])  # noqa: E731
+    adds = {}
+    for c in ch:
+        if c["type"] == "add":
+            adds.setdefault(sig(c, "new"), []).append(c)
+    drop = set()
+    for c in ch:
+        if c["type"] != "del":
+            continue
+        pair = next((a for a in adds.get(sig(c, "old"), []) if id(a) not in drop), None)
+        if not pair:
+            continue
+        old_g, new_g = exp(c["g"]), exp(pair["g"])
+        removed, added = old_g - new_g, new_g - old_g
+        if removed:
+            c["g"] = sorted(removed)
+        else:
+            drop.add(id(c))
+        if added:
+            pair["g"] = sorted(added)
+        else:
+            drop.add(id(pair))
+        adds[sig(c, "old")].remove(pair)
+    return [c for c in ch if id(c) not in drop]
 
 
 def content_hash(d):

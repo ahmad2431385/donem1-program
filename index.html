@@ -1497,8 +1497,9 @@ const PDO_PAIR = {A:"AB",B:"AB",C:"CD",D:"CD",E:"EF",F:"EF",G:"GH",H:"GH"};
 function matches(cell, me){
   const c = String(cell).toLocaleUpperCase("tr").replace(/\s+/g,"");
   if (c === "*" || /TÜM/.test(c) || /^TELAF/.test(c)) return true;
+  if (/^PDO:/.test(c)) return !!me.p && c.slice(4) === String(me.p).toLocaleUpperCase("tr");   // ör. 'UYGULAMA (PDÖ-G2 Grubu)'
   if (/^[A-H]$/.test(c)) return c === me.g;
-  if (/^[A-H][12]$/.test(c)) return c === me.a;
+  if (/^[A-H][12]$/.test(c)) return me.partial && !me.a ? c[0] === me.g : c === me.a;   // alt grubu listede olmayan: iki alt grubunki de
   if (/^[A-H]{2,}$/.test(c)) return c.includes(me.g);
   return false;
 }
@@ -1528,9 +1529,13 @@ function kindOf(t){
   if (u.startsWith("HASTA BAŞI")) return "uyg";
   return "amfi";
 }
-function roomFor(date, s, e){
-  const r = (AM[date]||[]).find(a => !a.g && !a.sub && (!a.lg || hit(a.lg)) && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
-  return r ? r.r : null;
+function roomFor(date, s, e, strict){
+  // strict: yalnız öğrencinin grubuna/alt grubuna açıkça yazılmış amfi satırı (uygulamalar için)
+  const ok = (AM[date]||[]).filter(a => !a.g && !a.sub && (a.lg ? hit(a.lg) : !strict) && overlap(toMin(s),toMin(e),toMin(a.s),toMin(a.e)));
+  if (!ok.length) return null;
+  // aynı ders/sınav birden çok salonda yapılıyorsa hepsi (öğrencinin salonu ayrıca ilan edilir)
+  const rooms = [...new Set(ok.filter(a => a.t === ok[0].t).map(a => a.r).filter(Boolean))];
+  return rooms.length > 1 ? `${rooms.join(" · ")} (salonlar)` : ok[0].r;
 }
 function niceYer(y){
   if (!y) return "";
@@ -1567,8 +1572,8 @@ function buildDay(date){
       continue;
     }
     const item = {kind:k, s:ev.s, e:ev.e, title:ev.t, raw:ev.t, hoca:ev.h, ad:ev.ad, dilim:ev.dl, src:"Ders programı"};
-    if (k === "amfi" || k === "exam" || k === "pdo"){
-      const r = roomFor(date, ev.s, ev.e);
+    if (k === "amfi" || k === "exam" || k === "pdo" || (k === "uyg" && me.d > 1 && !ev.y)){
+      const r = roomFor(date, ev.s, ev.e, k === "uyg");
       item.where = r ? r : niceYer(ev.y);
       item.whereSrc = r ? "Haftalık amfi programı" : null;
     } else if (k === "sec" && SLOTS.includes(ev.s) && anySec){
@@ -1583,7 +1588,7 @@ function buildDay(date){
   }
   for (const u of prac){
     const isPdo = /PDÖ/i.test(u.n);
-    const note = /TELAF/i.test(u.g) ? "Telafi" : (/TÜM|\*/i.test(u.g) ? "Tüm gruplar" : null);
+    const note = /TELAF/i.test(u.g) ? "Telafi" : (/TÜM|\*/i.test(u.g) ? "Tüm gruplar" : me.partial && !me.a && /^[A-H][12]$/i.test(String(u.g).trim()) ? `${String(u.g).trim().toUpperCase()} alt grubunun uygulaması · alt grubun listede yok, kendi alt grubunu kontrol et` : null);
     out.push({kind: isPdo? "pdo":"uyg", s:u.s, e:u.e,
       title: isPdo ? (u.pdoSub ? `PDÖ oturumu · ${u.g} grubu` : `PDÖ oturumu (grup ${u.g})`) : (/uygulama|sınav/i.test(u.n) ? u.n : u.n + " uygulaması"),
       raw:u.n, hoca:u.hoca, dilim:u.dl, where: isPdo && !u.pdoSub ? "PDÖ salonu – amfi programına bak" : (u.y || "Yeri fakülte sitesinde duyurulur"),
@@ -1639,7 +1644,7 @@ function renderChanges(){
   box.hidden = !list.length;
   if (!list.length) return;
   const label = {add:"Eklendi", del:"Kaldırıldı", mod:"Değişti"};
-  const src = {ders:"Ders programı", uyg:"Uygulama tablosu", amfi:"Amfi programı", sec:"Seçmeli ders programı"};
+  const src = {ders:"Ders programı", uyg:"Uygulama tablosu", amfi:"Amfi programı", sec:"Seçmeli ders programı", pdo:"PDÖ programı"};
   const top = list.slice(0,4);
   $("chgCount").textContent = list.length + " yeni";
   $("chgBody").innerHTML = top.map(c => `
@@ -1765,10 +1770,11 @@ function renderDay(now){
   if (am.length){
     const rows = [];
     for (const a of am){ const p = rows[rows.length-1]; if (p && p.t===a.t && p.r===a.r){ p.e = a.e; continue; } rows.push({...a}); }
-    $("amfiList").innerHTML = rows.map(a => `<li class="${a.g===me.g?"mine":""}"><span class="t">${esc(a.s)}–${esc(a.e)}</span><span><b>${esc(a.r)}</b><br>${esc(a.t)}</span></li>`).join("");
+    const mineA = a => me.d > 1 ? !!(a.lg || a.sub) && hit(a.lg || a.sub) : a.g === me.g;
+    $("amfiList").innerHTML = rows.map(a => `<li class="${mineA(a)?"mine":""}"><span class="t">${esc(a.s)}–${esc(a.e)}</span><span><b>${esc(a.r)}</b><br>${esc(a.t)}</span></li>`).join("");
     if (box.dataset.day !== view){ box.open = false; box.dataset.day = view; }
-    const mineN = rows.filter(a => a.g===me.g).length;
-    $("amfiHint").textContent = `Dönem 1 · ${rows.length} kayıt${mineN? ` · ${mineN} tanesi senin grubun`:""} · görmek için dokun`;
+    const mineN = rows.filter(mineA).length;
+    $("amfiHint").textContent = `Dönem ${me.d || 1} · ${rows.length} kayıt${mineN? ` · ${mineN} tanesi senin grubun`:""} · görmek için dokun`;
   }
   renderStrip(now);
 }
@@ -2565,7 +2571,7 @@ function calc(c, st = S){
     if (ty.fb && r.useBut && r.V !== null && r.DS0 !== null && r.DS0 >= 50){
       // bütünleme notu bitirmedekinden düşükse bitirme sonucundaki başarı notu esas alınır
       const P0 = (w.v*(r.V||0) + w.u*(r.U0||0) + w.f*(r.F0||0))/100;
-      if (P0 > r.P){ r.P = P0; r.keptOld = true; }
+      if (P0 > r.P){ r.P = P0; r.keptOld = true; r.DS = r.DS0; }   // bitirmedeki başarı notu (ve dönem sınavı notu) geçerli kalır
     }
     const g = grade(r.P); r.L = g[1]; r.coef = g[2];
     const staj = TYP[st.n] === "staj";

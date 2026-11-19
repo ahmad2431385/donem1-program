@@ -1,0 +1,52 @@
+{
+ "d1_kredi": {
+  "ad": "Dönem 1 ders kredileri",
+  "hash": "4146c6444fb8ae016bc8",
+  "size": 506
+ },
+ "d1_kural": {
+  "ad": "Dönem 1 sınav kuralları",
+  "hash": "1dcf74a5e741e7a4fd07",
+  "size": 310885
+ },
+ "d2_kredi": {
+  "ad": "Dönem 2 ders kredileri",
+  "hash": "a7ae205db026bbcd2411",
+  "size": 370
+ },
+ "d2_kural": {
+  "ad": "Dönem 2 sınav kuralları",
+  "hash": "2af1c256e830995804da",
+  "size": 264626
+ },
+ "d3_kredi": {
+  "ad": "Dönem 3 ders kredileri",
+  "hash": "c6a8780d4672bde03c7f",
+  "size": 8463
+ },
+ "d3_kural": {
+  "ad": "Dönem 3 sınav kuralları",
+  "hash": "48252ad04476f59b16f6",
+  "size": 673572
+ },
+ "d4_kredi": {
+  "ad": "Dönem 4 ders kredileri",
+  "hash": "ac3444ef6ff7a1f4b5b4",
+  "size": 20421
+ },
+ "d4_kural": {
+  "ad": "Dönem 4 sınav kuralları",
+  "hash": "3970096182e573e0df13",
+  "size": 46111
+ },
+ "d5_kredi": {
+  "ad": "Dönem 5 ders kredileri",
+  "hash": "d6d6d67d137edfffabf8",
+  "size": 29512
+ },
+ "d5_kural": {
+  "ad": "Dönem 5 sınav kuralları",
+  "hash": "16db70f522392c59e440",
+  "size": 44956
+ }
+}

@@ -124,6 +124,43 @@ def students5(sheets):
     return out
 
 
+STOP = {"DÖNEM", "TÜRKÇE", "GRUBU", "UYGULAMA", "UYGULAMASI", "SINAV", "SINAVI", "DERSİ", "DİLİMİ", "DİLİM", "HAST", "HASTALIKLARI",
+        "SAAT", "SALONU", "AMFİSİ", "ENTEGRE", "OTURUM"}
+_W = lambda t: {w[:5] for w in re.findall(r"[A-ZÇĞİÖŞÜ]{4,}", up(t)) if w not in STOP}  # noqa: E731
+_M = lambda x: int(x[:2]) * 60 + int(x[3:]) if x else None  # noqa: E731
+
+
+def amfi_tags(a, day_events, letters, donem):
+    """Haftalık amfi satırının kime ait olduğu (sayfa salonu yalnız onlara gösterir).
+    'C GRUBU' -> ['C'] · Dönem 4 'B1 GRUBU' -> ['B1'], 'B1-2 GRUBU' -> ['B1-2'] · Dönem 5 'E 2 GRUBU' -> o hafta üçlüyse ['3:E2'],
+    değilse ['2:E2'] ('E-3' her zaman üçlü); alt grup ancak programda o saatte o alt gruba yazılmış ders varsa ·
+    grup yazmıyorsa: aynı saatte adı aynı bölümü/sınavı anan dersi olan grup(lar) · hiçbiri: ['-'] (kimseye salon olarak gösterilmez)"""
+    T = up(a["t"])
+    m = re.search(r"(?<![A-ZÇĞİÖŞÜ])([A-H])\s*-?\s*(\d)?(?:\s*-\s*(\d))?\s*GRUBU", T)
+    if m:
+        L, n1, n2 = m.groups()
+        if L not in letters:
+            return ["-"]
+        if not n1:
+            return [L]
+        if donem == 4:
+            tag = f"{L}{n1}-{n2}" if n2 else f"{L}{n1}"
+        else:
+            three = n1 == "3" or any(t.startswith("3:" + L) for e in day_events for t in e["g"])
+            tag = ("3:" if three else "2:") + L + n1
+        # numara, listede olmayan bir rotasyon grubunu da gösterebilir (ör. Dönem 4 İç Hastalıkları B-I…B-V):
+        # yalnız programda aynı saatte tam bu alt gruba yazılmış bir ders varsa o alt grubun salonudur
+        hit = any(tag in e["g"] and e["s"] and e["e"] and a["s"] and _M(a["s"]) < _M(e["e"]) and _M(e["s"]) < _M(a["e"] or a["s"]) + 1
+                  for e in day_events)
+        return [tag] if hit else ["-"]
+    words, tags = _W(a["t"]), set()
+    for e in day_events:
+        if a["s"] and e["s"] and e["e"] and _M(a["s"]) < _M(e["e"]) and _M(e["s"]) < _M(a["e"] or a["s"]) + 1 and \
+                words & _W(e["t"]):   # yalnız dersin/sınavın adı: dilim adı başka bir sınavla karışabiliyor
+            tags |= set(e["g"])
+    return sorted(tags) or ["-"]
+
+
 def build_common(donem, src, students):
     warn, ev = [], []
     for name, grid in src["ders"].items():
@@ -132,8 +169,13 @@ def build_common(donem, src, students):
             continue
         ev += weekly(grid, m.group(1), donem, warn, name)
     week, am = amfi_rows(src["amfi"], donem)
-    for a in am:  # gruplu amfi satırları bu dönemlerde ders salonudur
-        a["lg"], a["g"] = a["g"], None
+    letters = {g for e in ev for g in e["g"] if len(g) == 1}
+    by_day = {}
+    for e in ev:
+        if not (e.get("k") == "lunch"):
+            by_day.setdefault(e["d"], []).append(e)
+    for a in am:  # bu dönemlerde amfi satırı bir grubun ya da alt grubun ders salonudur
+        a["lg"], a["g"] = amfi_tags(a, by_day.get(a["d"], []), letters, donem), None
     for e in ev:  # boş alanlar yayımlanan dosyayı gereksiz büyütüyor
         for k in ("h", "ad", "y", "dl"):
             if not e.get(k):

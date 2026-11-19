@@ -1,9 +1,8 @@
 name: Program verisini güncelle
 
 on:
-  # Zamanlama GitHub'da değil, cron-job.org'da: orası her gün 07:25, 10:25, 13:25, 16:25, 19:25 ve 22:25'te
-  # GitHub API ile bu iş akışını başlatır (workflow_dispatch). GitHub'ın kendi
-  # zamanlayıcısı saatinde çalışmadığı için kullanılmıyor.
+  # Zamanlama GitHub'da değil, cron-job.org'da: orası saatte bir (günde 24 kez) GitHub API ile bu iş
+  # akışını başlatır (workflow_dispatch). GitHub'ın kendi zamanlayıcısı saatinde çalışmadığı için kullanılmıyor.
   workflow_dispatch: {}    # Actions sekmesinden elle çalıştırma düğmesi
 
 permissions:
@@ -18,28 +17,45 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Bağımlılıklar
         run: pip install openpyxl==3.1.5
 
-      - name: Kaynakları Drive'dan indir
-        run: tools/fetch.sh data
-
-      - name: Derle ve kontrol et (Dönem 1)
-        run: tools/update.sh data data.json out/data.json
+      # Dönem 1: indir, derle, kontrol et. Başarısız olursa önceki data.json korunur ve Dönem 2–5 yine
+      # güncellenir; iş en sonda "başarısız" biter (GitHub depo sahibine e-posta atar).
+      - name: Dönem 1 (indir, derle, kontrol et)
+        id: d1
+        run: |
+          set +e
+          mkdir -p out
+          tools/fetch.sh data 2>&1 | tee out/d1_fetch.log
+          code=${PIPESTATUS[0]}
+          if [ "$code" = 0 ]; then tools/update.sh data data.json out/data.json; code=$?; fi
+          if [ "$code" != 0 ]; then cp data.json out/data.json; echo "HATA: Dönem 1 güncellenemedi, önceki hâli korundu."; fi
+          opt=0; grep -q "^uyarı: .*indirilemedi" out/d1_fetch.log && opt=1
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "opt=$opt" >> "$GITHUB_OUTPUT"
 
       # Dönem 2–5: her dönem bağımsız derlenir. Biri başarısız olursa o dönemin önceki dosyası korunur,
       # diğerleri yine yayınlanır; iş en sonda "başarısız" olarak biter ve GitHub depo sahibine e-posta atar.
-      - name: Derle ve kontrol et (Dönem 2–5)
+      - name: Dönem 2–5 (indir, derle, kontrol et)
         id: multi
         run: |
           set +e
           python3 tools/multi/build_all.py --d1 out/data.json --prev . --out out
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+
+      # Sınav kuralları ve ders kredisi dosyaları (Dönem 1–5): açılıyor mu, değişti mi? (Sınav·Not sayfası için)
+      - name: Sınav kuralları ve krediler
+        id: watch
+        run: |
+          set +e
+          python3 tools/watch.py --state tools/watch.json --out out/watch.json
           echo "code=$?" >> "$GITHUB_OUTPUT"
 
       - name: Veriyi depoya kaydet
@@ -51,17 +67,22 @@ jobs:
             git reset -q --hard origin/main
             cp out/data.json data.json
             cp out/ogr.json out/d[2-5].json . 2>/dev/null || true
-            git add data.json ogr.json d[2-5].json 2>/dev/null || git add data.json
+            [ -f out/watch.json ] && cp out/watch.json tools/watch.json
+            git add data.json ogr.json d[2-5].json tools/watch.json 2>/dev/null || git add data.json
             git commit -q -m "Program verisi güncellendi (otomatik kontrol)" || { echo "Değişiklik yok"; exit 0; }
             git push -q origin HEAD:main && break
             [ "$i" = 3 ] && exit 1
             echo "push reddedildi, yeniden deneniyor ($i)"; sleep 5
           done
 
-      - name: Dönem 2–5 sonucu
-        if: steps.multi.outputs.code != '0'
+      - name: Sonuç
+        if: steps.d1.outputs.code != '0' || steps.d1.outputs.opt != '0' || steps.multi.outputs.code != '0' || steps.watch.outputs.code != '0'
         run: |
-          echo "Bazı dönemler güncellenemedi (yukarıdaki 'Derle ve kontrol et (Dönem 2–5)' adımına bak). Önceki hâlleri korundu."
+          [ "${{ steps.d1.outputs.code }}" != "0" ] && echo "HATA: Dönem 1 güncellenemedi; önceki hâli korundu (bkz. 'Dönem 1' adımı)."
+          [ "${{ steps.d1.outputs.opt }}" != "0" ] && echo "HATA: Dönem 1'in PDÖ ya da seçmeli ders dosyası indirilemedi; önceki hâli kullanıldı (bkz. 'Dönem 1' adımı)."
+          [ "${{ steps.multi.outputs.code }}" != "0" ] && echo "HATA: Dönem 2–5'ten bazıları güncellenemedi; önceki hâlleri korundu (bkz. 'Dönem 2–5' adımı)."
+          [ "${{ steps.watch.outputs.code }}" = "3" ] && echo "HATA: Bazı sınav kuralları / kredi dosyaları açılamadı (bkz. 'Sınav kuralları ve krediler' adımı)."
+          [ "${{ steps.watch.outputs.code }}" = "4" ] && echo "DİKKAT: Bazı sınav kuralları / kredi dosyaları değişti; Sınav·Not sayfasındaki kurallar gözden geçirilmeli (bkz. 'Sınav kuralları ve krediler' adımı)."
           exit 1
 
   # Verinin kaydedildiği hâliyle siteyi GitHub Pages'te yayınla.
