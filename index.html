@@ -2,7 +2,6 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<meta name="copyright" content="© 2026 Ahmad Omar Mukhtar. Tüm hakları saklıdır.">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Dönem 1 Programım</title>
 <meta name="theme-color" content="#0b6b55">
@@ -1336,7 +1335,6 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
     </div>
   </main>
 
-  <p class="foot">© 2026 Ahmad Omar Mukhtar · Tüm hakları saklıdır.</p>
   </div>
 
   <!-- ============ Hava durumu (bağımsız sayfa) ============ -->
@@ -1377,7 +1375,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
         </div>
       </details>
     <div class="nt-dw"><span>Dönem</span><div class="seg nt-dsel" id="ntDsel" role="group" aria-label="Dönem seç">
-      <button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button><button type="button" data-d="4">4</button><button type="button" data-d="5">5</button><button type="button" data-d="6">6</button>
+      <button type="button" data-d="1">1</button><button type="button" data-d="2">2</button><button type="button" data-d="3">3</button><button type="button" data-d="4">4</button><button type="button" data-d="5">5</button>
     </div></div>
     <section class="card nt-sum" id="ntSum" aria-live="polite"></section>
 
@@ -1448,7 +1446,6 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
-  <div class="dfoot" style="margin-top:0;padding-top:0;opacity:.8">© 2026 Ahmad Omar Mukhtar · Tüm hakları saklıdır. İzinsiz kopyalanamaz.</div>
 </nav>
 
 <div class="scrim" id="scrim" hidden>
@@ -2504,7 +2501,7 @@ function loadAll(){
   try { a = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(e){}
   if (a && Array.isArray(a.c)) a = {v:3, d:1, y:{1:a}};          // v1/v2: a single Dönem 1
   if (!a || !a.y) a = {v:3, d:1, y:{}};
-  if (!(a.d >= 1 && a.d <= 6)) a.d = 1;
+  if (!(a.d >= 1 && a.d <= 5)) a.d = 1;   // Dönem 6 sayfadan kaldırıldı
   for (const n of Object.keys(a.y)) a.y[n] = initY(+n, a.y[n]);
   return a;
 }
@@ -2816,7 +2813,7 @@ function tally(st, n){
 function summary(){
   const n = {ok:0, mid:0, bad:0, wait:0};
   const cur = tally(S, n), all = {ks:0, kc:0, nG:0, sum:0, noK:0}; let dons = 0;
-  for (const k of Object.keys(ALL.y)){ const t = k == S.n ? cur : tally(ALL.y[k]); if (t.nG) dons++; for (const x in all) all[x] += t[x]; }
+  for (const k of Object.keys(ALL.y).filter(k => +k <= 5)){ const t = k == S.n ? cur : tally(ALL.y[k]); if (t.nG) dons++; for (const x in all) all[x] += t[x]; }
   let {ks, kc, nG, noK} = all, sumCoef = all.sum;
   let big, cls = "", lbl = "AGNO", line;
   if (ks > 0){ const a = Math.round(kc/ks*100)/100; big = f2(a); if (a < 2) cls = " low"; line = a < 2 ? "AGNO 2,00'nin altında: sınamalı öğrenci sayılırsın." : "Kredili notlarına göre ağırlıklı not ortalaman."; if (noK) line += ` ${noK} dersin AKTS'si girilmedi, hesaba katılmadı.`; }
