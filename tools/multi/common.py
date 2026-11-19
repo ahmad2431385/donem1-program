@@ -336,6 +336,10 @@ def _sig(data, today):
         if u["d"] < today:
             continue
         out[("uyg", u["d"], u["s"], u["n"], ",".join(u.get("g") or []))] = {"txt": u["n"], "y": u.get("y", ""), "e": u["e"], "g": u.get("g") or ["*"]}
+    for x in data.get("secmeli") or []:  # seçmeli dersin o haftaki notu (ders yok, yer değişti …): yalnız o dersi seçenler görür
+        for d, note in (x.get("ex") or {}).items():
+            if d >= today:
+                out[("sec", d, x["s"], x["id"])] = {"txt": f'{x["ad"]}: {note}', "y": x.get("yer", ""), "e": x["e"], "g": ["sec:" + x["id"]]}
     for a in data.get("amfi", []):
         if a["d"] < today:
             continue
@@ -361,6 +365,8 @@ def diff(prev, new, now):
     for k in sorted(set(A) | set(B), key=str):
         if k[0] == "amfi" and k[1] not in both:
             continue
+        if k[0] == "sec" and not prev.get("secmeli"):
+            continue  # seçmeli listesi bu dönemin dosyasına ilk kez giriyorsa "değişiklik" sayılmaz
         a, b = A.get(k), B.get(k)
         if a == b:
             continue

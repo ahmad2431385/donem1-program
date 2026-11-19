@@ -237,6 +237,13 @@ details.card[open] summary::after{content:"–"}
 .exams .ex{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;font-size:13px;line-height:1.35;padding:6px 0;border-top:1px solid var(--line)}
 .exams .ex:first-child{border-top:none;padding-top:0}
 .exams .ex-none{margin:0;font-size:13px;color:var(--muted)}
+.seclist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:0}
+.seclist li{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:6px 0;border-top:1px solid var(--line)}
+.seclist li:first-child{border-top:none}
+.seclist small{color:var(--muted);white-space:nowrap;font-family:var(--mono)}
+.secnote{margin:6px 0 10px}
+.secnote > summary{cursor:pointer;font-size:12.5px;font-weight:600;color:var(--accent)}
+.secnote p{margin:6px 0 0}
 .ex-grp{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin-top:8px;font-size:13px;font-weight:600}
 .ex-grp select{font:inherit;font-weight:600;padding:5px 8px;border:1.5px solid var(--line);border-radius:9px;background:var(--bg);color:var(--ink)}
 .ex-grp small{flex-basis:100%;font-weight:400;color:var(--muted);font-size:12px}
@@ -1118,6 +1125,7 @@ body[data-route="hava"] .wrap.wide{max-width:680px}
 .hv-f > span{font-size:11.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding-left:2px}
 .hv-loc select{width:100%;min-width:0;text-overflow:ellipsis;font:inherit;font-weight:600;font-size:16px;padding:9px 34px 9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5l4 4 4-4' fill='none' stroke='%237a8682' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 12px center;color:var(--ink);-webkit-appearance:none;appearance:none}
 .hv-loc select:focus{border-color:var(--accent);outline:none}
+.hv-def{grid-column:1/-1;grid-row:2;justify-self:start;font-size:13px;font-weight:600;padding:2px 2px 0}
 .hv-ref{flex:none;width:42px;height:42px;padding:0;display:grid;place-items:center;border-radius:10px}
 .hv-ref.spin svg{animation:hvspin .8s linear infinite}
 @keyframes hvspin{to{transform:rotate(360deg)}}
@@ -1224,7 +1232,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <div class="sync" id="sync" hidden></div>
       <div class="warn" role="note">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
-        <div>Bu sayfa resmi değildir. Fakültenin programları gün içinde 24 kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bakınız.</div>
+        <div>Bu sayfa resmi değildir. Fakültenin programları gün içinde 24 kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Teyit için asıl programlara bakınız.</div>
       </div>
     </div>
   </details>
@@ -1336,7 +1344,8 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
     <section class="card hv-loc">
       <label class="hv-f"><span>İl</span><select id="hvIl" aria-label="İl seç"></select></label>
       <label class="hv-f"><span>İlçe</span><select id="hvLoc" aria-label="İlçe seç"></select></label>
-      <button type="button" class="secondary hv-ref" id="hvRef" aria-label="Hava durumunu yenile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.300 6.300M20 4v7h-7"/></svg></button>
+      <button type="button" class="linkbtn hv-def" id="hvDef" hidden>↺ Varsayılana dön: İstanbul · Fatih</button>
+      <button type="button" class="secondary hv-ref" id="hvRef" aria-label="Hava durumunu yenile" title="Yenile"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.200" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 11a8 8 0 1 0-2.300 6.300M20 4v7h-7"/></svg></button>
     </section>
     <div class="card" id="hvMsg" hidden></div>
     <div id="hvMain" hidden>
@@ -1552,7 +1561,9 @@ function similar(a,b){
   return ["şimdi","öğrenme","beslenme","iletişim","dikiş","nabız"].some(k => A.includes(k) && B.includes(k));
 }
 let SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
-function secFor(slot){ const i = store.get("sec_"+slot.replace(":","")); return (D.secmeli||[]).find(x => x.id === i) || null; }
+// seçmeli seçimi her dönem için ayrı saklanır (Dönem 1 eski anahtarını korur)
+const secKey = slot => (me && me.d > 1 ? `sec${me.d}_` : "sec_") + slot.replace(":","");
+function secFor(slot){ const i = store.get(secKey(slot)); return (D.secmeli||[]).find(x => x.id === i) || null; }
 function mySecIds(){ return SLOTS.map(secFor).filter(Boolean).map(x => x.id); }
 
 const dayCache = new Map();
@@ -1906,12 +1917,46 @@ async function saveIcs(items, filename){
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(()=> t.hidden = true, 4200); }
 
 /* ---------- electives ---------- */
+// Dönem 4–5: seçmeli dersler rotasyon içinde "seçmeli staj" olarak yapılır (dersler: dönemin kredi tablosu)
+const SEC45 = {
+  4: [["Çocuk Ürolojisi IV",2],["Sualtı Hekimliği ve Hiperbarik Tıp IV",2],["Kadın Hastalıkları ve Doğum IV",2],["Enfeksiyon Hastalıkları IV",2],["Nöroloji IV",2],
+      ["Oral Mukoza Hastalıkları IV",2],["Ağız Yüz Çene Cerrahisi Giriş IV",2],["Temporomandibular Eklem Hastalıklarının Teşhis ve Tedavisi IV",2]],
+  5: [["Deneysel Araştırmalarda Hayvan Kullanımı",1],["Nöroimmünolojide Tanı ve Laboratuvar Yöntemleri",1],["Akan Hücre Ölçer: İmmün Sistem ve Hastalıkları",1],
+      ["Moleküler Tıp: Moleküler Tıpta Araştırma Yöntemleri",1],["Kadın Hastalıkları ve Doğum V",1],["Radyasyon Onkolojisi",1],["Enfeksiyon Hastalıkları V",1],
+      ["Sualtı Hekimliği ve Hiperbarik Tıp V",1],["Nöroloji V",1],["Tıbbi Genetik",1],["Çocuk Ürolojisi V",1],["Spor Hekimliği V",1],["Çocuk Cerrahisi V",1],
+      ["Oral Mukoza Hastalıkları V",1],["Ağız Yüz Çene Cerrahisi V",1],["Temporomandibular Eklem Hastalıklarının Teşhis ve Tedavisi V",1],["Tıbbi Ekoloji ve Hidroklimatoloji V",2]]
+};
+function dayRanges(days){
+  const out = [];
+  for (const d of days){ const p = out[out.length-1]; if (p && (Date.parse(d) - Date.parse(p[1]))/864e5 <= 3) p[1] = d; else out.push([d, d]); }
+  return out.map(([a, b]) => a === b ? fmtDate(a, false) : `${fmtDate(a, false)} – ${fmtDate(b, false)}`);
+}
 function renderSec(){
-  const list = (D.secmeli||[]).filter(x => x.d1);
-  if (!list.length) return;
+  const n = (me && me.d) || 1;
+  if (n >= 4){
+    const now = istNow().date;
+    const days = Object.keys(EV).filter(d => d >= now && EV[d].some(e => /SEÇMELİ\s*STAJ/i.test(e.t) && (!e.g || hit(e.g)))).sort();
+    const rg = dayRanges(days);
+    $("secHint").textContent = rg.length ? `Seçmeli stajın: ${rg[0]} · ayrıntı için dokun` : "Seçmeli dersler · görmek için dokun";
+    $("secBody").innerHTML = `<p class="muted small">${n}. sınıfta seçmeli dersler rotasyonun içinde <b>seçmeli staj</b> olarak yapılır; dersini AKSİS'ten seçersin. `
+      + (rg.length ? `Programında seçmeli staj şu günlerde görünüyor: <b>${rg.slice(0, 4).map(esc).join(", ")}</b>${rg.length > 4 ? ` ve ${rg.length - 4} dönem daha` : ""}.` : "Programında önümüzdeki günlerde seçmeli staj görünmüyor.")
+      + `</p><p class="small muted" style="margin:8px 0 4px"><b>Dönem ${n} seçmeli dersleri</b> (kredi tablosu):</p>`
+      + `<ul class="seclist">${SEC45[n].map(([ad, k]) => `<li><span>${esc(ad)}</span><small>${k} AKTS</small></li>`).join("")}</ul>`;
+    return;
+  }
+  // Dönem 1–3: fakültenin seçmeli ders amfi listesi ortak; her ders yalnız kontenjanı olan dönemde gösterilir
+  const list = (D.secmeli||[]).filter(x => n === 1 ? x.d1 : x["d" + n] !== false);
+  const note = D.secNot || "";
+  const cnt = (note.match(new RegExp(n + "\\.\\s*S[ıi]n[ıi]f öğrencileri\\D*?(\\d+)\\s*adet seçmeli", "i")) || [])[1] || (n === 1 ? "2" : "1");
+  const noteHTML = note ? `<details class="secnote"><summary>Fakültenin ders seçimi notu</summary><p class="small muted">${esc(note)}</p></details>` : "";
+  if (!list.length){
+    $("secHint").textContent = "Seçmeli ders listesi · görmek için dokun";
+    $("secBody").innerHTML = `<p class="muted small">${n}. sınıflar bu yarıyıl ${cnt} seçmeli ders seçer. Seçmeli ders amfi listesi şu an okunamadı; liste gelince burada dersini seçip amfisini programında görebileceksin.</p>${noteHTML}`;
+    return;
+  }
   const chosen = SLOTS.map(secFor).filter(Boolean);
   $("secHint").textContent = chosen.length ? chosen.map(x => x.ad).join(", ") + " · değiştirmek için dokun" : "Henüz seçmedin · dersini seçmek için dokun";
-  $("secBody").innerHTML = `<p class="muted small">1. sınıflar 2 seçmeli ders seçer. Kayıtlı olduğun dersleri saatine göre seç; çarşamba seçmeli saatlerinde programında dersin adı, amfisi ve iptal/yer değişikliği notları görünür.</p>`
+  $("secBody").innerHTML = `<p class="muted small">${n}. sınıflar bu yarıyıl <b>${cnt} seçmeli ders</b> seçer. Listede yalnız Dönem ${n} kontenjanı olan dersler var. Kayıtlı olduğun ${cnt === "1" ? "dersi saatine göre seç" : "dersleri saatine göre seç"}; çarşamba seçmeli saatlerinde programında dersin adı, amfisi ve iptal/yer değişikliği notları görünür.</p>${noteHTML}`
     + SLOTS.map(slot => {
       const opts = list.filter(x => x.s === slot).sort((a,b) => a.ad.localeCompare(b.ad,"tr")), cur = secFor(slot);
       const end = opts[0] ? opts[0].e : "";
@@ -1920,7 +1965,7 @@ function renderSec(){
         ${cur? `<p class="small muted" style="margin-top:-2px">${esc(cur.yer)} · ${esc(cur.hoca)}${cur.bilgi? " · "+esc(cur.bilgi):""}</p>`:""}`;
     }).join("");
   $("secBody").querySelectorAll("select").forEach(sel => sel.onchange = e => {
-    const k = "sec_"+sel.dataset.slot.replace(":","");
+    const k = secKey(sel.dataset.slot);
     if (e.target.value) store.set(k, e.target.value); else store.del(k);
     dayCache.clear(); _myCh = null; renderSec(); renderChanges(); renderNow(); renderMain();
   });
@@ -3088,8 +3133,17 @@ const trSort = (a, b) => a[0].localeCompare(b[0], "tr");
 function fillIlce(){ const c = ilOf(loc[3]); $("hvLoc").innerHTML = c[3].slice().sort(trSort).map(d => `<option${d[0] === loc[0] ? " selected" : ""}>${esc(d[0])}</option>`).join(""); }
 $("hvIl").innerHTML = TR.slice().sort(trSort).map(c => `<option${c[0] === loc[3] ? " selected" : ""}>${esc(c[0])}</option>`).join("");
 fillIlce();
-function setLoc(c, d){ loc = mkLoc(c, d); LS.set("hava_il", c[0]); LS.set("hava_ilce", d[0]); sel = null; allHours = false; load(false); }
-$("hvIl").addEventListener("change", e => { const c = ilOf(e.target.value); if (!c) return; const d = c[3].find(x => x[0] === "Merkez") || c[3].slice().sort(trSort)[0]; setLoc(c, d); fillIlce(); });
+// varsayılan konum: İstanbul · Fatih (fakülte); başka bir yer seçiliyken "Varsayılana dön" düğmesi görünür
+const isDef = () => loc[3] === "İstanbul" && loc[0] === "Fatih";
+const syncDef = () => { $("hvDef").hidden = isDef(); };
+const ilceOf = c => c[0] === "İstanbul" ? c[3].find(x => x[0] === "Fatih") : (c[3].find(x => x[0] === "Merkez") || c[3].slice().sort(trSort)[0]);
+function setLoc(c, d){ loc = mkLoc(c, d); LS.set("hava_il", c[0]); LS.set("hava_ilce", d[0]); sel = null; allHours = false; syncDef(); load(false); }
+$("hvIl").addEventListener("change", e => { const c = ilOf(e.target.value); if (!c) return; setLoc(c, ilceOf(c)); fillIlce(); });
+$("hvDef").addEventListener("click", () => {
+  const c = ilOf("İstanbul"); setLoc(c, ilceOf(c));
+  $("hvIl").value = "İstanbul"; fillIlce();
+});
+syncDef();
 $("hvLoc").addEventListener("change", e => { const c = ilOf(loc[3]), d = c[3].find(x => x[0] === e.target.value); if (d) setLoc(c, d); });
 $("hvRef").addEventListener("click", () => load(true));
 $("hvDays").addEventListener("click", e => { const b = e.target.closest("[data-d]"); if (b) pick(b.dataset.d, false); });

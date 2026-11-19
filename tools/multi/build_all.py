@@ -113,6 +113,9 @@ def main():
                 grids[k] = first(v) if spec[0] == "sheet" else v  # E-Tablo: ilk sayfa; Excel/Word: hepsi
             grids["amfi"] = first(src.get(0, "amfi", AMFI))
             data, st, stats, need, warn = mod.build(grids)
+            if donem in (2, 3):  # seçmeli ders amfi listesi Dönem 1–3 için ortak; her dersin dönem kontenjanı ayrı
+                data["secmeli"] = [x for x in (d1.get("secmeli") or []) if x.get(f"d{donem}")]
+                data["secNot"] = d1.get("secNot") or ""
             bad = [f"{k}={stats.get(k)} (en az {v})" for k, v in need.items() if (stats.get(k) or 0) < v]
             if bad:
                 raise RuntimeError("kontrol başarısız: " + "; ".join(bad))

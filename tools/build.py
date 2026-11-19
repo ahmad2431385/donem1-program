@@ -311,6 +311,9 @@ def pdo():
     return groups, members
 
 
+SEC_NOTE = None
+
+
 def secmeli():
     """Elective amfi list. secmeli.xlsx (faculty table) preferred; secmeli.json accepted as a fallback."""
     fx = f"{DATA}/secmeli.xlsx"
@@ -323,6 +326,10 @@ def secmeli():
         hl = [low(clean(h)) for h in hdr]
         col = lambda key: next(i for i, h in enumerate(hl) if h.startswith(key))
         c_t, c_y, c_info, c_d1 = col("saati"), col("amfisi"), col("bilgi"), col("dönem1")
+        # Dönem 2 ve 3 kontenjanı sütunları (aynı liste Dönem 1–3 için ortaktır)
+        c_dn = {n: next((i for i, h in enumerate(hl) if re.sub(r"\s+", "", h).startswith(f"dönem{n}")), None) for n in (2, 3)}
+        global SEC_NOTE
+        SEC_NOTE = " ".join(clean(r[0]) for r in rows[:hdr_i] if r and r[0]).strip()
         out, slot = [], (None, None)
         for r in rows[hdr_i + 1:]:
             name = clean(r[0])
@@ -341,7 +348,8 @@ def secmeli():
                              .replace("-fasiyal", " – Fasiyal").replace(" : ", ": "))
             out.append({"ad": fix(tr_title(name)), "hoca": tr_title(clean(r[1])), "s": slot[0], "e": slot[1],
                         "yer": fix(tr_title(clean(r[c_y]))), "bilgi": clean(r[c_info]).capitalize() if r[c_info] else "",
-                        "d1": low(clean(r[c_d1])) == "var", "ex": ex})
+                        "d1": low(clean(r[c_d1])) == "var", "ex": ex,
+                        **{f"d{n}": low(clean(r[c])) == "var" for n, c in c_dn.items() if c is not None}})
         out.sort(key=lambda x: (x["s"] or "", x["ad"]))
         for x in out:
             slug = re.sub(r"[^a-z0-9]+", "-", low(x["ad"]).translate(str.maketrans("çğıöşüâî", "cgiosuai"))).strip("-")[:40]
@@ -431,10 +439,11 @@ def main():
         pg, pm = prev.get("pdoGroups", {}), prev.get("pdo", {})
         prev_sk = prev.get("sk", {})
     sec = secmeli()
+    sec_note = SEC_NOTE
     if sec is None and prev:
-        sec = prev.get("secmeli")
+        sec, sec_note = prev.get("secmeli"), prev.get("secNot")
     data = {"amfiWeek": week, "students": st, "events": ev, "weekly": weekly, "uyg": uy,
-            "amfi": am, "pdoGroups": pg, "pdo": pm, "secmeli": sec or []}
+            "amfi": am, "pdoGroups": pg, "pdo": pm, "secmeli": sec or [], "secNot": sec_note or ""}
     content_hash = hashlib.sha256(json.dumps({k: v for k, v in data.items() if k not in ("students", "pdo")}, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
     changes = list(prev.get("changes", [])) if prev else []
     today = now.strftime("%Y-%m-%d")
