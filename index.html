@@ -1060,11 +1060,15 @@ body[data-route="notlar"] #who{display:none !important}
 .tabbar button:hover,.tabbar a:hover{color:var(--ink)}
 .tabbar [aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
 .top{grid-template-columns:1fr auto auto}
+/* giriş sayfası yalnızca giriştir: sekmeler ve menü giriş yapınca görünür */
+body.guest #tabbar,body.guest #menuBtn{display:none!important}
+body.guest .top{grid-template-columns:1fr}
 @media (max-width:699px){
   .top{grid-template-columns:1fr auto}
   .tabbar{position:fixed;left:0;right:0;bottom:0;z-index:25;border-radius:0;border:none;border-top:1px solid var(--line);padding:6px 10px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;gap:0;background:color-mix(in srgb,var(--surface) 94%,transparent);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
   .tabbar button,.tabbar a{flex:1;flex-direction:column;gap:2px;font-size:11.5px;padding:6px 4px;border-radius:12px}
   .wrap{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+  body.guest .wrap{padding-bottom:calc(24px + env(safe-area-inset-bottom))}
   .toast{bottom:calc(84px + env(safe-area-inset-bottom))}
 }
 .infoline{background:var(--surface);border:1px solid var(--line);border-radius:12px;font-size:13px;overflow:hidden}
@@ -1072,7 +1076,8 @@ body[data-route="notlar"] #who{display:none !important}
 .infoline > summary::-webkit-details-marker{display:none}
 .infoline .dot{width:8px;height:8px;border-radius:50%;background:var(--uyg);flex:none}
 .infoline .il-t{font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.infoline .il-r{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap}
+.infoline .il-r{margin-left:auto;color:var(--muted);font-size:12px;white-space:nowrap;display:inline-flex;align-items:center;gap:5px}
+.infoline .il-w{flex:none;color:var(--warn-ink)}
 .infoline .chev{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);background:var(--bg);transition:transform .2s ease}
 .infoline[open] .chev{transform:rotate(180deg)}
 .infoline .il-b{padding:0 10px 10px;display:flex;flex-direction:column;gap:8px}
@@ -1194,12 +1199,12 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 .chip.dsw{cursor:pointer;font:inherit;font-size:13px}
 </style>
 </head>
-<body data-route="program">
+<body data-route="program" class="guest">
 <div class="wrap" id="wrap">
 
   <header class="top">
     <div class="brand">
-      <small id="brandSmall">İstanbul Tıp · Dönem 1 Türkçe</small>
+      <small id="brandSmall">İstanbul Tıp</small>
       <h1 id="brandTitle">Programım</h1>
     </div>
     <nav class="tabbar" id="tabbar" aria-label="Bölümler">
@@ -1214,12 +1219,12 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 
   <div id="progView">
   <details class="infoline" id="infoLine">
-    <summary><span class="dot" aria-hidden="true"></span><span class="il-t" id="infoSum">Otomatik güncelleniyor</span><span class="il-r">Ayrıntı</span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
+    <summary><span class="dot" aria-hidden="true"></span><span class="il-t" id="infoSum">Otomatik güncelleniyor</span><span class="il-r">Ayrıntı<svg class="il-w" width="14" height="14" viewBox="0 0 16 16" aria-label="Dikkat" role="img"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M3 5l4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
     <div class="il-b" id="infoBody">
       <div class="sync" id="sync" hidden></div>
       <div class="warn" role="note">
         <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 1.5 15 14H1L8 1.5Zm0 4a.75.75 0 0 0-.75.75v3.5a.75.75 0 0 0 1.5 0v-3.5A.75.75 0 0 0 8 5.5Zm0 6.25a.9.9 0 1 0 0 1.8.9.9 0 0 0 0-1.8Z"/></svg>
-        <div><b>Programlarda ani değişiklik olabilir.</b> Bu sayfa resmi değildir. Fakültenin programları gün içinde altı kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bak.</div>
+        <div>Bu sayfa resmi değildir. Fakültenin programları gün içinde 24 kez kontrol edilip buraya işlenir, ama iki kontrol arasında yapılan değişiklikler henüz görünmeyebilir. Önemli günlerde sayfanın altındaki asıl programlara da bakınız.</div>
       </div>
     </div>
   </details>
@@ -1235,7 +1240,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <!-- login -->
   <section class="card login" id="loginView" hidden>
     <h2>Öğrenci numaranı gir</h2>
-    <p class="muted small">Grubunu, uygulama alt grubunu ve PDÖ grubunu listeden bulup sana özel programı gösterir. Numaran yalnızca bu cihazda hatırlanır.</p>
+    <p class="muted small">Öğrenci numarana göre sana oluşturulan kişiselleştirilmiş programa erişmek için öğrenci numaranı gir.</p>
     <form id="loginForm" class="row" novalidate>
       <label for="noInput" hidden>Öğrenci numarası</label>
       <input id="noInput" inputmode="numeric" autocomplete="off" placeholder="0101260000" maxlength="12" aria-describedby="loginErr">
@@ -1317,22 +1322,13 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
         <summary><span class="ft"><h2>Asıl Programlarım Bağlantısı</h2><span class="hint">Fakültenin asıl programlarını açmak için dokun</span></span><span class="chev" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="m3 5 4 4 4-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></summary>
         <div class="fbody">
         <p class="muted small">Şüphede kaldığında buradan kontrol et.</p>
-        <div class="links" style="margin-top:0">
-          <a href="https://docs.google.com/spreadsheets/d/1FcXgJIn7L9oFJKFCGLrSeefXHocrToAe/edit" target="_blank" rel="noopener">Ders programı<span>Dönem 1 Türkçe Tıp</span></a>
-          <a href="https://docs.google.com/spreadsheets/d/1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw/edit" target="_blank" rel="noopener">Amfi programı<span>Haftalık, en güncel</span></a>
-          <a href="https://docs.google.com/spreadsheets/d/1fdYXS38zxnWCoWYsFDca3bPHa0PXzKJV/edit" target="_blank" rel="noopener">Uygulama tablosu<span>Gruplara göre uygulamalar</span></a>
-          <a href="https://docs.google.com/spreadsheets/d/1oT06DD-PRquePt2iPr-DhSwjMWX5hb_l/edit" target="_blank" rel="noopener">Öğrenci listesi<span>Grup ve alt gruplar</span></a>
-          <a href="https://docs.google.com/spreadsheets/d/16zVYCUzAEBcb897bYcXpxYXmK9AD_BXX/edit" target="_blank" rel="noopener">Seçmeli ders amfi listesi<span>Seçmeli derslerin yerleri</span></a>
-          <a href="https://sks.istanbul.edu.tr/tr/yemek-listesi" target="_blank" rel="noopener">Yemek listesi<span>İÜ SKS yemekhane menüsü</span></a>
-          <a href="https://itfbut.netlify.app" target="_blank" rel="noopener">İTF Not Hesaplama<span>Not ortalaması hesaplama</span></a>
-          <a href="https://giris.istanbul.edu.tr/" target="_blank" rel="noopener">AKSİS<span>İÜ öğrenci bilgi sistemi girişi</span></a>
-        </div>
+        <div class="links" id="linksList" style="margin-top:0"></div>
         </div>
       </details>
     </div>
   </main>
 
-  <p class="foot">Öğrenci tarafından hazırlanmış yardımcı bir sayfadır, fakülteyle resmi bağı yoktur.<br>Sayfada isim yer almaz. Öğrenci numaraları dosyada açık olarak değil, tek yönlü şifrelenmiş (karma) hâlde tutulur. Ders açıklamaları özet niteliğindedir; esas kaynak dersin kendisidir.</p>
+  <p class="foot">© 2026 Ahmad Omar Mukhtar · Tüm hakları saklıdır.</p>
   </div>
 
   <!-- ============ Hava durumu (bağımsız sayfa) ============ -->
@@ -1684,10 +1680,10 @@ function renderWho(){
 function renderSync(){
   const s = $("sync"); s.hidden = false;
   $("infoSum").textContent = `Güncel · son kontrol ${fmtStamp(D.lastCheck)}`;
-  const when = `her gün ${(D.schedule||[]).join(", ")}`;
+  const when = "günde 24 kez, saatte bir";
   s.innerHTML = `<span style="display:inline-flex;align-items:center;gap:6px"><span class="dot" aria-hidden="true"></span><span><b>Otomatik güncelleme:</b> ${when}</span></span><span>·</span><span>Son kontrol ${fmtStamp(D.lastCheck)}</span><span>·</span><span>Son değişiklik ${fmtStamp(D.built)}</span>${D.amfiWeek? `<span>·</span><span>Amfi programı ${esc(D.amfiWeek)}</span>`:""}`;
 }
-const STALE_HOURS = 12;
+const STALE_HOURS = 4;   // kontrol saatte bir yapılıyor; 4 saattir yapılmadıysa uyar
 function renderStale(){
   const box = $("staleBox");
   try {
@@ -2233,13 +2229,57 @@ setInterval(() => { if (!document.hidden) refreshData(); }, 5*60e3);
 /* ---------- app ---------- */
 function show(){
   dayCache.clear(); _myCh = null;
+  document.body.classList.toggle("guest", !me);
   if (!me){
     $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true; renderExams(); loadWx();
     setTimeout(()=> $("noInput").focus(), 50);
     return;
   }
   $("loginView").hidden = true; $("mainView").hidden = false;
-  renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec(); loadWx();
+  renderWho(); renderChanges(); renderNow(); renderMain(); renderExams(); renderSec(); renderLinks(); loadWx();
+}
+/* ---------- asıl programlar: öğrencinin dönemine ait bağlantılar (amfi, AKSİS, yemek listesi herkes için aynı) ---------- */
+const GS = id => `https://docs.google.com/spreadsheets/d/${id}`, GF = id => `https://drive.google.com/file/d/${id}/view`, GD = id => `https://docs.google.com/document/d/${id}`;
+const OFF = "?usp=sharing&rtpof=true&sd=true";   // Drive'a yüklenmiş Word/Excel dosyası Google'da açılsın
+const L_AMFI = ["Amfi programı", "Tüm sınıflar · haftalık, en güncel", GS("1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw") + "/edit?usp=drivesdk"];
+const L_COMMON = [["Yemek listesi", "İÜ SKS yemekhane menüsü", "https://sks.istanbul.edu.tr/tr/yemek-listesi"], ["AKSİS", "İÜ öğrenci bilgi sistemi girişi", "https://giris.istanbul.edu.tr/"]];
+const LINKS = {
+  1: [["Ders programı", "Dönem 1 Türkçe Tıp", GF("1FcXgJIn7L9oFJKFCGLrSeefXHocrToAe")], L_AMFI,
+      ["Uygulama tablosu", "Gruplara göre uygulamalar", GF("1fdYXS38zxnWCoWYsFDca3bPHa0PXzKJV")],
+      ["PDÖ programı", "Yaşamın Moleküler Temelleri Dilimi", GF("1i7xq3uRfMV_bgHqYH7MH3KKuIxLug3ki")],
+      ["Seçmeli ders amfi listesi", "Seçmeli derslerin yerleri", GS("16zVYCUzAEBcb897bYcXpxYXmK9AD_BXX") + "/edit"],
+      ["Öğrenci listesi", "Grup ve alt gruplar", GF("1oT06DD-PRquePt2iPr-DhSwjMWX5hb_l")],
+      ["Sınav kuralları", "Dönem 1", GF("1JDSmobsH28_ES8nhLmIeN8iwIvP2_BSz")],
+      ["Ders kredileri", "Dönem 1 Türkçe", GD("1saVjyvmWIgWBKupFP_AMM1ci3b9cV2pzWbzvkGgLAa4") + "/edit?tab=t.0"]],
+  2: [["Ders programı", "Dönem 2 Türkçe Tıp", GS("1JMxqm8dnckDKS_EVS6GFut2BDjS63khIjQEzVhAOrj8") + "/edit?gid=1884416610#gid=1884416610"], L_AMFI,
+      ["Uygulama tablosu", "Gruplara göre uygulamalar", GS("1SezCE6ZoHcNScL7Z1epqJQ9Q8B6GMFeO0ykp16Jr0rw") + "/edit?gid=1779555249#gid=1779555249"],
+      ["Öğrenci listesi", "Grup ve alt gruplar", GS("1JKQHtNaOixMEVFfWKdo1vh2MKISbMaXMWQjDMl_gAAM") + "/edit?gid=143571180#gid=143571180"],
+      ["Sınav kuralları", "Dönem 2 · 2026–2027", "https://cdn.istanbul.edu.tr/FileHandler2.ashx?f=donem-2-sinav-kurallari-2026-2027.pdf"],
+      ["Ders kredileri", "Dönem 2 Türkçe", GD("1QXtQAkRzbdWfWizpJ6sVdaNmyXSQPW8E_ow2WA6z0Lg") + "/edit?tab=t.0"]],
+  3: [["3A ders programı", "Dönem 3 Türkçe Tıp · A grubu", GS("1Wk9h1Z3duYvQRX-krrDQ2xHXbmWk0j-VPNPU5y5Aj7A") + "/edit?gid=2874560#gid=2874560", "A"],
+      ["3B ders programı", "Dönem 3 Türkçe Tıp · B grubu", GS("1wlquiW3pDRiHzNp8mfFdGGzudfwF_3nyvkkygmHG-nU") + "/edit?gid=1063756593#gid=1063756593", "B"], L_AMFI,
+      ["Hasta başı · A grubu", "Uygulama konuları ve tablosu", GF("1rpk7f6_PMCEVoc-XJgkrBd-iniCHa6DR"), "A"],
+      ["Hasta başı · B grubu", "Uygulama konuları ve tablosu", GF("16aPxVb1MpfZTb0VwQKhlcoIWGEdhblDe"), "B"],
+      ["Öğretim üyesi uygulaması · A grubu", "Uygulama tablosu ve konuları", GF("1YluyIWyOjjoL7JGpQXTUiGOROGaSpMIw"), "A"],
+      ["Öğretim üyesi uygulaması · B grubu", "Uygulama tablosu ve konuları", GF("1jlkhFvrStcKAsyO_cGb8Lk5xhDgk0hNh"), "B"],
+      ["Mikrobiyoloji-patoloji uygulama programı", "Tıbbi Patoloji · Tıbbi Mikrobiyoloji", GF("1IOx-_LE8ESpTCT8qH09DI66TPtyQW9es")],
+      ["Mikrobiyoloji-patoloji öğrenci listesi", "Uygulama grupları", GF("1GMjvjXkkgFKl7hh3yzzEqJXE6VLuLKJY")],
+      ["Öğrenci listesi", "Grup ve alt gruplar", GS("1qL-nbVICZHUK6mKP1xSuYIZiUOD3V_YeKUxNNxYsn-g") + "/edit?gid=1403495155#gid=1403495155"],
+      ["Sınav kuralları", "Ölçme ve değerlendirme · 2026–2027", "https://cdn.istanbul.edu.tr/FileHandler2.ashx?f=donem-3-olcme-ve-degerlendirme-kurallari-2026-2027.pdf"],
+      ["Ders kredileri", "Dönem 3 Türkçe", GF("1TX3iGDpmdUgJ-2BKuc8h-EkjynL9FYJo")]],
+  4: [["Rotasyon tablosu ve ders programları", "Dönem 4 Türkçe Tıp", GF("17lGAfN665POtwtuIErHJytRt1cFxfJR3")], L_AMFI,
+      ["Öğrenci listesi", "Gruplar ve alt gruplar", GF("16pF6yxO11f87vriYbFDamUzBTrUiqLlZ")],
+      ["Sınav kuralları", "Dönem 4", GD("1EmID9yoRtcAJpEChD18f2PJGM3PsCBLm") + "/edit" + OFF],
+      ["Ders kredileri", "Dönem 4 Türkçe", GF("1HLd9a646kWohk7R6c4MA07ugNHssqzP6")]],
+  5: [["Ders programı", "Dönem 5 Türkçe Tıp", GF("1T8NTqJCRFF34HBvIS-DTHja2e15Bi4rf")], L_AMFI,
+      ["Öğrenci listesi", "Gruplar ve alt gruplar", GF("1Y06yoK2BlShF3iy6T4ChVxQW4ijc1aky")],
+      ["Sınav kuralları", "Dönem 5", GD("1JhKaAzVJyXUbykbQU5bzvANwFN1AdCYo") + "/edit" + OFF],
+      ["Ders kredileri", "Dönem 5 Türkçe", GS("1ZfZT8w3y85B0yjDQB5MSEq8TRqYZUWaF") + "/edit" + OFF]]
+};
+function renderLinks(){
+  const n = me ? me.d || 1 : 1, g = me && me.d === 3 ? me.g : null;
+  const list = (LINKS[n] || LINKS[1]).filter(l => !l[3] || !g || l[3] === g).concat(L_COMMON);
+  $("linksList").innerHTML = list.map(([t, sub, href]) => `<a href="${esc(href)}" target="_blank" rel="noopener">${esc(t)}<span>${esc(sub)}</span></a>`).join("");
 }
 // Student numbers are not in the data file; only salted PBKDF2 hashes are. Derive the same hash here.
 async function hashNo(no, kdf){
@@ -2256,10 +2296,10 @@ function setData(nd, n){
   SLOTS = [...new Set((D.secmeli||[]).map(x => x.s).filter(Boolean))].sort();
   dayCache.clear(); _myCh = null;
   const bs = $("brandSmall"); bs.dataset.prog = `İstanbul Tıp · Dönem ${n} Türkçe`;
-  if (document.body.dataset.route === "program") bs.textContent = bs.dataset.prog;
+  if (document.body.dataset.route !== "hava" && !document.body.classList.contains("guest")) bs.textContent = bs.dataset.prog;
 }
 async function loadDonem(n){
-  if (n === 1){ if (D !== D1) setData(D1, 1); return; }
+  if (n === 1){ if (D !== D1) setData(D1, 1); else $("brandSmall").dataset.prog = "İstanbul Tıp · Dönem 1 Türkçe"; return; }
   if (D && D.donem === n) return;
   const r = await fetch(DFILE(n) + "?t=" + Date.now(), {cache:"no-store"});
   if (!r.ok) throw new Error("yok");
@@ -2298,6 +2338,8 @@ function chipsOf(n, tags){
   }
   return out;
 }
+// numarayı girince her zaman Programım açılır (adres çubuğunda #notlar / #hava kalmışsa temizlenir)
+const toProgram = () => { if (location.hash) history.replaceState(null, "", location.pathname + location.search); };
 function askDonem(no, ds){
   pendingNo = no;
   me = null; $("loginView").hidden = false; $("mainView").hidden = true; $("who").hidden = true;
@@ -2306,7 +2348,7 @@ function askDonem(no, ds){
 $("loginErr").addEventListener("click", async e => {
   const b = e.target.closest("[data-pd]"); if (!b || !pendingNo) return;
   const r = await login(pendingNo, +b.dataset.pd);
-  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; show(); }
+  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); }
   else if (r && r.error) $("loginErr").textContent = r.error;
 });
 renderSync(); renderStale();
@@ -2320,7 +2362,7 @@ $("loginForm").addEventListener("submit", async ev => {
   if (r && r.choose){ askDonem(r.no, r.choose); return; }
   if (r && r.error){ $("loginErr").textContent = r.error; return; }
   if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
-  $("loginErr").textContent = ""; view = istNow().date; show();
+  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show();
 });
 $("foreignChk").checked = foreign;
 $("foreignChk").onchange = e => { foreign = e.target.checked; store.set("yabanci", foreign? "1":"0"); dayCache.clear(); renderNow(); renderMain(); };
@@ -3071,15 +3113,20 @@ const DOC_T = document.title;
 const $ = id => document.getElementById(id);
 const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
 const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textContent, brandS.textContent];
+const guest = () => document.body.classList.contains("guest");
 function setRoute(r){
+  if (guest()) r = "program";   // giriş yapılmadan yalnız giriş sayfası
+  const own = !guest() && brandS.dataset.prog || T0[1];
   document.body.dataset.route = r;
   document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
-  if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = "İstanbul Tıp · Dönem 1–6 Türkçe"; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
+  if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = own; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
-  else { brandT.textContent = T0[0]; brandS.textContent = brandS.dataset.prog || T0[1]; document.title = DOC_T; }
+  else { brandT.textContent = T0[0]; brandS.textContent = own; document.title = DOC_T; }
 }
 const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : "program");
 window.addEventListener("hashchange", routeFromHash);
+// giriş / çıkış (body.guest) değişince görünen sayfa ve başlık yeniden belirlenir
+new MutationObserver(routeFromHash).observe(document.body, {attributes:true, attributeFilter:["class"]});
 routeFromHash();
 function openDrawer(){
   scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add("show"));
