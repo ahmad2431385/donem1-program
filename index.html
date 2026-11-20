@@ -1066,7 +1066,7 @@ body[data-route="notlar"] #who{display:none !important}
 
 /* ============ ortak gezinme, bilgi satırı, uyumlu kartlar ============ */
 .tabbar{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px;align-self:center}
-.tabbar button,.tabbar a{display:flex;align-items:center;gap:7px;border:none;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:8px 14px;border-radius:10px;text-decoration:none;-webkit-tap-highlight-color:transparent}
+.tabbar button,.tabbar a{display:flex;align-items:center;gap:6px;border:none;background:none;color:var(--muted);font-weight:600;font-size:14px;padding:8px 11px;border-radius:10px;text-decoration:none;-webkit-tap-highlight-color:transparent}
 .tabbar button:hover,.tabbar a:hover{color:var(--ink)}
 .tabbar [aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
 .top{grid-template-columns:1fr auto auto}
@@ -1117,6 +1117,53 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
 @media (min-width:700px){.acct{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"av who grp out"}.acct .grp{border-top:none;padding-top:0;justify-content:flex-end}}
 /* ============ Hava durumu sayfası ============ */
 #wxView{display:none;flex-direction:column;gap:12px}
+/* ============ yerleşke haritası ============ */
+#mapView{display:none;flex-direction:column;gap:10px}
+body[data-route="harita"] #mapView{display:flex}
+body[data-route="harita"] .wrap{max-width:1180px}
+.km-top{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.km-note{margin:0;font-size:12.5px;color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:5px 9px}
+.km-srch{position:relative}
+.km-srch input{width:100%;font:inherit;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.km-srch input:focus{outline:none;border-color:var(--accent)}
+.km-sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:50vh;overflow:auto;display:none;z-index:30}
+.km-sugg.on{display:block}
+.km-sugg button{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;border:none;background:none;color:var(--ink);font:inherit;padding:9px 12px;border-top:1px solid var(--line);cursor:pointer}
+.km-sugg button:first-child{border-top:none}
+.km-sugg button small{color:var(--muted);font-size:12px}
+.km-sugg button:hover,.km-sugg button:focus{background:var(--accent-soft);outline:none}
+.km-wrap{position:relative;height:var(--kmh,560px);min-height:260px;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--bg)}
+#kmMap{position:absolute;inset:0}
+.km-msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px;padding:20px;text-align:center}
+.km-msg[hidden]{display:none}
+.km-ctl{position:absolute;z-index:3;right:10px;bottom:28px;display:flex;flex-direction:column;gap:8px}
+.km-ctl button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px var(--body, inherit);border-radius:12px;padding:10px 12px;min-width:44px;min-height:44px;box-shadow:0 2px 10px rgba(0,0,0,.12);cursor:pointer}
+.km-ctl button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.km-lbl{font:600 11.5px/1.2 var(--body, inherit);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--c, var(--accent));border-radius:8px;padding:3px 7px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18);cursor:pointer;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.km-lbl.sel{background:var(--accent);color:var(--on-accent)}
+.km-lbl.hide{visibility:hidden}
+.km-leg,.km-sheet{position:absolute;z-index:4;background:color-mix(in srgb,var(--surface) 95%,transparent);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.14)}
+.km-leg{left:52px;bottom:28px;max-width:calc(100% - 130px);font-size:12.5px}
+.km-leg summary{list-style:none;cursor:pointer;padding:8px 12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.km-leg summary::-webkit-details-marker{display:none}
+.km-dots{display:flex;gap:3px}
+.km-dots i,.km-leg li i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.km-leg ul{list-style:none;margin:0;padding:0 12px 10px;display:flex;flex-direction:column;gap:5px}
+.km-leg li{display:flex;align-items:center;gap:8px}
+.km-leg li i.yap{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.25) 0 2px,transparent 2px 5px)}
+.km-sheet{left:10px;right:76px;bottom:28px;padding:12px 14px;display:none;max-height:70%;overflow:auto}
+.km-sheet.on{display:block}
+.km-sheet .km-hd{display:flex;align-items:flex-start;gap:8px}
+.km-sheet .km-hd i{flex:none;width:12px;height:12px;border-radius:4px;margin-top:5px}
+.km-sheet .km-hd b{font-size:15.5px;line-height:1.3}
+.km-sheet .km-x{margin-left:auto;border:none;background:none;color:var(--muted);font-size:20px;line-height:1;padding:0 2px;cursor:pointer}
+.km-chip{display:inline-flex;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;margin:6px 0 0 20px;color:#fff}
+.km-meta{font-size:12.5px;color:var(--muted);margin:4px 0 0 20px}
+.km-sheet ul{list-style:none;margin:8px 0 0;padding:0}
+.km-sheet li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.km-sheet li small{flex:none;color:var(--muted);font-weight:600}
+.km-sheet li.hit{color:var(--accent);font-weight:600}
+#kmMap .maplibregl-ctrl-attrib{font-size:10.5px}
 body[data-route="hava"] #wxView{display:flex}
 body[data-route="hava"] #who{display:none !important}
 body[data-route="hava"] .wrap.wide{max-width:680px}
@@ -1222,6 +1269,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button type="button" data-go="program" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Program</span></button>
       <button type="button" data-go="notlar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg><span>Sınav·Not</span></button>
       <button type="button" data-go="hava"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.500 8h1M4.100 4.100l.7.7M11.900 4.100l-.7.7"/><path d="M9.500 19.500h7.500a3.500 3.500 0 0 0 .4-7 5 5 0 0 0-9.600 1.300A3 3 0 0 0 9.500 19.500z"/></svg><span>Hava</span></button>
+      <button type="button" data-go="harita"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg><span>Harita</span></button>
       <a href="https://ahmad2431385.github.io/studydoro/"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg><span>Sayaç</span></a>
     </nav>
     <button class="menubtn" id="menuBtn" type="button" aria-label="Menüyü aç" aria-haspopup="true" aria-expanded="false" aria-controls="drawer"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
@@ -1341,6 +1389,21 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 
   </div>
 
+  <!-- ============ Yerleşke haritası (Çapa, 3B) ============ -->
+  <div id="mapView">
+    <section class="card km-top">
+      <p class="km-note">Deneme sürümü: bina adları ve salonlar İTF krokisinden; renkler binanın işlevini gösterir; yükseklikler tahmini.</p>
+      <div class="km-srch"><input id="kmQ" type="search" placeholder="Salon ya da bina ara (ör. Sami Zan, Room IV)" autocomplete="off" aria-label="Salon ya da bina ara"><div class="km-sugg" id="kmSugg" role="listbox"></div></div>
+    </section>
+    <div class="km-wrap" id="kmWrap">
+      <div id="kmMap" aria-label="Çapa yerleşkesi 3B harita"></div>
+      <div class="km-msg" id="kmMsg">Harita yükleniyor…</div>
+      <div class="km-ctl"><button type="button" id="kmB3d" aria-pressed="true">3B</button><button type="button" id="kmHome" aria-label="Yerleşkeye dön">⌂</button></div>
+      <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><ul id="kmLegList"></ul></details>
+      <div class="km-sheet" id="kmSheet" role="status"></div>
+    </div>
+  </div>
+
   <!-- ============ Hava durumu (bağımsız sayfa) ============ -->
   <div id="wxView">
     <section class="card hv-loc">
@@ -1453,6 +1516,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
   <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span></button>
   <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span></button>
+  <button class="di" type="button" data-go="harita"><span class="ic" aria-hidden="true">🗺️</span><span><b>Yerleşke haritası</b><small>Çapa: binalar, amfiler ve salonlar (3B)</small></span></button>
   <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
   <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
 </nav>
@@ -3170,6 +3234,165 @@ ensure();
 })();
 </script>
 <script>
+/* ============ Yerleşke haritası (Çapa, 3B): ilk açılışta yüklenir ============ */
+(function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const LIB = "https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl";
+// binalar işlevine göre renklenir: hastane ve üniversite (eğitim) binaları ilk bakışta ayırt edilsin
+const TUR = {
+  egitim:   {ad:"Eğitim (amfi, derslik, laboratuvar)", renk:"#12936f"},
+  hastane:  {ad:"Hastane ve sağlık hizmetleri", renk:"#2f6fd0"},
+  arastirma:{ad:"Araştırma merkezi", renk:"#8b5cc8"},
+  idari:    {ad:"İdari bina", renk:"#d49a1f"},
+  sosyal:   {ad:"Öğrenci ve sosyal alan", renk:"#e2734a"},
+  yapim:    {ad:"Yapımda ya da kullanılmıyor", renk:"#9aa2a7"},
+  kampus:   {ad:"Yerleşke binası (adı krokide yok)", renk:"#b7c4be"},
+  dis:      {ad:"Yerleşke dışı", renk:"#d3d8d6"}
+};
+const LEG = ["egitim", "hastane", "arastirma", "idari", "sosyal", "yapim"];
+$("kmLegDots").innerHTML = LEG.map(t => `<i style="background:${TUR[t].renk}"></i>`).join("");
+$("kmLegList").innerHTML = LEG.map(t => `<li><i class="${t === "yapim" ? "yap" : ""}" style="background-color:${TUR[t].renk}"></i>${esc(TUR[t].ad)}</li>`).join("")
+  + `<li><i style="background:${TUR.dis.renk}"></i>${esc(TUR.dis.ad)}</li>`;
+try { $("kmLeg").open = localStorage.getItem("kampus_leg") !== "0" && innerWidth >= 700; $("kmLeg").addEventListener("toggle", () => localStorage.setItem("kampus_leg", $("kmLeg").open ? "1" : "0")); } catch(e){}
+// kaynaklarda İ/I ve ı/i karışık yazılabiliyor ("DAHILI BIL."): karşılaştırmada ikisi aynı sayılır
+const trU = t => String(t).toLocaleUpperCase("tr").replace(/İ/g, "I").replace(/\s+/g, " ").trim();
+const norm = t => String(t).toLocaleLowerCase("tr").normalize("NFC").replace(/ı/g, "i").replace(/[^a-zçğiöşü0-9]/g, "");
+const katTxt = k => !k ? "" : k === "Z" ? "Zemin kat" : /^-/.test(k) ? `${k}. kat (bodrum)` : `${k}. kat`;
+let D = null, B = {}, NAMES = [], map = null, HOME = null, cur = null, raf = 0, started = false, pending = null;
+const LBL = [];
+const active = () => document.body.dataset.route === "harita";
+// harita kutusu ekranın kalanını doldurur (telefonda alttaki sekmelerin üstünde biter)
+function fit(){
+  const w = $("kmWrap"); if (!active()) return;
+  const top = w.getBoundingClientRect().top + scrollY, tb = document.getElementById("tabbar");
+  const below = tb && getComputedStyle(tb).position === "fixed" ? tb.offsetHeight + 12 : 16;
+  w.style.setProperty("--kmh", Math.max(260, innerHeight - top - below) + "px");
+  if (map) map.resize();
+}
+const load = (tag, attrs) => new Promise((ok, no) => { const e = document.createElement(tag); Object.assign(e, attrs); e.onload = ok; e.onerror = no; document.head.appendChild(e); });
+async function start(){
+  if (started) return; started = true;
+  try {
+    const [, , data] = await Promise.all([
+      window.maplibregl ? null : load("script", {src: LIB + ".js"}),
+      load("link", {rel:"stylesheet", href: LIB + ".css"}),
+      fetch("kampus.json", {cache:"no-cache"}).then(r => { if (!r.ok) throw 0; return r.json(); })
+    ]);
+    D = data; B = D.binalar; NAMES = Object.keys(B);
+    build();
+  } catch(e){ started = false; $("kmMsg").hidden = false; $("kmMsg").textContent = "Harita yüklenemedi. İnternet bağlantını kontrol edip bu sekmeyi yeniden aç."; }
+}
+function build(){
+  const ring = D.kampus, cx = ring.reduce((a,p) => a + p[0], 0) / ring.length, cy = ring.reduce((a,p) => a + p[1], 0) / ring.length;
+  HOME = {center:[cx, cy], zoom:17.2, pitch:58, bearing:-35};
+  map = new maplibregl.Map({
+    container:"kmMap", ...HOME, maxPitch:75, minZoom:15, attributionControl:{compact:true}, cooperativeGestures:false,
+    style:{version:8, sources:{osm:{type:"raster", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize:256, maxzoom:19,
+      attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap katkıcıları</a> · İTF krokisi'}},
+      layers:[{id:"bg", type:"background", paint:{"background-color":css("--bg")}}, {id:"osm", type:"raster", source:"osm", paint:{"raster-opacity":.8, "raster-saturation":-.7}}]}
+  });
+  map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "bottom-left");
+  map.on("load", () => {
+    $("kmMsg").hidden = true;
+    map.addSource("b", {type:"geojson", data:D, promoteId:"id"});
+    map.addSource("k", {type:"geojson", data:{type:"Feature", geometry:{type:"Polygon", coordinates:[ring]}}});
+    map.addLayer({id:"k-fill", type:"fill", source:"k", paint:{"fill-color":css("--accent"), "fill-opacity":.08}});
+    map.addLayer({id:"k-line", type:"line", source:"k", paint:{"line-color":css("--accent"), "line-width":2.5, "line-dasharray":[2,1.2]}});
+    map.addLayer({id:"b-3d", type:"fill-extrusion", source:"b", paint:{
+      "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#ff8a1f",
+        ["match", ["get", "tur"], ...Object.entries(TUR).flatMap(([k, v]) => [k, v.renk]), TUR.dis.renk]],
+      "fill-extrusion-height":["get", "h"], "fill-extrusion-base":0, "fill-extrusion-opacity":.92}});
+    // etiketler: salonu olan binalar önce, çakışan etiketler gizlenir
+    const order = NAMES.slice().sort((a, b) => (B[b].salon.length > 0) - (B[a].salon.length > 0));
+    for (const n of order){
+      const el = document.createElement("button"); el.type = "button"; el.className = "km-lbl";
+      el.textContent = n.replace(/ \((yapım aşamasında|bitmek üzere|yıkılacak|tadilatta)\)/, "");
+      el.style.setProperty("--c", TUR[B[n].tur].renk); el.title = n;
+      el.onclick = e => { e.stopPropagation(); select(n); };
+      LBL.push({n, el, mk:new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat(B[n].c).addTo(map)});
+    }
+    map.on("click", "b-3d", e => { const b = e.features[0].properties.b; if (b) select(b); else info(e.features[0].properties); });
+    map.on("click", e => { if (!map.queryRenderedFeatures(e.point, {layers:["b-3d"]}).length) select(null); });
+    map.on("mouseenter", "b-3d", () => map.getCanvas().style.cursor = "pointer");
+    map.on("mouseleave", "b-3d", () => map.getCanvas().style.cursor = "");
+    map.on("move", declutter); map.on("resize", declutter); declutter();
+    if (pending){ const r = search(pending)[0]; pending = null; if (r) pick(r); }
+  });
+}
+function declutter(){
+  if (raf || !map) return;
+  raf = requestAnimationFrame(() => { raf = 0;
+    const placed = [];
+    for (const L of LBL){
+      const p = map.project(L.mk.getLngLat()), w = L.el.offsetWidth, h = L.el.offsetHeight;
+      const r = {x1:p.x - w/2 - 3, x2:p.x + w/2 + 3, y1:p.y - h - 6, y2:p.y - 2};
+      const hit = L.n !== cur && placed.some(q => r.x1 < q.x2 && q.x1 < r.x2 && r.y1 < q.y2 && q.y1 < r.y2);
+      L.el.classList.toggle("hide", hit);
+      if (!hit) placed.push(r);
+    }
+  });
+}
+function select(n, room){
+  if (!map) return;
+  if (cur) for (const f of D.features) if (f.properties.b === cur) map.setFeatureState({source:"b", id:f.id}, {sel:false});
+  LBL.forEach(L => L.el.classList.toggle("sel", L.n === n));
+  cur = n; const sh = $("kmSheet");
+  $("kmLeg").hidden = !!n;   // bilgi kartı açıkken renk açıklaması gizlenir (aynı yeri kullanıyorlar)
+  if (!n){ sh.classList.remove("on"); declutter(); return; }
+  for (const f of D.features) if (f.properties.b === n) map.setFeatureState({source:"b", id:f.id}, {sel:true});
+  const b = B[n];
+  const meta = [n.startsWith("Dahiliye") ? "İçinde Prof. Dr. Murat Dilmener Eğitim Bloğu" : "", b.kroki ? "Konum krokiden, yaklaşık" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
+  sh.innerHTML = `<div class="km-hd"><i style="background:${TUR[b.tur].renk}"></i><b>${esc(n)}</b><button class="km-x" type="button" aria-label="Kapat">×</button></div>
+    <span class="km-chip" style="background:${TUR[b.tur].renk}">${esc(TUR[b.tur].ad)}</span><div class="km-meta">${esc(meta)}</div>`
+    + (b.salon.length ? `<ul>${b.salon.map(([s, k]) => `<li class="${room && room === s ? "hit" : ""}"><span>${esc(s)}</span><small>${esc(katTxt(k))}</small></li>`).join("")}</ul>` : "");
+  sh.querySelector(".km-x").onclick = () => select(null);
+  sh.classList.add("on"); declutter();
+}
+function info(p){
+  select(null); $("kmLeg").hidden = true; const sh = $("kmSheet");
+  sh.innerHTML = `<div class="km-hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="km-x" type="button" aria-label="Kapat">×</button></div><div class="km-meta">${p.k ? "Krokide adı yok" : ""}</div>`;
+  sh.querySelector(".km-x").onclick = () => select(null); sh.classList.add("on");
+}
+// arama: bina adı, salon adı ya da programda yazan salon adı ("TEMEL BİLİMLER AMFİ III", "ROOM IV" …)
+function search(q){
+  const nq = norm(q), uq = trU(q); if (nq.length < 2) return [];
+  const out = [];
+  for (const n of NAMES){
+    const b = B[n];
+    if (norm(n).includes(nq)) out.push({n, s:null, score:3});
+    for (const [s] of b.salon) if (norm(s).includes(nq)) out.push({n, s, score:4});
+    if (b.ara.map(trU).some(k => uq.includes(k) || (k.length >= 4 && k.includes(uq)))) out.push({n, s:null, score:2});
+  }
+  const seen = new Set();
+  return out.sort((a, b) => b.score - a.score).filter(r => { const k = r.n + "|" + r.s; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+}
+function pick(r){ $("kmSugg").classList.remove("on"); select(r.n, r.s); map.flyTo({center:B[r.n].c, zoom:Math.max(map.getZoom(), 17.6), duration:900}); }
+$("kmQ").addEventListener("input", () => {
+  if (!map) return;
+  const res = search($("kmQ").value), sg = $("kmSugg");
+  const kat = r => { const x = B[r.n].salon.find(x => x[0] === r.s); return x && x[1] ? " · " + esc(katTxt(x[1])) : ""; };
+  sg.innerHTML = res.map((r, i) => `<button type="button" data-i="${i}"><span>${esc(r.s || r.n)}</span>${r.s ? `<small>${esc(r.n)}${kat(r)}</small>` : ""}</button>`).join("")
+    || ($("kmQ").value.trim().length >= 2 ? `<button type="button" disabled><span>Bulunamadı</span><small>Krokide bu adla bir salon yok</small></button>` : "");
+  sg.classList.toggle("on", !!sg.innerHTML);
+  sg.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { pick(res[+b.dataset.i]); $("kmQ").blur(); });
+});
+$("kmQ").addEventListener("keydown", e => { if (e.key === "Enter" && map){ const r = search($("kmQ").value)[0]; if (r){ pick(r); $("kmQ").blur(); } } if (e.key === "Escape") $("kmSugg").classList.remove("on"); });
+document.addEventListener("click", e => { if (!e.target.closest(".km-srch")) $("kmSugg").classList.remove("on"); });
+$("kmB3d").onclick = () => { if (!map) return; const on = $("kmB3d").getAttribute("aria-pressed") !== "true"; $("kmB3d").setAttribute("aria-pressed", on); $("kmB3d").textContent = on ? "3B" : "2B";
+  map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
+$("kmHome").onclick = () => { if (map) map.flyTo({...HOME, pitch:$("kmB3d").getAttribute("aria-pressed") === "true" ? 58 : 0}); };
+// başka bölümlerden çağrılabilir: salonu haritada göster (ör. programdaki "Sami Zan Amfisi")
+window.kampusBul = q => { if (map && map.loaded()){ const r = search(q)[0]; if (r) pick(r); } else pending = q; };
+const ensure = () => { if (active()){ start(); requestAnimationFrame(fit); } };
+new MutationObserver(ensure).observe(document.body, {attributes:true, attributeFilter:["data-route"]});
+addEventListener("resize", () => requestAnimationFrame(fit));
+ensure();
+})();
+</script>
+<script>
 /* ============ Menü (odak sayacı artık ayrı sitede: Studydoro) ============ */
 (function(){
 "use strict";
@@ -3189,9 +3412,10 @@ function setRoute(r){
   document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = own; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
+  else if (r === "harita"){ brandT.textContent = "Yerleşke haritası"; brandS.textContent = "İstanbul Tıp · Çapa"; document.title = "Yerleşke haritası · İstanbul Tıp"; }
   else { brandT.textContent = T0[0]; brandS.textContent = own; document.title = DOC_T; }
 }
-const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : "program");
+const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : location.hash === "#harita" ? "harita" : "program");
 window.addEventListener("hashchange", routeFromHash);
 // giriş / çıkış (body.guest) değişince görünen sayfa ve başlık yeniden belirlenir
 new MutationObserver(routeFromHash).observe(document.body, {attributes:true, attributeFilter:["class"]});
