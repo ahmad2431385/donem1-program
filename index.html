@@ -1139,6 +1139,15 @@ body[data-route="harita"] .wrap{max-width:1180px}
 .km-ctl{position:absolute;z-index:3;right:10px;bottom:28px;display:flex;flex-direction:column;gap:8px}
 .km-ctl button{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px var(--body, inherit);border-radius:12px;padding:10px 12px;min-width:44px;min-height:44px;box-shadow:0 2px 10px rgba(0,0,0,.12);cursor:pointer}
 .km-ctl button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.km-ctl .km-fs{display:grid;place-items:center;padding:0}
+.km-ctl .km-fs[aria-pressed="true"]{background:var(--surface);color:var(--ink);border-color:var(--line)}
+.km-fs .cx,.km-fs[aria-pressed="true"] .ex{display:none}.km-fs[aria-pressed="true"] .cx{display:block}
+/* büyütülmüş harita: tam ekran (destekleyen tarayıcılar) ya da ekranı kaplayan kutu (ör. iPhone Safari) */
+.km-wrap.km-big{position:fixed;inset:0;z-index:60;height:100dvh;min-height:0;border-radius:0;border:none}
+.km-wrap:fullscreen{height:100%;border-radius:0;border:none}
+.km-wrap.km-big .km-ctl,.km-wrap:fullscreen .km-ctl{bottom:calc(28px + env(safe-area-inset-bottom));right:calc(10px + env(safe-area-inset-right))}
+.km-wrap.km-big .km-leg,.km-wrap.km-big .km-sheet,.km-wrap:fullscreen .km-leg,.km-wrap:fullscreen .km-sheet{bottom:calc(28px + env(safe-area-inset-bottom))}
+body.km-lock{overflow:hidden}
 .km-lbl{font:600 11.5px/1.2 var(--body, inherit);background:var(--surface);color:var(--ink);border:1px solid var(--line);border-left:5px solid var(--c, var(--accent));border-radius:8px;padding:3px 7px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18);cursor:pointer;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .km-lbl.sel{background:var(--accent);color:var(--on-accent)}
 .km-lbl.hide{visibility:hidden}
@@ -1398,7 +1407,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
     <div class="km-wrap" id="kmWrap">
       <div id="kmMap" aria-label="Çapa yerleşkesi 3B harita"></div>
       <div class="km-msg" id="kmMsg">Harita yükleniyor…</div>
-      <div class="km-ctl"><button type="button" id="kmB3d" aria-pressed="true">3B</button><button type="button" id="kmHome" aria-label="Yerleşkeye dön">⌂</button></div>
+      <div class="km-ctl"><button type="button" id="kmFull" class="km-fs" aria-pressed="false" aria-label="Haritayı büyüt" title="Büyüt"><svg class="ex" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="cx" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 3v5H3M12 3v5h5M8 17v-5H3M12 17v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" id="kmB3d" aria-pressed="true">3B</button><button type="button" id="kmHome" aria-label="Yerleşkeye dön">⌂</button></div>
       <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><ul id="kmLegList"></ul></details>
       <div class="km-sheet" id="kmSheet" role="status"></div>
     </div>
@@ -3384,6 +3393,31 @@ document.addEventListener("click", e => { if (!e.target.closest(".km-srch")) $("
 $("kmB3d").onclick = () => { if (!map) return; const on = $("kmB3d").getAttribute("aria-pressed") !== "true"; $("kmB3d").setAttribute("aria-pressed", on); $("kmB3d").textContent = on ? "3B" : "2B";
   map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
 $("kmHome").onclick = () => { if (map) map.flyTo({...HOME, pitch:$("kmB3d").getAttribute("aria-pressed") === "true" ? 58 : 0}); };
+// büyüt / küçült (sayaçtaki gibi): önce gerçek tam ekran, olmazsa ekranı kaplayan görünüm
+const W = $("kmWrap"), fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
+const isBig = () => fsEl() === W || W.classList.contains("km-big");
+function syncFs(){
+  const on = isBig(); $("kmFull").setAttribute("aria-pressed", on); $("kmFull").setAttribute("aria-label", on ? "Haritayı küçült" : "Haritayı büyüt"); $("kmFull").title = on ? "Küçült" : "Büyüt";
+  document.body.classList.toggle("km-lock", W.classList.contains("km-big"));
+  requestAnimationFrame(() => { if (map) map.resize(); declutter(); });
+}
+async function setBig(on){
+  if (on === isBig()) return;
+  if (on){
+    const req = W.requestFullscreen || W.webkitRequestFullscreen;
+    try { if (req) { await req.call(W); return syncFs(); } } catch(e){}
+    W.classList.add("km-big");
+  } else {
+    if (fsEl()){ try { await (document.exitFullscreen || document.webkitExitFullscreen).call(document); } catch(e){} }
+    W.classList.remove("km-big");
+  }
+  syncFs();
+}
+$("kmFull").onclick = () => setBig(!isBig());
+document.addEventListener("fullscreenchange", syncFs); document.addEventListener("webkitfullscreenchange", syncFs);
+document.addEventListener("keydown", e => { if (e.key === "Escape" && isBig()) setBig(false); });
+// başka bölüme geçilince büyütme kapanır
+new MutationObserver(() => { if (!active() && isBig()) setBig(false); }).observe(document.body, {attributes:true, attributeFilter:["data-route"]});
 // başka bölümlerden çağrılabilir: salonu haritada göster (ör. programdaki "Sami Zan Amfisi")
 window.kampusBul = q => { if (map && map.loaded()){ const r = search(q)[0]; if (r) pick(r); } else pending = q; };
 const ensure = () => { if (active()){ start(); requestAnimationFrame(fit); } };
