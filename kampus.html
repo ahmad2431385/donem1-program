@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Çapa Yerleşkesi · 3B</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="icon-180.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700&family=IBM+Plex+Sans:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css">
+<style>
+:root{--bg:#f3f5f4;--surface:#fff;--ink:#14221d;--muted:#5d6b66;--line:#dde3e0;--accent:#0b6b55;--accent-soft:#e1f1eb;--warn:#8a5a00;--warn-bg:#fff6e0}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#0f1513;--surface:#17201d;--ink:#e6eeea;--muted:#9aa9a3;--line:#28332f;--accent:#4cc9a4;--accent-soft:#163329;--warn:#f0c46a;--warn-bg:#2b2410}}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans",system-ui,sans-serif}
+.top{position:absolute;z-index:3;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));display:flex;gap:8px;align-items:flex-start;pointer-events:none}
+.card{pointer-events:auto;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
+.title{padding:10px 14px;flex:1;min-width:0}
+.title small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.title h1{margin:0;font:700 20px/1.2 "Bricolage Grotesque",system-ui,sans-serif}
+.title p{margin:4px 0 0;font-size:12.5px;color:var(--warn);background:var(--warn-bg);border-radius:8px;padding:4px 8px}
+.back{pointer-events:auto;display:grid;place-items:center;width:44px;height:44px;border-radius:12px;color:var(--ink);text-decoration:none;font-size:20px}
+#map{position:absolute;inset:0}
+.ctl{position:absolute;z-index:3;right:12px;bottom:calc(28px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:8px}
+.ctl button{pointer-events:auto;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:600 13px "IBM Plex Sans",sans-serif;border-radius:12px;padding:10px 12px;min-width:44px;min-height:44px;box-shadow:0 2px 10px rgba(0,0,0,.12);cursor:pointer}
+.ctl button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.lbl{pointer-events:auto;font:600 11.5px/1.2 "IBM Plex Sans",sans-serif;background:var(--surface);color:var(--ink);border:1px solid var(--accent);border-radius:8px;padding:3px 7px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18);cursor:pointer;max-width:160px;overflow:hidden;text-overflow:ellipsis}
+.lbl.sel{background:var(--accent);color:#fff}
+.sheet{position:absolute;z-index:4;left:12px;right:84px;bottom:calc(28px + env(safe-area-inset-bottom));padding:12px 14px;display:none}
+.sheet.on{display:block}
+.sheet b{display:block;font-size:15px}
+.sheet span{font-size:12.5px;color:var(--muted)}
+.maplibregl-ctrl-attrib{font-size:10.5px}
+</style>
+</head>
+<body>
+<div id="map" aria-label="Çapa yerleşkesi 3B harita"></div>
+<div class="top">
+  <a class="card back" href="./" aria-label="Programa dön">←</a>
+  <div class="card title">
+    <small>İstanbul Tıp · Çapa</small>
+    <h1>Yerleşke haritası</h1>
+    <p>Deneme sürümü: bina adları ve yükseklikleri henüz kesin değil.</p>
+  </div>
+</div>
+<div class="ctl">
+  <button type="button" id="b3d" aria-pressed="true">3B</button>
+  <button type="button" id="bHome" aria-label="Yerleşkeye dön">⌂</button>
+</div>
+<div class="card sheet" id="sheet" role="status"></div>
+<script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+<script>
+(async function(){
+"use strict";
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const D = await (await fetch("kampus.json")).json();
+const ring = D.kampus, cx = ring.reduce((a,p) => a + p[0], 0) / ring.length, cy = ring.reduce((a,p) => a + p[1], 0) / ring.length;
+const HOME = {center:[cx, cy], zoom:17.2, pitch:58, bearing:-28};
+const map = new maplibregl.Map({
+  container:"map", ...HOME, maxPitch:75, minZoom:15, attributionControl:{compact:true},
+  style:{version:8, sources:{osm:{type:"raster", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize:256, maxzoom:19,
+    attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap katkıcıları</a>'}},
+    layers:[{id:"bg", type:"background", paint:{"background-color":css("--bg")}}, {id:"osm", type:"raster", source:"osm", paint:{"raster-opacity":.85, "raster-saturation":-.6}}]}
+});
+map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "bottom-left");
+map.on("load", () => {
+  map.addSource("b", {type:"geojson", data:D, promoteId:"id"});
+  map.addSource("k", {type:"geojson", data:{type:"Feature", geometry:{type:"Polygon", coordinates:[ring]}}});
+  map.addLayer({id:"k-fill", type:"fill", source:"k", paint:{"fill-color":css("--accent"), "fill-opacity":.10}});
+  map.addLayer({id:"k-line", type:"line", source:"k", paint:{"line-color":css("--accent"), "line-width":2.5, "line-dasharray":[2,1.2]}});
+  map.addLayer({id:"b-3d", type:"fill-extrusion", source:"b", paint:{
+    "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#f08a24", ["get", "kampus"], ["case", ["==", ["get", "ad"], ""], "#6fae98", "#0b8a6c"], "#c9cfcc"],
+    "fill-extrusion-height":["get", "h"], "fill-extrusion-base":0, "fill-extrusion-opacity":.9}});
+  // adı bilinen yerleşke binalarına etiket
+  for (const f of D.features.filter(f => f.properties.kampus && f.properties.ad)){
+    const c = f.geometry.coordinates[0], x = c.reduce((a,p) => a + p[0], 0) / c.length, y = c.reduce((a,p) => a + p[1], 0) / c.length;
+    const el = document.createElement("button"); el.type = "button"; el.className = "lbl"; el.textContent = f.properties.ad; el.dataset.id = f.id;
+    el.onclick = e => { e.stopPropagation(); select(f.id); };
+    new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat([x, y]).addTo(map);
+  }
+  map.on("click", "b-3d", e => select(e.features[0].id));
+  map.on("click", e => { if (!map.queryRenderedFeatures(e.point, {layers:["b-3d"]}).length) select(null); });
+  map.on("mouseenter", "b-3d", () => map.getCanvas().style.cursor = "pointer");
+  map.on("mouseleave", "b-3d", () => map.getCanvas().style.cursor = "");
+});
+let cur = null;
+function select(id){
+  if (cur !== null) map.setFeatureState({source:"b", id:cur}, {sel:false});
+  document.querySelectorAll(".lbl.sel").forEach(x => x.classList.remove("sel"));
+  cur = id; const sh = $("sheet");
+  if (id === null){ sh.classList.remove("on"); return; }
+  map.setFeatureState({source:"b", id}, {sel:true});
+  const lb = document.querySelector(`.lbl[data-id="${id}"]`); if (lb) lb.classList.add("sel");
+  const p = D.features.find(f => f.id === id).properties;
+  sh.innerHTML = `<b>${esc(p.ad || (p.kampus ? "Adı henüz bilinmiyor" : "Yerleşke dışında"))}</b><span>${p.kampus ? "Çapa yerleşkesi" : "Yerleşke dışı"} · yaklaşık ${Math.round(p.h / 3.4) || 1} kat${p.tahmin ? " (tahmini)" : ""}</span>`;
+  sh.classList.add("on");
+}
+$("b3d").onclick = () => { const on = $("b3d").getAttribute("aria-pressed") !== "true"; $("b3d").setAttribute("aria-pressed", on); $("b3d").textContent = on ? "3B" : "2B";
+  map.setLayoutProperty("b-3d", "visibility", "visible"); map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
+$("bHome").onclick = () => map.flyTo({...HOME, pitch:$("b3d").getAttribute("aria-pressed") === "true" ? 58 : 0});
+})();
+</script>
+</body>
+</html>
