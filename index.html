@@ -1161,6 +1161,13 @@ body[data-route="harita"] .wrap{max-width:1180px}
 .km-ctl .km-fs[aria-pressed="true"]{background:var(--surface);color:var(--ink);border-color:var(--line)}
 .km-fs .cx,.km-fs[aria-pressed="true"] .ex{display:none}.km-fs[aria-pressed="true"] .cx{display:block}
 /* büyütülmüş harita: tam ekran (destekleyen tarayıcılar) ya da ekranı kaplayan kutu (ör. iPhone Safari) */
+.km-wrap .km-srch{position:absolute;z-index:6;top:10px;left:10px;right:10px}
+.km-wrap .km-srch input{background:color-mix(in srgb,var(--surface) 96%,transparent);border-color:var(--line);box-shadow:0 4px 16px rgba(0,0,0,.16);padding-left:38px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%23889590' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-4-4'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:12px center}
+.km-wrap .km-srch input:focus{border-color:var(--accent)}
+.km-wrap .km-sugg{max-height:min(50vh,calc(var(--kmh,560px) - 80px))}
+.km-wrap.km-big .km-srch,.km-wrap:fullscreen .km-srch{top:calc(10px + env(safe-area-inset-top));left:calc(10px + env(safe-area-inset-left));right:calc(10px + env(safe-area-inset-right))}
+.km-wrap.km-big .km-sugg,.km-wrap:fullscreen .km-sugg{max-height:60vh}
+@media (min-width:700px){.km-wrap .km-srch{right:auto;width:min(420px,calc(100% - 20px))}}
 .km-wrap.km-big{position:fixed;inset:0;z-index:60;height:100dvh;min-height:0;border-radius:0;border:none}
 .km-wrap:fullscreen{height:100%;border-radius:0;border:none}
 .km-wrap.km-big .km-ctl,.km-wrap:fullscreen .km-ctl{bottom:calc(28px + env(safe-area-inset-bottom));right:calc(10px + env(safe-area-inset-right))}
@@ -1178,7 +1185,7 @@ body.km-lock{overflow:hidden}
 .km-leg ul{list-style:none;margin:0;padding:0 12px 10px;display:flex;flex-direction:column;gap:5px}
 .km-leg li{display:flex;align-items:center;gap:8px}
 .km-leg li i.yap{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.25) 0 2px,transparent 2px 5px)}
-.km-sheet{left:10px;right:76px;bottom:28px;padding:12px 14px;display:none;max-height:70%;overflow:auto}
+.km-sheet{left:10px;right:76px;bottom:28px;padding:12px 14px;display:none;max-height:calc(100% - 100px);overflow:auto}
 .km-sheet.on{display:block}
 .km-sheet .km-hd{display:flex;align-items:flex-start;gap:8px}
 .km-sheet .km-hd i{flex:none;width:12px;height:12px;border-radius:4px;margin-top:5px}
@@ -1420,10 +1427,10 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <div id="mapView">
     <section class="card km-top">
       <p class="km-src"><b>Kaynaklar:</b> Bina hatları, yerleşke sınırı ve altlık harita: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap katkıcıları</a> (ODbL lisansı) · Harita motoru: <a href="https://maplibre.org/" target="_blank" rel="noopener">MapLibre GL</a> · Bina yükseklikleri (OSM'de yazmayanlar) ve işleve göre renklendirme tahminidir.</p>
-      <div class="km-srch"><input id="kmQ" type="search" placeholder="Salon ya da bina ara (ör. Sami Zan, Room IV)" autocomplete="off" aria-label="Salon ya da bina ara"><div class="km-sugg" id="kmSugg" role="listbox"></div></div>
     </section>
     <div class="km-wrap" id="kmWrap">
       <div id="kmMap" aria-label="Çapa yerleşkesi 3B harita"></div>
+      <div class="km-srch"><input id="kmQ" type="search" placeholder="Salon ya da bina ara" autocomplete="off" aria-label="Salon ya da bina ara"><div class="km-sugg" id="kmSugg" role="listbox"></div></div>
       <div class="km-msg" id="kmMsg">Harita yükleniyor…</div>
       <div class="km-ctl"><button type="button" id="kmFull" class="km-fs" aria-pressed="false" aria-label="Haritayı büyüt" title="Büyüt"><svg class="ex" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="cx" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 3v5H3M12 3v5h5M8 17v-5H3M12 17v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" id="kmB3d" aria-pressed="true">3B</button><button type="button" id="kmHome" aria-label="Yerleşkeye dön">⌂</button></div>
       <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><ul id="kmLegList"></ul></details>
@@ -3278,7 +3285,7 @@ const TUR = {
   idari:    {ad:"İdari bina", renk:"#d49a1f"},
   sosyal:   {ad:"Öğrenci ve sosyal alan", renk:"#e2734a"},
   yapim:    {ad:"Yapımda ya da kullanılmıyor", renk:"#9aa2a7"},
-  kampus:   {ad:"Yerleşke binası (adı krokide yok)", renk:"#b7c4be"},
+  kampus:   {ad:"Diğer yerleşke binaları", renk:"#b7c4be"},
   dis:      {ad:"Yerleşke dışı", renk:"#d3d8d6"}
 };
 const LEG = ["egitim", "hastane", "arastirma", "idari", "sosyal", "yapim"];
@@ -3357,9 +3364,9 @@ function build(){
 function homeCam(){
   const r = D.kampus, xs = r.map(p => p[0]), ys = r.map(p => p[1]);
   const el = $("kmMap"), w = el.clientWidth, h = el.clientHeight;
-  const pad = {top:Math.round(h * .06), bottom:Math.round(h * .14) + 40, left:Math.round(w * .04), right:Math.round(w * .04) + 50};
+  const pad = {top:Math.round(h * .06) + 50, bottom:Math.round(h * .14) + 40, left:Math.round(w * .04), right:Math.round(w * .04) + 50};
   const c = map.cameraForBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], {bearing:HOME.bearing, padding:pad});
-  return c ? {center:c.center, zoom:Math.min(17.5, c.zoom + (w < 520 ? .7 : .25)), bearing:HOME.bearing, pitch:HOME.pitch} : HOME;
+  return c ? {center:c.center, zoom:Math.min(17.5, c.zoom + (w < 520 ? .55 : .25)), bearing:HOME.bearing, pitch:HOME.pitch} : HOME;
 }
 function reset(){
   if (!ready) return;
@@ -3390,7 +3397,7 @@ function select(n, room){
   if (!n){ sh.classList.remove("on"); declutter(); return; }
   for (const f of D.features) if (f.properties.b === n) map.setFeatureState({source:"b", id:f.id}, {sel:true});
   const b = B[n];
-  const meta = [n.startsWith("Dahiliye") ? "İçinde Prof. Dr. Murat Dilmener Eğitim Bloğu" : "", b.kroki ? "Konum krokiden, yaklaşık" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
+  const meta = [n.startsWith("Dahiliye") ? "İçinde Prof. Dr. Murat Dilmener Eğitim Bloğu" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
   sh.innerHTML = `<div class="km-hd"><i style="background:${TUR[b.tur].renk}"></i><b>${esc(n)}</b><button class="km-x" type="button" aria-label="Kapat">×</button></div>
     <span class="km-chip" style="background:${TUR[b.tur].renk}">${esc(TUR[b.tur].ad)}</span><div class="km-meta">${esc(meta)}</div>`
     + (b.salon.length ? `<ul>${b.salon.map(([s, k]) => `<li class="${room && room === s ? "hit" : ""}"><span>${esc(s)}</span><small>${esc(katTxt(k))}</small></li>`).join("")}</ul>` : "");
@@ -3399,7 +3406,7 @@ function select(n, room){
 }
 function info(p){
   select(null); $("kmLeg").hidden = true; const sh = $("kmSheet");
-  sh.innerHTML = `<div class="km-hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="km-x" type="button" aria-label="Kapat">×</button></div><div class="km-meta">${p.k ? "Krokide adı yok" : ""}</div>`;
+  sh.innerHTML = `<div class="km-hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="km-x" type="button" aria-label="Kapat">×</button></div>`;
   sh.querySelector(".km-x").onclick = () => select(null); sh.classList.add("on");
 }
 // arama: bina adı, salon adı ya da programda yazan salon adı ("TEMEL BİLİMLER AMFİ III", "ROOM IV" …)
@@ -3421,7 +3428,7 @@ $("kmQ").addEventListener("input", () => {
   const res = search($("kmQ").value), sg = $("kmSugg");
   const kat = r => { const x = B[r.n].salon.find(x => x[0] === r.s); return x && x[1] ? " · " + esc(katTxt(x[1])) : ""; };
   sg.innerHTML = res.map((r, i) => `<button type="button" data-i="${i}"><span>${esc(r.s || r.n)}</span>${r.s ? `<small>${esc(r.n)}${kat(r)}</small>` : ""}</button>`).join("")
-    || ($("kmQ").value.trim().length >= 2 ? `<button type="button" disabled><span>Bulunamadı</span><small>Krokide bu adla bir salon yok</small></button>` : "");
+    || ($("kmQ").value.trim().length >= 2 ? `<button type="button" disabled><span>Bulunamadı</span><small>Bu adla bir salon ya da bina yok</small></button>` : "");
   sg.classList.toggle("on", !!sg.innerHTML);
   sg.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { pick(res[+b.dataset.i]); $("kmQ").blur(); });
 });
