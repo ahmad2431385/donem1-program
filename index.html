@@ -293,6 +293,7 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
+.contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
 .contact a{color:var(--accent);font-weight:600;overflow-wrap:anywhere}
 .loading{padding:40px 0;text-align:center;color:var(--muted)}
@@ -397,6 +398,11 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .drawer .dfoot{margin-top:auto;padding:12px 6px 0;border-top:1px solid var(--line);display:grid;gap:6px}
 .drawer .dfoot a{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
 .drawer .dfoot small{font-size:11.5px;color:var(--muted)}
+.drawer .dfoot .dcopy{font-size:11px;line-height:1.45}
+.drawer .di.sub{margin-left:26px;width:calc(100% - 26px);padding:7px 10px;gap:10px}
+.drawer .di.sub .ic{width:30px;height:30px;border-radius:9px}
+.drawer .di.sub b{font-size:14px}
+.drawer .di.sub small{font-size:11.5px}
 @media (prefers-reduced-motion: reduce){.drawer,.drawer-scrim{transition:none}}
 
 /* ---------- route switching ---------- */
@@ -1204,11 +1210,6 @@ body[data-route="hava"] #wxView{display:flex}
 #tmView{display:none;flex-direction:column;gap:10px}
 body[data-route="sayac"] #tmView{display:flex}
 body[data-route="sayac"] .wrap{max-width:1180px}
-.tmh-nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;align-self:center;max-width:100%}
-.tmh-nav::-webkit-scrollbar{display:none}
-.tmh-nav button{flex:none;border:none;background:none;color:var(--muted);font:600 13.5px var(--body,inherit);padding:7px 13px;border-radius:9px;cursor:pointer}
-@media (max-width:420px){.tmh-nav{align-self:stretch}.tmh-nav button{flex:1 1 auto;padding:7px 6px;font-size:13px}}
-.tmh-nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
 .tmh{position:relative;height:var(--tmh,640px);min-height:320px}
 .tmh iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color-scheme:normal}
 .tmh-msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
@@ -1563,9 +1564,6 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 
   <!-- her sayfanın altında (giriş, program, sınav-not, hava): hata bildirimi ve öneri -->
   <div id="tmView">
-    <nav class="tmh-nav" id="tmNav" aria-label="Odak sayacı bölümleri">
-      <button type="button" data-go="sayac">Sayaç</button><button type="button" data-go="sayac/grafik">Grafik</button><button type="button" data-go="sayac/gorunum">Görünüm</button><button type="button" data-go="sayac/ses">Ses</button><button type="button" data-go="sayac/ayar">Ayarlar</button>
-    </nav>
     <div class="tmh" id="tmHost"><div class="tmh-msg" id="tmMsg">Sayaç yükleniyor…</div></div>
   </div>
   <button class="tmh-pill" id="tmhPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmhPillT"></b></button>
@@ -1573,6 +1571,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
+    <p class="contact-c">© 2026 · Tüm hakları mahfuzdur. Bu sitenin tasarımı ve yazılımı kopyalanamaz, çoğaltılamaz, dağıtılamaz, satılamaz ve ticari amaçla kullanılamaz.</p>
   </footer>
 </div>
 
@@ -1584,8 +1583,12 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <button class="di" type="button" data-go="notlar"><span class="ic" style="--c:#2f6fd0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="dt"><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="di" type="button" data-go="hava"><span class="ic" style="--c:#d49a1f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.5 8h1M4.1 4.1l.7.7M11.9 4.1l-.7.7"/><path d="M9.5 19.5h7.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.3A3 3 0 0 0 9.5 19.5z"/></svg></span><span class="dt"><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="di" type="button" data-go="harita"><span class="ic" style="--c:#8b5cc8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg></span><span class="dt"><b>Yerleşke haritası</b><small>Çapa: binalar, amfiler ve salonlar (3B)</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <button class="di" type="button" data-go="sayac"><span class="ic" style="--c:#e2734a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></span><span class="dt"><b>Odak sayacı</b><small>Pomodoro, çalışma grafiği, arka plan sesleri</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <div class="dfoot"><a href="#contact" id="drawerContact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Hata bildir · öneride bulun</span></a></div>
+  <button class="di" type="button" data-go="sayac"><span class="ic" style="--c:#e2734a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></span><span class="dt"><b>Odak sayacı</b><small id="drawerTimerHint">Pomodoro ve geri sayım</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="di sub" type="button" data-go="sayac/grafik"><span class="ic" style="--c:#e2734a"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="dt"><b>Çalışma grafiği</b><small>Hafta, ay ve konulara göre</small></span></button>
+  <button class="di sub" type="button" data-go="sayac/gorunum"><span class="ic" style="--c:#e2734a"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.9-.7-1.3-.7-2.2 0-1 .8-1.7 1.8-1.7H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10.5" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/></svg></span><span class="dt"><b>Görünüm</b><small>Saat tasarımı, renk, fotoğraf</small></span></button>
+  <button class="di sub" type="button" data-go="sayac/ses"><span class="ic" style="--c:#e2734a"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="14" width="4" height="6" rx="1.5"/><rect x="17" y="14" width="4" height="6" rx="1.5"/></svg></span><span class="dt"><b>Arka plan sesi</b><small>Yağmur, dalga, ateş…</small></span></button>
+  <button class="di sub" type="button" data-go="sayac/ayar"><span class="ic" style="--c:#e2734a"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1"/></svg></span><span class="dt"><b>Alarm ve ayarlar</b><small>Alarm, titreşim, ekran</small></span></button>
+  <div class="dfoot"><a href="#contact" id="drawerContact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Hata bildir · öneride bulun</span></a><small class="dcopy">© 2026 · Tüm hakları mahfuzdur. Bu sitenin tasarımı ve yazılımı kopyalanamaz, çoğaltılamaz, dağıtılamaz, satılamaz ve ticari amaçla kullanılamaz.</small></div>
 </nav>
 
 <div class="scrim" id="scrim" hidden>
@@ -3549,7 +3552,10 @@ addEventListener("resize", fit); ensure();
 setInterval(() => {   // başka sekmedeyken çalışan sayaç küçük bir göstergede görünür; sayaç sekmesinde sekme başlığı sayacı izler
   if (!iw) return;
   let d; try { d = iw.document; } catch(e){ return; }
-  const L = live();
+  const L = live(), R = d.getElementById("tmCard");
+  const pt = d.getElementById("tmPillTime"), pp = d.getElementById("tmPillPhase");
+  $("drawerTimerHint").textContent = L && pt ? pt.textContent + (pp ? " · " + pp.textContent : "") : "Pomodoro ve geri sayım";
+  $("menuBtn").dataset.live = R && R.dataset.run === "1" ? "1" : "0";
   if (active()){ pill.hidden = true; if (d.title) document.title = d.title; return; }
   pill.hidden = !L || guest();
   if (L){ const t = d.getElementById("tmPillTime"), p = d.getElementById("tmPillPhase"), sp = d.getElementById("tmPill");
@@ -3571,7 +3577,7 @@ function setRoute(r){
   if (guest()) r = "program";   // giriş yapılmadan yalnız giriş sayfası
   const own = !guest() && brandS.dataset.prog || T0[1], full = r; r = r.split("/")[0];
   document.body.dataset.route = r; document.body.dataset.sub = full;
-  document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === full || (b.dataset.go === r && !b.closest("#tmNav")) ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === full || (b.dataset.go === r && b.closest("#tabbar")) ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = own; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
   else if (r === "sayac"){ brandT.textContent = window.tmhTitle || "Odak sayacı"; brandS.textContent = "Studydoro"; document.title = window.tmhDocTitle || "Odak sayacı · Studydoro"; }
@@ -3606,7 +3612,7 @@ const onGo = e => {
   else { if (location.hash) history.pushState(null, "", location.pathname); setRoute("program"); }
   window.scrollTo(0, 0);
 };
-drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo); $("tmNav").addEventListener("click", onGo); $("tmhPill").addEventListener("click", () => onGo({target:$("tabbar").querySelector('[data-go="sayac"]')}));
+drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo); $("tmhPill").addEventListener("click", () => onGo({target:$("tabbar").querySelector('[data-go="sayac"]')}));
 window.addEventListener("popstate", routeFromHash);
 })();
 </script>
