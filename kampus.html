@@ -16,7 +16,7 @@
 html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.45 "IBM Plex Sans",system-ui,sans-serif}
 .top{position:absolute;z-index:3;left:12px;right:12px;top:calc(10px + env(safe-area-inset-top));display:flex;gap:8px;align-items:flex-start;pointer-events:none}
 .card{pointer-events:auto;background:color-mix(in srgb,var(--surface) 94%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.12)}
-.title{padding:10px 14px;flex:1;min-width:0}
+.title{padding:10px 14px;flex:1;min-width:0;max-width:560px}
 .title small{display:block;font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .title h1{margin:0;font:700 20px/1.2 "Bricolage Grotesque",system-ui,sans-serif}
 .title p{margin:4px 0 0;font-size:12.5px;color:var(--warn);background:var(--warn-bg);border-radius:8px;padding:4px 8px}
@@ -27,10 +27,28 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1
 .ctl button[aria-pressed="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
 .lbl{pointer-events:auto;font:600 11.5px/1.2 "IBM Plex Sans",sans-serif;background:var(--surface);color:var(--ink);border:1px solid var(--accent);border-radius:8px;padding:3px 7px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.18);cursor:pointer;max-width:160px;overflow:hidden;text-overflow:ellipsis}
 .lbl.sel{background:var(--accent);color:#fff}
-.sheet{position:absolute;z-index:4;left:12px;right:84px;bottom:calc(28px + env(safe-area-inset-bottom));padding:12px 14px;display:none}
+.sheet{position:absolute;z-index:4;left:12px;right:84px;bottom:calc(28px + env(safe-area-inset-bottom));padding:12px 14px;display:none;max-height:46vh;overflow:auto}
 .sheet.on{display:block}
-.sheet b{display:block;font-size:15px}
-.sheet span{font-size:12.5px;color:var(--muted)}
+.sheet .hd{display:flex;align-items:flex-start;gap:8px}
+.sheet .hd i{flex:none;width:12px;height:12px;border-radius:4px;margin-top:5px}
+.sheet .hd b{font-size:15.5px;line-height:1.3}
+.sheet .x{margin-left:auto;border:none;background:none;color:var(--muted);font-size:18px;line-height:1;padding:0 2px;cursor:pointer}
+.sheet .meta{font-size:12.5px;color:var(--muted);margin:2px 0 0 20px}
+.sheet ul{list-style:none;margin:8px 0 0;padding:0}
+.sheet li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
+.sheet li small{flex:none;color:var(--muted);font-weight:600}
+.sheet li.hit{color:var(--accent);font-weight:600}
+.srch{position:relative;margin-top:8px}
+.srch input{width:100%;font:inherit;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
+.srch input:focus{outline:none;border-color:var(--accent)}
+.sugg{position:absolute;left:0;right:0;top:calc(100% + 4px);background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);max-height:50vh;overflow:auto;display:none;z-index:6}
+.sugg.on{display:block}
+.sugg button{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;border:none;background:none;color:var(--ink);font:inherit;padding:9px 12px;border-top:1px solid var(--line);cursor:pointer}
+.sugg button:first-child{border-top:none}
+.sugg button small{color:var(--muted);font-size:12px}
+.sugg button:hover,.sugg button:focus{background:var(--accent-soft);outline:none}
+.lbl{border-left:5px solid var(--c, var(--accent))}
+.lbl.hide{visibility:hidden}
 .maplibregl-ctrl-attrib{font-size:10.5px}
 </style>
 </head>
@@ -41,7 +59,8 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1
   <div class="card title">
     <small>İstanbul Tıp · Çapa</small>
     <h1>Yerleşke haritası</h1>
-    <p>Deneme sürümü: bina adları ve yükseklikleri henüz kesin değil.</p>
+    <p>Deneme sürümü: bina adları ve salonlar İTF krokisinden; yükseklikler tahmini.</p>
+    <div class="srch"><input id="q" type="search" placeholder="Salon ya da bina ara (ör. Sami Zan, Room IV)" autocomplete="off" aria-label="Salon ya da bina ara"><div class="sugg" id="sugg" role="listbox"></div></div>
   </div>
 </div>
 <div class="ctl">
@@ -57,49 +76,103 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
 const D = await (await fetch("kampus.json")).json();
+const B = D.binalar, NAMES = Object.keys(B);
+// kaynaklarda İ/I ve ı/i karışık yazılabiliyor ("DAHILI BIL."): karşılaştırmada ikisi aynı sayılır
+const trU = t => String(t).toLocaleUpperCase("tr").replace(/İ/g, "I").replace(/\s+/g, " ").trim();
+const norm = t => String(t).toLocaleLowerCase("tr").normalize("NFC").replace(/ı/g, "i").replace(/[^a-zçğiöşü0-9]/g, "");
+const katTxt = k => !k ? "" : k === "Z" ? "Zemin kat" : /^-/.test(k) ? `${k}. kat (bodrum)` : `${k}. kat`;
 const ring = D.kampus, cx = ring.reduce((a,p) => a + p[0], 0) / ring.length, cy = ring.reduce((a,p) => a + p[1], 0) / ring.length;
-const HOME = {center:[cx, cy], zoom:17.2, pitch:58, bearing:-28};
+const HOME = {center:[cx, cy], zoom:17.2, pitch:58, bearing:-35};
 const map = new maplibregl.Map({
   container:"map", ...HOME, maxPitch:75, minZoom:15, attributionControl:{compact:true},
   style:{version:8, sources:{osm:{type:"raster", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize:256, maxzoom:19,
-    attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap katkıcıları</a>'}},
-    layers:[{id:"bg", type:"background", paint:{"background-color":css("--bg")}}, {id:"osm", type:"raster", source:"osm", paint:{"raster-opacity":.85, "raster-saturation":-.6}}]}
+    attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap katkıcıları</a> · İTF krokisi'}},
+    layers:[{id:"bg", type:"background", paint:{"background-color":css("--bg")}}, {id:"osm", type:"raster", source:"osm", paint:{"raster-opacity":.8, "raster-saturation":-.7}}]}
 });
 map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "bottom-left");
+const LBL = [];
 map.on("load", () => {
   map.addSource("b", {type:"geojson", data:D, promoteId:"id"});
   map.addSource("k", {type:"geojson", data:{type:"Feature", geometry:{type:"Polygon", coordinates:[ring]}}});
-  map.addLayer({id:"k-fill", type:"fill", source:"k", paint:{"fill-color":css("--accent"), "fill-opacity":.10}});
+  map.addLayer({id:"k-fill", type:"fill", source:"k", paint:{"fill-color":css("--accent"), "fill-opacity":.08}});
   map.addLayer({id:"k-line", type:"line", source:"k", paint:{"line-color":css("--accent"), "line-width":2.5, "line-dasharray":[2,1.2]}});
   map.addLayer({id:"b-3d", type:"fill-extrusion", source:"b", paint:{
-    "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#f08a24", ["get", "kampus"], ["case", ["==", ["get", "ad"], ""], "#6fae98", "#0b8a6c"], "#c9cfcc"],
-    "fill-extrusion-height":["get", "h"], "fill-extrusion-base":0, "fill-extrusion-opacity":.9}});
-  // adı bilinen yerleşke binalarına etiket
-  for (const f of D.features.filter(f => f.properties.kampus && f.properties.ad)){
-    const c = f.geometry.coordinates[0], x = c.reduce((a,p) => a + p[0], 0) / c.length, y = c.reduce((a,p) => a + p[1], 0) / c.length;
-    const el = document.createElement("button"); el.type = "button"; el.className = "lbl"; el.textContent = f.properties.ad; el.dataset.id = f.id;
-    el.onclick = e => { e.stopPropagation(); select(f.id); };
-    new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat([x, y]).addTo(map);
+    "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#ff7a1a", ["get", "renk"]],
+    "fill-extrusion-height":["get", "h"], "fill-extrusion-base":0, "fill-extrusion-opacity":.92}});
+  // etiketler: salonu olan binalar önce, çakışan etiketler gizlenir
+  const order = NAMES.slice().sort((a, b) => (B[b].salon.length > 0) - (B[a].salon.length > 0));
+  for (const n of order){
+    const el = document.createElement("button"); el.type = "button"; el.className = "lbl"; el.textContent = n.replace(/ \((yapım aşamasında|bitmek üzere|yıkılacak|tadilatta)\)/, "");
+    el.style.setProperty("--c", B[n].renk); el.title = n;
+    el.onclick = e => { e.stopPropagation(); select(n); };
+    const mk = new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat(B[n].c).addTo(map);
+    LBL.push({n, el, mk});
   }
-  map.on("click", "b-3d", e => select(e.features[0].id));
+  map.on("click", "b-3d", e => { const b = e.features[0].properties.b; if (b) select(b); else info(e.features[0].properties); });
   map.on("click", e => { if (!map.queryRenderedFeatures(e.point, {layers:["b-3d"]}).length) select(null); });
   map.on("mouseenter", "b-3d", () => map.getCanvas().style.cursor = "pointer");
   map.on("mouseleave", "b-3d", () => map.getCanvas().style.cursor = "");
+  map.on("move", declutter); map.on("resize", declutter); declutter();
+  const h = decodeURIComponent(location.hash.replace(/^#(s=)?/, ""));
+  if (h){ const r = search(h)[0]; if (r) pick(r); }
 });
-let cur = null;
-function select(id){
-  if (cur !== null) map.setFeatureState({source:"b", id:cur}, {sel:false});
-  document.querySelectorAll(".lbl.sel").forEach(x => x.classList.remove("sel"));
-  cur = id; const sh = $("sheet");
-  if (id === null){ sh.classList.remove("on"); return; }
-  map.setFeatureState({source:"b", id}, {sel:true});
-  const lb = document.querySelector(`.lbl[data-id="${id}"]`); if (lb) lb.classList.add("sel");
-  const p = D.features.find(f => f.id === id).properties;
-  sh.innerHTML = `<b>${esc(p.ad || (p.kampus ? "Adı henüz bilinmiyor" : "Yerleşke dışında"))}</b><span>${p.kampus ? "Çapa yerleşkesi" : "Yerleşke dışı"} · yaklaşık ${Math.round(p.h / 3.4) || 1} kat${p.tahmin ? " (tahmini)" : ""}</span>`;
-  sh.classList.add("on");
+let raf = 0;
+function declutter(){
+  if (raf) return;
+  raf = requestAnimationFrame(() => { raf = 0;
+    const placed = [];
+    for (const L of LBL){
+      const p = map.project(L.mk.getLngLat()), w = L.el.offsetWidth, h = L.el.offsetHeight;
+      const r = {x1:p.x - w/2 - 3, x2:p.x + w/2 + 3, y1:p.y - h - 6, y2:p.y - 2};
+      const sel = L.n === cur;
+      const hit = !sel && placed.some(q => r.x1 < q.x2 && q.x1 < r.x2 && r.y1 < q.y2 && q.y1 < r.y2);
+      L.el.classList.toggle("hide", hit);
+      if (!hit) placed.push(r);
+    }
+  });
 }
+let cur = null;
+function select(n, room){
+  if (cur) for (const f of D.features) if (f.properties.b === cur) map.setFeatureState({source:"b", id:f.id}, {sel:false});
+  LBL.forEach(L => L.el.classList.toggle("sel", L.n === n));
+  cur = n; const sh = $("sheet");
+  if (!n){ sh.classList.remove("on"); declutter(); return; }
+  for (const f of D.features) if (f.properties.b === n) map.setFeatureState({source:"b", id:f.id}, {sel:true});
+  const b = B[n];
+  const meta = [b.yapim ? "Yapım aşamasında" : "", b.kroki ? "Konum krokiden, yaklaşık" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
+  sh.innerHTML = `<div class="hd"><i style="background:${b.renk}"></i><b>${esc(n)}</b><button class="x" type="button" aria-label="Kapat">×</button></div>
+    <div class="meta">${esc(meta)}</div>`
+    + (b.salon.length ? `<ul>${b.salon.map(([s, k]) => `<li class="${room && room === s ? "hit" : ""}"><span>${esc(s)}</span><small>${esc(katTxt(k))}</small></li>`).join("")}</ul>` : "");
+  sh.querySelector(".x").onclick = () => select(null);
+  sh.classList.add("on"); declutter();
+}
+function info(p){ select(null); const sh = $("sheet"); sh.innerHTML = `<div class="hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="x" type="button" aria-label="Kapat">×</button></div><div class="meta">${p.k ? "Krokide adı yok" : ""}</div>`; sh.querySelector(".x").onclick = () => select(null); sh.classList.add("on"); }
+function fly(n){ map.flyTo({center:B[n].c, zoom:Math.max(map.getZoom(), 17.6), duration:900}); }
+// arama: bina adı, salon adı ya da programda yazan salon adı ("TEMEL BİLİMLER AMFİ III", "ROOM IV" …)
+function search(q){
+  const nq = norm(q), uq = trU(q); if (nq.length < 2) return [];
+  const out = [];
+  for (const n of NAMES){
+    const b = B[n];
+    if (norm(n).includes(nq)) out.push({n, s:null, score:3});
+    for (const [s] of b.salon) if (norm(s).includes(nq)) out.push({n, s, score:4});
+    if (b.ara.map(trU).some(k => uq.includes(k) || (k.length >= 4 && k.includes(uq)))) out.push({n, s:null, score:2});
+  }
+  const seen = new Set();
+  return out.sort((a, b) => b.score - a.score).filter(r => { const k = r.n + "|" + r.s; if (seen.has(k)) return false; seen.add(k); return true; }).slice(0, 8);
+}
+function pick(r){ $("sugg").classList.remove("on"); select(r.n, r.s); fly(r.n); }
+$("q").addEventListener("input", () => {
+  const res = search($("q").value), sg = $("sugg");
+  sg.innerHTML = res.map((r, i) => `<button type="button" data-i="${i}"><span>${esc(r.s || r.n)}</span>${r.s ? `<small>${esc(r.n)}${(B[r.n].salon.find(x => x[0] === r.s) || [])[1] ? " · " + esc(katTxt(B[r.n].salon.find(x => x[0] === r.s)[1])) : ""}</small>` : ""}</button>`).join("")
+    || ($("q").value.trim().length >= 2 ? `<button type="button" disabled><span>Bulunamadı</span><small>Krokide bu adla bir salon yok</small></button>` : "");
+  sg.classList.toggle("on", !!sg.innerHTML);
+  sg.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { pick(res[+b.dataset.i]); $("q").blur(); });
+});
+$("q").addEventListener("keydown", e => { if (e.key === "Enter"){ const r = search($("q").value)[0]; if (r){ pick(r); $("q").blur(); } } if (e.key === "Escape") $("sugg").classList.remove("on"); });
+document.addEventListener("click", e => { if (!e.target.closest(".srch")) $("sugg").classList.remove("on"); });
 $("b3d").onclick = () => { const on = $("b3d").getAttribute("aria-pressed") !== "true"; $("b3d").setAttribute("aria-pressed", on); $("b3d").textContent = on ? "3B" : "2B";
-  map.setLayoutProperty("b-3d", "visibility", "visible"); map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
+  map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
 $("bHome").onclick = () => map.flyTo({...HOME, pitch:$("b3d").getAttribute("aria-pressed") === "true" ? 58 : 0});
 })();
 </script>
