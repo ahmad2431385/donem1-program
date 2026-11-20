@@ -1140,6 +1140,7 @@ body[data-route="notlar"] .wrap.wide{max-width:680px}
 body[data-route="harita"] #mapView{display:flex}
 body[data-route="harita"] .wrap{max-width:1180px}
 .km-top{padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.km-src{margin:0;font-size:11.5px;line-height:1.5;color:var(--muted);padding:0 4px}.km-src a{color:var(--accent)}
 .km-note{margin:0;font-size:12.5px;color:var(--warn-ink);background:var(--warn-bg);border-radius:8px;padding:5px 9px}
 .km-srch{position:relative}
 .km-srch input{width:100%;font:inherit;font-size:16px;padding:9px 12px;border:1.5px solid var(--line);border-radius:10px;background:var(--bg);color:var(--ink)}
@@ -1429,6 +1430,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><ul id="kmLegList"></ul></details>
       <div class="km-sheet" id="kmSheet" role="status"></div>
     </div>
+    <p class="km-src"><b>Kaynaklar:</b> Bina hatları, yerleşke sınırı ve altlık harita: <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap katkıcıları</a> (ODbL lisansı) · Harita motoru: <a href="https://maplibre.org/" target="_blank" rel="noopener">MapLibre GL</a> · Bina yükseklikleri (OSM'de yazmayanlar) ve işleve göre renklendirme tahminidir.</p>
   </div>
 
   <!-- ============ Hava durumu (bağımsız sayfa) ============ -->
