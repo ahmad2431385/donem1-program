@@ -43,6 +43,15 @@ jobs:
             && mv _site/index.min.html _site/index.html \
             || echo "Küçültme başarısız; sayfa olduğu gibi yayınlanıyor."
 
+      # İkinci katman: betiklerdeki adlar ve metinler şifrelenir (kod okunamaz hâle gelir).
+      # Bir hata olursa küçültülmüş sayfa yayınlanır; site hiçbir zaman bozulmaz.
+      - name: Betikleri karıştır
+        run: |
+          npm i --no-save --no-audit --no-fund --silent javascript-obfuscator@4.1.1 \
+            && node tools/obfuscate.js _site/index.html _site/index.obf.html \
+            && mv _site/index.obf.html _site/index.html \
+            || echo "Karıştırma başarısız; küçültülmüş sayfa yayınlanıyor."
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
