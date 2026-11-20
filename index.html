@@ -3,13 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Dönem 1 Programım</title>
+<title>Programım · İstanbul Tıp</title>
 <meta name="theme-color" content="#0b6b55">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Programım">
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon-180.png">
-<link rel="icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="icon" href="icon-180.png" sizes="180x180" type="image/png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&family=Share+Tech+Mono&family=Doto:wght@800&display=swap" rel="stylesheet">
@@ -363,22 +364,39 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 /* ---------- header menu + drawer ---------- */
 .top{display:grid;grid-template-columns:1fr auto;align-items:start;gap:10px 12px}
 .top .chips{grid-column:1 / -1}
+.brand{display:flex;align-items:center;gap:11px}
+@media (min-width:1000px){body:not(.guest) .brand small{white-space:nowrap}}
+@media (min-width:700px) and (max-width:999px){body:not(.guest) .blogo{display:none}}
+.blogo{width:40px;height:40px;border-radius:11px;flex:none;box-shadow:0 3px 10px rgba(6,70,54,.22)}
+@media (max-width:360px){.blogo{width:34px;height:34px;border-radius:9px}}
 .menubtn{position:relative;width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--surface);display:grid;place-items:center;color:var(--ink);flex:none}
 .menubtn:hover{border-color:var(--accent)}
 .menubtn[data-live="1"]::after{content:"";position:absolute;top:7px;right:7px;width:10px;height:10px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 2px var(--surface)}
 .drawer-scrim{position:fixed;inset:0;background:rgba(5,15,12,.5);z-index:60;opacity:0;transition:opacity .2s}
 .drawer-scrim.show{opacity:1}
-.drawer{position:fixed;top:0;right:0;bottom:0;width:min(330px,88vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);z-index:61;transform:translateX(104%);visibility:hidden;transition:transform .25s ease,visibility .25s;display:flex;flex-direction:column;gap:6px;padding:max(16px,env(safe-area-inset-top)) 14px 16px}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(330px,88vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:var(--shadow);z-index:61;transform:translateX(104%);visibility:hidden;transition:transform .25s ease,visibility .25s;display:flex;flex-direction:column;gap:3px;overflow-y:auto;padding:max(14px,env(safe-area-inset-top)) 14px max(14px,env(safe-area-inset-bottom))}
 .drawer.open{transform:none;visibility:visible}
-.drawer .dh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
-.drawer .dh b{font-family:var(--display);font-size:19px}
-.drawer .di{display:flex;align-items:center;gap:12px;padding:12px;border-radius:13px;border:1px solid transparent;color:var(--ink);background:none;text-align:left;width:100%}
+.drawer .dh{display:flex;align-items:center;gap:12px;padding:4px 2px 14px;margin:0 -14px 4px;padding-inline:16px;border-bottom:1px solid var(--line)}
+.drawer .dlogo{width:42px;height:42px;border-radius:11px;flex:none;box-shadow:0 3px 10px rgba(6,70,54,.25)}
+.drawer .dname{flex:1;min-width:0}
+.drawer .dname b{display:block;font-family:var(--display);font-size:18px;line-height:1.15}
+.drawer .dname small{display:block;font-size:12px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.drawer .dh .x{flex:none}
+.drawer .dsec{margin:10px 6px 2px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.drawer .di{position:relative;display:flex;align-items:center;gap:12px;padding:10px 10px;border-radius:14px;border:1px solid transparent;color:var(--ink);background:none;text-align:left;width:100%;text-decoration:none;transition:background .15s}
 .drawer .di:hover{background:var(--bg)}
-.drawer .di .ic{font-size:24px;width:34px;text-align:center;flex:none}
-.drawer .di b{display:block;font-size:15.5px}
-.drawer .di small{display:block;color:var(--muted);font-size:12.5px;font-weight:500}
-.drawer .di[aria-current="page"]{background:var(--accent-soft);border-color:color-mix(in srgb,var(--accent) 35%,transparent)}
-.drawer .dfoot{margin-top:auto;font-size:12px;color:var(--muted);padding:8px 4px}
+.drawer .di:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.drawer .di .ic{width:38px;height:38px;border-radius:11px;flex:none;display:grid;place-items:center;color:var(--c);background:color-mix(in srgb,var(--c) 14%,transparent)}
+.drawer .di .dt{flex:1;min-width:0}
+.drawer .di b{display:block;font-size:15px;line-height:1.25}
+.drawer .di small{display:block;color:var(--muted);font-size:12px;font-weight:500;line-height:1.35}
+.drawer .di .dch{flex:none;color:var(--muted);opacity:.7}
+.drawer .di[aria-current="page"]{background:var(--accent-soft)}
+.drawer .di[aria-current="page"]::before{content:"";position:absolute;left:-4px;top:12px;bottom:12px;width:4px;border-radius:4px;background:var(--accent)}
+.drawer .di[aria-current="page"] .dch{color:var(--accent);opacity:1}
+.drawer .dfoot{margin-top:auto;padding:12px 6px 0;border-top:1px solid var(--line);display:grid;gap:6px}
+.drawer .dfoot a{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--accent);text-decoration:none}
+.drawer .dfoot small{font-size:11.5px;color:var(--muted)}
 @media (prefers-reduced-motion: reduce){.drawer,.drawer-scrim{transition:none}}
 
 /* ---------- route switching ---------- */
@@ -1172,7 +1190,7 @@ body.km-lock{overflow:hidden}
 .km-sheet li{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-top:1px solid var(--line)}
 .km-sheet li small{flex:none;color:var(--muted);font-weight:600}
 .km-sheet li.hit{color:var(--accent);font-weight:600}
-#kmMap .maplibregl-ctrl-attrib{font-size:10.5px}
+
 body[data-route="hava"] #wxView{display:flex}
 body[data-route="hava"] #who{display:none !important}
 body[data-route="hava"] .wrap.wide{max-width:680px}
@@ -1270,9 +1288,9 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 <div class="wrap" id="wrap">
 
   <header class="top">
-    <div class="brand">
-      <small id="brandSmall">İstanbul Tıp</small>
-      <h1 id="brandTitle">Programım</h1>
+    <div class="brand"><img class="blogo" src="icon.svg" width="40" height="40" alt="">
+      <div><small id="brandSmall">İstanbul Tıp</small>
+      <h1 id="brandTitle">Programım</h1></div>
     </div>
     <nav class="tabbar" id="tabbar" aria-label="Bölümler">
       <button type="button" data-go="program" aria-current="page"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg><span>Program</span></button>
@@ -1521,13 +1539,15 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 
 <div class="drawer-scrim" id="drawerScrim" hidden></div>
 <nav class="drawer" id="drawer" aria-label="Ana menü" inert>
-  <div class="dh"><b>Menü</b><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
-  <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" aria-hidden="true">📅</span><span><b>Ders programım</b><small>Günlük ve haftalık program</small></span></button>
-  <button class="di" type="button" data-go="notlar"><span class="ic" aria-hidden="true">🧮</span><span><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span></button>
-  <button class="di" type="button" data-go="hava"><span class="ic" aria-hidden="true">🌤️</span><span><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span></button>
-  <button class="di" type="button" data-go="harita"><span class="ic" aria-hidden="true">🗺️</span><span><b>Yerleşke haritası</b><small>Çapa: binalar, amfiler ve salonlar (3B)</small></span></button>
-  <a class="di" href="https://ahmad2431385.github.io/studydoro/" style="text-decoration:none"><span class="ic" aria-hidden="true">⏱</span><span><b>Odak sayacı ↗</b><small>Studydoro: Pomodoro, grafik, sesler</small></span></a>
-  <div class="dfoot">Odak sayacı artık ayrı bir sitede: Studydoro. Çalışma kayıtların ve ayarların aynen orada.</div>
+  <div class="dh"><img class="dlogo" src="icon.svg" width="42" height="42" alt=""><span class="dname"><b>Programım</b><small id="drawerSub">İstanbul Tıp Fakültesi</small></span><button class="x" id="drawerClose" type="button" aria-label="Menüyü kapat"><svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button></div>
+  <p class="dsec">Bölümler</p>
+  <button class="di" type="button" data-go="program" aria-current="page"><span class="ic" style="--c:#12936f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg></span><span class="dt"><b>Ders programım</b><small>Günlük ve haftalık program</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="di" type="button" data-go="notlar"><span class="ic" style="--c:#2f6fd0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="dt"><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="di" type="button" data-go="hava"><span class="ic" style="--c:#d49a1f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.5 8h1M4.1 4.1l.7.7M11.9 4.1l-.7.7"/><path d="M9.5 19.5h7.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.3A3 3 0 0 0 9.5 19.5z"/></svg></span><span class="dt"><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="di" type="button" data-go="harita"><span class="ic" style="--c:#8b5cc8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg></span><span class="dt"><b>Yerleşke haritası</b><small>Çapa: binalar, amfiler ve salonlar (3B)</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <p class="dsec">Araçlar</p>
+  <a class="di" href="https://ahmad2431385.github.io/studydoro/"><span class="ic" style="--c:#e2734a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></span><span class="dt"><b>Odak sayacı</b><small>Studydoro: Pomodoro, grafik, sesler · ayrı sitede</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 3.5H3.5v9h9v-3M9 2.5h4.5V7M13.5 2.5 7.5 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <div class="dfoot"><a href="#contact" id="drawerContact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Hata bildir · öneride bulun</span></a></div>
 </nav>
 
 <div class="scrim" id="scrim" hidden>
@@ -1970,7 +1990,7 @@ function fold(line){ const out=[]; let s=line; while (s.length > 74){ out.push(s
 function buildIcs(items){
   const z = (d,t) => { const [h,m] = t.split(":").map(Number); return new Date(Date.UTC(+d.slice(0,4), +d.slice(5,7)-1, +d.slice(8,10), h-3, m)).toISOString().replace(/[-:]/g,"").slice(0,15)+"Z"; };
   const stamp = new Date().toISOString().replace(/[-:]/g,"").slice(0,15)+"Z";
-  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Donem1 Programim//TR","CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Dönem 1 Programım","X-WR-TIMEZONE:Europe/Istanbul"];
+  const L = ["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//Programim Istanbul Tip//TR","CALSCALE:GREGORIAN","METHOD:PUBLISH","X-WR-CALNAME:Dönem " + (window.PROG_DONEM || 1) + " Programım","X-WR-TIMEZONE:Europe/Istanbul"];
   for (const x of items){
     if (!x.s || !x.e) continue;
     const uid = (x.date + x.s + x.title).replace(/[^\wçğıöşüÇĞİÖŞÜ]/g,"").slice(0,60) + "@donem1";
@@ -3270,7 +3290,7 @@ try { $("kmLeg").open = localStorage.getItem("kampus_leg") !== "0" && innerWidth
 const trU = t => String(t).toLocaleUpperCase("tr").replace(/İ/g, "I").replace(/\s+/g, " ").trim();
 const norm = t => String(t).toLocaleLowerCase("tr").normalize("NFC").replace(/ı/g, "i").replace(/[^a-zçğiöşü0-9]/g, "");
 const katTxt = k => !k ? "" : k === "Z" ? "Zemin kat" : /^-/.test(k) ? `${k}. kat (bodrum)` : `${k}. kat`;
-let D = null, B = {}, NAMES = [], map = null, HOME = null, cur = null, raf = 0, started = false, pending = null;
+let ready = false, D = null, B = {}, NAMES = [], map = null, HOME = null, cur = null, raf = 0, started = false, pending = null;
 const LBL = [];
 const active = () => document.body.dataset.route === "harita";
 // harita kutusu ekranın kalanını doldurur (telefonda alttaki sekmelerin üstünde biter)
@@ -3296,11 +3316,11 @@ async function start(){
 }
 function build(){
   const ring = D.kampus, cx = ring.reduce((a,p) => a + p[0], 0) / ring.length, cy = ring.reduce((a,p) => a + p[1], 0) / ring.length;
-  HOME = {center:[cx, cy], zoom:17.2, pitch:58, bearing:-35};
+  HOME = {center:[cx, cy], zoom:16, pitch:55, bearing:-3};
   map = new maplibregl.Map({
-    container:"kmMap", ...HOME, maxPitch:75, minZoom:15, attributionControl:{compact:true}, cooperativeGestures:false,
+    container:"kmMap", ...HOME, maxPitch:75, minZoom:14, attributionControl:false, cooperativeGestures:false,
     style:{version:8, sources:{osm:{type:"raster", tiles:["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], tileSize:256, maxzoom:19,
-      attribution:'© <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap katkıcıları</a> · İTF krokisi'}},
+}},
       layers:[{id:"bg", type:"background", paint:{"background-color":css("--bg")}}, {id:"osm", type:"raster", source:"osm", paint:{"raster-opacity":.8, "raster-saturation":-.7}}]}
   });
   map.addControl(new maplibregl.NavigationControl({visualizePitch:true}), "bottom-left");
@@ -3328,8 +3348,25 @@ function build(){
     map.on("mouseenter", "b-3d", () => map.getCanvas().style.cursor = "pointer");
     map.on("mouseleave", "b-3d", () => map.getCanvas().style.cursor = "");
     map.on("move", declutter); map.on("resize", declutter); declutter();
+    ready = true; reset();
     if (pending){ const r = search(pending)[0]; pending = null; if (r) pick(r); }
   });
+}
+// varsayılan görünüm: kuzey yukarıda, eğik bakış, yerleşkenin tamamı ekrana sığar (telefon, tablet, bilgisayar)
+// Harita sekmesi her açıldığında bu görünüme döner; kullanıcının döndürmesi/yakınlaştırması saklanmaz.
+function homeCam(){
+  const r = D.kampus, xs = r.map(p => p[0]), ys = r.map(p => p[1]);
+  const el = $("kmMap"), w = el.clientWidth, h = el.clientHeight;
+  const pad = {top:Math.round(h * .06), bottom:Math.round(h * .14) + 40, left:Math.round(w * .04), right:Math.round(w * .04) + 50};
+  const c = map.cameraForBounds([[Math.min(...xs), Math.min(...ys)], [Math.max(...xs), Math.max(...ys)]], {bearing:HOME.bearing, padding:pad});
+  return c ? {center:c.center, zoom:Math.min(17.5, c.zoom + (w < 520 ? .7 : .25)), bearing:HOME.bearing, pitch:HOME.pitch} : HOME;
+}
+function reset(){
+  if (!ready) return;
+  select(null);
+  $("kmB3d").setAttribute("aria-pressed", "true"); $("kmB3d").textContent = "3B";
+  map.setPaintProperty("b-3d", "fill-extrusion-height", ["get", "h"]);
+  map.resize(); map.jumpTo(homeCam()); declutter();
 }
 function declutter(){
   if (raf || !map) return;
@@ -3391,8 +3428,8 @@ $("kmQ").addEventListener("input", () => {
 $("kmQ").addEventListener("keydown", e => { if (e.key === "Enter" && map){ const r = search($("kmQ").value)[0]; if (r){ pick(r); $("kmQ").blur(); } } if (e.key === "Escape") $("kmSugg").classList.remove("on"); });
 document.addEventListener("click", e => { if (!e.target.closest(".km-srch")) $("kmSugg").classList.remove("on"); });
 $("kmB3d").onclick = () => { if (!map) return; const on = $("kmB3d").getAttribute("aria-pressed") !== "true"; $("kmB3d").setAttribute("aria-pressed", on); $("kmB3d").textContent = on ? "3B" : "2B";
-  map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? 58 : 0, duration:600}); };
-$("kmHome").onclick = () => { if (map) map.flyTo({...HOME, pitch:$("kmB3d").getAttribute("aria-pressed") === "true" ? 58 : 0}); };
+  map.setPaintProperty("b-3d", "fill-extrusion-height", on ? ["get", "h"] : 0.5); map.easeTo({pitch:on ? HOME.pitch : 0, duration:600}); };
+$("kmHome").onclick = () => { if (map) map.flyTo({...homeCam(), pitch:$("kmB3d").getAttribute("aria-pressed") === "true" ? HOME.pitch : 0}); };
 // büyüt / küçült (sayaçtaki gibi): önce gerçek tam ekran, olmazsa ekranı kaplayan görünüm
 const W = $("kmWrap"), fsEl = () => document.fullscreenElement || document.webkitFullscreenElement;
 const isBig = () => fsEl() === W || W.classList.contains("km-big");
@@ -3419,8 +3456,9 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && isBig()) s
 // başka bölüme geçilince büyütme kapanır
 new MutationObserver(() => { if (!active() && isBig()) setBig(false); }).observe(document.body, {attributes:true, attributeFilter:["data-route"]});
 // başka bölümlerden çağrılabilir: salonu haritada göster (ör. programdaki "Sami Zan Amfisi")
-window.kampusBul = q => { if (map && map.loaded()){ const r = search(q)[0]; if (r) pick(r); } else pending = q; };
-const ensure = () => { if (active()){ start(); requestAnimationFrame(fit); } };
+window.kampusBul = q => { if (ready){ const r = search(q)[0]; if (r) pick(r); } else pending = q; };
+let was = false;
+const ensure = () => { const a = active(), fresh = a && !was; was = a; if (a){ start(); requestAnimationFrame(() => { fit(); if (fresh) reset(); }); } };
 new MutationObserver(ensure).observe(document.body, {attributes:true, attributeFilter:["data-route"]});
 addEventListener("resize", () => requestAnimationFrame(fit));
 ensure();
@@ -3455,6 +3493,7 @@ window.addEventListener("hashchange", routeFromHash);
 new MutationObserver(routeFromHash).observe(document.body, {attributes:true, attributeFilter:["class"]});
 routeFromHash();
 function openDrawer(){
+  $("drawerSub").textContent = (!guest() && brandS.dataset.prog) || "İstanbul Tıp Fakültesi";
   scrim.hidden = false; requestAnimationFrame(() => scrim.classList.add("show"));
   drawer.classList.add("open"); drawer.removeAttribute("inert"); menuBtn.setAttribute("aria-expanded", "true");
   setTimeout(() => { const c = drawer.querySelector('[aria-current="page"]') || drawer.querySelector(".di"); if (c) c.focus(); }, 60);
@@ -3467,6 +3506,7 @@ function closeDrawer(focusBack){
 menuBtn.addEventListener("click", () => drawer.classList.contains("open") ? closeDrawer(true) : openDrawer());
 scrim.addEventListener("click", () => closeDrawer(true));
 $("drawerClose").addEventListener("click", () => closeDrawer(true));
+$("drawerContact").addEventListener("click", e => { e.preventDefault(); closeDrawer(false); const c = $("contact"); if (c && c.offsetParent) c.scrollIntoView({behavior:"smooth", block:"start"}); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer(true); });
 const onGo = e => {
   const b = e.target.closest("[data-go]"); if (!b) return;

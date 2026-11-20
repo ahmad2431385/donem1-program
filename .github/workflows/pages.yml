@@ -29,7 +29,7 @@ jobs:
       - name: Site dosyalarını hazırla
         run: |
           mkdir _site
-          cp index.html data.json desc.json manifest.json icon-180.png icon-512.png .nojekyll _site/
+          cp index.html data.json desc.json manifest.json icon-180.png icon-512.png icon-maskable-512.png icon.svg .nojekyll _site/
           for f in ogr.json d2.json d3.json d4.json d5.json kampus.json; do [ -f "$f" ] && cp "$f" _site/; done
           [ -d img ] && cp -r img _site/ || true
 
