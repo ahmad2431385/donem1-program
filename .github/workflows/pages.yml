@@ -30,7 +30,7 @@ jobs:
         run: |
           mkdir _site
           cp index.html data.json desc.json manifest.json icon-180.png icon-512.png .nojekyll _site/
-          for f in ogr.json d2.json d3.json d4.json d5.json kampus.html kampus.json; do [ -f "$f" ] && cp "$f" _site/; done
+          for f in ogr.json d2.json d3.json d4.json d5.json kampus.json; do [ -f "$f" ] && cp "$f" _site/; done
           [ -d img ] && cp -r img _site/ || true
 
       # Yayınlanan sayfa küçültülür ve kod karıştırılır (okunması zorlaşır).
