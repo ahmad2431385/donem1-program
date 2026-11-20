@@ -48,6 +48,15 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1
 .sugg button small{color:var(--muted);font-size:12px}
 .sugg button:hover,.sugg button:focus{background:var(--accent-soft);outline:none}
 .lbl{border-left:5px solid var(--c, var(--accent))}
+.leg{position:absolute;z-index:3;left:56px;bottom:calc(28px + env(safe-area-inset-bottom));max-width:calc(100% - 140px);padding:0;font-size:12.5px}
+.leg summary{list-style:none;cursor:pointer;padding:8px 12px;font-weight:600;display:flex;align-items:center;gap:8px}
+.leg summary::-webkit-details-marker{display:none}
+.leg summary .dots{display:flex;gap:3px}
+.leg summary .dots i,.leg li i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
+.leg ul{list-style:none;margin:0;padding:0 12px 10px;display:flex;flex-direction:column;gap:5px}
+.leg li{display:flex;align-items:center;gap:8px}
+.leg li i.yap{background-image:repeating-linear-gradient(45deg,rgba(0,0,0,.25) 0 2px,transparent 2px 5px)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;border-radius:999px;padding:2px 9px;margin:6px 0 0 20px;color:#fff}
 .lbl.hide{visibility:hidden}
 .maplibregl-ctrl-attrib{font-size:10.5px}
 </style>
@@ -59,7 +68,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1
   <div class="card title">
     <small>İstanbul Tıp · Çapa</small>
     <h1>Yerleşke haritası</h1>
-    <p>Deneme sürümü: bina adları ve salonlar İTF krokisinden; yükseklikler tahmini.</p>
+    <p>Deneme sürümü: bina adları ve salonlar İTF krokisinden; renkler binanın işlevini gösterir; yükseklikler tahmini.</p>
     <div class="srch"><input id="q" type="search" placeholder="Salon ya da bina ara (ör. Sami Zan, Room IV)" autocomplete="off" aria-label="Salon ya da bina ara"><div class="sugg" id="sugg" role="listbox"></div></div>
   </div>
 </div>
@@ -67,6 +76,7 @@ html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1
   <button type="button" id="b3d" aria-pressed="true">3B</button>
   <button type="button" id="bHome" aria-label="Yerleşkeye dön">⌂</button>
 </div>
+<details class="card leg" id="leg"><summary><span class="dots" id="legDots"></span>Renkler</summary><ul id="legList"></ul></details>
 <div class="card sheet" id="sheet" role="status"></div>
 <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
 <script>
@@ -77,6 +87,22 @@ const esc = s => String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">"
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
 const D = await (await fetch("kampus.json")).json();
 const B = D.binalar, NAMES = Object.keys(B);
+// binalar işlevine göre renklenir: hastane ve üniversite (eğitim) binaları ilk bakışta ayırt edilsin
+const TUR = {
+  egitim:   {ad:"Eğitim (amfi, derslik, laboratuvar)", renk:"#12936f"},
+  hastane:  {ad:"Hastane ve sağlık hizmetleri", renk:"#2f6fd0"},
+  arastirma:{ad:"Araştırma merkezi", renk:"#8b5cc8"},
+  idari:    {ad:"İdari bina", renk:"#d49a1f"},
+  sosyal:   {ad:"Öğrenci ve sosyal alan", renk:"#e2734a"},
+  yapim:    {ad:"Yapımda ya da kullanılmıyor", renk:"#9aa2a7"},
+  kampus:   {ad:"Yerleşke binası (adı krokide yok)", renk:"#b7c4be"},
+  dis:      {ad:"Yerleşke dışı", renk:"#d3d8d6"}
+};
+const LEG = ["egitim", "hastane", "arastirma", "idari", "sosyal", "yapim"];
+$("legDots").innerHTML = LEG.map(t => `<i style="background:${TUR[t].renk}"></i>`).join("");
+$("legList").innerHTML = LEG.map(t => `<li><i class="${t === "yapim" ? "yap" : ""}" style="background-color:${TUR[t].renk}"></i>${esc(TUR[t].ad)}</li>`).join("")
+  + `<li><i style="background:${TUR.dis.renk}"></i>${esc(TUR.dis.ad)}</li>`;
+try { $("leg").open = localStorage.getItem("kampus_leg") !== "0" && innerWidth >= 700; $("leg").addEventListener("toggle", () => localStorage.setItem("kampus_leg", $("leg").open ? "1" : "0")); } catch(e){}
 // kaynaklarda İ/I ve ı/i karışık yazılabiliyor ("DAHILI BIL."): karşılaştırmada ikisi aynı sayılır
 const trU = t => String(t).toLocaleUpperCase("tr").replace(/İ/g, "I").replace(/\s+/g, " ").trim();
 const norm = t => String(t).toLocaleLowerCase("tr").normalize("NFC").replace(/ı/g, "i").replace(/[^a-zçğiöşü0-9]/g, "");
@@ -97,13 +123,14 @@ map.on("load", () => {
   map.addLayer({id:"k-fill", type:"fill", source:"k", paint:{"fill-color":css("--accent"), "fill-opacity":.08}});
   map.addLayer({id:"k-line", type:"line", source:"k", paint:{"line-color":css("--accent"), "line-width":2.5, "line-dasharray":[2,1.2]}});
   map.addLayer({id:"b-3d", type:"fill-extrusion", source:"b", paint:{
-    "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#ff7a1a", ["get", "renk"]],
+    "fill-extrusion-color":["case", ["boolean", ["feature-state", "sel"], false], "#ff8a1f",
+      ["match", ["get", "tur"], ...Object.entries(TUR).flatMap(([k, v]) => [k, v.renk]), TUR.dis.renk]],
     "fill-extrusion-height":["get", "h"], "fill-extrusion-base":0, "fill-extrusion-opacity":.92}});
   // etiketler: salonu olan binalar önce, çakışan etiketler gizlenir
   const order = NAMES.slice().sort((a, b) => (B[b].salon.length > 0) - (B[a].salon.length > 0));
   for (const n of order){
     const el = document.createElement("button"); el.type = "button"; el.className = "lbl"; el.textContent = n.replace(/ \((yapım aşamasında|bitmek üzere|yıkılacak|tadilatta)\)/, "");
-    el.style.setProperty("--c", B[n].renk); el.title = n;
+    el.style.setProperty("--c", TUR[B[n].tur].renk); el.title = n;
     el.onclick = e => { e.stopPropagation(); select(n); };
     const mk = new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat(B[n].c).addTo(map);
     LBL.push({n, el, mk});
@@ -136,17 +163,19 @@ function select(n, room){
   if (cur) for (const f of D.features) if (f.properties.b === cur) map.setFeatureState({source:"b", id:f.id}, {sel:false});
   LBL.forEach(L => L.el.classList.toggle("sel", L.n === n));
   cur = n; const sh = $("sheet");
+  $("leg").hidden = !!n;   // bilgi kartı açıkken renk açıklaması gizlenir (aynı yeri kullanıyorlar)
   if (!n){ sh.classList.remove("on"); declutter(); return; }
   for (const f of D.features) if (f.properties.b === n) map.setFeatureState({source:"b", id:f.id}, {sel:true});
   const b = B[n];
-  const meta = [b.yapim ? "Yapım aşamasında" : "", b.kroki ? "Konum krokiden, yaklaşık" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
-  sh.innerHTML = `<div class="hd"><i style="background:${b.renk}"></i><b>${esc(n)}</b><button class="x" type="button" aria-label="Kapat">×</button></div>
+  const meta = [n.startsWith("Dahiliye") ? "İçinde Prof. Dr. Murat Dilmener Eğitim Bloğu" : "", b.kroki ? "Konum krokiden, yaklaşık" : "", "Kat yükseklikleri tahmini"].filter(Boolean).join(" · ");
+  sh.innerHTML = `<div class="hd"><i style="background:${TUR[b.tur].renk}"></i><b>${esc(n)}</b><button class="x" type="button" aria-label="Kapat">×</button></div>
+    <span class="chip" style="background:${TUR[b.tur].renk}">${esc(TUR[b.tur].ad)}</span>
     <div class="meta">${esc(meta)}</div>`
     + (b.salon.length ? `<ul>${b.salon.map(([s, k]) => `<li class="${room && room === s ? "hit" : ""}"><span>${esc(s)}</span><small>${esc(katTxt(k))}</small></li>`).join("")}</ul>` : "");
   sh.querySelector(".x").onclick = () => select(null);
   sh.classList.add("on"); declutter();
 }
-function info(p){ select(null); const sh = $("sheet"); sh.innerHTML = `<div class="hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="x" type="button" aria-label="Kapat">×</button></div><div class="meta">${p.k ? "Krokide adı yok" : ""}</div>`; sh.querySelector(".x").onclick = () => select(null); sh.classList.add("on"); }
+function info(p){ select(null); $("leg").hidden = true; const sh = $("sheet"); sh.innerHTML = `<div class="hd"><b>${p.k ? "Yerleşke binası" : "Yerleşke dışında"}</b><button class="x" type="button" aria-label="Kapat">×</button></div><div class="meta">${p.k ? "Krokide adı yok" : ""}</div>`; sh.querySelector(".x").onclick = () => select(null); sh.classList.add("on"); }
 function fly(n){ map.flyTo({center:B[n].c, zoom:Math.max(map.getZoom(), 17.6), duration:900}); }
 // arama: bina adı, salon adı ya da programda yazan salon adı ("TEMEL BİLİMLER AMFİ III", "ROOM IV" …)
 function search(q){
