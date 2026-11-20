@@ -1180,6 +1180,8 @@ body.km-lock{overflow:hidden}
 .km-leg{left:52px;bottom:28px;max-width:calc(100% - 130px);font-size:12.5px}
 .km-leg summary{list-style:none;cursor:pointer;padding:8px 12px;font-weight:600;display:flex;align-items:center;gap:8px}
 .km-leg summary::-webkit-details-marker{display:none}
+.km-legx{display:none;position:absolute;top:5px;right:6px;width:28px;height:28px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);place-items:center;cursor:pointer;padding:0}
+.km-leg[open] .km-legx{display:grid}.km-leg[open] summary{padding-right:44px}
 .km-dots{display:flex;gap:3px}
 .km-dots i,.km-leg li i{width:10px;height:10px;border-radius:3px;display:inline-block;flex:none}
 .km-leg ul{list-style:none;margin:0;padding:0 12px 10px;display:flex;flex-direction:column;gap:5px}
@@ -1199,6 +1201,28 @@ body.km-lock{overflow:hidden}
 .km-sheet li.hit{color:var(--accent);font-weight:600}
 
 body[data-route="hava"] #wxView{display:flex}
+#tmView{display:none;flex-direction:column;gap:10px}
+body[data-route="sayac"] #tmView{display:flex}
+body[data-route="sayac"] .wrap{max-width:1180px}
+.tmh-nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:4px;align-self:center;max-width:100%}
+.tmh-nav::-webkit-scrollbar{display:none}
+.tmh-nav button{flex:none;border:none;background:none;color:var(--muted);font:600 13.5px var(--body,inherit);padding:7px 13px;border-radius:9px;cursor:pointer}
+@media (max-width:420px){.tmh-nav{align-self:stretch}.tmh-nav button{flex:1 1 auto;padding:7px 6px;font-size:13px}}
+.tmh-nav button[aria-current="page"]{background:var(--accent-soft);color:var(--accent)}
+.tmh{position:relative;height:var(--tmh,640px);min-height:320px}
+.tmh iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color-scheme:normal}
+.tmh-msg{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:14px}
+.tmh-msg[hidden]{display:none}
+body.tmh-big .tmh{position:fixed;inset:0;z-index:70;height:100dvh;min-height:0;background:#000}
+body.tmh-big{overflow:hidden}
+.tmh-pill{position:fixed;z-index:24;right:14px;bottom:calc(84px + env(safe-area-inset-bottom));display:flex;align-items:center;gap:8px;border:1px solid color-mix(in srgb,var(--accent) 40%,transparent);background:var(--surface);color:var(--ink);border-radius:999px;padding:8px 14px;font:600 14px var(--body,inherit);box-shadow:0 6px 20px rgba(0,0,0,.18);cursor:pointer}
+.tmh-pill[hidden]{display:none}
+.tmh-pill .pd{width:8px;height:8px;border-radius:50%;background:var(--accent);animation:tmhp 1.4s ease-in-out infinite}
+.tmh-pill[data-p="1"] .pd{animation:none;background:var(--muted)}
+.tmh-pill b{font-variant-numeric:tabular-nums}
+@keyframes tmhp{50%{opacity:.25}}
+@media (min-width:700px){.tmh-pill{bottom:20px}}
+body.guest .tmh-pill{display:none}
 body[data-route="hava"] #who{display:none !important}
 body[data-route="hava"] .wrap.wide{max-width:680px}
 #hvMain{display:flex;flex-direction:column;gap:12px}
@@ -1304,7 +1328,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button type="button" data-go="notlar"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg><span>Sınav·Not</span></button>
       <button type="button" data-go="hava"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.500 8h1M4.100 4.100l.7.7M11.900 4.100l-.7.7"/><path d="M9.500 19.500h7.500a3.500 3.500 0 0 0 .4-7 5 5 0 0 0-9.600 1.300A3 3 0 0 0 9.500 19.500z"/></svg><span>Hava</span></button>
       <button type="button" data-go="harita"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg><span>Harita</span></button>
-      <a href="https://ahmad2431385.github.io/studydoro/"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg><span>Sayaç</span></a>
+      <button type="button" data-go="sayac"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg><span>Sayaç</span></button>
     </nav>
     <button class="menubtn" id="menuBtn" type="button" aria-label="Menüyü aç" aria-haspopup="true" aria-expanded="false" aria-controls="drawer"><svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><path d="M3 6h16M3 11h16M3 16h16" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button>
     <div class="chips" id="who" hidden></div>
@@ -1433,7 +1457,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <div class="km-srch"><input id="kmQ" type="search" placeholder="Salon ya da bina ara" autocomplete="off" aria-label="Salon ya da bina ara"><div class="km-sugg" id="kmSugg" role="listbox"></div></div>
       <div class="km-msg" id="kmMsg">Harita yükleniyor…</div>
       <div class="km-ctl"><button type="button" id="kmFull" class="km-fs" aria-pressed="false" aria-label="Haritayı büyüt" title="Büyüt"><svg class="ex" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 8V3h5M17 8V3h-5M3 12v5h5M17 12v5h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="cx" width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M8 3v5H3M12 3v5h5M8 17v-5H3M12 17v-5h5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button type="button" id="kmB3d" aria-pressed="true">3B</button><button type="button" id="kmHome" aria-label="Yerleşkeye dön">⌂</button></div>
-      <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><ul id="kmLegList"></ul></details>
+      <details class="km-leg" id="kmLeg"><summary><span class="km-dots" id="kmLegDots"></span>Renkler</summary><button type="button" class="km-legx" id="kmLegX" aria-label="Renkleri kapat" title="Kapat"><svg width="12" height="12" viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2l10 10M12 2 2 12" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg></button><ul id="kmLegList"></ul></details>
       <div class="km-sheet" id="kmSheet" role="status"></div>
     </div>
   </div>
@@ -1538,6 +1562,14 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   </div>
 
   <!-- her sayfanın altında (giriş, program, sınav-not, hava): hata bildirimi ve öneri -->
+  <div id="tmView">
+    <nav class="tmh-nav" id="tmNav" aria-label="Odak sayacı bölümleri">
+      <button type="button" data-go="sayac">Sayaç</button><button type="button" data-go="sayac/grafik">Grafik</button><button type="button" data-go="sayac/gorunum">Görünüm</button><button type="button" data-go="sayac/ses">Ses</button><button type="button" data-go="sayac/ayar">Ayarlar</button>
+    </nav>
+    <div class="tmh" id="tmHost"><div class="tmh-msg" id="tmMsg">Sayaç yükleniyor…</div></div>
+  </div>
+  <button class="tmh-pill" id="tmhPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmhPillT"></b></button>
+
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
@@ -1552,8 +1584,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <button class="di" type="button" data-go="notlar"><span class="ic" style="--c:#2f6fd0"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5M4 19h16M8 16v-5M12 16V8M16 16v-3"/></svg></span><span class="dt"><b>Sınavlar ve notlar</b><small>Yaklaşan sınavlar, not hesaplama, AGNO</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="di" type="button" data-go="hava"><span class="ic" style="--c:#d49a1f"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 2.5v1M2.5 8h1M4.1 4.1l.7.7M11.9 4.1l-.7.7"/><path d="M9.5 19.5h7.5a3.5 3.5 0 0 0 .4-7 5 5 0 0 0-9.6 1.3A3 3 0 0 0 9.5 19.5z"/></svg></span><span class="dt"><b>Hava durumu</b><small>Türkiye, il ve ilçe: saatlik, haftalık, 14 günlük</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <button class="di" type="button" data-go="harita"><span class="ic" style="--c:#8b5cc8"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4Z"/><path d="M9 4v14M15 6v14"/></svg></span><span class="dt"><b>Yerleşke haritası</b><small>Çapa: binalar, amfiler ve salonlar (3B)</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-  <p class="dsec">Araçlar</p>
-  <a class="di" href="https://ahmad2431385.github.io/studydoro/"><span class="ic" style="--c:#e2734a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></span><span class="dt"><b>Odak sayacı</b><small>Studydoro: Pomodoro, grafik, sesler · ayrı sitede</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M6.5 3.5H3.5v9h9v-3M9 2.5h4.5V7M13.5 2.5 7.5 8.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <button class="di" type="button" data-go="sayac"><span class="ic" style="--c:#e2734a"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></span><span class="dt"><b>Odak sayacı</b><small>Pomodoro, çalışma grafiği, arka plan sesleri</small></span><svg class="dch" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="m6 3.5 4.5 4.5L6 12.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="dfoot"><a href="#contact" id="drawerContact"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/></svg><span>Hata bildir · öneride bulun</span></a></div>
 </nav>
 
@@ -3428,7 +3459,7 @@ $("kmQ").addEventListener("input", () => {
   const res = search($("kmQ").value), sg = $("kmSugg");
   const kat = r => { const x = B[r.n].salon.find(x => x[0] === r.s); return x && x[1] ? " · " + esc(katTxt(x[1])) : ""; };
   sg.innerHTML = res.map((r, i) => `<button type="button" data-i="${i}"><span>${esc(r.s || r.n)}</span>${r.s ? `<small>${esc(r.n)}${kat(r)}</small>` : ""}</button>`).join("")
-    || ($("kmQ").value.trim().length >= 2 ? `<button type="button" disabled><span>Bulunamadı</span><small>Bu adla bir salon ya da bina yok</small></button>` : "");
+    ;
   sg.classList.toggle("on", !!sg.innerHTML);
   sg.querySelectorAll("[data-i]").forEach(b => b.onclick = () => { pick(res[+b.dataset.i]); $("kmQ").blur(); });
 });
@@ -3463,6 +3494,7 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && isBig()) s
 // başka bölüme geçilince büyütme kapanır
 new MutationObserver(() => { if (!active() && isBig()) setBig(false); }).observe(document.body, {attributes:true, attributeFilter:["data-route"]});
 // başka bölümlerden çağrılabilir: salonu haritada göster (ör. programdaki "Sami Zan Amfisi")
+$("kmLegX").addEventListener("click", () => { $("kmLeg").open = false; });
 window.kampusBul = q => { if (ready){ const r = search(q)[0]; if (r) pick(r); } else pending = q; };
 let was = false;
 const ensure = () => { const a = active(), fresh = a && !was; was = a; if (a){ start(); requestAnimationFrame(() => { fit(); if (fresh) reset(); }); } };
@@ -3472,13 +3504,64 @@ ensure();
 })();
 </script>
 <script>
-/* ============ Menü (odak sayacı artık ayrı sitede: Studydoro) ============ */
+/* Odak sayacı (Studydoro) bu sayfanın "Sayaç" sekmesinde açılır. Aynı adreste çalıştığı için kayıtlar ve ayarlar ortaktır.
+   Sayaç ilk kez açıldığında (ya da çalışan bir sayaç varsa sayfa açılırken) yüklenir; başka sekmeye geçince arka planda çalışmayı sürdürür. */
+(() => {
+const $ = id => document.getElementById(id);
+const host = $("tmHost"), pill = $("tmhPill"), body = document.body;
+let fr = null, iw = null;
+const active = () => body.dataset.route === "sayac";
+const sub = () => active() ? (body.dataset.sub || "sayac") : "sayac";
+const guest = () => body.classList.contains("guest");
+const live = () => { for (const k of ["odak_durum", "odak_geri"]){ try { const v = JSON.parse(localStorage.getItem(k) || "null"); if (v && (v.status === "running" || v.status === "paused")) return true; } catch(e){} } return false; };
+function fit(){
+  if (!active() || body.classList.contains("tmh-big")) return;
+  const top = host.getBoundingClientRect().top + scrollY, tb = $("tabbar");
+  const below = tb && getComputedStyle(tb).position === "fixed" ? tb.offsetHeight + 12 : 16;
+  host.style.setProperty("--tmh", Math.max(320, innerHeight - top - below) + "px");
+}
+function load(){
+  if (fr) return;
+  fr = document.createElement("iframe");
+  fr.title = "Odak sayacı"; fr.allow = "fullscreen; screen-wake-lock; autoplay"; fr.setAttribute("allowfullscreen", "");
+  fr.src = "../studydoro/?gomulu=1#" + sub();
+  fr.addEventListener("load", hook);
+  host.appendChild(fr);
+}
+function hook(){
+  let d; try { iw = fr.contentWindow; d = iw.document; } catch(e){ iw = null; return; }
+  $("tmMsg").hidden = true;
+  const fromFrame = () => {   // sayaç içinde bölüm değişti (ör. küçük göstergeye basıldı)
+    const h = iw.location.hash.slice(1) || "sayac", t = d.getElementById("brandTitle");
+    window.tmhTitle = t ? t.textContent : "Odak sayacı";
+    if (active() && location.hash.slice(1) !== h){ history.replaceState(null, "", "#" + h); window.dispatchEvent(new HashChangeEvent("hashchange")); }
+    else if (active()) $("brandTitle").textContent = window.tmhTitle;
+  };
+  iw.addEventListener("hashchange", fromFrame); fromFrame();
+  new MutationObserver(() => { const on = d.body.classList.contains("tm-full"); body.classList.toggle("tmh-big", on); if (!on) requestAnimationFrame(fit); })
+    .observe(d.body, {attributes:true, attributeFilter:["class"]});
+  toFrame();
+}
+function toFrame(){ if (iw && active() && iw.location.hash.slice(1) !== sub()) iw.location.hash = "#" + sub(); }
+const ensure = () => { if (active()){ pill.hidden = true; load(); requestAnimationFrame(fit); toFrame(); } else if (!guest() && live()) load(); };
+new MutationObserver(ensure).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
+addEventListener("resize", fit); ensure();
+setInterval(() => {   // başka sekmedeyken çalışan sayaç küçük bir göstergede görünür; sayaç sekmesinde sekme başlığı sayacı izler
+  if (!iw) return;
+  let d; try { d = iw.document; } catch(e){ return; }
+  const L = live();
+  if (active()){ pill.hidden = true; if (d.title) document.title = d.title; return; }
+  pill.hidden = !L || guest();
+  if (L){ const t = d.getElementById("tmPillTime"), p = d.getElementById("tmPillPhase"), sp = d.getElementById("tmPill");
+    $("tmhPillT").textContent = (t ? t.textContent : "") + (p ? " · " + p.textContent : ""); pill.dataset.p = sp && sp.dataset.paused === "1" ? "1" : "0"; }
+}, 500);
+})();
+</script>
+<script>
+/* ============ Menü ============ */
 (function(){
 "use strict";
 // eski sayaç bağlantıları (#sayac, #sayac/grafik …) Studydoro'nun aynı sayfasına gider
-const toTimer = () => { if (location.hash.startsWith("#sayac")){ location.replace("https://ahmad2431385.github.io/studydoro/" + location.hash); return true; } return false; };
-if (toTimer()) return;
-window.addEventListener("hashchange", toTimer);
 const DOC_T = document.title;
 const $ = id => document.getElementById(id);
 const drawer = $("drawer"), scrim = $("drawerScrim"), menuBtn = $("menuBtn");
@@ -3486,15 +3569,16 @@ const brandT = $("brandTitle"), brandS = $("brandSmall"), T0 = [brandT.textConte
 const guest = () => document.body.classList.contains("guest");
 function setRoute(r){
   if (guest()) r = "program";   // giriş yapılmadan yalnız giriş sayfası
-  const own = !guest() && brandS.dataset.prog || T0[1];
-  document.body.dataset.route = r;
-  document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === r ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  const own = !guest() && brandS.dataset.prog || T0[1], full = r; r = r.split("/")[0];
+  document.body.dataset.route = r; document.body.dataset.sub = full;
+  document.querySelectorAll("[data-go]").forEach(b => b.dataset.go === full || (b.dataset.go === r && !b.closest("#tmNav")) ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   if (r === "notlar"){ brandT.textContent = "Sınavlar ve notlar"; brandS.textContent = own; document.title = "Sınavlar ve notlar · İstanbul Tıp"; }
   else if (r === "hava"){ brandT.textContent = "Hava durumu"; brandS.textContent = "Türkiye · il ve ilçe"; document.title = "Hava durumu · Türkiye"; }
+  else if (r === "sayac"){ brandT.textContent = window.tmhTitle || "Odak sayacı"; brandS.textContent = "Studydoro"; document.title = window.tmhDocTitle || "Odak sayacı · Studydoro"; }
   else if (r === "harita"){ brandT.textContent = "Yerleşke haritası"; brandS.textContent = "İstanbul Tıp · Çapa"; document.title = "Yerleşke haritası · İstanbul Tıp"; }
   else { brandT.textContent = T0[0]; brandS.textContent = own; document.title = DOC_T; }
 }
-const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : location.hash === "#harita" ? "harita" : "program");
+const routeFromHash = () => setRoute(location.hash === "#notlar" ? "notlar" : location.hash === "#hava" ? "hava" : location.hash === "#harita" ? "harita" : /^#sayac(\/(grafik|gorunum|ses|ayar))?$/.test(location.hash) ? location.hash.slice(1) : "program");
 window.addEventListener("hashchange", routeFromHash);
 // giriş / çıkış (body.guest) değişince görünen sayfa ve başlık yeniden belirlenir
 new MutationObserver(routeFromHash).observe(document.body, {attributes:true, attributeFilter:["class"]});
@@ -3522,7 +3606,7 @@ const onGo = e => {
   else { if (location.hash) history.pushState(null, "", location.pathname); setRoute("program"); }
   window.scrollTo(0, 0);
 };
-drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo);
+drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo); $("tmNav").addEventListener("click", onGo); $("tmhPill").addEventListener("click", () => onGo({target:$("tabbar").querySelector('[data-go="sayac"]')}));
 window.addEventListener("popstate", routeFromHash);
 })();
 </script>
