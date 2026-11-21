@@ -292,6 +292,8 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .links a:hover{border-color:var(--accent)}
 @media (max-width:440px){.links{grid-template-columns:1fr}}
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
+.lognote{margin:12px 0 0;font-size:12px;line-height:1.5;color:var(--muted)}
+.lognote[hidden]{display:none}
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
@@ -1366,6 +1368,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
+    <p class="lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteye her girişin ve çıkışın, ne kadar süre kaldığın, hangi bölümleri hangi sırayla açtığın, hangi düğmelere bastığın, hangi özellikleri kullandığın ve haritada neleri aradığın; sayaç kullanımın (çalışma süresi, Pomodoro sayısı, seçtiğin ayarlar); hatalı giriş denemelerinde yazdığın numara; siteye nereden geldiğin; cihaz türün, işletim sistemin, tarayıcın, ekran bilgilerin, bağlantı türün ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar ve Hava'da seçtiğin konum kaydedilmez.</p>
   </section>
 
   <!-- main -->
