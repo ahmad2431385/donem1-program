@@ -293,6 +293,7 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
+.lognote{margin:10px 0 0;font-size:12px;line-height:1.5}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
 .contact a{color:var(--accent);font-weight:600;overflow-wrap:anywhere}
@@ -1365,6 +1366,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
+    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Giriş yaptığında öğrenci numaran, dönemin, giriş zamanı ve cihaz türün (telefon, tablet, bilgisayar) site yöneticisinin yalnız kendisinin görebildiği özel bir tabloya kaydedilir. Bu bilgiler yalnız siteyi geliştirmek için kullanılır, kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz.</p>
   </section>
 
   <!-- main -->
@@ -2541,9 +2543,21 @@ function askDonem(no, ds){
 $("loginErr").addEventListener("click", async e => {
   const b = e.target.closest("[data-pd]"); if (!b || !pendingNo) return;
   const r = await login(pendingNo, +b.dataset.pd);
-  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); }
+  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); girisKaydi("giriş"); }
   else if (r && r.error) $("loginErr").textContent = r.error;
 });
+/* giriş kaydı: yalnız site yöneticisinin özel tablosuna (Google E-Tablosu); adres boşsa hiçbir şey gönderilmez */
+const LOG_URL = "";
+$("logNote").hidden = !LOG_URL;
+function girisKaydi(olay){
+  if (!LOG_URL || !me) return;
+  const gun = istNow().date;
+  if (olay === "ziyaret" && store.get("kayitGun") === gun + me.no) return;   // aynı cihazdan günde bir ziyaret kaydı
+  store.set("kayitGun", gun + me.no);
+  const coarse = matchMedia("(pointer:coarse)").matches, w = Math.min(screen.width, screen.height);
+  const cihaz = (coarse ? (w < 600 ? "telefon" : "tablet") : "bilgisayar") + (matchMedia("(display-mode: standalone)").matches || navigator.standalone ? " · uygulama" : "");
+  try { fetch(LOG_URL, {method:"POST", mode:"no-cors", keepalive:true, body:JSON.stringify({no:me.no, donem:me.d, olay, cihaz})}).catch(() => {}); } catch(e){}
+}
 renderSync(); renderStale();
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
@@ -2555,7 +2569,7 @@ $("loginForm").addEventListener("submit", async ev => {
   if (r && r.choose){ askDonem(r.no, r.choose); return; }
   if (r && r.error){ $("loginErr").textContent = r.error; return; }
   if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
-  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show();
+  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); girisKaydi("giriş");
 });
 $("foreignChk").checked = foreign;
 $("foreignChk").onchange = e => { foreign = e.target.checked; store.set("yabanci", foreign? "1":"0"); dayCache.clear(); renderNow(); renderMain(); };
@@ -2568,7 +2582,7 @@ $("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
 setInterval(() => { renderStale(); if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
 
 const saved = store.get("ogrNo");
-if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else show(); }
+if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else { show(); if (r === true) girisKaydi("ziyaret"); } }
 else show();
 
 // odak sayacı sayfası için: bugünkü dersler ve sıradaki sınav
