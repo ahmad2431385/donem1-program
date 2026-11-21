@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
-<script>window.LOG_URL = "";   /* kullanım kaydı: site yöneticisinin özel Google E-Tablosu (Apps Script web uygulaması adresi); boşsa kayıt yok */</script>
+<script>window.KAYIT_EVQ = []; window.KAYIT_EV = (k, v) => window.KAYIT_EVQ.push([k, v]); window.LOG_URL = "";   /* kullanım kaydı: site yöneticisinin özel Google E-Tablosu (Apps Script web uygulaması adresi); boşsa kayıt yok */</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Programım · İstanbul Tıp</title>
 <meta name="theme-color" content="#0b6b55">
@@ -294,6 +294,16 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
+.fb{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:8px 12px;display:flex;flex-direction:column;gap:8px}
+.fb[hidden]{display:none}
+.fb-r{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:600;color:var(--muted)}
+.fb-b{display:flex;gap:6px;flex:none}
+.fb-b button{width:40px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:17px;cursor:pointer;line-height:1}
+.fb-b button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.fb-m{display:flex;gap:8px;align-items:flex-end}
+.fb-m textarea{flex:1;font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg);color:var(--ink);resize:vertical;min-height:42px}
+.fb-m button{flex:none}
+.fb-ok{margin:0;font-size:13px;color:var(--accent);font-weight:600}
 .lognote{margin:10px 0 0;font-size:12px;line-height:1.5}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
@@ -1367,7 +1377,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
-    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteye her girişin ve çıkışın, ne kadar süre kaldığın, hangi bölümleri hangi sırayla açtığın, hangi düğmelere bastığın ve haritada neleri aradığın; siteye nereden geldiğin; cihaz türün, işletim sistemin, tarayıcın, ekran bilgilerin, bağlantı türün ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar ve Hava'da seçtiğin konum kaydedilmez.</p>
+    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteye her girişin ve çıkışın, ne kadar süre kaldığın, hangi bölümleri hangi sırayla açtığın, hangi düğmelere bastığın, hangi özellikleri kullandığın ve haritada neleri aradığın; sayaç kullanımın (çalışma süresi, Pomodoro sayısı, seçtiğin ayarlar); hatalı giriş denemelerinde yazdığın numara; gönderdiğin geri bildirimler; siteye nereden geldiğin; cihaz türün, işletim sistemin, tarayıcın, ekran bilgilerin, bağlantı türün ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar ve Hava'da seçtiğin konum kaydedilmez.</p>
   </section>
 
   <!-- main -->
@@ -1571,6 +1581,11 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   </div>
   <button class="tmh-pill" id="tmhPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmhPillT"></b></button>
 
+  <section class="fb" id="fbBox" hidden aria-label="Geri bildirim">
+    <div class="fb-r"><span id="fbQ">Bu bölüm işine yarıyor mu?</span><span class="fb-b"><button type="button" data-fb="1" aria-label="Evet, işime yarıyor" aria-pressed="false">👍</button><button type="button" data-fb="0" aria-label="Hayır, işime yaramıyor" aria-pressed="false">👎</button></span></div>
+    <div class="fb-m" id="fbMore" hidden><textarea id="fbTxt" rows="2" maxlength="1000" placeholder="İstersen kısaca yaz: ne işine yaradı, ne eksik? (isteğe bağlı)"></textarea><button type="button" class="primary" id="fbSend">Gönder</button></div>
+    <p class="fb-ok" id="fbOk" hidden>Teşekkürler, geri bildirimin iletildi.</p>
+  </section>
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
@@ -1618,6 +1633,7 @@ try{
   if (b && b.ok) DESC = await b.json();
   if (c && c.ok) IDX = await c.json().catch(() => null);
 }catch(e){
+  if (window.KAYIT_VH) window.KAYIT_VH("Program verisi (data.json) yüklenemedi"); else (window.KAYIT_EVQ || []).push(["Program verisi yüklenemedi"]);
   $("loading").textContent = "Program yüklenemedi. Sayfayı yenile; sorun sürerse asıl programlara bak.";
   return;
 }
@@ -1850,6 +1866,7 @@ function renderStale(){
     const last = Date.parse(`${d}T${t}:00+03:00`);
     if (!isFinite(last)){ box.hidden = true; return; }
     const hrs = (Date.now() - last) / 36e5;
+    window.KAYIT_VERIYASI = Math.round(hrs * 10) / 10;
     if (hrs < STALE_HOURS){ box.hidden = true; return; }
     const ago = hrs >= 48 ? `${Math.floor(hrs/24)} gün` : `yaklaşık ${Math.floor(hrs)} saat`;
     $("staleTxt").innerHTML = `<b>Veriler güncellenmiyor olabilir.</b> Programın son kontrolü ${ago} önce yapıldı (${esc(fmtStamp(D.lastCheck))}). Gördüğün program eski olabilir; önemli günlerde sayfanın altındaki asıl programlara da bak.`;
@@ -1895,6 +1912,7 @@ function evHTML(x, i, live){
     </div><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></button>`;
 }
 function renderMain(){
+  if (window.KAYIT_EV && renderMain._son !== view + mode){ renderMain._son = view + mode; const fark = Math.round((Date.parse(view + "T12:00:00Z") - Date.parse(istNow().date + "T12:00:00Z")) / 864e5); window.KAYIT_EV("Program gün farkı", fark); window.KAYIT_EV("Program görünüm", mode === "week" ? "haftalık" : "günlük"); }
   $("vDay").setAttribute("aria-pressed", mode==="day");
   $("vWeek").setAttribute("aria-pressed", mode==="week");
   $("wrap").classList.toggle("wide", mode==="week");
@@ -1992,6 +2010,7 @@ function gcalLink(x){
 let lastFocus = null;
 function openSheet(x){
   if (!x) return;
+  if (window.KAYIT_EV) window.KAYIT_EV("Ders ayrıntısı", String(x.title || x.t || "").replace(/^\d+\s*-\s*/, ""));
   lastFocus = document.activeElement;
   const desc = descFor(x);
   const g = gcalLink(x);
@@ -2051,11 +2070,11 @@ let downloads = null;
 async function saveIcs(items, filename){
   const text = buildIcs(items);
   if (downloads){
-    try{ await downloads.save({filename, data: new Blob([text],{type:"text/calendar"})}); toast("Takvim dosyası hazırlandı. Açınca takvimine eklenir."); return; }
+    try{ await downloads.save({filename, data: new Blob([text],{type:"text/calendar"})}); if (window.KAYIT_EV) window.KAYIT_EV("Takvime aktarma", `indirildi (${items.length} olay)`); toast("Takvim dosyası hazırlandı. Açınca takvimine eklenir."); return; }
     catch(e){ if (e && /cancel|declin|abort/i.test((e.code||"")+(e.message||""))) return; }
   }
-  try{ await navigator.clipboard.writeText(text); toast("İndirme bu görünümde desteklenmiyor; takvim içeriği panoya kopyalandı."); }
-  catch(e){ toast("İndirme şu an yapılamadı. Tek tek eklemek için derse dokunup Google Takvim'i kullan."); }
+  try{ await navigator.clipboard.writeText(text); if (window.KAYIT_EV) window.KAYIT_EV("Takvime aktarma", `panoya (${items.length} olay)`); toast("İndirme bu görünümde desteklenmiyor; takvim içeriği panoya kopyalandı."); }
+  catch(e){ if (window.KAYIT_EV) window.KAYIT_EV("Takvime aktarma", "başarısız"); toast("İndirme şu an yapılamadı. Tek tek eklemek için derse dokunup Google Takvim'i kullan."); }
 }
 function toast(msg){ const t = $("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(()=> t.hidden = true, 4200); }
 
@@ -2549,6 +2568,7 @@ $("loginErr").addEventListener("click", async e => {
   else if (r && r.error) $("loginErr").textContent = r.error;
 });
 renderSync(); renderStale();
+let hataSay = 0;
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
   const v = $("noInput").value;
@@ -2557,9 +2577,9 @@ $("loginForm").addEventListener("submit", async ev => {
   store.del("ogrDonem");
   const r = await login(v);
   if (r && r.choose){ askDonem(r.no, r.choose); return; }
-  if (r && r.error){ $("loginErr").textContent = r.error; return; }
-  if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
-  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); (window.KAYIT_Q = window.KAYIT_Q || []).push("giriş");
+  if (r && r.error){ hataSay++; (window.KAYIT_Q = window.KAYIT_Q || []).push({olay:"başarısız giriş", denenen:canon(v).slice(0, 14), deneme:hataSay, sebep:"program yüklenemedi"}); if (window.KAYIT_VH) window.KAYIT_VH(r.error); $("loginErr").textContent = r.error; return; }
+  if (!r){ hataSay++; (window.KAYIT_Q = window.KAYIT_Q || []).push({olay:"başarısız giriş", denenen:canon(v).slice(0, 14), deneme:hataSay, sebep:"listede yok"}); $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
+  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); (window.KAYIT_Q = window.KAYIT_Q || []).push({olay:"giriş", deneme:hataSay + 1}); hataSay = 0;
 });
 $("foreignChk").checked = foreign;
 $("foreignChk").onchange = e => { foreign = e.target.checked; store.set("yabanci", foreign? "1":"0"); dayCache.clear(); renderNow(); renderMain(); };
@@ -3167,7 +3187,7 @@ async function load(force){
   busy = false; $("hvRef").classList.remove("spin");
   if (l !== loc) return load(false);
   W = d; loadedFor = kOf(l);
-  if (!W){ $("hvMain").hidden = true; msg("Hava durumu yüklenemedi. İnternet bağlantını kontrol edip yenile düğmesine dokun."); return; }
+  if (!W){ if (window.KAYIT_VH) window.KAYIT_VH("Hava durumu yüklenemedi"); $("hvMain").hidden = true; msg("Hava durumu yüklenemedi. İnternet bağlantını kontrol edip yenile düğmesine dokun."); return; }
   msg(W._old ? "İnternete ulaşılamadı; en son kaydedilen tahmin gösteriliyor." : "");
   const today = istNow().date;
   if (!sel || !W.daily.time.includes(sel)) sel = W.daily.time.includes(today) ? today : W.daily.time[0];
@@ -3357,7 +3377,7 @@ async function start(){
     ]);
     D = data; B = D.binalar; NAMES = Object.keys(B);
     build();
-  } catch(e){ started = false; $("kmMsg").hidden = false; $("kmMsg").textContent = "Harita yüklenemedi. İnternet bağlantını kontrol edip bu sekmeyi yeniden aç."; }
+  } catch(e){ if (window.KAYIT_VH) window.KAYIT_VH("Harita yüklenemedi: " + String(e && e.message || e).slice(0, 80)); started = false; $("kmMsg").hidden = false; $("kmMsg").textContent = "Harita yüklenemedi. İnternet bağlantını kontrol edip bu sekmeyi yeniden aç."; }
 }
 function build(){
   const ring = D.kampus, cx = ring.reduce((a,p) => a + p[0], 0) / ring.length, cy = ring.reduce((a,p) => a + p[1], 0) / ring.length;
@@ -3428,6 +3448,7 @@ function declutter(){
 }
 function select(n, room){
   if (!map) return;
+  if (n && window.KAYIT_EV) window.KAYIT_EV("Harita bina", n);
   if (cur) for (const f of D.features) if (f.properties.b === cur) map.setFeatureState({source:"b", id:f.id}, {sel:false});
   LBL.forEach(L => L.el.classList.toggle("sel", L.n === n));
   cur = n; const sh = $("kmSheet");
@@ -3621,66 +3642,154 @@ window.addEventListener("popstate", routeFromHash);
 })();
 </script>
 <script>
-/* ============ Kullanım kaydı (yalnız site yöneticisinin özel tablosuna) ============
-   açılış / giriş / çıkış / misafir açılış olayları; her oturumda bölüm bölüm geçirilen süre (sayfa görünürken);
-   cihaz bilgisi; sayfa hataları. Sınav·Not'a yazılan notlar ve konum kaydedilmez. */
+/* ============ Kullanım kaydı (yalnız site yöneticisinin özel Google E-Tablosu'na) ============
+   Olaylar bu cihazda bir "kayıt kutusu"nda biriktirilir, toplu gönderilir; gönderilemeyenler sonra yeniden denenir.
+   Kaydedilenler: kimlik (no, dönem, grup), giriş/çıkış/geri dönüş, bölüm süreleri ve gezinti, dokunulanlar, özellik kullanımı,
+   başarısız girişler, harita aramaları, sayaç kullanımı, veri/sayfa hataları, cihaz bilgisi, geri bildirimler.
+   Kaydedilmeyenler: Sınav·Not'a yazılan not değerleri, Hava'da seçilen il/ilçe, konum, IP. */
 (() => {
-const URL = window.LOG_URL, body = document.body;
-const q0 = window.KAYIT_Q || [];
-if (!URL){ window.KAYIT_Q = {push(){}}; return; }
-document.getElementById("logNote").hidden = false;
-const sid = Math.random().toString(36).slice(2, 10);
+const URL = window.LOG_URL, body = document.body, $ = id => document.getElementById(id);
+const q0 = window.KAYIT_Q || [], ev0 = window.KAYIT_EVQ || [];
+if (!URL){ window.KAYIT_Q = {push(){}}; window.KAYIT_EV = () => {}; return; }
+$("logNote").hidden = false;
+const LS = {get:k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, set:(k, v) => { try { localStorage.setItem(k, v); } catch(e){} }};
+const rid = () => Math.random().toString(36).slice(2, 10);
+const sid = rid();
+/* ---- cihaz ---- */
 const ua = navigator.userAgent, mm = q => matchMedia(q).matches;
 const sistem = /iPad|Macintosh/.test(ua) && navigator.maxTouchPoints > 1 ? "iPadOS" : /iPhone|iPod/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "macOS" : /CrOS/.test(ua) ? "ChromeOS" : /Linux/.test(ua) ? "Linux" : "diğer";
 const tarayici = /SamsungBrowser/.test(ua) ? "Samsung" : /Edg\//.test(ua) ? "Edge" : /OPR\/|Opera/.test(ua) ? "Opera" : /Firefox|FxiOS/.test(ua) ? "Firefox" : /CriOS|Chrome/.test(ua) ? "Chrome" : /Safari/.test(ua) ? "Safari" : "diğer";
+const surum = (ua.match(/(?:Version|Chrome|CriOS|Firefox|FxiOS|Edg|SamsungBrowser)\/(\d+)/) || [])[1] || "";
+const sSurum = (ua.match(/(?:iPhone OS|CPU OS|Android|Windows NT|Mac OS X) ([\d_.]+)/) || [])[1] || "";
 const coarse = mm("(pointer:coarse)"), kisa = Math.min(screen.width, screen.height);
 const cihaz = coarse ? (kisa < 600 ? "telefon" : "tablet") : "bilgisayar";
 const uygulama = mm("(display-mode: standalone)") || navigator.standalone === true ? "evet" : "hayır";
 const tema = () => (document.documentElement.dataset.theme || (mm("(prefers-color-scheme: dark)") ? "dark" : "light")) === "dark" ? "koyu" : "açık";
 let zs = 0, ilk = "";
-try { zs = (+localStorage.getItem("kayitSay") || 0) + 1; localStorage.setItem("kayitSay", String(zs)); ilk = localStorage.getItem("kayitIlk") || ""; if (!ilk){ ilk = new Date().toISOString().slice(0, 10); localStorage.setItem("kayitIlk", ilk); } } catch(e){}
+zs = (+LS.get("kayitSay") || 0) + 1; LS.set("kayitSay", String(zs));
+ilk = LS.get("kayitIlk") || ""; if (!ilk){ ilk = new Date().toISOString().slice(0, 10); LS.set("kayitIlk", ilk); }
 const geldigi = (() => { try { const r = document.referrer ? new URL(document.referrer).hostname : ""; return r && r !== location.hostname ? r : "doğrudan"; } catch(e){ return "doğrudan"; } })();
 const yukleme = () => { try { const n = performance.getEntriesByType("navigation")[0]; return n ? Math.round(n.loadEventEnd || n.domContentLoadedEventEnd) : ""; } catch(e){ return ""; } };
 const AD = {program:"Program", notlar:"Sınav·Not", hava:"Hava", harita:"Harita", sayac:"Sayaç", "sayac/grafik":"Sayaç › Grafik", "sayac/gorunum":"Sayaç › Görünüm", "sayac/ses":"Sayaç › Ses", "sayac/ayar":"Sayaç › Ayarlar"};
+const key = () => body.classList.contains("guest") ? "giriş sayfası" : body.dataset.route === "sayac" ? (body.dataset.sub || "sayac") : body.dataset.route;
+const bolumAd = () => AD[key()] || key();
+
+/* ---- kayıt kutusu: biriktir, toplu gönder, onay gelmezse sonra yeniden dene ---- */
+const KUTU = "kayitKutu", MAX = 400;
+let kutu = []; try { kutu = JSON.parse(LS.get(KUTU) || "[]"); if (!Array.isArray(kutu)) kutu = []; } catch(e){ kutu = []; }
+const kaydet = () => LS.set(KUTU, JSON.stringify(kutu.slice(-MAX)));
+let gonderiyor = false, zam = 0;
 function send(olay, ek){
   const me = window.KAYIT_ME || {};
-  const o = {no:me.no || "", donem:me.d || "", gruplar:me.gruplar || "", olay, oturum:sid, cihaz, uygulama, sistem, tarayici,
-    ekran:`${screen.width}×${screen.height} @${Math.round((devicePixelRatio || 1) * 10) / 10}x`, yon:screen.orientation && screen.orientation.type ? (/portrait/.test(screen.orientation.type) ? "dikey" : "yatay") : (innerHeight >= innerWidth ? "dikey" : "yatay"),
+  kutu.push({id:rid(), t:new Date().toISOString(), no:me.no || "", donem:me.d || "", gruplar:me.gruplar || "", olay, oturum:sid, bolum:bolumAd(),
+    cihaz, uygulama, sistem:sSurum ? `${sistem} ${sSurum.replace(/_/g, ".")}` : sistem, tarayici:surum ? `${tarayici} ${surum}` : tarayici,
+    ekran:`${screen.width}×${screen.height} @${Math.round((devicePixelRatio || 1) * 10) / 10}x`, pencere:`${innerWidth}×${innerHeight}`,
+    yon:screen.orientation && screen.orientation.type ? (/portrait/.test(screen.orientation.type) ? "dikey" : "yatay") : (innerHeight >= innerWidth ? "dikey" : "yatay"),
     tema:tema(), dil:navigator.language || "", saatDilimi:(Intl.DateTimeFormat().resolvedOptions().timeZone || ""),
-    baglanti:(navigator.connection && navigator.connection.effectiveType) || "", geldigi, ziyaretNo:zs, ilkZiyaret:ilk, ...ek};
-  const b = JSON.stringify(o);
-  try { if (navigator.sendBeacon && navigator.sendBeacon(URL, new Blob([b], {type:"text/plain"}))) return; } catch(e){}
-  try { fetch(URL, {method:"POST", mode:"no-cors", keepalive:true, body:b}).catch(() => {}); } catch(e){}
+    baglanti:(navigator.connection && navigator.connection.effectiveType) || "", cevrimici:navigator.onLine ? "evet" : "hayır",
+    geldigi, ziyaretNo:zs, ilkZiyaret:ilk, veriYasi:window.KAYIT_VERIYASI ?? "", ...ek});
+  if (kutu.length > MAX) kutu = kutu.slice(-MAX);
+  kaydet(); clearTimeout(zam); zam = setTimeout(gonder, 1500);
 }
-// dokunulan düğmeler / seçimler (değerler değil, yalnız ne olduğu): bölüm bölüm sayılır
+async function gonder(){
+  if (gonderiyor || !kutu.length || !navigator.onLine) return;
+  gonderiyor = true;
+  const paket = kutu.slice(0, 50);
+  try {
+    const r = await fetch(URL, {method:"POST", body:JSON.stringify(paket), headers:{"Content-Type":"text/plain;charset=utf-8"}, redirect:"follow"});
+    const tx = r.ok ? await r.text() : "";
+    if (/tamam/.test(tx)){ const ids = new Set(paket.map(x => x.id)); kutu = kutu.filter(x => !ids.has(x.id)); kaydet(); if (kutu.length) setTimeout(gonder, 800); }
+  } catch(e){}
+  gonderiyor = false;
+}
+function sonGonder(){   // sayfa kapanırken: onay beklenemez, beacon ile gönderilir ve kutudan çıkarılır
+  if (!kutu.length) return;
+  try { const b = JSON.stringify(kutu.slice(0, 50)); if (navigator.sendBeacon && navigator.sendBeacon(URL, new Blob([b], {type:"text/plain;charset=utf-8"}))){ kutu = kutu.slice(50); kaydet(); } } catch(e){}
+}
+setInterval(gonder, 60000); addEventListener("online", gonder);
+
+/* ---- özellik kullanımı: sayılar, değer listeleri, aralıklar (bir oturum parçası boyunca birikir) ---- */
+let oz = {};
+function ev(k, v){
+  const o = oz[k] || (oz[k] = {n:0, d:{}, min:null, max:null});
+  o.n++;
+  if (typeof v === "number" && isFinite(v)){ o.min = o.min == null ? v : Math.min(o.min, v); o.max = o.max == null ? v : Math.max(o.max, v); }
+  else if (v != null && v !== ""){ const s = String(v).replace(/\s+/g, " ").trim().slice(0, 40); if (Object.keys(o.d).length < 12 || o.d[s]) o.d[s] = (o.d[s] || 0) + 1; }
+}
+const ozYazi = () => Object.entries(oz).map(([k, o]) => {
+  let s = o.n > 1 ? `${k} ×${o.n}` : k;
+  const d = Object.entries(o.d).sort((a, b) => b[1] - a[1]).map(([x, n]) => n > 1 ? `${x} ×${n}` : x);
+  if (d.length) s += ` (${d.join(", ")})`;
+  if (o.min != null) s += ` [${o.min === o.max ? o.min : o.min + "…" + o.max}]`;
+  return s;
+}).join(" · ").slice(0, 2500);
+window.KAYIT_EV = ev; ev0.forEach(([k, v]) => ev(k, v));
+
+/* ---- dokunulan düğmeler / seçimler (değerler değil) ---- */
 let etk = {};
-const etiket = el => { let t = el.getAttribute("aria-label") || el.getAttribute("title") || el.textContent || el.value || el.id || el.tagName; return t.replace(/\s+/g, " ").trim().slice(0, 40); };
+const etiket = el => (el.getAttribute("aria-label") || el.getAttribute("title") || el.textContent || el.value || el.id || el.tagName).replace(/\s+/g, " ").trim().slice(0, 40);
 function yakala(doc, onek){
   doc.addEventListener("click", e => {
     const el = e.target.closest && e.target.closest("button, a, summary, [role=button], [data-go], .km-lbl, input[type=checkbox], input[type=radio], label");
-    if (!el) return;
-    const k = `${onek ? onek() : (AD[key()] || key())}: ${etiket(el)}`; etk[k] = (etk[k] || 0) + 1;
+    if (!el || el.closest("#fbBox")) return;
+    const k = `${onek ? onek() : bolumAd()}: ${etiket(el)}`; etk[k] = (etk[k] || 0) + 1;
   }, true);
   doc.addEventListener("change", e => {
-    const el = e.target; if (!el || !el.tagName || !/SELECT|INPUT/.test(el.tagName) || /text|search|number|tel/.test(el.type || "") || el.closest("#wxView")) return;
-    const k = `${onek ? onek() : (AD[key()] || key())}: seçim ${el.id || el.name || el.tagName.toLowerCase()}`; etk[k] = (etk[k] || 0) + 1;
+    const el = e.target; if (!el || !el.tagName || !/SELECT|INPUT/.test(el.tagName) || /text|search|number|tel|textarea/.test(el.type || "") || el.closest("#wxView")) return;
+    const k = `${onek ? onek() : bolumAd()}: seçim ${el.id || el.name || el.tagName.toLowerCase()}`; etk[k] = (etk[k] || 0) + 1;
   }, true);
 }
 yakala(document);
-// harita araması: seçilen sonuç zaten düğme olarak sayılır; yazılan arama metni de (kişisel değil) eklenir
-document.addEventListener("change", e => { if (e.target && e.target.id === "kmQ" && e.target.value.trim()){ const k = `Harita: arama "${e.target.value.trim().slice(0, 30)}"`; etk[k] = (etk[k] || 0) + 1; } }, true);
-// sayaç sekmesi içindeki düğmeler
+
+/* ---- Sınav·Not: hangi hesaplama bölümü kullanıldı (yazılan değer değil, bölümün adı) ---- */
+let ntSon = "";
+document.addEventListener("input", e => {
+  const v = $("notView"); if (!v || !v.contains(e.target)) return;
+  const c = e.target.closest("section, details, .card"), h = c && c.querySelector("h2, h3, summary, b");
+  const ad = h ? h.textContent.replace(/\s+/g, " ").replace(/\s*\d+\s*AKTS.*$/, "").trim().slice(0, 40) : "not girişi";
+  if (ad !== ntSon){ ntSon = ad; ev("Sınav·Not hesaplama", ad); }
+}, true);
+
+/* ---- harita: aramalar (sonuçlu / sonuçsuz) ve açılış süresi ---- */
+let aZam = 0;
+document.addEventListener("input", e => {
+  if (!e.target || e.target.id !== "kmQ") return;
+  clearTimeout(aZam);
+  aZam = setTimeout(() => { const q = e.target.value.trim(); if (q.length < 2) return; const n = document.querySelectorAll("#kmSugg button:not([disabled])").length; ev(n ? "Harita arama" : "Harita sonuçsuz arama", q); }, 1500);
+}, true);
+let hT = 0, sT = 0;
+function acilisOlc(){
+  const r = key();
+  if (r === "harita" && !hT){ hT = performance.now(); const t = setInterval(() => { if (document.querySelector(".km-lbl")){ clearInterval(t); ev("Harita açılış süresi (ms)", Math.round(performance.now() - hT)); } else if (performance.now() - hT > 60000){ clearInterval(t); ev("Harita açılmadı"); } }, 200); }
+  if (/^sayac/.test(r) && !sT){ sT = performance.now(); const t = setInterval(() => { const f = document.querySelector("#tmHost iframe"); let ok = false; try { ok = f && f.contentDocument && f.contentDocument.getElementById("tmMain"); } catch(e){} if (ok){ clearInterval(t); ev("Sayaç açılış süresi (ms)", Math.round(performance.now() - sT)); } else if (performance.now() - sT > 60000){ clearInterval(t); ev("Sayaç açılmadı"); } }, 200); }
+}
+
+/* ---- program: son değişiklikler kutusu ---- */
+const chg = $("chgBox"); if (chg) chg.addEventListener("toggle", () => { if (chg.open) ev("Son değişiklikler açıldı", Number(($("chgCount") || {}).textContent) || 0); });
+
+/* ---- sayaç: içindeki düğmeler, tamamlanan çalışmalar, seçili ayarlar ---- */
+const gecmis = () => { try { const h = JSON.parse(LS.get("odak_gecmis") || "[]"); return Array.isArray(h) ? h : []; } catch(e){ return []; } };
+let gN = gecmis().length, sayacGirdi = false;
+function sayacOzet(){
+  const h = gecmis(), yeni = h.slice(gN); gN = h.length;
+  const o = {};
+  if (yeni.length){ o.pomodoro = yeni.length; o.calismaDk = Math.round(yeni.reduce((a, x) => a + (+x.m || 0), 0)); }
+  if (sayacGirdi){ try { const S = JSON.parse(LS.get("odak_ayar") || "{}");
+    o.sayacAyar = [S.mode === "count" ? "geri sayım" : "Pomodoro", S.focus ? `${S.focus}/${S.short}/${S.long} dk` : "", S.view === "lcd" ? `dijital ${S.dskin ?? 0}` : `analog ${S.rskin ?? 0}`,
+      S.ambOn ? `ses ${S.amb}` : "ses kapalı", S.bg ? "fotoğraflı" : "", S.alarm ? `alarm ${S.alarm}` : ""].filter(Boolean).join(", "); } catch(e){} }
+  return o;
+}
 const fr = setInterval(() => { const f = document.querySelector("#tmHost iframe"); if (!f) return;
-  const bag = () => { try { if (f.contentDocument && !f.contentDocument.__kayit){ f.contentDocument.__kayit = 1; yakala(f.contentDocument, () => AD[key()] || "Sayaç"); } } catch(e){} };
+  const bag = () => { try { if (f.contentDocument && !f.contentDocument.__kayit){ f.contentDocument.__kayit = 1; yakala(f.contentDocument, () => bolumAd()); } } catch(e){} };
   bag(); f.addEventListener("load", bag); clearInterval(fr); }, 1000);
-// bölüm süreleri
-const key = () => body.classList.contains("guest") ? "giriş sayfası" : body.dataset.route === "sayac" ? (body.dataset.sub || "sayac") : body.dataset.route;
+
+/* ---- bölüm süreleri ve gezinti sırası ---- */
 let cur = key(), t0 = document.hidden ? 0 : Date.now(), acc = {}, sira = [];
 function tick(){
   const now = Date.now();
   if (t0 && cur) acc[cur] = (acc[cur] || 0) + (now - t0);
-  const k = key(); if (k !== cur && !document.hidden) sira.push(AD[k] || k); cur = k;
-  t0 = document.hidden ? 0 : now;
+  const k = key(); if (k !== cur && !document.hidden){ sira.push(AD[k] || k); if (/^sayac/.test(k)) sayacGirdi = true; acilisOlc(); }
+  cur = k; t0 = document.hidden ? 0 : now;
 }
 const fmt = ms => { const s = Math.round(ms / 1000); return s < 60 ? `${s} sn` : `${Math.floor(s / 60)} dk ${s % 60} sn`; };
 function flush(){
@@ -3688,26 +3797,60 @@ function flush(){
   const top = Object.values(acc).reduce((a, b) => a + b, 0);
   if (top < 1000) return;   // çok kısa parçalar bir sonraki gönderime eklenir
   const bol = Object.entries(acc).filter(([, v]) => v >= 1000).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${AD[k] || k} ${fmt(v)}`).join(" · ");
-  const et = Object.entries(etk).sort((a, b) => b[1] - a[1]).map(([k, v]) => v > 1 ? `${k} ×${v}` : k).join(" · ").slice(0, 1500);
-  send("kullanım", {sure:Math.round(top / 1000), bolumler:bol, gezinti:sira.slice(0, 60).join(" → "), etkilesim:et});
-  acc = {}; sira = []; etk = {};
+  const sn = {}; for (const [k, v] of Object.entries(acc)) sn["sn_" + (k.split("/")[0])] = (sn["sn_" + (k.split("/")[0])] || 0) + Math.round(v / 1000);
+  const et = Object.entries(etk).sort((a, b) => b[1] - a[1]).map(([k, v]) => v > 1 ? `${k} ×${v}` : k).join(" · ").slice(0, 2500);
+  send("kullanım", {sure:Math.round(top / 1000), bolumler:bol, gezinti:sira.slice(0, 60).join(" → "), etkilesim:et, ozellik:ozYazi(), ...sn, ...sayacOzet()});
+  acc = {}; sira = []; etk = {}; oz = {};
 }
 new MutationObserver(tick).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
 let gizli = 0;
 document.addEventListener("visibilitychange", () => {
-  if (document.hidden){ gizli = Date.now(); flush(); }
-  else { tick(); if (gizli && Date.now() - gizli > 30000) send(window.KAYIT_ME ? "geri dönüş" : "misafir geri dönüş", {bolum:AD[key()] || key(), ara:Math.round((Date.now() - gizli) / 60000)}); gizli = 0; }
+  if (document.hidden){ gizli = Date.now(); flush(); sonGonder(); }
+  else { tick(); if (gizli && Date.now() - gizli > 30000) send(window.KAYIT_ME ? "geri dönüş" : "misafir geri dönüş", {ara:Math.round((Date.now() - gizli) / 60000)}); gizli = 0; gonder(); }
 });
-addEventListener("pagehide", flush);
+addEventListener("pagehide", () => { flush(); sonGonder(); });
 setInterval(() => { if (!document.hidden) flush(); }, 10 * 60 * 1000);   // açık bırakılan sayfada da 10 dakikada bir
-// sayfa hataları (oturum başına en fazla 3)
+
+/* ---- hatalar ---- */
 let hn = 0;
-addEventListener("error", e => { if (hn++ < 3) send("hata", {hata:String(e.message || "").slice(0, 150) + (e.lineno ? ` (satır ${e.lineno})` : "")}); });
-addEventListener("unhandledrejection", e => { if (hn++ < 3) send("hata", {hata:String((e.reason && e.reason.message) || e.reason || "").slice(0, 150)}); });
-// olay kuyruğu (program betiği giriş/açılış/çıkış olaylarını buraya bırakır)
-const handle = olay => { if (olay === "çıkış") flush(); send(olay, {bolum:AD[key()] || key(), yukleme:/açılış/.test(olay) ? yukleme() : ""}); };
+addEventListener("error", e => { if (e.target && e.target !== window && e.target.src){ if (hn++ < 5) send("veri hatası", {hata:`yüklenemedi: ${String(e.target.src).slice(0, 120)}`}); return; }
+  if (hn++ < 5) send("hata", {hata:String(e.message || "").slice(0, 200) + (e.lineno ? ` (satır ${e.lineno}:${e.colno || 0})` : "")}); }, true);
+addEventListener("unhandledrejection", e => { if (hn++ < 5) send("hata", {hata:String((e.reason && e.reason.message) || e.reason || "").slice(0, 200)}); });
+window.KAYIT_VH = msg => { if (hn++ < 8) send("veri hatası", {hata:String(msg).slice(0, 200)}); };
+
+/* ---- geri bildirim kutusu ---- */
+const fb = $("fbBox");
+if (fb){
+  const ad = () => AD[key()] || key();
+  const sk = () => "fb_" + key();
+  const yaz = () => {
+    const g = !body.classList.contains("guest") && !/^giriş/.test(key());
+    fb.hidden = !g; if (!g) return;
+    $("fbQ").textContent = `${ad().replace(/ › .*/, "")} bölümü işine yarıyor mu?`;
+    const v = LS.get(sk());
+    fb.querySelectorAll("[data-fb]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.fb === v)));
+    $("fbOk").hidden = true;
+  };
+  fb.addEventListener("click", e => {
+    const b = e.target.closest("[data-fb]");
+    if (b){ LS.set(sk(), b.dataset.fb); send("geri bildirim", {oy:b.dataset.fb === "1" ? "👍" : "👎", bolum:ad()}); yaz(); $("fbMore").hidden = false; $("fbTxt").focus({preventScroll:true}); return; }
+    if (e.target.id === "fbSend"){ const t = $("fbTxt").value.trim(); if (!t) return; send("geri bildirim", {oy:(LS.get(sk()) === "1" ? "👍" : LS.get(sk()) === "0" ? "👎" : ""), not:t.slice(0, 1000), bolum:ad()}); $("fbTxt").value = ""; $("fbMore").hidden = true; $("fbOk").hidden = false; }
+  });
+  new MutationObserver(() => { yaz(); $("fbMore").hidden = true; }).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
+  yaz();
+}
+
+/* ---- program betiğinden gelen olaylar (giriş, açılış, çıkış, misafir açılış, başarısız giriş) ---- */
+const handle = x => {
+  const o = typeof x === "string" ? {olay:x} : x;
+  if (o.olay === "çıkış") flush();
+  if (/giriş|açılış/.test(o.olay)) o.yukleme = /açılış/.test(o.olay) ? yukleme() : "";
+  const {olay, ...ek} = o; send(olay, ek);
+  if (/^(giriş|açılış)$/.test(olay)) gonder();
+};
 window.KAYIT_Q = {push:handle};
 (Array.isArray(q0) ? q0 : []).forEach(handle);
+gonder();
 })();
 </script>
 </body>
