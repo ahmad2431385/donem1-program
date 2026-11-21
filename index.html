@@ -2,6 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="utf-8">
+<script>window.LOG_URL = "";   /* kullanım kaydı: site yöneticisinin özel Google E-Tablosu (Apps Script web uygulaması adresi); boşsa kayıt yok */</script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Programım · İstanbul Tıp</title>
 <meta name="theme-color" content="#0b6b55">
@@ -294,6 +295,7 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
 .lognote{margin:10px 0 0;font-size:12px;line-height:1.5}
+.contact-k{margin-top:8px !important;font-size:11.5px;line-height:1.5}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
 .contact a{color:var(--accent);font-weight:600;overflow-wrap:anywhere}
@@ -1366,7 +1368,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
-    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Giriş yaptığında öğrenci numaran, dönemin, giriş zamanı ve cihaz türün (telefon, tablet, bilgisayar) site yöneticisinin yalnız kendisinin görebildiği özel bir tabloya kaydedilir. Bu bilgiler yalnız siteyi geliştirmek için kullanılır, kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz.</p>
+    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteyi ne zaman ve ne kadar süre kullandığın, hangi bölümleri açtığın; cihaz türün, işletim sistemin, tarayıcın, ekran boyutun ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar kaydedilmez.</p>
   </section>
 
   <!-- main -->
@@ -1573,6 +1575,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
+    <p class="contact-k" id="logFoot" hidden>Siteyi geliştirmek amacıyla öğrenci numarası ve kullanım bilgileri (açılan bölümler, süre, cihaz türü) kaydedilir; yalnız site yöneticisi görür.</p>
     <p class="contact-c">© 2026 · Tüm hakları mahfuzdur. Bu sitenin tasarımı ve yazılımı kopyalanamaz, çoğaltılamaz, dağıtılamaz, satılamaz ve ticari amaçla kullanılamaz.</p>
   </footer>
 </div>
@@ -1832,7 +1835,7 @@ function renderWho(){
     <span class="grp">${grp.map(g => `<span class="chip">${g}</span>`).join("")}</span>
     <button class="outbtn" id="logout" type="button" aria-label="Çıkış yap"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4M10 16l-4-4 4-4M6 12h9"/></svg><span>Çıkış</span></button></div>`
    + (me.partial ? `<div class="acct-note">Uygulama listesinde yoksun; uygulamalar ${esc(me.g)} grubuna göre gösteriliyor.</div>` : "");
-  $("logout").onclick = () => { store.del("ogrNo"); store.del("ogrDonem"); me = null; setData(D1, 1); window.PROG_DONEM = 0; window.dispatchEvent(new CustomEvent("prog-donem", {detail:0})); show(); };
+  $("logout").onclick = () => { (window.KAYIT_Q = window.KAYIT_Q || []).push("çıkış"); window.KAYIT_ME = null; store.del("ogrNo"); store.del("ogrDonem"); me = null; setData(D1, 1); window.PROG_DONEM = 0; window.dispatchEvent(new CustomEvent("prog-donem", {detail:0})); show(); };
   if ($("dSwitch")) $("dSwitch").onclick = () => askDonem(me.no, [me.d, ...me.others]);
 }
 function renderSync(){
@@ -2518,6 +2521,7 @@ async function login(no, pick){
   me = n === 1 ? {no, d:1, g:rec[0], a:rec[1], p:rec[2]||null, partial: !!rec[3]} : {no, d:n, tags:rec, g:rec[0]};
   me.others = ds.filter(x => x !== n);
   store.set("ogrNo", no); store.set("ogrDonem", String(n));
+  window.KAYIT_ME = {no, d:n, gruplar:(n > 1 ? chipsOf(n, rec) : [`Grup ${rec[0]}`, rec[1] ? `Uygulama ${rec[1]}` : "", `PDÖ ${rec[2] || PDO_PAIR[rec[0]] || "–"}`]).filter(Boolean).join(" · ").replace(/&amp;/g, "&")};
   window.PROG_DONEM = n; window.dispatchEvent(new CustomEvent("prog-donem", {detail:n}));
   return true;
 }
@@ -2543,21 +2547,9 @@ function askDonem(no, ds){
 $("loginErr").addEventListener("click", async e => {
   const b = e.target.closest("[data-pd]"); if (!b || !pendingNo) return;
   const r = await login(pendingNo, +b.dataset.pd);
-  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); girisKaydi("giriş"); }
+  if (r === true){ pendingNo = null; $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); (window.KAYIT_Q = window.KAYIT_Q || []).push("giriş"); }
   else if (r && r.error) $("loginErr").textContent = r.error;
 });
-/* giriş kaydı: yalnız site yöneticisinin özel tablosuna (Google E-Tablosu); adres boşsa hiçbir şey gönderilmez */
-const LOG_URL = "";
-$("logNote").hidden = !LOG_URL;
-function girisKaydi(olay){
-  if (!LOG_URL || !me) return;
-  const gun = istNow().date;
-  if (olay === "ziyaret" && store.get("kayitGun") === gun + me.no) return;   // aynı cihazdan günde bir ziyaret kaydı
-  store.set("kayitGun", gun + me.no);
-  const coarse = matchMedia("(pointer:coarse)").matches, w = Math.min(screen.width, screen.height);
-  const cihaz = (coarse ? (w < 600 ? "telefon" : "tablet") : "bilgisayar") + (matchMedia("(display-mode: standalone)").matches || navigator.standalone ? " · uygulama" : "");
-  try { fetch(LOG_URL, {method:"POST", mode:"no-cors", keepalive:true, body:JSON.stringify({no:me.no, donem:me.d, olay, cihaz})}).catch(() => {}); } catch(e){}
-}
 renderSync(); renderStale();
 $("loginForm").addEventListener("submit", async ev => {
   ev.preventDefault();
@@ -2569,7 +2561,7 @@ $("loginForm").addEventListener("submit", async ev => {
   if (r && r.choose){ askDonem(r.no, r.choose); return; }
   if (r && r.error){ $("loginErr").textContent = r.error; return; }
   if (!r){ $("loginErr").textContent = "Bu numara Dönem 1–5 Türkçe öğrenci listelerinde bulunamadı. Rakamları kontrol et: numara 10 hanelidir."; return; }
-  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); girisKaydi("giriş");
+  $("loginErr").textContent = ""; view = istNow().date; toProgram(); show(); (window.KAYIT_Q = window.KAYIT_Q || []).push("giriş");
 });
 $("foreignChk").checked = foreign;
 $("foreignChk").onchange = e => { foreign = e.target.checked; store.set("yabanci", foreign? "1":"0"); dayCache.clear(); renderNow(); renderMain(); };
@@ -2582,8 +2574,8 @@ $("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
 setInterval(() => { renderStale(); if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
 
 const saved = store.get("ogrNo");
-if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else { show(); if (r === true) girisKaydi("ziyaret"); } }
-else show();
+if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else { show(); if (r === true) (window.KAYIT_Q = window.KAYIT_Q || []).push("açılış"); } }
+else { show(); (window.KAYIT_Q = window.KAYIT_Q || []).push("misafir açılış"); }
 
 // odak sayacı sayfası için: bugünkü dersler ve sıradaki sınav
 window.PROG = {
@@ -3628,6 +3620,64 @@ const onGo = e => {
 };
 drawer.addEventListener("click", onGo); $("tabbar").addEventListener("click", onGo); $("tmhPill").addEventListener("click", () => onGo({target:$("tabbar").querySelector('[data-go="sayac"]')}));
 window.addEventListener("popstate", routeFromHash);
+})();
+</script>
+<script>
+/* ============ Kullanım kaydı (yalnız site yöneticisinin özel tablosuna) ============
+   açılış / giriş / çıkış / misafir açılış olayları; her oturumda bölüm bölüm geçirilen süre (sayfa görünürken);
+   cihaz bilgisi; sayfa hataları. Sınav·Not'a yazılan notlar ve konum kaydedilmez. */
+(() => {
+const URL = window.LOG_URL, body = document.body;
+const q0 = window.KAYIT_Q || [];
+if (!URL){ window.KAYIT_Q = {push(){}}; return; }
+document.getElementById("logNote").hidden = false; document.getElementById("logFoot").hidden = false;
+const sid = Math.random().toString(36).slice(2, 10);
+const ua = navigator.userAgent, mm = q => matchMedia(q).matches;
+const sistem = /iPad|Macintosh/.test(ua) && navigator.maxTouchPoints > 1 ? "iPadOS" : /iPhone|iPod/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "macOS" : /CrOS/.test(ua) ? "ChromeOS" : /Linux/.test(ua) ? "Linux" : "diğer";
+const tarayici = /SamsungBrowser/.test(ua) ? "Samsung" : /Edg\//.test(ua) ? "Edge" : /OPR\/|Opera/.test(ua) ? "Opera" : /Firefox|FxiOS/.test(ua) ? "Firefox" : /CriOS|Chrome/.test(ua) ? "Chrome" : /Safari/.test(ua) ? "Safari" : "diğer";
+const coarse = mm("(pointer:coarse)"), kisa = Math.min(screen.width, screen.height);
+const cihaz = coarse ? (kisa < 600 ? "telefon" : "tablet") : "bilgisayar";
+const uygulama = mm("(display-mode: standalone)") || navigator.standalone === true ? "evet" : "hayır";
+const tema = () => (document.documentElement.dataset.theme || (mm("(prefers-color-scheme: dark)") ? "dark" : "light")) === "dark" ? "koyu" : "açık";
+const AD = {program:"Program", notlar:"Sınav·Not", hava:"Hava", harita:"Harita", sayac:"Sayaç", "sayac/grafik":"Sayaç › Grafik", "sayac/gorunum":"Sayaç › Görünüm", "sayac/ses":"Sayaç › Ses", "sayac/ayar":"Sayaç › Ayarlar"};
+function send(olay, ek){
+  const me = window.KAYIT_ME || {};
+  const o = {no:me.no || "", donem:me.d || "", gruplar:me.gruplar || "", olay, oturum:sid, cihaz, uygulama, sistem, tarayici,
+    ekran:`${screen.width}×${screen.height}`, tema:tema(), dil:navigator.language || "", ...ek};
+  const b = JSON.stringify(o);
+  try { if (navigator.sendBeacon && navigator.sendBeacon(URL, new Blob([b], {type:"text/plain"}))) return; } catch(e){}
+  try { fetch(URL, {method:"POST", mode:"no-cors", keepalive:true, body:b}).catch(() => {}); } catch(e){}
+}
+// bölüm süreleri
+const key = () => body.classList.contains("guest") ? "giriş sayfası" : body.dataset.route === "sayac" ? (body.dataset.sub || "sayac") : body.dataset.route;
+let cur = key(), t0 = document.hidden ? 0 : Date.now(), acc = {}, sira = [];
+function tick(){
+  const now = Date.now();
+  if (t0 && cur) acc[cur] = (acc[cur] || 0) + (now - t0);
+  const k = key(); if (k !== cur && !document.hidden) sira.push(AD[k] || k); cur = k;
+  t0 = document.hidden ? 0 : now;
+}
+const fmt = ms => { const s = Math.round(ms / 1000); return s < 60 ? `${s} sn` : `${Math.floor(s / 60)} dk ${s % 60} sn`; };
+function flush(){
+  tick();
+  const top = Object.values(acc).reduce((a, b) => a + b, 0);
+  if (top < 1000) return;   // çok kısa parçalar bir sonraki gönderime eklenir
+  const bol = Object.entries(acc).filter(([, v]) => v >= 1000).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${AD[k] || k} ${fmt(v)}`).join(" · ");
+  send("kullanım", {sure:Math.round(top / 1000), bolumler:bol, gezinti:sira.slice(0, 40).join(" → ")});
+  acc = {}; sira = [];
+}
+new MutationObserver(tick).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
+document.addEventListener("visibilitychange", () => { if (document.hidden) flush(); else { tick(); } });
+addEventListener("pagehide", flush);
+setInterval(() => { if (!document.hidden) flush(); }, 10 * 60 * 1000);   // açık bırakılan sayfada da 10 dakikada bir
+// sayfa hataları (oturum başına en fazla 3)
+let hn = 0;
+addEventListener("error", e => { if (hn++ < 3) send("hata", {hata:String(e.message || "").slice(0, 150) + (e.lineno ? ` (satır ${e.lineno})` : "")}); });
+addEventListener("unhandledrejection", e => { if (hn++ < 3) send("hata", {hata:String((e.reason && e.reason.message) || e.reason || "").slice(0, 150)}); });
+// olay kuyruğu (program betiği giriş/açılış/çıkış olaylarını buraya bırakır)
+const handle = olay => { if (olay === "çıkış") flush(); send(olay, {bolum:AD[key()] || key()}); };
+window.KAYIT_Q = {push:handle};
+(Array.isArray(q0) ? q0 : []).forEach(handle);
 })();
 </script>
 </body>
