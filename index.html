@@ -1212,6 +1212,13 @@ body.km-lock{overflow:hidden}
 body[data-route="hava"] #wxView{display:flex}
 #tmView{display:none;flex-direction:column;gap:10px}
 body[data-route="sayac"] #tmView{display:flex}
+#tmSoon{display:none}
+body.tmh-bakim[data-route="sayac"] #tmSoon{display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:52px 24px}
+body.tmh-bakim[data-route="sayac"] #tmHost{display:none}
+body.tmh-bakim #tmhPill{display:none!important}
+.tmh-soon-ic{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;color:var(--accent);background:var(--accent-soft)}
+.tmh-soon h2{margin:0;font-family:var(--display)}
+.tmh-soon p{margin:0;max-width:30ch;color:var(--muted);line-height:1.6}
 body[data-route="sayac"] .wrap{max-width:1180px}
 .tmh{position:relative;height:var(--tmh,640px);min-height:320px}
 .tmh iframe{position:absolute;inset:0;width:100%;height:100%;border:0;background:transparent;color-scheme:normal}
@@ -1569,6 +1576,11 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
 
   <!-- her sayfanın altında (giriş, program, sınav-not, hava): hata bildirimi ve öneri -->
   <div id="tmView">
+    <section class="card tmh-soon" id="tmSoon">
+      <div class="tmh-soon-ic" aria-hidden="true"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7"/><path d="M12 10v3.5l2.3 1.6M9.5 3.5h5"/></svg></div>
+      <h2>Odak sayacı yakında</h2>
+      <p>Bu bölüm şu an geliştiriliyor. Çok yakında burada çalışmaya başlayabileceksin.</p>
+    </section>
     <div class="tmh" id="tmHost"><div class="tmh-msg" id="tmMsg">Sayaç yükleniyor…</div></div>
   </div>
   <button class="tmh-pill" id="tmhPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmhPillT"></b></button>
@@ -3524,6 +3536,10 @@ ensure();
 (() => {
 const $ = id => document.getElementById(id);
 const host = $("tmHost"), pill = $("tmhPill"), body = document.body;
+// Sayaç bölümü geliştirme aşamasında: yalnız bir duyuru gösterilir, sayaç (iframe) yüklenmez.
+// Geliştirme bitince yalnız bu satırı false yap; sayaç kodu olduğu gibi duruyor.
+const BAKIM = true;
+if (BAKIM) body.classList.add("tmh-bakim");
 let fr = null, iw = null;
 const active = () => body.dataset.route === "sayac";
 const sub = () => active() ? (body.dataset.sub || "sayac") : "sayac";
@@ -3536,7 +3552,7 @@ function fit(){
   host.style.setProperty("--tmh", Math.max(320, innerHeight - top - below) + "px");
 }
 function load(){
-  if (fr) return;
+  if (BAKIM || fr) return;
   fr = document.createElement("iframe");
   fr.title = "Odak sayacı"; fr.allow = "fullscreen; screen-wake-lock; autoplay"; fr.setAttribute("allowfullscreen", "");
   fr.src = "../studydoro/?gomulu=1#" + sub();
@@ -3558,7 +3574,7 @@ function hook(){
   toFrame();
 }
 function toFrame(){ if (iw && active() && iw.location.hash.slice(1) !== sub()) iw.location.hash = "#" + sub(); }
-const ensure = () => { if (active()){ pill.hidden = true; load(); requestAnimationFrame(fit); toFrame(); } else if (!guest() && live()) load(); };
+const ensure = () => { if (BAKIM){ pill.hidden = true; return; } if (active()){ pill.hidden = true; load(); requestAnimationFrame(fit); toFrame(); } else if (!guest() && live()) load(); };
 new MutationObserver(ensure).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
 addEventListener("resize", fit); ensure();
 setInterval(() => {   // başka sekmedeyken çalışan sayaç küçük bir göstergede görünür; sayaç sekmesinde sekme başlığı sayacı izler
