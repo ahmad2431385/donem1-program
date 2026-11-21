@@ -11,4 +11,4 @@
 - `desc.json` – ders açıklamaları
 - `tools/build.py` – Dönem 1 kaynaklarından `data.json` üreten betik; `tools/multi/` – Dönem 2–5 derleyicileri
 
-**Odak sayacı:** Ayrı sitede: https://ahmad2431385.github.io/studydoro/
+**Odak sayacı:** Programın "Sayaç" sekmesinde (kodu `sayac/` klasöründe).

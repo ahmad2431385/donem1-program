@@ -3554,7 +3554,7 @@ function load(){
   if (BAKIM || fr) return;
   fr = document.createElement("iframe");
   fr.title = "Odak sayacı"; fr.allow = "fullscreen; screen-wake-lock; autoplay"; fr.setAttribute("allowfullscreen", "");
-  fr.src = "../studydoro/?gomulu=1#" + sub();
+  fr.src = "sayac/?gomulu=1#" + sub();
   fr.addEventListener("load", hook);
   host.appendChild(fr);
 }
