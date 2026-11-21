@@ -294,16 +294,6 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .foot{font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
-.fb{border:1px solid var(--line);border-radius:14px;background:var(--surface);padding:8px 12px;display:flex;flex-direction:column;gap:8px}
-.fb[hidden]{display:none}
-.fb-r{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13.5px;font-weight:600;color:var(--muted)}
-.fb-b{display:flex;gap:6px;flex:none}
-.fb-b button{width:40px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--bg);font-size:17px;cursor:pointer;line-height:1}
-.fb-b button[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
-.fb-m{display:flex;gap:8px;align-items:flex-end}
-.fb-m textarea{flex:1;font:inherit;font-size:14px;border:1.5px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--bg);color:var(--ink);resize:vertical;min-height:42px}
-.fb-m button{flex:none}
-.fb-ok{margin:0;font-size:13px;color:var(--accent);font-weight:600}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
 .contact a{color:var(--accent);font-weight:600;overflow-wrap:anywhere}
@@ -1376,6 +1366,8 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
+  </section>
+
   <!-- main -->
   <main id="mainView" class="stack" hidden style="gap:14px">
     <section class="now" id="nowBox"></section>
@@ -1577,11 +1569,6 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   </div>
   <button class="tmh-pill" id="tmhPill" type="button" hidden aria-label="Odak sayacına git"><span class="pd" aria-hidden="true"></span><b id="tmhPillT"></b></button>
 
-  <section class="fb" id="fbBox" hidden aria-label="Geri bildirim">
-    <div class="fb-r"><span id="fbQ">Bu bölüm işine yarıyor mu?</span><span class="fb-b"><button type="button" data-fb="1" aria-label="Evet, işime yarıyor" aria-pressed="false">👍</button><button type="button" data-fb="0" aria-label="Hayır, işime yaramıyor" aria-pressed="false">👎</button></span></div>
-    <div class="fb-m" id="fbMore" hidden><textarea id="fbTxt" rows="2" maxlength="1000" placeholder="İstersen kısaca yaz: ne işine yaradı, ne eksik? (isteğe bağlı)"></textarea><button type="button" class="primary" id="fbSend">Gönder</button></div>
-    <p class="fb-ok" id="fbOk" hidden>Teşekkürler, geri bildirimin iletildi.</p>
-  </section>
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
@@ -3646,10 +3633,12 @@ window.addEventListener("popstate", routeFromHash);
 (() => {
 const URL = window.LOG_URL, body = document.body, $ = id => document.getElementById(id);
 const q0 = window.KAYIT_Q || [], ev0 = window.KAYIT_EVQ || [];
-if (!URL){ window.KAYIT_Q = {push(){}}; window.KAYIT_EV = () => {}; return; }
+// kayıt yalnız giriş sayfasında bilgilendirme varsa çalışır; bilgilendirme yoksa hiçbir şey kaydedilmez
+if (!URL || !$("logNote")){ window.KAYIT_Q = {push(){}}; window.KAYIT_EV = () => {}; window.KAYIT_VH = () => {}; return; }
 $("logNote").hidden = false;
 const LS = {get:k => { try { return localStorage.getItem(k); } catch(e){ return null; } }, set:(k, v) => { try { localStorage.setItem(k, v); } catch(e){} }};
 const rid = () => Math.random().toString(36).slice(2, 10);
+const sid = rid();
 /* ---- cihaz ---- */
 const ua = navigator.userAgent, mm = q => matchMedia(q).matches;
 const sistem = /iPad|Macintosh/.test(ua) && navigator.maxTouchPoints > 1 ? "iPadOS" : /iPhone|iPod/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "macOS" : /CrOS/.test(ua) ? "ChromeOS" : /Linux/.test(ua) ? "Linux" : "diğer";
@@ -3726,7 +3715,7 @@ const etiket = el => (el.getAttribute("aria-label") || el.getAttribute("title") 
 function yakala(doc, onek){
   doc.addEventListener("click", e => {
     const el = e.target.closest && e.target.closest("button, a, summary, [role=button], [data-go], .km-lbl, input[type=checkbox], input[type=radio], label");
-    if (!el || el.closest("#fbBox")) return;
+    if (!el) return;
     const k = `${onek ? onek() : bolumAd()}: ${etiket(el)}`; etk[k] = (etk[k] || 0) + 1;
   }, true);
   doc.addEventListener("change", e => {
@@ -3812,28 +3801,6 @@ addEventListener("error", e => { if (e.target && e.target !== window && e.target
   if (hn++ < 5) send("hata", {hata:String(e.message || "").slice(0, 200) + (e.lineno ? ` (satır ${e.lineno}:${e.colno || 0})` : "")}); }, true);
 addEventListener("unhandledrejection", e => { if (hn++ < 5) send("hata", {hata:String((e.reason && e.reason.message) || e.reason || "").slice(0, 200)}); });
 window.KAYIT_VH = msg => { if (hn++ < 8) send("veri hatası", {hata:String(msg).slice(0, 200)}); };
-
-/* ---- geri bildirim kutusu ---- */
-const fb = $("fbBox");
-if (fb){
-  const ad = () => AD[key()] || key();
-  const sk = () => "fb_" + key();
-  const yaz = () => {
-    const g = !body.classList.contains("guest") && !/^giriş/.test(key());
-    fb.hidden = !g; if (!g) return;
-    $("fbQ").textContent = `${ad().replace(/ › .*/, "")} bölümü işine yarıyor mu?`;
-    const v = LS.get(sk());
-    fb.querySelectorAll("[data-fb]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.fb === v)));
-    $("fbOk").hidden = true;
-  };
-  fb.addEventListener("click", e => {
-    const b = e.target.closest("[data-fb]");
-    if (b){ LS.set(sk(), b.dataset.fb); send("geri bildirim", {oy:b.dataset.fb === "1" ? "👍" : "👎", bolum:ad()}); yaz(); $("fbMore").hidden = false; $("fbTxt").focus({preventScroll:true}); return; }
-    if (e.target.id === "fbSend"){ const t = $("fbTxt").value.trim(); if (!t) return; send("geri bildirim", {oy:(LS.get(sk()) === "1" ? "👍" : LS.get(sk()) === "0" ? "👎" : ""), not:t.slice(0, 1000), bolum:ad()}); $("fbTxt").value = ""; $("fbMore").hidden = true; $("fbOk").hidden = false; }
-  });
-  new MutationObserver(() => { yaz(); $("fbMore").hidden = true; }).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
-  yaz();
-}
 
 /* ---- program betiğinden gelen olaylar (giriş, açılış, çıkış, misafir açılış, başarısız giriş) ---- */
 const handle = x => {
