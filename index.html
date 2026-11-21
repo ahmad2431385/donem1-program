@@ -295,7 +295,6 @@ details.fold > summary:hover{background:color-mix(in srgb, currentColor 5%, tran
 .contact{margin-top:6px;padding:12px 4px 4px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center;line-height:1.6}
 .contact p{margin:0}
 .lognote{margin:10px 0 0;font-size:12px;line-height:1.5}
-.contact-k{margin-top:8px !important;font-size:11.5px;line-height:1.5}
 .contact-c{margin-top:10px !important;padding-top:8px;border-top:1px dashed var(--line);font-size:11.5px;line-height:1.5;opacity:.85}
 .contact-l{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 16px;margin-top:4px !important}
 .contact a{color:var(--accent);font-weight:600;overflow-wrap:anywhere}
@@ -1575,7 +1574,6 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
   <footer class="contact" id="contact">
     <p>Program veya yazılım ile alakalı bir hatayı bildirmek veyahut yazılımla ilgili bir öneride bulunmak istiyorsanız aşağıdaki bağlantıları kullanabilirsiniz.</p>
     <p class="contact-l"><span>Email: <a href="mailto:ahmadomarmukhtar24@gmail.com">ahmadomarmukhtar24@gmail.com</a></span><span>Nu: <a href="tel:+905518929758">0551 892 97 58</a></span></p>
-    <p class="contact-k" id="logFoot" hidden>Siteyi geliştirmek amacıyla öğrenci numarası ve kullanım bilgileri (açılan bölümler, süre, cihaz türü) kaydedilir; yalnız site yöneticisi görür.</p>
     <p class="contact-c">© 2026 · Tüm hakları mahfuzdur. Bu sitenin tasarımı ve yazılımı kopyalanamaz, çoğaltılamaz, dağıtılamaz, satılamaz ve ticari amaçla kullanılamaz.</p>
   </footer>
 </div>
@@ -3630,7 +3628,7 @@ window.addEventListener("popstate", routeFromHash);
 const URL = window.LOG_URL, body = document.body;
 const q0 = window.KAYIT_Q || [];
 if (!URL){ window.KAYIT_Q = {push(){}}; return; }
-document.getElementById("logNote").hidden = false; document.getElementById("logFoot").hidden = false;
+document.getElementById("logNote").hidden = false;
 const sid = Math.random().toString(36).slice(2, 10);
 const ua = navigator.userAgent, mm = q => matchMedia(q).matches;
 const sistem = /iPad|Macintosh/.test(ua) && navigator.maxTouchPoints > 1 ? "iPadOS" : /iPhone|iPod/.test(ua) ? "iOS" : /Android/.test(ua) ? "Android" : /Windows/.test(ua) ? "Windows" : /Mac OS/.test(ua) ? "macOS" : /CrOS/.test(ua) ? "ChromeOS" : /Linux/.test(ua) ? "Linux" : "diğer";
