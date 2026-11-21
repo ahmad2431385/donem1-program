@@ -1367,7 +1367,7 @@ body.nt-staj #examBox,body.nt-staj #ntSet .nt-w,body.nt-staj #ntWMsg,body.nt-sta
       <button class="primary" type="submit">Giriş yap</button>
     </form>
     <div class="err" id="loginErr" role="alert"></div>
-    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteyi ne zaman ve ne kadar süre kullandığın, hangi bölümleri açtığın; cihaz türün, işletim sistemin, tarayıcın, ekran boyutun ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar kaydedilmez.</p>
+    <p class="muted small lognote" id="logNote" hidden>Bilgilendirme: Bu sitede, siteyi geliştirmek amacıyla kullanım bilgileri kaydedilir: öğrenci numaran, dönemin ve grubun; siteye her girişin ve çıkışın, ne kadar süre kaldığın, hangi bölümleri hangi sırayla açtığın, hangi düğmelere bastığın ve haritada neleri aradığın; siteye nereden geldiğin; cihaz türün, işletim sistemin, tarayıcın, ekran bilgilerin, bağlantı türün ve siteyi ana ekrandan açıp açmadığın. Bu bilgileri yalnız site yöneticisi görebilir; kimseyle paylaşılmaz ve herkese açık bir yerde tutulmaz. Sınav·Not bölümüne yazdığın notlar ve Hava'da seçtiğin konum kaydedilmez.</p>
   </section>
 
   <!-- main -->
@@ -3637,15 +3637,42 @@ const coarse = mm("(pointer:coarse)"), kisa = Math.min(screen.width, screen.heig
 const cihaz = coarse ? (kisa < 600 ? "telefon" : "tablet") : "bilgisayar";
 const uygulama = mm("(display-mode: standalone)") || navigator.standalone === true ? "evet" : "hayır";
 const tema = () => (document.documentElement.dataset.theme || (mm("(prefers-color-scheme: dark)") ? "dark" : "light")) === "dark" ? "koyu" : "açık";
+let zs = 0, ilk = "";
+try { zs = (+localStorage.getItem("kayitSay") || 0) + 1; localStorage.setItem("kayitSay", String(zs)); ilk = localStorage.getItem("kayitIlk") || ""; if (!ilk){ ilk = new Date().toISOString().slice(0, 10); localStorage.setItem("kayitIlk", ilk); } } catch(e){}
+const geldigi = (() => { try { const r = document.referrer ? new URL(document.referrer).hostname : ""; return r && r !== location.hostname ? r : "doğrudan"; } catch(e){ return "doğrudan"; } })();
+const yukleme = () => { try { const n = performance.getEntriesByType("navigation")[0]; return n ? Math.round(n.loadEventEnd || n.domContentLoadedEventEnd) : ""; } catch(e){ return ""; } };
 const AD = {program:"Program", notlar:"Sınav·Not", hava:"Hava", harita:"Harita", sayac:"Sayaç", "sayac/grafik":"Sayaç › Grafik", "sayac/gorunum":"Sayaç › Görünüm", "sayac/ses":"Sayaç › Ses", "sayac/ayar":"Sayaç › Ayarlar"};
 function send(olay, ek){
   const me = window.KAYIT_ME || {};
   const o = {no:me.no || "", donem:me.d || "", gruplar:me.gruplar || "", olay, oturum:sid, cihaz, uygulama, sistem, tarayici,
-    ekran:`${screen.width}×${screen.height}`, tema:tema(), dil:navigator.language || "", ...ek};
+    ekran:`${screen.width}×${screen.height} @${Math.round((devicePixelRatio || 1) * 10) / 10}x`, yon:screen.orientation && screen.orientation.type ? (/portrait/.test(screen.orientation.type) ? "dikey" : "yatay") : (innerHeight >= innerWidth ? "dikey" : "yatay"),
+    tema:tema(), dil:navigator.language || "", saatDilimi:(Intl.DateTimeFormat().resolvedOptions().timeZone || ""),
+    baglanti:(navigator.connection && navigator.connection.effectiveType) || "", geldigi, ziyaretNo:zs, ilkZiyaret:ilk, ...ek};
   const b = JSON.stringify(o);
   try { if (navigator.sendBeacon && navigator.sendBeacon(URL, new Blob([b], {type:"text/plain"}))) return; } catch(e){}
   try { fetch(URL, {method:"POST", mode:"no-cors", keepalive:true, body:b}).catch(() => {}); } catch(e){}
 }
+// dokunulan düğmeler / seçimler (değerler değil, yalnız ne olduğu): bölüm bölüm sayılır
+let etk = {};
+const etiket = el => { let t = el.getAttribute("aria-label") || el.getAttribute("title") || el.textContent || el.value || el.id || el.tagName; return t.replace(/\s+/g, " ").trim().slice(0, 40); };
+function yakala(doc, onek){
+  doc.addEventListener("click", e => {
+    const el = e.target.closest && e.target.closest("button, a, summary, [role=button], [data-go], .km-lbl, input[type=checkbox], input[type=radio], label");
+    if (!el) return;
+    const k = `${onek ? onek() : (AD[key()] || key())}: ${etiket(el)}`; etk[k] = (etk[k] || 0) + 1;
+  }, true);
+  doc.addEventListener("change", e => {
+    const el = e.target; if (!el || !el.tagName || !/SELECT|INPUT/.test(el.tagName) || /text|search|number|tel/.test(el.type || "") || el.closest("#wxView")) return;
+    const k = `${onek ? onek() : (AD[key()] || key())}: seçim ${el.id || el.name || el.tagName.toLowerCase()}`; etk[k] = (etk[k] || 0) + 1;
+  }, true);
+}
+yakala(document);
+// harita araması: seçilen sonuç zaten düğme olarak sayılır; yazılan arama metni de (kişisel değil) eklenir
+document.addEventListener("change", e => { if (e.target && e.target.id === "kmQ" && e.target.value.trim()){ const k = `Harita: arama "${e.target.value.trim().slice(0, 30)}"`; etk[k] = (etk[k] || 0) + 1; } }, true);
+// sayaç sekmesi içindeki düğmeler
+const fr = setInterval(() => { const f = document.querySelector("#tmHost iframe"); if (!f) return;
+  const bag = () => { try { if (f.contentDocument && !f.contentDocument.__kayit){ f.contentDocument.__kayit = 1; yakala(f.contentDocument, () => AD[key()] || "Sayaç"); } } catch(e){} };
+  bag(); f.addEventListener("load", bag); clearInterval(fr); }, 1000);
 // bölüm süreleri
 const key = () => body.classList.contains("guest") ? "giriş sayfası" : body.dataset.route === "sayac" ? (body.dataset.sub || "sayac") : body.dataset.route;
 let cur = key(), t0 = document.hidden ? 0 : Date.now(), acc = {}, sira = [];
@@ -3661,11 +3688,16 @@ function flush(){
   const top = Object.values(acc).reduce((a, b) => a + b, 0);
   if (top < 1000) return;   // çok kısa parçalar bir sonraki gönderime eklenir
   const bol = Object.entries(acc).filter(([, v]) => v >= 1000).sort((a, b) => b[1] - a[1]).map(([k, v]) => `${AD[k] || k} ${fmt(v)}`).join(" · ");
-  send("kullanım", {sure:Math.round(top / 1000), bolumler:bol, gezinti:sira.slice(0, 40).join(" → ")});
-  acc = {}; sira = [];
+  const et = Object.entries(etk).sort((a, b) => b[1] - a[1]).map(([k, v]) => v > 1 ? `${k} ×${v}` : k).join(" · ").slice(0, 1500);
+  send("kullanım", {sure:Math.round(top / 1000), bolumler:bol, gezinti:sira.slice(0, 60).join(" → "), etkilesim:et});
+  acc = {}; sira = []; etk = {};
 }
 new MutationObserver(tick).observe(body, {attributes:true, attributeFilter:["data-route", "data-sub", "class"]});
-document.addEventListener("visibilitychange", () => { if (document.hidden) flush(); else { tick(); } });
+let gizli = 0;
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden){ gizli = Date.now(); flush(); }
+  else { tick(); if (gizli && Date.now() - gizli > 30000) send(window.KAYIT_ME ? "geri dönüş" : "misafir geri dönüş", {bolum:AD[key()] || key(), ara:Math.round((Date.now() - gizli) / 60000)}); gizli = 0; }
+});
 addEventListener("pagehide", flush);
 setInterval(() => { if (!document.hidden) flush(); }, 10 * 60 * 1000);   // açık bırakılan sayfada da 10 dakikada bir
 // sayfa hataları (oturum başına en fazla 3)
@@ -3673,7 +3705,7 @@ let hn = 0;
 addEventListener("error", e => { if (hn++ < 3) send("hata", {hata:String(e.message || "").slice(0, 150) + (e.lineno ? ` (satır ${e.lineno})` : "")}); });
 addEventListener("unhandledrejection", e => { if (hn++ < 3) send("hata", {hata:String((e.reason && e.reason.message) || e.reason || "").slice(0, 150)}); });
 // olay kuyruğu (program betiği giriş/açılış/çıkış olaylarını buraya bırakır)
-const handle = olay => { if (olay === "çıkış") flush(); send(olay, {bolum:AD[key()] || key()}); };
+const handle = olay => { if (olay === "çıkış") flush(); send(olay, {bolum:AD[key()] || key(), yukleme:/açılış/.test(olay) ? yukleme() : ""}); };
 window.KAYIT_Q = {push:handle};
 (Array.isArray(q0) ? q0 : []).forEach(handle);
 })();
