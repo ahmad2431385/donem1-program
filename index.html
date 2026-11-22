@@ -3401,7 +3401,7 @@ function build(){
     const order = NAMES.slice().sort((a, b) => (B[b].salon.length > 0) - (B[a].salon.length > 0));
     for (const n of order){
       const el = document.createElement("button"); el.type = "button"; el.className = "km-lbl";
-      el.textContent = n.replace(/ \((yapım aşamasında|bitmek üzere|yıkılacak|tadilatta)\)/, "");
+      el.textContent = n.replace(/ \((yapım aşamasında|bitmek üzere|yıkılacak|yıkılıyor|tadilatta)\)/, "");
       el.style.setProperty("--c", TUR[B[n].tur].renk); el.title = n;
       el.onclick = e => { e.stopPropagation(); select(n); };
       LBL.push({n, el, mk:new maplibregl.Marker({element:el, anchor:"bottom", offset:[0, -4]}).setLngLat(B[n].c).addTo(map)});
