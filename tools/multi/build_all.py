@@ -18,11 +18,13 @@ import urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from multi import common  # noqa: E402
+from multi import d2 as d2mod  # noqa: E402
 
 SOURCES = {
     2: {"ogrenci": ("sheet", "1JKQHtNaOixMEVFfWKdo1vh2MKISbMaXMWQjDMl_gAAM"),
         "ders": ("sheet", "1JMxqm8dnckDKS_EVS6GFut2BDjS63khIjQEzVhAOrj8"),
-        "uyg": ("sheet", "1SezCE6ZoHcNScL7Z1epqJQ9Q8B6GMFeO0ykp16Jr0rw")},
+        "uyg": ("sheet", "1SezCE6ZoHcNScL7Z1epqJQ9Q8B6GMFeO0ykp16Jr0rw"),
+        "dikey": ("xlsx", "1-EigEZue7FVRoRxx0J_FXcZxypVbozVD")},   # Dikey Koridor 2 uygulama takvimi (konu/hoca/yer)
     3: {"ogrenci": ("sheet", "1qL-nbVICZHUK6mKP1xSuYIZiUOD3V_YeKUxNNxYsn-g"),
         "ders_A": ("sheet", "1Wk9h1Z3duYvQRX-krrDQ2xHXbmWk0j-VPNPU5y5Aj7A"),
         "ders_B": ("sheet", "1wlquiW3pDRiHzNp8mfFdGGzudfwF_3nyvkkygmHG-nU"),
@@ -38,6 +40,7 @@ SOURCES = {
         "ders": ("xlsx", "1T8NTqJCRFF34HBvIS-DTHja2e15Bi4rf")},
 }
 AMFI = ("sheet", "1uCfBw8_mRI47Am2SrijTiOYP71jl1ZWatu26sXrJLJw")
+OPTIONAL = {(2, "dikey")}   # açılamazsa dönem yine derlenir, yalnız bu ek bilgi eksik kalır
 
 
 def drive_file(fid, path):
@@ -109,7 +112,14 @@ def main():
             mod = importlib.import_module(f"multi.d{donem}")
             grids = {}
             for k, spec in SOURCES[donem].items():
-                v = src.get(donem, k, spec)
+                try:
+                    v = src.get(donem, k, spec)
+                except Exception as ex:  # noqa: BLE001
+                    if (donem, k) not in OPTIONAL:
+                        raise
+                    print(f"  [D{donem}] uyarı: '{k}' kaynağı açılamadı, onsuz derleniyor: {str(ex)[:120]}")
+                    grids[k] = None
+                    continue
                 grids[k] = first(v) if spec[0] == "sheet" else v  # E-Tablo: ilk sayfa; Excel/Word: hepsi
             grids["amfi"] = first(src.get(0, "amfi", AMFI))
             data, st, stats, need, warn = mod.build(grids)
@@ -138,8 +148,12 @@ def main():
         sk.setdefault(h, {})["1"] = rec
     for donem in sorted(SOURCES):
         if donem in students:
+            an = d2mod.anatomi_static() if donem == 2 else None
             for no, tags in students[donem].items():
-                sk.setdefault(H(no), {})[str(donem)] = tags
+                h = H(no)
+                if donem == 2:   # anatomi grubu, salonu ve masası (karma ile eşleşir; numara dosyada yok)
+                    tags = tags + d2mod.anatomi_tags(h, (an or {}).get("ogr"))
+                sk.setdefault(h, {})[str(donem)] = tags
         else:  # bu dönem yeniden derlenemedi: önceki dizindeki kayıtları taşı
             for h, recs in prev_ogr.get("sk", {}).items():
                 if str(donem) in recs:

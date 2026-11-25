@@ -1752,6 +1752,11 @@ function buildDay(date){
       item.src = "Seçmeli ders amfi programı";
       if (note){ item.note = note; item.changed = true; if (/yapılmayacak/i.test(note)) item.cancelled = true; }
     } else item.where = niceYer(ev.y);
+    if (ev.an){   // Dönem 2 anatomi uygulaması: öğrencinin salonu ve masası
+      const t = (me.tags || []).find(x => /^anyer:/.test(x)), ag = (me.tags || []).find(x => /^an:\d$/.test(x));
+      if (t){ const [sa, ma] = t.slice(6).split("."); item.where = `${item.where ? item.where + " · " : ""}${sa}. salon, ${ma}. masa`; }
+      if (ag) item.dilim = [item.dilim, `Anatomi ${ag.slice(3)}. grup`].filter(Boolean).join(" · ");
+    }
     out.push(item);
   }
   for (const u of prac){
@@ -2544,6 +2549,9 @@ async function login(no, pick){
 function chipsOf(n, tags){
   const t = tags || [], out = [];
   for (const x of t){
+    if (n === 2 && x === "an:?") continue;   // anatomi salon listesinde yok: etiket gösterilmez
+    if (n === 2 && /^an:\d$/.test(x)){ out.push(`Anatomi ${esc(x.slice(3))}. grup`); continue; }
+    if (n === 2 && /^anyer:\d+\.\d+$/.test(x)){ const [sa, ma] = x.slice(6).split("."); out.push(`${esc(sa)}. salon · ${esc(ma)}. masa`); continue; }
     if (n === 3 && /^mp:/.test(x)) out.push(`Mikro-Pato ${esc(x.slice(3))}`);
     else if (n === 5 && /^[23]:/.test(x)) out.push(`${x[0]==="2"?"İkili":"Üçlü"} ${esc(x.slice(2))}`);
     else if (/^[A-H]$/.test(x)) out.push(`Grup ${esc(x)}`);
