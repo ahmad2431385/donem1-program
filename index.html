@@ -1815,17 +1815,19 @@ function renderChanges(){
   const box = $("chgBox");
   const n = istNow(), nowMin = Date.parse(n.date+"T00:00:00Z")/6e4 + n.min;
   const atMin = at => Date.parse(at.slice(0,10)+"T"+(at.slice(11,16)||"00:00")+":00Z")/6e4;
-  const list = myChanges().filter(c => nowMin - atMin(c.at) <= 48*60);
+  // Son değişiklikler: fark edildikten sonra en çok 48 saat durur. Bugünü ilgilendiren bir değişiklik, ilgili ders/saat
+  // bitince 48 saat dolmadan kalkar; günü geçmiş olanlar zaten gösterilmez (myChanges). İleriki günlerinkiler 48 saat kalır.
+  const bitti = c => c.d === n.date && (toMin(c.e || c.s) ?? 24*60) <= n.min;
+  const list = myChanges().filter(c => nowMin - atMin(c.at) <= 48*60 && !bitti(c))
+    .sort((a, b) => a.d.localeCompare(b.d) || (toMin(a.s) ?? 0) - (toMin(b.s) ?? 0) || String(b.at).localeCompare(String(a.at)));
   box.hidden = !list.length;
-  if (!list.length) return;
+  if (!list.length){ $("chgBody").innerHTML = ""; $("chgCount").textContent = ""; return; }
   const label = {add:"Eklendi", del:"Kaldırıldı", mod:"Değişti"};
   const src = {ders:"Ders programı", uyg:"Uygulama tablosu", amfi:"Amfi programı", sec:"Seçmeli ders programı", pdo:"PDÖ programı"};
-  const top = list.slice(0,4);
   $("chgCount").textContent = list.length + " yeni";
-  $("chgBody").innerHTML = top.map(c => `
+  $("chgBody").innerHTML = list.map(c => `
     <div class="chg"><span class="k">${fmtDate(c.d,false)} ${esc(c.s||"")}</span>
-    <span><span class="pill">${label[c.type]}</span>${chgText(c)} <span class="small" style="opacity:.75">· ${src[c.src]||""}, ${fmtStamp(c.at)} fark edildi</span></span></div>`).join("")
-    + (list.length > 4 ? `<span class="small">+${list.length-4} değişiklik daha; ilgili günlerde "Değişti" etiketiyle işaretli.</span>` : "");
+    <span><span class="pill">${label[c.type]}</span>${chgText(c)} <span class="small" style="opacity:.75">· ${src[c.src]||""}, ${fmtStamp(c.at)} fark edildi</span></span></div>`).join("");
 }
 
 function prettyT(t){ return String(t||"").replace(/^D[ÖO]NEM\s*\d\s*-?\s*(TÜRKÇE\s*(\+\s*İNGİLİZCE)?)?\s*-?\s*/i,"").replace(/\s*-\s*/g," – ").trim(); }
@@ -2597,7 +2599,14 @@ $("datePick").addEventListener("change", e => { if (/^\d{4}-\d{2}-\d{2}$/.test(e
 $("prev").onclick = () => { view = addDays(view, mode==="week" ? -7 : -1); renderMain(); };
 $("next").onclick = () => { view = addDays(view, mode==="week" ? 7 : 1); renderMain(); };
 $("todayBtn").onclick = () => { view = istNow().date; renderMain(); };
-setInterval(() => { renderStale(); if (me){ renderNow(); if (mode==="day" && view===istNow().date) renderMain(); } }, 60000);
+let chgGun = istNow().date;
+setInterval(() => {
+  renderStale();
+  if (!me) return;
+  const g = istNow().date;
+  if (g !== chgGun){ chgGun = g; _myCh = null; dayCache.clear(); }   // gece yarısı: dünün değişiklikleri düşer
+  renderChanges(); renderNow(); if (mode==="day" && view===g) renderMain();
+}, 60000);
 
 const saved = store.get("ogrNo");
 if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r.no, r.choose); } else { show(); if (r === true) (window.KAYIT_Q = window.KAYIT_Q || []).push("açılış"); } }
