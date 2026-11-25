@@ -194,6 +194,8 @@ button.ev:hover .more,button.wi:hover .more{background:var(--c);color:var(--surf
 .wi .tm{font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 .wi .nm{font-weight:600;line-height:1.3;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
 .wi .pl{color:var(--muted);font-size:11.5px;overflow-wrap:anywhere}
+.wi .wnote{margin-top:3px;font-size:11px;line-height:1.35;background:var(--warn-bg);color:var(--warn-ink);border-radius:5px;padding:2px 6px;overflow-wrap:anywhere}
+.now .note{margin-top:4px}
 .wi.free{background:transparent;border-style:dashed}
 .wnone{font-size:12.5px;color:var(--muted);padding:6px 2px}
 @media (max-width:860px){.wgrid{grid-template-columns:1fr}.wcol h3{position:sticky;top:0;background:var(--bg);z-index:1}}
@@ -1888,7 +1890,7 @@ function renderNow(){
   }
   NOWITEMS = [cur, next];
   const card = (i, lbl, x, extra) => x
-    ? `<button class="card" type="button" data-now="${i}"><span class="lbl">${lbl}</span><span class="ttl">${esc(x.title)}</span><span class="meta">${esc(x.s)}–${esc(x.e)}${x.where? " · "+esc(x.where):""}</span>${extra||""}</button>`
+    ? `<button class="card" type="button" data-now="${i}"><span class="lbl">${lbl}</span><span class="ttl">${esc(x.title)}</span><span class="meta">${esc(x.s)}–${esc(x.e)}${x.where? " · "+esc(x.where):""}</span>${x.note? `<span class="note">${esc(x.note)}</span>`:""}${extra||""}</button>`
     : `<div class="card"><span class="lbl">${lbl}</span><span class="meta">${extra}</span></div>`;
   const nextExtra = next ? (nextDay===now.date ? `<span class="big">${inWords(toMin(next.s)-now.min)} sonra</span>` : `<span class="big">${nextDay===addDays(now.date,1)?"Yarın":fmtDate(nextDay)}</span>`) : "Yakında kayıtlı ders yok.";
   $("nowBox").innerHTML = card(0,"Şu an", cur, cur? `<span class="big">${inWords(toMin(cur.e)-now.min)} kaldı</span>` : "Şu an derste değilsin.") + card(1,"Sıradaki", next, nextExtra);
@@ -1980,7 +1982,7 @@ function renderWeekGrid(now){
     const body = items.length ? items.map(x => {
       if (x.kind==="free") return `<div class="wi free"><span class="tm">${esc(x.s)}–${esc(x.e)}</span><span class="nm" style="font-weight:500;color:var(--muted)">${x.slot? "Uygulaman yok":"Serbest çalışma"}</span></div>`;
       const idx = CURRENT.push(x)-1;
-      return `<button type="button" class="wi ${x.kind}" data-i="${idx}" aria-label="${esc(x.title)} – ayrıntıları aç"><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="tm">${esc(x.s)}–${esc(x.e)}${x.changed? " · değişti":""}</span><span class="nm">${esc(x.kind==="free"? (x.slot? "Uygulaman yok":"Serbest çalışma") : x.title)}</span>${x.where && x.kind!=="free"? `<span class="pl">${esc(x.where)}</span>`:""}</button>`;
+      return `<button type="button" class="wi ${x.kind}" data-i="${idx}" aria-label="${esc(x.title)} – ayrıntıları aç"><span class="more" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2v10M2 7h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span class="tm">${esc(x.s)}–${esc(x.e)}${x.changed? " · değişti":""}</span><span class="nm">${esc(x.kind==="free"? (x.slot? "Uygulaman yok":"Serbest çalışma") : x.title)}</span>${x.where && x.kind!=="free"? `<span class="pl">${esc(x.where)}</span>`:""}${x.note && x.kind!=="free"? `<span class="wnote">${esc(x.note)}</span>`:""}</button>`;
     }).join("") : `<div class="wnone">Kayıt yok</div>`;
     html += `<div class="wcol"><h3 class="${d===now.date?"today":""}">${DAYS[(i+1)%7]}<span>${fmtDate(d,false)}</span></h3>${body}</div>`;
   }
