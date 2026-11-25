@@ -370,6 +370,8 @@ def diff(prev, new, now):
         a, b = A.get(k), B.get(k)
         if a == b:
             continue
+        if k[0] == "amfi" and a and b and (a["txt"], a["y"], a["e"]) == (b["txt"], b["y"], b["e"]):
+            continue  # amfi satırı aynı; yalnız hangi gruba bağlandığı değişti (çözümleme düzeltmesi): değişiklik sayılmaz
         typ = "mod" if a and b else ("add" if b else "del")
         groups = sorted({g for x in (a, b) if x for g in x["g"]})
         ch.append({"at": stamp, "src": k[0], "type": typ, "d": k[1], "s": k[2], "e": (b or a)["e"], "g": groups,

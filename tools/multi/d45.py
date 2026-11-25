@@ -130,6 +130,30 @@ _W = lambda t: {w[:5] for w in re.findall(r"[A-ZÇĞİÖŞÜ]{4,}", up(t)) if w 
 _M = lambda x: int(x[:2]) * 60 + int(x[3:]) if x else None  # noqa: E731
 
 
+# Dönem 4–5 haftalık programlarında bölümler çoğu zaman kısaltmayla yazılır ("GC-Klinik uygulama", "Ü-5. Mesane tümörü");
+# amfi programında ise bölümün adı açık yazar ("DÖNEM 5 - GÖĞÜS CERRAHİSİ"). Grup yazmayan amfi satırı, aynı saatte
+# aynı bölümün dersi olan gruba bağlanır.
+DEPT = {
+    "GC": r"GÖĞÜS\s*CERRAH", "GH": r"GÖĞÜS\s*HASTALIK", "N": r"(?<![A-ZÇĞİÖŞÜ])NÖROLOJİ", "PSK": r"(?<!ÇOCUK )(?<!ERGEN )PSİKİYATRİ",
+    "HS": r"HALK\s*SAĞLI", "AVR": r"ANESTEZİ", "AT": r"ADLİ\s*TIP", "İHVKM": r"(ENFEKSİYON|İNFEKSİYON)", "FTR": r"FİZİKSEL\s*TIP|FİZİK\s*TEDAVİ\s*VE\s*REHAB",
+    "ORT": r"ORTOPEDİ", "Ü": r"ÜROLOJİ", "D": r"DERMATOLOJİ", "PVRC": r"PLASTİK", "ÇP": r"ÇOCUK\s*(VE\s*ERGEN\s*)?(RUH|PSİK)",
+    "GZH": r"GÖZ\s*HASTALIK", "KBB": r"(?<![A-ZÇĞİÖŞÜ])KBB(?![A-ZÇĞİÖŞÜ])|KULAK\s*BURUN", "NRŞ": r"NÖROŞİR|BEYİN\s*CERRAH",
+    "AH": r"AİLE\s*HEKİM", "SHVHT": r"SUALTI", "ONK": r"ONKOLOJİ",
+}
+ABBR = {"PRVEC": "PVRC"}
+
+
+def depts(t):
+    U = up(t)
+    out = {k for k, rx in DEPT.items() if re.search(rx, U)}
+    m = re.match(r"^\s*([A-ZÇĞİÖŞÜ]{1,6})\b", U)   # baştaki kısaltma: "GC-…", "Ü-5.", "PRVEC UYGULAMA"
+    if m:
+        k = ABBR.get(m.group(1), m.group(1))
+        if k in DEPT:
+            out.add(k)
+    return out
+
+
 def amfi_tags(a, day_events, letters, donem):
     """Haftalık amfi satırının kime ait olduğu (sayfa salonu yalnız onlara gösterir).
     'C GRUBU' -> ['C'] · Dönem 4 'B1 GRUBU' -> ['B1'], 'B1-2 GRUBU' -> ['B1-2'] · Dönem 5 'E 2 GRUBU' -> o hafta üçlüyse ['3:E2'],
@@ -152,11 +176,15 @@ def amfi_tags(a, day_events, letters, donem):
         # yalnız programda aynı saatte tam bu alt gruba yazılmış bir ders varsa o alt grubun salonudur
         hit = any(tag in e["g"] and e["s"] and e["e"] and a["s"] and _M(a["s"]) < _M(e["e"]) and _M(e["s"]) < _M(a["e"] or a["s"]) + 1
                   for e in day_events)
+        # Dönem 5'te alt grup (ör. F1) o gün programda varsa satır o alt grubundur; haftalık tabloda o saat boş
+        # olsa bile (amfi programı bazen tabloda olmayan ek bir dersi duyurur)
+        if not hit and donem == 5 and any(tag in e["g"] for e in day_events):
+            hit = True
         return [tag] if hit else ["-"]
-    words, tags = _W(a["t"]), set()
+    words, tags, ad = _W(a["t"]), set(), depts(a["t"])
     for e in day_events:
         if a["s"] and e["s"] and e["e"] and _M(a["s"]) < _M(e["e"]) and _M(e["s"]) < _M(a["e"] or a["s"]) + 1 and \
-                words & _W(e["t"]):   # yalnız dersin/sınavın adı: dilim adı başka bir sınavla karışabiliyor
+                (words & _W(e["t"]) or ad & depts(e["t"])):   # dersin/sınavın adı ya da bölümü (kısaltmayla yazılmış olabilir)
             tags |= set(e["g"])
     return sorted(tags) or ["-"]
 
