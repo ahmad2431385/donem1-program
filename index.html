@@ -1059,6 +1059,13 @@ body[data-route="notlar"] #who{display:none !important}
 .nt-more > summary::before{content:"+";font-family:var(--mono);width:14px}
 .nt-more[open] > summary::before{content:"−"}
 .nt-sub{display:flex;flex-direction:column;gap:8px;padding-left:2px}
+.nt-dt{display:flex;flex-direction:column;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--bg);font-size:13px}
+.nt-dt h4{margin:0;font-size:12px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
+.nt-dr{display:grid;grid-template-columns:minmax(110px,38%) minmax(0,1fr);gap:10px;align-items:baseline}
+.nt-dr span{color:var(--muted);font-size:12.5px}
+.nt-dr b{font-weight:600;overflow-wrap:anywhere}
+.nt-dn{font-size:12px;color:var(--muted)}
+@media (max-width:480px){ .nt-dr{grid-template-columns:minmax(0,1fr);gap:1px} .nt-dr + .nt-dr{border-top:1px dashed var(--line);padding-top:5px} }
 .nt-sub + .nt-sub{border-top:1px solid var(--line);padding-top:12px}
 .nt-sub h4{font-size:13px;margin:0}
 .nt-sub p{margin:0;font-size:12.5px;color:var(--muted)}
@@ -2613,7 +2620,33 @@ if (saved){ const r = await login(saved); if (r && r.choose){ show(); askDonem(r
 else { show(); (window.KAYIT_Q = window.KAYIT_Q || []).push("misafir açılış"); }
 
 // odak sayacı sayfası için: bugünkü dersler ve sıradaki sınav
+let _snv = null;
 window.PROG = {
+  // Not sayfası için: giriş yapan Dönem 2–5 öğrencisinin programdaki bütün sınavları (kendi grubu/alt grubu)
+  // ve dilimlerinin başlangıç–bitiş günleri. own:false = alt grubunun satırı yok, aynı ana grubun satırı.
+  sinavlar(){
+    if (!me || !(me.d > 1) || !D || !D.events) return null;
+    if (_snv && _snv.D === D && _snv.me === me) return _snv.r;
+    const L = (me.tags || []).find(t => /^[A-H]$/.test(t)) || "";
+    const ana = g => Array.isArray(g) && !!L && g.some(t => String(t).replace(/^(\d|mp):/, "").charAt(0) === L);
+    const saat = t => { const m = [...String(t).matchAll(/(\d{1,2})[.:](\d{2})/g)].pop(); return m ? `${m[1].padStart(2, "0")}:${m[2]}` : null; };
+    const ex = [], seen = new Set(), dl = {};
+    for (const e of D.events){
+      const U = String(e.t || "").toLocaleUpperCase("tr"), own = !e.g || hit(e.g);
+      if (/SINAV|SÖZLÜ/.test(U) && !/^SERBEST/.test(U)){
+        if (!own && !ana(e.g)) continue;
+        const s = saat(e.t) || e.s, k = e.d + "|" + U.replace(/\s*\(?\s*(SAAT:?\s*)?\d{1,2}[.:]\d{2}.*$/, "") + "|" + own;
+        if (seen.has(k)) continue; seen.add(k);
+        ex.push({d:e.d, s, t:U, dl:e.dl || "", own});
+      } else if (own && e.dl && !/TATİL|BAYRAM/.test(U)){
+        const r = dl[e.dl] ||= [e.d, e.d]; if (e.d < r[0]) r[0] = e.d; if (e.d > r[1]) r[1] = e.d;
+      }
+    }
+    for (const u of D.uyg || []) if (/sınav/i.test(u.n) && hit(u.g)) ex.push({d:u.d, s:u.s, t:String(u.n).toLocaleUpperCase("tr"), dl:u.dl || "", own:true, uyg:true});
+    ex.sort((a, b) => a.d.localeCompare(b.d) || String(a.s).localeCompare(String(b.s)));
+    _snv = {D, me, r:{ex, dl, g:L, d:me.d}};
+    return _snv.r;
+  },
   lessons(){
     try {
       return [...new Set(buildDay(istNow().date).filter(x => ["amfi","uyg","pdo","sec"].includes(x.kind))
@@ -2665,6 +2698,120 @@ DEFS[3] = mk("d", [[3246,"Semiyoloji",6],[3247,"Kan-Lenfoid II",6],[3248,"Hareke
 DEFS[4] = mk("d", [[4076,"İç Hastalıkları",13,50],[4075,"Çocuk Sağlığı ve Hastalıkları",15,{w:{v:50,u:0,f:50}, h:"Kuramsal %50 + sözlü %50 (hasta formu %20, kanıta dayalı %20, sözlü %60)"}],[4074,"Genel Cerrahi",7,50],[4077,"Kadın Hastalıkları ve Doğum",9,50],[4083,"Kardiyoloji",4,50],[4073,"Klinik Farmakoloji",4,100],[4084,"Biyoistatistik ve Tıp Bilişimi",2,100],[4287,"Kalp Damar Cerrahisi",1,50],[4087,"Klinik Akıl Yürütme",1],[4086,"Onkoloji",1,100],[4081,"Radiodiagnostik",1,100],[4085,"Tıbbi Genetik",1,100]]);
 DEFS[5] = mk("d", [[5109,"Göğüs Hastalıkları",5,50],[5327,"Ortopedi ve Travmatoloji",5,50],[5116,"Semptomdan Teşhise, Teşhisten Tedaviye",5,{w:{v:60,u:20,f:20}, lb:{v:"İç Hastalıkları", u:"Çocuk Sağlığı", f:"Tıbbi Farmakoloji"}, h:"İç H. %60 (kuramsal %80 + hasta başı %20) · Çocuk %20 (kuramsal %80 + uygulama %20) · Farmakoloji %20 (sözlü/olgu)"}],[5090,"Dermatoloji",4,60],[5326,"Halk Sağlığı",4,60],[5086,"Adli Tıp",3,100],[5096,"Kulak Burun Boğaz Hastalıkları",3,50],[5097,"Nöroloji",3,50],[5101,"Psikiyatri",3,50],[5115,"Tıbbi Farmakoloji (Klinik Toksikoloji)",3,100],[5113,"Aile Hekimliği",2,100],[5087,"Anesteziyoloji ve Reanimasyon",2,100],[5092,"Fizik Tedavi ve Rehabilitasyon",2,50],[5329,"Göğüs Cerrahisi",2,100],[5093,"Göz Hastalıkları",2,60],[5095,"Klinik Bakteriyoloji ve İnfeksiyon Hastalıkları",2,100],[5100,"Plastik ve Rekonstrüktif Cerrahi",2,100],[5328,"Radyasyon Onkolojisi",2,100],[5104,"Üroloji",2,50],[5266,"Beyin ve Sinir Cerrahisi",1,50],[5107,"Çocuk Ruh Sağlığı ve Hastalıkları",1,100],[5114,"Tıbbi Etik Vaka Tartışmaları",1,100]]);
 DEFS[6] = mk("d", [[6118,"İç Hastalıkları",9],[6216,"Acil Cerrahi ve Genel Cerrahi",8],[6116,"Çocuk Sağlığı ve Hastalıkları",8],[6119,"Kadın Hastalıkları ve Doğum",8],[6117,"Kırsal Hekimlik ve Toplum Hekimliği",6],[6123,"Ortopedi ve Travmatoloji",5],[6120,"Psikiyatri",5],[6220,"Acil Dahiliye",3],[6122,"Göğüs Hastalıkları",2],[6139,"Kardiyoloji",2],[6121,"Hekimliğe Doğru ve Hekimliğe Merhaba",2]]);
+/* ---------- sınav tarihleri (2026–2027) ----------
+   Dönem 2–3: bütün sınıf için aynı; dönem ders programı ve sınav kuralları tablolarından.
+   Dönem 4–5: gruba göre değişir; giriş yapan öğrencinin programındaki sınav satırlarından hesaplanır. */
+const AY = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
+const gun = iso => `${+iso.slice(8, 10)} ${AY[+iso.slice(5, 7) - 1]}`;
+const aralik = (a, b) => a === b ? gun(a) : a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${gun(b)}` : `${gun(a)}–${gun(b)}`;
+const SD = {2:{}, 3:{}};
+{
+  const u1 = "Histoloji 6 Oca · Anatomi 7 Oca · Fizyoloji 8 Oca", b1 = "Uygulama: Fizyoloji 21 Haz, Histoloji 22 Haz, Anatomi 24 Haz";
+  Object.assign(SD[2], {
+    2115:{v:"19 Eki", f:"29 Ara", u:"Histoloji 6 Oca · Fizyoloji 8 Oca", b:"Kuramsal 25 Haz · Uygulama: Fizyoloji 21 Haz, Histoloji 22 Haz"},
+    2116:{v:"19 Eki", f:"29 Ara", u:u1, b:"Kuramsal 25 Haz · " + b1},
+    2117:{v:"24 Ara", f:"4 Oca", u:u1, b:"Kuramsal 28 Haz · " + b1},
+    2118:{v:"24 Ara", f:"4 Oca", u:"Biyokimya uygulama sınavı uygulama grubuna göre 10–22 Ara · PDÖ oturumlarıyla değerlendirilir · Dilimi alttan alanlar: Biyokimya 8 Oca", bio:"METABOLİZMA",
+          b:"Kuramsal 28 Haz · Uygulama (alttan alanlar): Biyokimya 21 Haz"},
+    2119:{v:"24 Ara", f:"4 Oca", u:"Histoloji 6 Oca · Anatomi 7 Oca", b:"Kuramsal 28 Haz · Uygulama: Histoloji 22 Haz, Anatomi 24 Haz"},
+    2120:{v:"15 Mar", f:"14 Haz", u:"Histoloji 7 Haz · PDÖ oturumlarıyla değerlendirilir", b:"Kuramsal 12 Tem · Uygulama: Histoloji 6 Tem"},
+    2121:{v:"15 Mar", f:"14 Haz", u:"Histoloji 7 Haz · Anatomi 10 Haz · Biyokimya uygulama grubuna göre (tarihi uygulama tablosunda) · Dilimi alttan alanlar: Biyokimya 8 Haz", bio:"ÜROGENİTAL",
+          b:"Kuramsal 12 Tem · Uygulama: Biyokimya 5 Tem, Histoloji 6 Tem, Anatomi 7 Tem"},
+    2122:{v:"6 May", f:"16 Haz", u:"Histoloji 7 Haz · Fizyoloji 8 Haz · Anatomi 10 Haz", b:"Kuramsal 13 Tem · Uygulama: Fizyoloji 5 Tem, Histoloji 6 Tem, Anatomi 7 Tem"},
+    2123:{v:"4 Haz", f:"16 Haz", u:"Mikrobiyoloji 9 Haz · Patoloji 11 Haz", b:"Kuramsal 13 Tem · Uygulama: Patoloji 8 Tem, Mikrobiyoloji 9 Tem"},
+    2124:{v:"24 Ara (Nitelikli Hekimlik) · 6 May (Bilimsel Araştırmaya Giriş)", f:"4 Oca · 14 Haz", u:"Beceri uygulamaları: uygulamalar sırasında değerlendirilir", b:"28 Haz · 12 Tem",
+          k:"Vize 24 Ara, 6 May · Final 4 Oca, 14 Haz"}
+  });
+  const u3 = "Klinik bilimler sözlüsü 8–9 Haz · Mikrobiyoloji 10 Haz · Patoloji 11 Haz (yıl sonunda bir kez)", ub3 = "Uygulama: Klinik bilimler 29 Haz, Mikrobiyoloji 30 Haz, Patoloji 1 Tem";
+  const g3 = (v, f, b, ids) => ids.forEach(id => SD[3][id] = {v, f, u:u3, b:`Kuramsal ${b} · ${ub3}`});
+  g3("17 Kas", "13 Oca", "6 Tem", [3247, 3248]);
+  g3("8 Oca", "15 Oca", "7 Tem", [3249, 3250]);
+  g3("30 Mar", "15 Haz", "8 Tem", [3251, 3252]);
+  g3("1 Haz", "16 Haz", "9 Tem", [3253, 3254]);
+  SD[3][3246] = {v:"17 Kas", f:"13 Oca", u:"Klinik bilimler sözlüsü 8–9 Haz (uygulama notunun tamamı)", b:"Kuramsal 6 Tem · Uygulama: Klinik bilimler 29 Haz"};
+  SD[3][3255] = {v:"8 Oca", f:"15 Oca", u:"Klinikte Hasta İzlemi: yeterlilik (dosyayı uygulama bitince teslim edersin; Biyoistatistik dönem sınavının ön koşulu)", b:"Kuramsal 7 Tem"};
+  SD[3][3275] = {v:"1 Haz", f:"16 Haz", b:"Kuramsal 9 Tem"};
+  SD[3][3256] = {yok:"Sınav kurallarında bu ders için ayrı bir sınav tarihi yok."};
+}
+// Dönem 4–5: ders → dilim (kurallardaki etki oranı tabloları); kuramsal = dilim (bitirme) sınavı, sz = dersin kendi sınavı
+const KD = {
+  4:{dl:{ic:/İÇ HASTALIKLARI/, co:/ÇOCUK SAĞLIĞI/, ce:/^CERRAHİ/, kv:/KARDİYOVASKÜLER/},
+     dx:{ic:/İÇ HASTALIKLARI DİLİMİ.*BİTİRME/, co:/ÇOCUK SAĞLIĞI DİLİMİ.*BİTİRME/, ce:/^CERRAHİ DİLİMİ.*BİTİRME/, kv:/KARDİYOVASKÜLER DİLİMİ.*BİTİRME/},
+     c:{4076:["ic", /İÇ HAST.*SÖZLÜ/], 4073:["ic"], 4075:["co", /ÇOCUK SAĞLIĞI.*SÖZLÜ/], 4085:["co"], 4074:["ce", /GENEL CERRAHİ.*SÖZLÜ/], 4077:["ce", /KADIN HAST.*SÖZLÜ/], 4086:["ce"],
+        4083:["kv", /KARDİYOLOJİ.*SÖZLÜ/], 4287:["kv", /KALP DAMAR.*SÖZLÜ/], 4084:["kv"], 4081:["kv"], 4087:[null]}},
+  5:{dl:{se:/SEMPTOMDAN/, du:/^DUYU/, go:/^GÖĞÜS/, yb:/YAŞAM BOYU/, he:/HEKİMLİĞİN/, sp:/SPESİFİK/, no:/NÖRO/},
+     dx:{se:/SEMPTOMDAN TEŞHİSE.*SINAV/, du:/DUYU DİLİMİ.*SINAV/, go:/GÖĞÜS HASTALIKLARI DİLİMİ/, yb:/YAŞAM BOYU SAĞLIK DİLİMİ/, he:/HEKİMLİĞİN YASAL.*DİLİMİ/, sp:/SPESİFİK CERRAHİ DİLİMİ/, no:/NÖROPSİKİYATRİ DİLİMİ/},
+     c:{5096:["du", /KULAK BURUN BOĞAZ.*SÖZLÜ/], 5093:["du", /GÖZ HASTALIKLARI SÖZLÜ/], 5090:["du", /DERMATOLOJİ GÖRSEL/, "Görsel sınav"],
+        5109:["go", /GÖĞÜS HASTALIKLARI SÖZLÜ/], 5329:["go"], 5087:["go"],
+        5092:["yb", /FİZİKSEL TIP.*SÖZLÜ/], 5327:["yb", /ORTOPEDİ SÖZLÜ/], 5113:["yb"],
+        5100:["sp"], 5104:["sp", /ÜROLOJİ SÖZLÜ/], 5328:["sp"], 5266:["sp", /BEYİN VE SİNİR.*SÖZLÜ/],
+        5097:["no", /NÖROLOJİ SÖZLÜ/], 5101:["no", /^PSİKİYATRİ SÖZLÜ/], 5107:["no"],
+        5116:["se", /^(TIBBİ )?FARMAKOLOJİ SINAV/, "Farmakoloji (sözlü/olgu)"], 5095:["se"],
+        5086:["he"], 5115:["he"], 5326:["he"], 5114:["he", /TIBBİ ETİK SINAV/, "Tıbbi Etik sınavı"]}}
+};
+const DLAD = {ic:"İç Hastalıkları", co:"Çocuk Sağlığı", ce:"Cerrahi", kv:"Kardiyovasküler", se:"Semptomdan Teşhise", du:"Duyu", go:"Göğüs Hastalıkları", yb:"Yaşam Boyu Sağlık", he:"Hekimliğin Yasal ve Toplumsal Yönü", sp:"Spesifik Cerrahi Dallar", no:"Nöropsikiyatri"};
+const saatli = e => gun(e.d) + (e.s ? " " + e.s : "");
+// bir dersin sınav satırları: {kisa, rows:[[etiket, metin]], not}
+function sinavOf(c, n = S.n){
+  const code = +String(c.id).replace(/^c/, "");
+  if (n === 2 || n === 3){
+    const x = SD[n][code]; if (!x) return null;
+    if (x.yok) return {kisa:"", rows:[], not:x.yok};
+    let u = x.u;
+    const P = window.PROG && window.PROG.sinavlar && +window.PROG_DONEM === n ? window.PROG.sinavlar() : null;
+    if (x.bio && P){   // Dönem 2 biyokimya: öğrencinin uygulama grubunun sınav günü
+      const b = P.ex.find(e => e.uyg && /BİYOKİMYA/.test(e.t) && String(e.dl).toLocaleUpperCase("tr").includes(x.bio));
+      if (b) u = u.replace(/Biyokimya uygulama sınavı uygulama grubuna göre 10–22 Ara|Biyokimya uygulama grubuna göre \(tarihi uygulama tablosunda\)/, `Biyokimya ${saatli(b)} (senin uygulama grubun)`);
+    }
+    const rows = [["Vize (dilim sınavı)", x.v], ["Final (dönem sınavı, kuramsal)", x.f]];
+    if (u) rows.push(["Uygulama sınavı", u]);
+    rows.push(["Bütünleme", x.b]);
+    return {kisa:x.k || `Vize ${x.v} · Final ${x.f}`, rows};
+  }
+  if (n !== 4 && n !== 5) return null;
+  const K = KD[n], cf = K.c[code]; if (!cf) return null;
+  const [dk, szRe, szAd] = cf;
+  if (!dk) return {kisa:"", rows:[], not:"Sınav kurallarındaki dilim tablolarında bu ders için ayrı bir sınav yok."};
+  const P = window.PROG && window.PROG.sinavlar && +window.PROG_DONEM === n ? window.PROG.sinavlar() : null;
+  const dlAd = `${DLAD[dk]} dilimi`;
+  if (!P) return {kisa:dlAd, rows:[["Dilim", dlAd]], not:`Sınav tarihleri gruba göre değişir. Dönem ${n} öğrenci numaranla giriş yaparsan grubunun tarihleri burada görünür.`};
+  const ae = String.prototype.toLocaleUpperCase;
+  const dr = Object.entries(P.dl).filter(([k]) => K.dl[dk].test(ae.call(k, "tr").replace(/^\s+/, ""))).map(([, r]) => r).sort((a, b) => a[0].localeCompare(b[0]))[0] || null;
+  const rows = [["Dilim", dlAd + (dr ? ` · ${aralik(dr[0], dr[1])}` : "")]];
+  const yaz = list => { const o = list.filter(e => e.own), l = o.length ? o : list; return l.map(saatli).join(" · ") + (o.length ? "" : " (grubunun programında yazan)"); };
+  let kisa = [];
+  const kur = P.ex.filter(e => K.dx[dk].test(e.t));
+  let kurTxt;
+  if (kur.length) kurTxt = yaz(kur);
+  else if (n === 4){
+    const sh = P.ex.filter(e => /^SINAV HAFTASI/.test(e.t) && K.dl[dk].test(ae.call(e.dl, "tr")));
+    if (sh.length) kurTxt = `Sınav haftası ${aralik(sh[0].d, sh[sh.length - 1].d)} (kesin gün henüz programda yok)`;
+  }
+  if (!kurTxt) kurTxt = dr ? `Dilim bitince (${gun(dr[1])} sonrası); kesin tarih henüz programda yok` : "Tarih henüz programda yok";
+  rows.push([n === 4 ? "Kuramsal (bitirme sınavı)" : "Kuramsal (dilim sınavı)", kurTxt]);
+  if (kur.length) kisa.push("Kuramsal " + gun((kur.find(e => e.own) || kur[0]).d));
+  if (szRe){
+    const sz = P.ex.filter(e => e.own && szRe.test(e.t)), ad = szAd || "Sözlü";
+    rows.push([ad, sz.length ? sz.map(saatli).join(" · ") : `Kesin tarih henüz programda yok${n === 4 ? " (genelde dilimin sınav haftasında)" : " (genelde dilimin son günlerinde)"}`]);
+    if (sz.length) kisa.push(`${ad.split(" (")[0]} ${gun(sz[0].d)}`);
+  }
+  if (n === 5 && dk === "sp"){
+    const alt = P.ex.filter(e => e.own && e.t.trim() === "SINAV" && K.dl.sp.test(ae.call(e.dl, "tr")));
+    if (alt.length) rows.push(["Alt grubunun sınav günü (programda yalnız “SINAV” yazıyor)", alt.map(saatli).join(" · ")]);
+  }
+  if (n === 4){
+    const bt = P.ex.filter(e => /^BÜTÜNLEME SINAV HAFTASI/.test(e.t));
+    rows.push(["Bütünleme", bt.length ? `Bütünleme haftası ${aralik(bt[0].d, bt[bt.length - 1].d)}` : "Tarih henüz programda yok"]);
+  }
+  if (!kisa.length) kisa.push(dlAd + (dr ? " · " + aralik(dr[0], dr[1]) : ""));
+  return {kisa:kisa.join(" · "), rows};
+}
+const sinavHTML = c => {
+  const x = sinavOf(c); if (!x) return "";
+  const r = x.rows.map(([a, b]) => `<div class="nt-dr"><span>${esc(a)}</span><b>${esc(b)}</b></div>`).join("");
+  const h = (TYP[S.n] === "klinik" && c.h) ? `<div class="nt-dn">${esc(c.h)}</div>` : "";
+  return `<div class="nt-dt"><h4>Sınav tarihleri</h4>${r}${x.not ? `<div class="nt-dn">${esc(x.not)}</div>` : ""}${h}</div>`;
+};
 // three kinds of grading: dilim (Dönem 1–3), klinik (4–5), staj (6)
 const TYPES = {
   dilim: {L:{v:"Vize", u:"Uygulama", f:"Final"}, acc:"Vizeyi", w:{v:40, u:30, f:30}, nw:{v:40, u:0, f:60}, fb:true, gl:"Dilimler",
@@ -2839,6 +2986,7 @@ function cardHTML(c){
   return `<details class="nt-c" id="nt_${c.id}" data-id="${c.id}"${OPEN.has(c.id) ? " open" : ""}>
   <summary><span class="nm"><b>${esc(c.n)}</b><small data-o="sub"></small></span><span class="gr" data-o="gr"><b>—</b><small></small></span>${chev}</summary>
   <div class="nt-b">
+    ${sinavHTML(c)}
     <div class="nt-g">
       <label class="nt-f"><span>${L.v} <i data-o="wv">%${w.v}</i></span>${inp(c, "v", c.v, 'placeholder="0–100"')}</label>
       <label class="nt-f"><span>${L.u} <i data-o="wu">%${w.u}</i></span>${inp(c, "u", c.u, 'placeholder="0–100"')}</label>
@@ -2940,7 +3088,7 @@ function update(c){
   const sub = [];
   if (r.done || c.fd) sub.push(c.fd ? "Devamsız" : r.msg.split(":")[0].replace(/\.$/, ""));
   else if (r.have.length) sub.push(`Şimdilik ${f1(r.part)} puan topladın (%${r.wDone} üzerinden)`);
-  else sub.push((c.k ? c.k + " AKTS · " : "") + (c.h || "Notlarını gir"));
+  else { const sx = c.def ? sinavOf(c) : null; sub.push((c.k ? c.k + " AKTS · " : "") + ((sx && sx.kisa) || c.h || "Notlarını gir")); }
   o("sub").textContent = sub.join(" · ");
   el.dataset.st = r.st || (r.have.length ? "wip" : "");
   const gr = o("gr"); gr.className = "gr" + (r.st ? " " + r.st : "");
@@ -3120,7 +3268,9 @@ function onProg(n){
   }
   renderDsel();
 }
-window.addEventListener("prog-donem", e => onProg(e.detail));
+window.addEventListener("prog-donem", e => { onProg(e.detail); if (S.n > 1 && S.n < 6) renderList(); });
+// program yüklenince (grup sınavları hazır) kartlardaki sınav tarihleri yenilenir
+window.addEventListener("prog-ready", () => { if (S.n > 1 && S.n < 6) renderList(); });
 if (MINE) onProg(MINE);
 window.ntRefresh = () => { ALL = loadAll(); useDonem(ALL.d); renderDsel(); wInputs(); renderList(); };
 })();
