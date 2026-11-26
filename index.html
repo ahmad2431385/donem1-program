@@ -2647,6 +2647,11 @@ window.PROG = {
     _snv = {D, me, r:{ex, dl, g:L, d:me.d}};
     return _snv.r;
   },
+  // öğrencinin kendi grubunun uygulama satırları (telafi hariç), adı re'ye uyanlar
+  uygOf(re){
+    if (!me || !D || !D.uyg) return [];
+    return D.uyg.filter(u => re.test(u.n) && !/TELAF/i.test(String(u.g)) && !/TÜM/i.test(String(u.g)) && hit(u.g)).map(u => ({d:u.d, s:u.s, n:u.n})).sort((a, b) => a.d.localeCompare(b.d));
+  },
   lessons(){
     try {
       return [...new Set(buildDay(istNow().date).filter(x => ["amfi","uyg","pdo","sec"].includes(x.kind))
@@ -2704,7 +2709,28 @@ DEFS[6] = mk("d", [[6118,"İç Hastalıkları",9],[6216,"Acil Cerrahi ve Genel C
 const AY = ["Oca","Şub","Mar","Nis","May","Haz","Tem","Ağu","Eyl","Eki","Kas","Ara"];
 const gun = iso => `${+iso.slice(8, 10)} ${AY[+iso.slice(5, 7) - 1]}`;
 const aralik = (a, b) => a === b ? gun(a) : a.slice(0, 7) === b.slice(0, 7) ? `${+a.slice(8, 10)}–${gun(b)}` : `${gun(a)}–${gun(b)}`;
-const SD = {2:{}, 3:{}};
+const SD = {1:{}, 2:{}, 3:{}};
+{
+  const bI = "Uygulama: Biyokimya 29 Haz, Tıbbi biyoloji 9 Tem, Biyofizik 12 Tem";
+  Object.assign(SD[1], {
+    tm: {v:"19 Eki", f:"22 Oca", tm:1,
+         u:"Yaralı taşıma, kırık-çıkıkta ilk yardım, temel yaşam desteği ve mikroskop kullanma uygulamaları kendi grubunun uygulama gününde değerlendirildi (2–12 Eki; telafi 19 Eki) · Yatay geçiş ve alttan alanlar: 19 Oca",
+         b:"Kuramsal 1 Tem · Uygulama: Kırık-çıkık 29 Haz, Temel yaşam desteği 29 Haz, Mikroskop 29 Haz, Yaralı taşıma 2 Tem"},
+    ymt:{v:"13 Oca", f:"22 Oca", u:"Tıbbi biyoloji 18 Oca · Fizyoloji 21 Oca · Biyofizik 21 Oca · Dilimi alttan alanlar: Biyokimya 18 Oca", b:"Kuramsal 1 Tem · " + bI},
+    huc:{v:"13 Oca", f:"22 Oca", u:"Tıbbi biyoloji 18 Oca · Mikrobiyoloji 20 Oca · Biyofizik 21 Oca · Dilimi alttan alanlar: Biyokimya 18 Oca", b:"Kuramsal 1 Tem · Uygulama: Mikrobiyoloji 28 Haz, Biyokimya 29 Haz, Tıbbi biyoloji 9 Tem, Biyofizik 12 Tem"},
+    dok:{v:"13 May", f:"22 Haz", u:"Tıbbi biyoloji 14 Haz · Histoloji 15 Haz · Fizyoloji 15 Haz · Biyofizik 15 Haz", b:"Kuramsal 13 Tem · Uygulama: Tıbbi biyoloji 9 Tem, Fizyoloji 9 Tem, Histoloji 12 Tem, Biyofizik 12 Tem"},
+    hev:{v:"13 May", f:"22 Haz", b:"Kuramsal 13 Tem"},
+    har:{v:"7 Haz", f:"22 Haz", u:"Histoloji 15 Haz · Fizyoloji 15 Haz · Anatomi 17 Haz", b:"Kuramsal 13 Tem · Uygulama: Anatomi 8 Tem, Fizyoloji 9 Tem, Histoloji 12 Tem"},
+    dk: {v:"13 Oca (İletişim I) · 13 May (İletişim II, Tıp Tarihi)", f:"22 Oca · 22 Haz", b:"1 Tem · 13 Tem", k:"Vize 13 Oca, 13 May · Final 22 Oca, 22 Haz"}
+  });
+  const uz = (v, f, b) => ({v, f, b, uz:1});
+  SD[1].td1 = uz("24 Ara 13:30", "11 Oca 12:00", "22 Oca 14:00");
+  SD[1].ai1 = uz("24 Ara 13:30", "11 Oca 12:00", "22 Oca 14:00");
+  SD[1].yd1 = uz("24 Ara 15:00", "11 Oca 13:30", "22 Oca 15:30");
+  SD[1].td2 = uz("20 Nis 12:00", "4 Haz 13:00", "25 Haz 13:00");
+  SD[1].ai2 = uz("20 Nis 12:00", "4 Haz 13:00", "25 Haz 13:00");
+  SD[1].yd2 = uz("20 Nis 13:30", "4 Haz 14:15", "25 Haz 13:00");
+}
 {
   const u1 = "Histoloji 6 Oca · Anatomi 7 Oca · Fizyoloji 8 Oca", b1 = "Uygulama: Fizyoloji 21 Haz, Histoloji 22 Haz, Anatomi 24 Haz";
   Object.assign(SD[2], {
@@ -2754,16 +2780,23 @@ const saatli = e => gun(e.d) + (e.s ? " " + e.s : "");
 // bir dersin sınav satırları: {kisa, rows:[[etiket, metin]], not}
 function sinavOf(c, n = S.n){
   const code = +String(c.id).replace(/^c/, "");
-  if (n === 2 || n === 3){
-    const x = SD[n][code]; if (!x) return null;
+  if (n === 1 || n === 2 || n === 3){
+    const x = SD[n][n === 1 ? c.id : code]; if (!x) return null;
+    if (x.uz) return {kisa:`Uzaktan · Vize ${x.v.split(" ").slice(0, 2).join(" ")} · Final ${x.f.split(" ").slice(0, 2).join(" ")}`,
+      rows:[["Vize (uzaktan, online)", x.v], ["Final (uzaktan, online)", x.f], ["Bütünleme (uzaktan)", x.b]]};
     if (x.yok) return {kisa:"", rows:[], not:x.yok};
     let u = x.u;
     const P = window.PROG && window.PROG.sinavlar && +window.PROG_DONEM === n ? window.PROG.sinavlar() : null;
+    if (x.tm && window.PROG && window.PROG.uygOf && +window.PROG_DONEM === 1){   // Dönem 1 Tıbba Merhaba: grubunun değerlendirme günleri
+      const A = [[/Yaralı Taşıma/i, "Yaralı taşıma"], [/Kırık/i, "Kırık-çıkıkta ilk yardım"], [/Temel Yaşam/i, "Temel yaşam desteği"], [/Mikroskop/i, "Mikroskop kullanma"]]
+        .map(([re, ad]) => { const r = window.PROG.uygOf(re)[0]; return r ? `${ad} ${saatli(r)}` : ""; }).filter(Boolean);
+      if (A.length) u = `Kendi grubunun uygulama gününde değerlendirildi: ${A.join(" · ")} (telafi 19 Eki) · Yatay geçiş ve alttan alanlar: 19 Oca`;
+    }
     if (x.bio && P){   // Dönem 2 biyokimya: öğrencinin uygulama grubunun sınav günü
       const b = P.ex.find(e => e.uyg && /BİYOKİMYA/.test(e.t) && String(e.dl).toLocaleUpperCase("tr").includes(x.bio));
       if (b) u = u.replace(/Biyokimya uygulama sınavı uygulama grubuna göre 10–22 Ara|Biyokimya uygulama grubuna göre \(tarihi uygulama tablosunda\)/, `Biyokimya ${saatli(b)} (senin uygulama grubun)`);
     }
-    const rows = [["Vize (dilim sınavı)", x.v], ["Final (dönem sınavı, kuramsal)", x.f]];
+    const rows = [["Vize (dilim sınavı)", x.v], [n === 1 ? "Final (kuramsal)" : "Final (dönem sınavı, kuramsal)", x.f]];
     if (u) rows.push(["Uygulama sınavı", u]);
     rows.push(["Bütünleme", x.b]);
     return {kisa:x.k || `Vize ${x.v} · Final ${x.f}`, rows};
@@ -3268,9 +3301,9 @@ function onProg(n){
   }
   renderDsel();
 }
-window.addEventListener("prog-donem", e => { onProg(e.detail); if (S.n > 1 && S.n < 6) renderList(); });
+window.addEventListener("prog-donem", e => { onProg(e.detail); if (S.n < 6) renderList(); });
 // program yüklenince (grup sınavları hazır) kartlardaki sınav tarihleri yenilenir
-window.addEventListener("prog-ready", () => { if (S.n > 1 && S.n < 6) renderList(); });
+window.addEventListener("prog-ready", () => { if (S.n < 6) renderList(); });
 if (MINE) onProg(MINE);
 window.ntRefresh = () => { ALL = loadAll(); useDonem(ALL.d); renderDsel(); wInputs(); renderList(); };
 })();
